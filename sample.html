@@ -12,6 +12,29 @@
 defCanvasWidth=1200;
 defCanvasHeight=600;
 
+var logdata = {
+	labels : ["January","February","March","April","May","June","July"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [15000,590,900,8100,56,5005,100],
+      title : "First data"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			data : [28,48,40,19,96,27,100],
+      title : "Second data"
+		}
+	]
+}
+
+
 var mydata1 = {
 	labels : ["January","February","March","April","May","June","July"],
 	datasets : [
@@ -430,8 +453,8 @@ window.onload = function() {
     
 
     if(1==1) {
-    var myLine = new Chart(document.getElementById("canvas_line").getContext("2d")).Line(mydata1,setopts);
-    var myLine = new Chart(document.getElementById("canvas_bar").getContext("2d")).Bar(mydata1,setopts);
+    var myLine = new Chart(document.getElementById("canvas_line").getContext("2d")).Line(logdata,setopts);
+    var myLine = new Chart(document.getElementById("canvas_bar").getContext("2d")).Bar(logdata,setopts);
     var myLine = new Chart(document.getElementById("canvas_stackedbar").getContext("2d")).StackedBar(mydata1,setopts);
     var myLine = new Chart(document.getElementById("canvas_horizontalbar").getContext("2d")).HorizontalBar(mydata1,setopts);
     var myLine = new Chart(document.getElementById("canvas_horizontalstackedbar").getContext("2d")).HorizontalStackedBar(mydata1,setopts);

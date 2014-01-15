@@ -836,6 +836,7 @@ window.Chart = function(context){
 			scaleShowGridLines : true,
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 			scaleGridLineWidth : 1,
+			logarithmic: 'fuzzy',
       scaleTickSizeLeft : 5,
       scaleTickSizeRight : 5,
       scaleTickSizeBottom : 5,
@@ -847,7 +848,7 @@ window.Chart = function(context){
 			datasetStroke : true,
 			datasetStrokeWidth : 2,
 			datasetFill : true,
-			animation : true,
+			animation : false,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
 			onAnimationComplete : null,
@@ -1168,6 +1169,7 @@ this.HorizontalStackedBar = function(data,options){
 			scaleShowGridLines : true,
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 			scaleGridLineWidth : 1,
+			logarithmic: 'fuzzy',
       scaleTickSizeLeft : 5,
       scaleTickSizeRight : 5,
       scaleTickSizeBottom : 5,
@@ -1176,7 +1178,7 @@ this.HorizontalStackedBar = function(data,options){
 			barStrokeWidth : 2,
 			barValueSpacing : 5,
 			barDatasetSpacing : 1,
-			animation : true,
+			animation : false,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
 			onAnimationComplete : null,
@@ -1394,7 +1396,7 @@ this.HorizontalStackedBar = function(data,options){
 
 		if (!config.scaleOverride){
 
-			calculatedScale = calculateScale(valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
+			calculatedScale = calculateScale(config,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
       msr=setMeasures(data,config,ctx,height,width,calculatedScale.labels,true,false,false,false);
 		}
 		else {
@@ -1404,7 +1406,7 @@ this.HorizontalStackedBar = function(data,options){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
+			populateLabels(config,labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
       msr=setMeasures(data,config,ctx,height,width,calculatedScale.labels,true,false,false,false);
 		}
 
@@ -1443,7 +1445,7 @@ this.HorizontalStackedBar = function(data,options){
       for (var i=0; i<data.length; i++){
 
 				ctx.beginPath();
-				ctx.arc(midPosX,midPosY,scaleAnimation * calculateOffset(data[i].value,calculatedScale,scaleHop),startAngle, startAngle + rotateAnimation*angleStep, false);
+				ctx.arc(midPosX,midPosY,scaleAnimation * calculateOffset(config,data[i].value,calculatedScale,scaleHop),startAngle, startAngle + rotateAnimation*angleStep, false);
 				ctx.lineTo(midPosX,midPosY);
 				ctx.closePath();
 				ctx.fillStyle = data[i].color;
@@ -1457,7 +1459,7 @@ this.HorizontalStackedBar = function(data,options){
           if(typeof(data[i].title)=="string")lgtxt=data[i].title.trim();
           else lgtxt="";
 
-          jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["ARC",midPosX,midPosY,0,calculateOffset(data[i].value,calculatedScale,scaleHop),startAngle - angleStep,startAngle,lgtxt,data[i].value,cumvalue,totvalue,angleStep,i];
+          jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["ARC",midPosX,midPosY,0,calculateOffset(config,data[i].value,calculatedScale,scaleHop),startAngle - angleStep,startAngle,lgtxt,data[i].value,cumvalue,totvalue,angleStep,i];
         }
 				if(config.segmentShowStroke){
 					ctx.strokeStyle = config.segmentStrokeColor;
@@ -1555,7 +1557,7 @@ this.HorizontalStackedBar = function(data,options){
 
 		if (!config.scaleOverride){
 
-			calculatedScale = calculateScale(valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
+			calculatedScale = calculateScale(config,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
       msr=setMeasures(data,config,ctx,height,width,calculatedScale.labels,true,false,false,true);
 		}
 		else {
@@ -1565,7 +1567,7 @@ this.HorizontalStackedBar = function(data,options){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
+			populateLabels(config,labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
       msr=setMeasures(data,config,ctx,height,width,calculatedScale.labels,true,false,false,true);
 		}
 
@@ -1608,7 +1610,7 @@ this.HorizontalStackedBar = function(data,options){
 
 				ctx.beginPath();
 
-				ctx.moveTo(0,animationDecimal*(-1*calculateOffset(data.datasets[i].data[0],calculatedScale,scaleHop)));
+				ctx.moveTo(0,animationDecimal*(-1*calculateOffset(config,data.datasets[i].data[0],calculatedScale,scaleHop)));
 
         if(animationDecimal>=1)
         {
@@ -1619,12 +1621,12 @@ this.HorizontalStackedBar = function(data,options){
           if(typeof(data.labels[0])=="string")lgtxt2=data.labels[0].trim();
           else lgtxt2="";
 
-          jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["POINT",midPosX,midPosY-1*calculateOffset(data.datasets[i].data[0],calculatedScale,scaleHop),lgtxt,lgtxt2,data.datasets[i].data[0],divprev,divnext,maxvalue[0],totvalue[0],i,0];
+          jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["POINT",midPosX,midPosY-1*calculateOffset(config,data.datasets[i].data[0],calculatedScale,scaleHop),lgtxt,lgtxt2,data.datasets[i].data[0],divprev,divnext,maxvalue[0],totvalue[0],i,0];
         }
 
 				for (var j=1; j<data.datasets[i].data.length; j++){
 					ctx.rotate(rotationDegree);	
-					ctx.lineTo(0,animationDecimal*(-1*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)));
+					ctx.lineTo(0,animationDecimal*(-1*calculateOffset(config,data.datasets[i].data[j],calculatedScale,scaleHop)));
 
           if(animationDecimal>=1)
           {
@@ -1634,7 +1636,7 @@ this.HorizontalStackedBar = function(data,options){
             else divnext=data.datasets[i+1].data[j]-data.datasets[i].data[j];
             if(typeof(data.labels[j])=="string")lgtxt2=data.labels[j].trim();
             else lgtxt2="";
-            jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["POINT",midPosX+Math.cos((Math.PI/2)-j*rotationDegree)*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop),midPosY-Math.sin((Math.PI/2)-j*rotationDegree)*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop),lgtxt,lgtxt2,data.datasets[i].data[j],divprev,divnext,maxvalue[j],totvalue[j],i,j];
+            jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["POINT",midPosX+Math.cos((Math.PI/2)-j*rotationDegree)*calculateOffset(config,data.datasets[i].data[j],calculatedScale,scaleHop),midPosY-Math.sin((Math.PI/2)-j*rotationDegree)*calculateOffset(config,data.datasets[i].data[j],calculatedScale,scaleHop),lgtxt,lgtxt2,data.datasets[i].data[j],divprev,divnext,maxvalue[j],totvalue[j],i,j];
         }
 
 			
@@ -1655,7 +1657,7 @@ this.HorizontalStackedBar = function(data,options){
 					for (var k=0; k<data.datasets[i].data.length; k++){
 						ctx.rotate(rotationDegree);
 						ctx.beginPath();
-						ctx.arc(0,animationDecimal*(-1*calculateOffset(data.datasets[i].data[k],calculatedScale,scaleHop)),config.pointDotRadius,2*Math.PI,false);
+						ctx.arc(0,animationDecimal*(-1*calculateOffset(config,data.datasets[i].data[k],calculatedScale,scaleHop)),config.pointDotRadius,2*Math.PI,false);
 						ctx.fill();
 						ctx.stroke();
 					}					
@@ -1997,14 +1999,27 @@ this.HorizontalStackedBar = function(data,options){
     ctx.clearRect(0,0,width,height);
 
     
-
 		valueBounds = getValueBounds();
+		
+		// true or fuzzy (error for negativ values (included 0))
+		if (config.logarithmic !== false) {
+			if (valueBounds.minValue <= 0) {
+				config.logarithmic = false;
+			}
+		}
+		
+		 // Check if logarithmic is meanigful
+		var OrderOfMagnitude = calculateOrderOfMagnitude(Math.pow(10,calculateOrderOfMagnitude(valueBounds.maxValue)+1))-calculateOrderOfMagnitude(Math.pow(10,calculateOrderOfMagnitude(valueBounds.minValue)));
+		if ((config.logarithmic == 'fuzzy' && OrderOfMagnitude < 4) || config.scaleOverride) {
+		  config.logarithmic = false;
+		}
+		
 		//Check and set the scale
 		labelTemplateString = (config.scaleShowLabels)? config.scaleLabel : "";
 
 		if (!config.scaleOverride){
 
-			calculatedScale = calculateScale(valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
+			calculatedScale = calculateScale(config,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
       msr=setMeasures(data,config,ctx,height,width,calculatedScale.labels,false,false,true,true);
 		}
 		else {
@@ -2014,7 +2029,7 @@ this.HorizontalStackedBar = function(data,options){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
+			populateLabels(config,labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
       msr=setMeasures(data,config,ctx,height,width,calculatedScale.labels,false,false,true,true);
 		}
 
@@ -2032,7 +2047,7 @@ this.HorizontalStackedBar = function(data,options){
 
 		animationLoop(config,drawScale,drawLines,ctx,msr.clrx,msr.clry,msr.clrwidth,msr.clrheight,yAxisPosX+msr.availableWidth/2,xAxisPosY-msr.availableHeight/2,yAxisPosX,xAxisPosY,data);		
 		
-		function drawLines(animPc){
+	function drawLines(animPc){
 
       var totvalue=new Array();
       var maxvalue=new Array();
@@ -2051,7 +2066,7 @@ this.HorizontalStackedBar = function(data,options){
 				ctx.strokeStyle = data.datasets[i].strokeColor;
 				ctx.lineWidth = config.datasetStrokeWidth;
 				ctx.beginPath();
-				ctx.moveTo(yAxisPosX, xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[0],calculatedScale,scaleHop)));
+				ctx.moveTo(yAxisPosX, xAxisPosY - animPc*(calculateOffset(config,data.datasets[i].data[0],calculatedScale,scaleHop)));
 
         if(animPc>=1)
         {
@@ -2064,7 +2079,7 @@ this.HorizontalStackedBar = function(data,options){
           if(typeof(data.labels[0])=="string")lgtxt2=data.labels[0].trim();
           else lgtxt2="";
 
-          jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["POINT",yAxisPosX,xAxisPosY - (calculateOffset(data.datasets[i].data[0],calculatedScale,scaleHop)),lgtxt,lgtxt2,data.datasets[i].data[0],divprev,divnext,maxvalue[0],totvalue[0],i,0];
+          jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["POINT",yAxisPosX,xAxisPosY - (calculateOffset(config,data.datasets[i].data[0],calculatedScale,scaleHop)),lgtxt,lgtxt2,data.datasets[i].data[0],divprev,divnext,maxvalue[0],totvalue[0],i,0];
         }
 				for (var j=1; j<data.datasets[i].data.length; j++){
 					if (config.bezierCurve){
@@ -2104,15 +2119,15 @@ this.HorizontalStackedBar = function(data,options){
 					ctx.lineWidth = config.pointDotStrokeWidth;
 					for (var k=0; k<data.datasets[i].data.length; k++){
 						ctx.beginPath();
-						ctx.arc(yAxisPosX + (valueHop *k),xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k],calculatedScale,scaleHop)),config.pointDotRadius,0,Math.PI*2,true);
+						ctx.arc(yAxisPosX + (valueHop *k),xAxisPosY - animPc*(calculateOffset(config,data.datasets[i].data[k],calculatedScale,scaleHop)),config.pointDotRadius,0,Math.PI*2,true);
 						ctx.fill();
 						ctx.stroke();
 					}
 				}
 			}
 			
-			function yPos(dataSet,iteration){
-				return xAxisPosY - animPc*(calculateOffset(data.datasets[dataSet].data[iteration],calculatedScale,scaleHop));			
+			function yPos(dataSet,iteration) {
+				return xAxisPosY - animPc*(calculateOffset(config,data.datasets[dataSet].data[iteration],calculatedScale,scaleHop));			
 			}
 			function xPos(iteration){
 				return yAxisPosX + (valueHop * iteration);
@@ -2262,7 +2277,7 @@ this.HorizontalStackedBar = function(data,options){
 		labelTemplateString = (config.scaleShowLabels)? config.scaleLabel : "";
 		if (!config.scaleOverride){
 
-			calculatedScale = calculateScale(valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
+			calculatedScale = calculateScale(config,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
       msr=setMeasures(data,config,ctx,height,width,calculatedScale.labels,true,false,true,true);
 		}
 		else {
@@ -2321,8 +2336,8 @@ this.HorizontalStackedBar = function(data,options){
             var barOffset = yAxisPosX + config.barValueSpacing + valueHop*j + barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i;
             ctx.beginPath();
             ctx.moveTo(barOffset, xAxisPosY);
-            ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
-            ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+            ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(config,data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+            ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc*calculateOffset(config,data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
             ctx.lineTo(barOffset + barWidth, xAxisPosY);
             if(config.barShowStroke){
               ctx.stroke();
@@ -2335,9 +2350,9 @@ this.HorizontalStackedBar = function(data,options){
             {
               if(typeof(data.labels[j])=="string")lgtxt2=data.labels[j].trim();
               else lgtxt2="";
-              jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["RECT",barOffset,xAxisPosY,barOffset+barWidth,xAxisPosY - calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2),lgtxt,lgtxt2,data.datasets[i].data[j],cumvalue[j],totvalue[j],i,j];
+              jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["RECT",barOffset,xAxisPosY,barOffset+barWidth,xAxisPosY - calculateOffset(config,config,data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2),lgtxt,lgtxt2,data.datasets[i].data[j],cumvalue[j],totvalue[j],i,j];
             }
-            yStart[j] = animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)-(config.barStrokeWidth/2)
+            yStart[j] = animPc*calculateOffset(config,data.datasets[i].data[j],calculatedScale,scaleHop)-(config.barStrokeWidth/2)
 
 
           }
@@ -2346,8 +2361,8 @@ this.HorizontalStackedBar = function(data,options){
             var barOffset = yAxisPosX + config.barValueSpacing + valueHop*j;
             ctx.beginPath();
             ctx.moveTo(barOffset, xAxisPosY - yStart[j] + 1);
-            ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(calculatedScale.graphMin+data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2) - yStart[j]);
-            ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc*calculateOffset(calculatedScale.graphMin+data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2) - yStart[j]);
+            ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(config,calculatedScale.graphMin+data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2) - yStart[j]);
+            ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc*calculateOffset(config,calculatedScale.graphMin+data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2) - yStart[j]);
             ctx.lineTo(barOffset + barWidth, xAxisPosY - yStart[j] + 1);                                                           
             if(config.barShowStroke){
               ctx.stroke();
@@ -2361,9 +2376,9 @@ this.HorizontalStackedBar = function(data,options){
               if(typeof(data.labels[j])=="string")lgtxt2=data.labels[j].trim();
               else lgtxt2="";
             
-              jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["RECT",barOffset,xAxisPosY - yStart[j] + 1,barOffset+barWidth,xAxisPosY - calculateOffset(calculatedScale.graphMin+data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2) - yStart[j],lgtxt,lgtxt2,data.datasets[i].data[j],cumvalue[j],totvalue[j],i,j];
+              jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["RECT",barOffset,xAxisPosY - yStart[j] + 1,barOffset+barWidth,xAxisPosY - calculateOffset(config,calculatedScale.graphMin+data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2) - yStart[j],lgtxt,lgtxt2,data.datasets[i].data[j],cumvalue[j],totvalue[j],i,j];
             }
-            yStart[j] += animPc*calculateOffset(calculatedScale.graphMin+data.datasets[i].data[j],calculatedScale,scaleHop)-(config.barStrokeWidth/2);
+            yStart[j] += animPc*calculateOffset(config,calculatedScale.graphMin+data.datasets[i].data[j],calculatedScale,scaleHop)-(config.barStrokeWidth/2);
 
           }
         }
@@ -2520,7 +2535,7 @@ this.HorizontalStackedBar = function(data,options){
 
 		if (!config.scaleOverride){
 
-			calculatedScale = calculateScale(valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
+			calculatedScale = calculateScale(config,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
       msr=setMeasures(data,config,ctx,height,width,calculatedScale.labels,true,true,true,true);
 		}
 		else {
@@ -2790,12 +2805,26 @@ this.HorizontalStackedBar = function(data,options){
 
 
 		valueBounds = getValueBounds();
+		
+		// true or fuzzy (error for negativ values (included 0))
+		if (config.logarithmic !== false) {
+			if (valueBounds.minValue <= 0) {
+				config.logarithmic = false;
+			}
+		}
+		
+		 // Check if logarithmic is meanigful
+		var OrderOfMagnitude = calculateOrderOfMagnitude(Math.pow(10,calculateOrderOfMagnitude(valueBounds.maxValue)+1))-calculateOrderOfMagnitude(Math.pow(10,calculateOrderOfMagnitude(valueBounds.minValue)));
+		if ((config.logarithmic == 'fuzzy' && OrderOfMagnitude < 4) || config.scaleOverride) {
+		  config.logarithmic = false;
+		}
+		
 		//Check and set the scale
 		labelTemplateString = (config.scaleShowLabels)? config.scaleLabel : "";
 
 		if (!config.scaleOverride){
 
-			calculatedScale = calculateScale(valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
+			calculatedScale = calculateScale(config,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
       msr=setMeasures(data,config,ctx,height,width,calculatedScale.labels,true,false,true,true);
 		}
 		else {
@@ -2805,7 +2834,7 @@ this.HorizontalStackedBar = function(data,options){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
+			populateLabels(config,labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
       msr=setMeasures(data,config,ctx,height,width,calculatedScale.labels,true,false,true,true);
 		}
 
@@ -2849,8 +2878,8 @@ this.HorizontalStackedBar = function(data,options){
 					
 					ctx.beginPath();
 					ctx.moveTo(barOffset, xAxisPosY);
-					ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
-					ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(config,data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc*calculateOffset(config,data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
 					ctx.lineTo(barOffset + barWidth, xAxisPosY);
 					if(config.barShowStroke){
 						ctx.stroke();
@@ -2863,7 +2892,7 @@ this.HorizontalStackedBar = function(data,options){
           {
               if(typeof(data.labels[j])=="string")lgtxt2=data.labels[j].trim();
               else lgtxt2="";
-              jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["RECT",barOffset,xAxisPosY,barOffset + barWidth,xAxisPosY - calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2),lgtxt,lgtxt2,data.datasets[i].data[j],cumvalue[j],totvalue[j],i,j];
+              jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["RECT",barOffset,xAxisPosY,barOffset + barWidth,xAxisPosY - calculateOffset(config,data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2),lgtxt,lgtxt2,data.datasets[i].data[j],cumvalue[j],totvalue[j],i,j];
           }
 				}
 			}
@@ -3013,7 +3042,7 @@ this.HorizontalStackedBar = function(data,options){
 
 		if (!config.scaleOverride){
 
-			calculatedScale = calculateScale(valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
+			calculatedScale = calculateScale(config,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
       msr=setMeasures(data,config,ctx,height,width,calculatedScale.labels,true,true,true,true);
 		}
 		else {
@@ -3023,7 +3052,7 @@ this.HorizontalStackedBar = function(data,options){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
+			populateLabels(config,labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
       msr=setMeasures(data,config,ctx,height,width,calculatedScale.labels,true,true,true,true);
 		}
 
@@ -3063,8 +3092,8 @@ this.HorizontalStackedBar = function(data,options){
             var barOffset = xAxisPosY + config.barValueSpacing - scaleHop*(j+1) + barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i ;
             ctx.beginPath();
             ctx.moveTo(yAxisPosX, barOffset);
-            ctx.lineTo(yAxisPosX+animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,valueHop)+(config.barStrokeWidth/2),barOffset);
-            ctx.lineTo(yAxisPosX+animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,valueHop)+(config.barStrokeWidth/2),barOffset+barWidth);
+            ctx.lineTo(yAxisPosX+animPc*calculateOffset(config,data.datasets[i].data[j],calculatedScale,valueHop)+(config.barStrokeWidth/2),barOffset);
+            ctx.lineTo(yAxisPosX+animPc*calculateOffset(config,data.datasets[i].data[j],calculatedScale,valueHop)+(config.barStrokeWidth/2),barOffset+barWidth);
             ctx.lineTo(yAxisPosX, barOffset+barWidth);
           
 					if(config.barShowStroke){
@@ -3078,7 +3107,7 @@ this.HorizontalStackedBar = function(data,options){
           {
               if(typeof(data.labels[j])=="string")lgtxt2=data.labels[j].trim();
               else lgtxt2="";
-              jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["RECT",yAxisPosX,barOffset+barWidth,yAxisPosX+calculateOffset(data.datasets[i].data[j],calculatedScale,valueHop)+(config.barStrokeWidth/2),barOffset,lgtxt,lgtxt2,data.datasets[i].data[j],cumvalue[j],totvalue[j],i,j];
+              jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["RECT",yAxisPosX,barOffset+barWidth,yAxisPosX+calculateOffset(config,data.datasets[i].data[j],calculatedScale,valueHop)+(config.barStrokeWidth/2),barOffset,lgtxt,lgtxt2,data.datasets[i].data[j],cumvalue[j],totvalue[j],i,j];
           }
 				}
 			}
@@ -3212,11 +3241,15 @@ this.HorizontalStackedBar = function(data,options){
 
 
 	
-	function calculateOffset(val,calculatedScale,scaleHop){
-		var outerValue = calculatedScale.steps * calculatedScale.stepValue;
-		var adjustedValue = val - calculatedScale.graphMin;
-		var scalingFactor = CapValue(adjustedValue/outerValue,1,0);
-		return (scaleHop*calculatedScale.steps) * scalingFactor;
+	function calculateOffset(config,val,calculatedScale,scaleHop){
+		if (!config.logarithmic) {
+			var outerValue = calculatedScale.steps * calculatedScale.stepValue;
+			var adjustedValue = val - calculatedScale.graphMin;
+			var scalingFactor = CapValue(adjustedValue/outerValue,1,0);
+			return (scaleHop*calculatedScale.steps) * scalingFactor;
+		} else {
+			return CapValue(log10(val)*scaleHop-calculateOrderOfMagnitude(calculatedScale.graphMin)*scaleHop,undefined,0);
+		}
 	}
 	
 	function animationLoop(config,drawScale,drawData,ctx,clrx,clry,clrwidth,clrheight,midPosX,midPosY,borderX,borderY,data){
@@ -3280,63 +3313,126 @@ this.HorizontalStackedBar = function(data,options){
 			};
 	})();
 
-	function calculateScale(maxSteps,minSteps,maxValue,minValue,labelTemplateString){
+	
+/*	
+ function calculateScale(maxSteps,minSteps,maxValue,minValue,labelTemplateString){
   
-			var graphMin,graphMax,graphRange,stepValue,numberOfSteps,valueRange,rangeOrderOfMagnitude,decimalNum;
-			
-			valueRange = maxValue - minValue;
-			
-			rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
-
-        	graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
-            
+            var graphMin,graphMax,graphRange,stepValue,numberOfSteps,valueRange,rangeOrderOfMagnitude,decimalNum;
+            valueRange = maxValue - minValue;
+            rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
+            graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
             graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
-            
             graphRange = graphMax - graphMin;
-            
             stepValue = Math.pow(10, rangeOrderOfMagnitude);
-            
-	        numberOfSteps = Math.round(graphRange / stepValue);
-	        
-	        //Compare number of steps to the max and min for that size graph, and add in half steps if need be.	        
-	        while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
-	        	if (numberOfSteps < minSteps){
-			        stepValue /= 2;
-			        numberOfSteps = Math.round(graphRange/stepValue);
-		        }
-		        else{
-			        stepValue *=2;
-			        numberOfSteps = Math.round(graphRange/stepValue);
-		        }
-	        };
+            numberOfSteps = Math.round(graphRange / stepValue);
+                
+			//Compare number of steps to the max and min for that size graph, and add in half steps if need be.                
+			while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
+					if (numberOfSteps < minSteps){
+							stepValue /= 2;
+							numberOfSteps = Math.round(graphRange/stepValue);
+					}
+					else{
+							stepValue *=2;
+							numberOfSteps = Math.round(graphRange/stepValue);
+					}
+			};
 
-	        var labels = [];
-	        populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue);
-		
-	        return {
-		        steps : numberOfSteps,
-				stepValue : stepValue,
-				graphMin : graphMin,
-				labels : labels		        
-		        
-	        }
-		
+			var labels = [];
+			populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue);
+			
+			return {
+					steps : numberOfSteps,
+							stepValue : stepValue,
+							graphMin : graphMin,
+							labels : labels                        
+					
+			}
+			
 			function calculateOrderOfMagnitude(val){
 			  return Math.floor(Math.log(val) / Math.LN10);
-			}		
+			}                
 
 
+   }
+*/	
+	
+function calculateScale(config,maxSteps,minSteps,maxValue,minValue,labelTemplateString){
+		var graphMin,graphMax,graphRange,stepValue,numberOfSteps,valueRange,rangeOrderOfMagnitude,decimalNum;
+		
+		
+		if (!config.logarithmic) {
+			valueRange = maxValue - minValue;
+			rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
+			graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);       
+			graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
+		}
+		else {
+			graphMin = Math.pow(10,calculateOrderOfMagnitude(minValue));
+			graphMax = Math.pow(10,calculateOrderOfMagnitude(maxValue)+1);
+			rangeOrderOfMagnitude = calculateOrderOfMagnitude(graphMax)-calculateOrderOfMagnitude(graphMin);
+		}
+		
+		graphRange = graphMax - graphMin;
+		stepValue = Math.pow(10, rangeOrderOfMagnitude);
+		numberOfSteps = Math.round(graphRange / stepValue);
+
+		
+		
+		if (!config.logarithmic) {
+			//Compare number of steps to the max and min for that size graph, and add in half steps if need be.	        
+			while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
+				if (numberOfSteps < minSteps){
+					stepValue /= 2;
+					numberOfSteps = Math.round(graphRange/stepValue);
+				}
+				else{
+					stepValue *=2;
+					numberOfSteps = Math.round(graphRange/stepValue);
+				}
+			}
+		} else {
+			numberOfSteps = rangeOrderOfMagnitude;
+		}
+
+		var labels = [];
+		
+		populateLabels(config,labelTemplateString, labels, numberOfSteps, graphMin, graphMax, stepValue);
+
+		return {
+			steps : numberOfSteps,
+			stepValue : stepValue,
+			graphMin : graphMin,
+			labels : labels,
+			maxValue: maxValue
+		}
+	
+		
+		
 	}
 
-    //Populate an array of all the labels by interpolating the string.
-    function populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue) {
-        if (labelTemplateString) {
-            //Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
-            for (var i = 1; i < numberOfSteps + 1; i++) {
-                labels.push(tmpl(labelTemplateString, {value: (1*(graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue)))}));
-            }
-        }
-    }
+	function calculateOrderOfMagnitude(val){
+		  return Math.floor(Math.log(val) / Math.LN10);
+	}
+	
+	
+	//Populate an array of all the labels by interpolating the string.
+	function populateLabels(config,labelTemplateString, labels, numberOfSteps, graphMin, graphMax, stepValue) {
+		if (labelTemplateString) {
+			//Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
+			if (!config.logarithmic) {
+				for (var i = 1; i < numberOfSteps + 1; i++) {
+					labels.push(tmpl(labelTemplateString, {value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))}));
+				}
+			}else{
+				var value = graphMin;
+				while (value < graphMax) {
+					value *= 10;
+					labels.push(tmpl(labelTemplateString, {value: value.toFixed(getDecimalPlaces(stepValue))}));
+				}
+			}
+		}
+	}
 	
 	//Max value from array
 	function Max( array ){
@@ -4114,5 +4210,7 @@ this.HorizontalStackedBar = function(data,options){
       };
    }
    
-    
+    function log10(val) {
+		return Math.log(val) / Math.LN10;
+	}
 }
