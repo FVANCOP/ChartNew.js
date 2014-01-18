@@ -13,7 +13,8 @@
  * new charts
  *  
  *     horizontalBar 
- *     horizontalStackedBar                
+ *     horizontalStackedBar 
+ *     Line,Bar with logarithmic y-axis 
  *     
  * Added items : 
  *  
@@ -836,7 +837,7 @@ window.Chart = function(context){
 			scaleShowGridLines : true,
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 			scaleGridLineWidth : 1,
-			logarithmic: 'fuzzy',
+			logarithmic: false, // can be 'fuzzy',true and false ('fuzzy' => if the gap between min and maximum is big it's using a logarithmic y-Axis scale
       scaleTickSizeLeft : 5,
       scaleTickSizeRight : 5,
       scaleTickSizeBottom : 5,
@@ -1169,7 +1170,7 @@ this.HorizontalStackedBar = function(data,options){
 			scaleShowGridLines : true,
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 			scaleGridLineWidth : 1,
-			logarithmic: 'fuzzy',
+			logarithmic: false, // can be 'fuzzy',true and false ('fuzzy' => if the gap between min and maximum is big it's using a logarithmic y-Axis scale
       scaleTickSizeLeft : 5,
       scaleTickSizeRight : 5,
       scaleTickSizeBottom : 5,
@@ -2211,14 +2212,14 @@ this.HorizontalStackedBar = function(data,options){
 				ctx.stroke();
 				
 				if (config.scaleShowLabels){
-          if(config.yAxisLeft) {
-       			ctx.textAlign = "right";
-            ctx.fillText(calculatedScale.labels[j],yAxisPosX-(config.scaleTickSizeLeft+3),xAxisPosY - ((j+1) * scaleHop));
-          }
-          if(config.yAxisRight) {
-       			ctx.textAlign = "left";
-            ctx.fillText(calculatedScale.labels[j],yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight+3),xAxisPosY - ((j+1) * scaleHop));
-          }
+				  if(config.yAxisLeft) {
+						ctx.textAlign = "right";
+					ctx.fillText(calculatedScale.labels[j],yAxisPosX-(config.scaleTickSizeLeft+3),xAxisPosY - ((j+1) * scaleHop));
+				  }
+				  if(config.yAxisRight) {
+						ctx.textAlign = "left";
+					ctx.fillText(calculatedScale.labels[j],yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight+3),xAxisPosY - ((j+1) * scaleHop));
+				  }
 				}
 			}
 			
@@ -2350,7 +2351,7 @@ this.HorizontalStackedBar = function(data,options){
             {
               if(typeof(data.labels[j])=="string")lgtxt2=data.labels[j].trim();
               else lgtxt2="";
-              jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["RECT",barOffset,xAxisPosY,barOffset+barWidth,xAxisPosY - calculateOffset(config,config,data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2),lgtxt,lgtxt2,data.datasets[i].data[j],cumvalue[j],totvalue[j],i,j];
+              jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["RECT",barOffset,xAxisPosY,barOffset+barWidth,xAxisPosY - calculateOffset(config,data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2),lgtxt,lgtxt2,data.datasets[i].data[j],cumvalue[j],totvalue[j],i,j];
             }
             yStart[j] = animPc*calculateOffset(config,data.datasets[i].data[j],calculatedScale,scaleHop)-(config.barStrokeWidth/2)
 
@@ -2463,14 +2464,14 @@ this.HorizontalStackedBar = function(data,options){
 				ctx.stroke();
 				
 				if (config.scaleShowLabels){
-          if(config.yAxisLeft) {
-       			ctx.textAlign = "right";
-            ctx.fillText(calculatedScale.labels[j],yAxisPosX-(config.scaleTickSizeLeft+3),xAxisPosY - ((j+1) * scaleHop));
-          }
-          if(config.yAxisRight) {
-       			ctx.textAlign = "left";
-            ctx.fillText(calculatedScale.labels[j],yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight+3),xAxisPosY - ((j+1) * scaleHop));
-          }
+					  if(config.yAxisLeft) {
+							ctx.textAlign = "right";
+						ctx.fillText(calculatedScale.labels[j],yAxisPosX-(config.scaleTickSizeLeft+3),xAxisPosY - ((j+1) * scaleHop));
+					  }
+					  if(config.yAxisRight) {
+							ctx.textAlign = "left";
+						ctx.fillText(calculatedScale.labels[j],yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight+3),xAxisPosY - ((j+1) * scaleHop));
+					  }
 				}
 			}
 			
@@ -3242,12 +3243,12 @@ this.HorizontalStackedBar = function(data,options){
 
 	
 	function calculateOffset(config,val,calculatedScale,scaleHop){
-		if (!config.logarithmic) {
+		if (!config.logarithmic) { // no logarithmic scale
 			var outerValue = calculatedScale.steps * calculatedScale.stepValue;
 			var adjustedValue = val - calculatedScale.graphMin;
 			var scalingFactor = CapValue(adjustedValue/outerValue,1,0);
 			return (scaleHop*calculatedScale.steps) * scalingFactor;
-		} else {
+		} else { // logarithmic scale
 			return CapValue(log10(val)*scaleHop-calculateOrderOfMagnitude(calculatedScale.graphMin)*scaleHop,undefined,0);
 		}
 	}
@@ -3361,13 +3362,13 @@ function calculateScale(config,maxSteps,minSteps,maxValue,minValue,labelTemplate
 		var graphMin,graphMax,graphRange,stepValue,numberOfSteps,valueRange,rangeOrderOfMagnitude,decimalNum;
 		
 		
-		if (!config.logarithmic) {
+		if (!config.logarithmic) { // no logarithmic scale
 			valueRange = maxValue - minValue;
 			rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
 			graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);       
 			graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
 		}
-		else {
+		else { // logarithmic scale
 			graphMin = Math.pow(10,calculateOrderOfMagnitude(minValue));
 			graphMax = Math.pow(10,calculateOrderOfMagnitude(maxValue)+1);
 			rangeOrderOfMagnitude = calculateOrderOfMagnitude(graphMax)-calculateOrderOfMagnitude(graphMin);
@@ -3379,7 +3380,7 @@ function calculateScale(config,maxSteps,minSteps,maxValue,minValue,labelTemplate
 
 		
 		
-		if (!config.logarithmic) {
+		if (!config.logarithmic) { // no logarithmic scale
 			//Compare number of steps to the max and min for that size graph, and add in half steps if need be.	        
 			while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
 				if (numberOfSteps < minSteps){
@@ -3391,8 +3392,8 @@ function calculateScale(config,maxSteps,minSteps,maxValue,minValue,labelTemplate
 					numberOfSteps = Math.round(graphRange/stepValue);
 				}
 			}
-		} else {
-			numberOfSteps = rangeOrderOfMagnitude;
+		} else { // logarithmic scale
+			numberOfSteps = rangeOrderOfMagnitude; // so scale is  10,100,1000,...
 		}
 
 		var labels = [];
@@ -3420,11 +3421,11 @@ function calculateScale(config,maxSteps,minSteps,maxValue,minValue,labelTemplate
 	function populateLabels(config,labelTemplateString, labels, numberOfSteps, graphMin, graphMax, stepValue) {
 		if (labelTemplateString) {
 			//Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
-			if (!config.logarithmic) {
+			if (!config.logarithmic) { // no logarithmic scale
 				for (var i = 1; i < numberOfSteps + 1; i++) {
 					labels.push(tmpl(labelTemplateString, {value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))}));
 				}
-			}else{
+			}else{ // logarithmic scale 10,100,1000,...
 				var value = graphMin;
 				while (value < graphMax) {
 					value *= 10;

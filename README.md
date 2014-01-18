@@ -19,6 +19,7 @@ New Charts integrated in this version compared to Graph.js
 
     HorizontalBar
     HorizontalStackedBar
+	Line,Bar with logarithmic y-Axis
 
 New Items in graph compared to Graph.js :
 
