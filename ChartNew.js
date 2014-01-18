@@ -14,7 +14,6 @@
  *  
  *     horizontalBar 
  *     horizontalStackedBar 
- *     Line,Bar with logarithmic y-axis 
  *     
  * Added items : 
  *  
@@ -30,6 +29,8 @@
  *     Footnote
  *     crossText
  *     graphMin / graphMax
+ *     logarithmic y-axis (for line and bar) 
+ *     rotateLabels
  *     
  */
 
@@ -837,6 +838,7 @@ window.Chart = function(context){
 			scaleShowGridLines : true,
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 			scaleGridLineWidth : 1,
+      rotateLabels : -1,
 			logarithmic: false, // can be 'fuzzy',true and false ('fuzzy' => if the gap between min and maximum is big it's using a logarithmic y-Axis scale
       scaleTickSizeLeft : 5,
       scaleTickSizeRight : 5,
@@ -951,7 +953,8 @@ this.StackedBar = function(data,options){
       scaleFontColor : "#666",
       scaleShowGridLines : true,
       scaleGridLineColor : "rgba(0,0,0,.05)",
-      scaleGridLineWidth : 1,
+      scaleGridLineWidth : 1, 
+      rotateLabels : -1,
       scaleTickSizeLeft : 5,
       scaleTickSizeRight : 5,
       scaleTickSizeBottom : 5,
@@ -1169,7 +1172,8 @@ this.HorizontalStackedBar = function(data,options){
 			scaleFontColor : "#666",
 			scaleShowGridLines : true,
 			scaleGridLineColor : "rgba(0,0,0,.05)",
-			scaleGridLineWidth : 1,
+			scaleGridLineWidth : 1,  
+      rotateLabels : -1,
 			logarithmic: false, // can be 'fuzzy',true and false ('fuzzy' => if the gap between min and maximum is big it's using a logarithmic y-Axis scale
       scaleTickSizeLeft : 5,
       scaleTickSizeRight : 5,
@@ -2414,7 +2418,7 @@ this.HorizontalStackedBar = function(data,options){
 			for (var i=0; i<data.labels.length; i++){
 				ctx.save();
 				if (msr.rotateLabels > 0){
-					ctx.translate(yAxisPosX + i*valueHop,msr.xLabelPos);
+					ctx.translate(yAxisPosX + i*valueHop + (barWidth/2),msr.xLabelPos);
 					ctx.rotate(-(msr.rotateLabels * (Math.PI/180)));
 					ctx.fillText(data.labels[i], 0,0);
 				}
@@ -3145,7 +3149,7 @@ this.HorizontalStackedBar = function(data,options){
 
 				ctx.save();
 				if (msr.rotateLabels > 0){
-					ctx.translate(yAxisPosX + (i+1)*valueHop+(valueHop/2),msr.xLabelPos);
+					ctx.translate(yAxisPosX + (i+1)*valueHop,msr.xLabelPos);
 					ctx.rotate(-(msr.rotateLabels * (Math.PI/180)));
 					ctx.fillText(calculatedScale.labels[i], 0,0);
 				}
@@ -3879,28 +3883,34 @@ function calculateScale(config,maxSteps,minSteps,maxValue,minValue,labelTemplate
       
         if(reverseAxis==false){widestLabel=widestXLabel;nblab=data.labels.length;}
         else {widestLabel=widestYLabel;nblab=ylabels.length;}
-
-
-			  if (availableWidth/nblab < (widestLabel+spaceBefore+spaceAfter)){
-				  rotateLabels = 45;
-				  if (availableWidth/nblab < Math.cos(rotateLabels) * widestLabel){
-					   rotateLabels = 90;
-					   xLabelHeight = widestLabel+spaceBefore+spaceAfter;
-             xLabelPos= height-borderWidth-config.spaceBottom-footNoteHeight-spaceLegendHeight-xAxisLabelHeight-spaceAfter-widestLabel;
-             xLabelWidth=2*config.scaleFontSize;
-				  }
-				  else{
-					   xLabelHeight = Math.sin(rotateLabels) * widestLabel+spaceBefore+spaceAfter;
-             xLabelPos= height-borderWidth-config.spaceBottom-footNoteHeight-spaceLegendHeight-xAxisLabelHeight-spaceAfter-Math.sin(rotateLabels) * widestLabel;
-             xLabelWidth=Math.cos(rotateLabels)*widestLabel;
-				  }
+        if(config.rotateLabels > 0)
+        {
+             rotateLabels=config.rotateLabels
+				     xLabelHeight = Math.sin(rotateLabels*Math.PI/180) * widestLabel+spaceBefore+spaceAfter;
+             xLabelPos= height-borderWidth-config.spaceBottom-footNoteHeight-spaceLegendHeight-xAxisLabelHeight-spaceAfter-Math.sin(rotateLabels*Math.PI/180) * widestLabel;
+             xLabelWidth=Math.cos(rotateLabels*Math.PI/180)*widestLabel;
+        }
+			  else if (availableWidth/nblab < (widestLabel+spaceBefore+spaceAfter) && config.rotateLabels <0 ){
+				   rotateLabels = 45;
+				   if (availableWidth/nblab < Math.cos(rotateLabels*Math.PI/180) * widestLabel ){
+				     rotateLabels = 90;
+				     xLabelHeight = widestLabel+spaceBefore+spaceAfter;
+              xLabelPos= height-borderWidth-config.spaceBottom-footNoteHeight-spaceLegendHeight-xAxisLabelHeight-spaceAfter-widestLabel;
+              xLabelWidth=2*config.scaleFontSize;
+				   }
+				   else{
+				     xLabelHeight = Math.sin(rotateLabels*Math.PI/180) * widestLabel+spaceBefore+spaceAfter;
+             xLabelPos= height-borderWidth-config.spaceBottom-footNoteHeight-spaceLegendHeight-xAxisLabelHeight-spaceAfter-Math.sin(rotateLabels*Math.PI/180) * widestLabel;
+             xLabelWidth=Math.cos(rotateLabels*Math.PI/180)*widestLabel;
+				   }
 			  }
 			  else{
-          rotateLabels=0;
-  			  xLabelHeight = config.scaleFontSize+spaceBefore+spaceAfter;
-          xLabelPos= height-borderWidth-config.spaceBottom-footNoteHeight-spaceLegendHeight-xAxisLabelHeight-spaceAfter;
-          xLabelWidth=widestLabel+spaceBefore+spaceAfter;
-			  }
+              rotateLabels=0;
+  			      xLabelHeight = config.scaleFontSize+spaceBefore+spaceAfter;
+              xLabelPos= height-borderWidth-config.spaceBottom-footNoteHeight-spaceLegendHeight-xAxisLabelHeight-spaceAfter;
+              xLabelWidth=widestLabel+spaceBefore+spaceAfter;
+  	    }
+
         leftNotUsableSize= Max ([leftNotUsableSize,borderWidth+config.spaceLeft+xLabelWidth/2] );
         rightNotUsableSize= Max ([rightNotUsableSize,borderWidth+config.spaceRight+xLabelWidth/2] );
         availableWidth=width-leftNotUsableSize-rightNotUsableSize;
