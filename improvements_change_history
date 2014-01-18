@@ -1,0 +1,25 @@
+Change history
+--------------
+
+10/01/2014 - Francois Vancoppenolle - creation of the Github entry
+13/01/2014 - Ole Kroeger - Logaritmic Y-Axis for lines and bars - parameter "logarithmic"
+18/01/2014 - Francois Vancoppenolle - rotateLabels can be choosen by the user - parameter "rotateLabels"
+
+
+Future Improvements
+-------------------
+- labels inside the graphs
+
+
+Known Bugs
+----------
+- graphs are not displayed on smart phones;
+
+- If the first label is long, it can be truncated
+
+   In "sample.html", if you put : 
+   
+    var mydata1 = {   
+	    labels : ["January this is a very long label","February","March","April","May","June","July"],
+	    
+	    => "January this is a very long label" will be truncated (outside of the graph area)
