@@ -2859,6 +2859,11 @@ this.HorizontalStackedBar = function(data,options){
 
 		barWidth = (valueHop - config.scaleGridLineWidth*2 - (config.barValueSpacing*2) - (config.barDatasetSpacing*data.datasets.length-1) - ((config.barStrokeWidth/2)*data.datasets.length-1))/data.datasets.length;
 		
+		var zeroY = 0;
+		if (valueBounds.minValue < 0) {
+			var zeroY = calculateOffset(config,0,calculatedScale,scaleHop);
+		}
+ 
  		animationLoop(config,drawScale,drawBars,ctx,msr.clrx,msr.clry,msr.clrwidth,msr.clrheight,yAxisPosX+msr.availableWidth/2,xAxisPosY-msr.availableHeight/2,yAxisPosX,xAxisPosY,data);		
 		
 		function drawBars(animPc){
@@ -2882,10 +2887,10 @@ this.HorizontalStackedBar = function(data,options){
 					var barOffset = yAxisPosX + config.barValueSpacing + valueHop*j + barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i;
 					
 					ctx.beginPath();
-					ctx.moveTo(barOffset, xAxisPosY);
+					ctx.moveTo(barOffset, xAxisPosY-zeroY);
 					ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(config,data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
 					ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc*calculateOffset(config,data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
-					ctx.lineTo(barOffset + barWidth, xAxisPosY);
+					ctx.lineTo(barOffset + barWidth, xAxisPosY-zeroY);
 					if(config.barShowStroke){
 						ctx.stroke();
 					}
@@ -3317,50 +3322,6 @@ this.HorizontalStackedBar = function(data,options){
 				window.setTimeout(callback, 1000 / 60);
 			};
 	})();
-
-	
-/*	
- function calculateScale(maxSteps,minSteps,maxValue,minValue,labelTemplateString){
-  
-            var graphMin,graphMax,graphRange,stepValue,numberOfSteps,valueRange,rangeOrderOfMagnitude,decimalNum;
-            valueRange = maxValue - minValue;
-            rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
-            graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
-            graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
-            graphRange = graphMax - graphMin;
-            stepValue = Math.pow(10, rangeOrderOfMagnitude);
-            numberOfSteps = Math.round(graphRange / stepValue);
-                
-			//Compare number of steps to the max and min for that size graph, and add in half steps if need be.                
-			while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
-					if (numberOfSteps < minSteps){
-							stepValue /= 2;
-							numberOfSteps = Math.round(graphRange/stepValue);
-					}
-					else{
-							stepValue *=2;
-							numberOfSteps = Math.round(graphRange/stepValue);
-					}
-			};
-
-			var labels = [];
-			populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue);
-			
-			return {
-					steps : numberOfSteps,
-							stepValue : stepValue,
-							graphMin : graphMin,
-							labels : labels                        
-					
-			}
-			
-			function calculateOrderOfMagnitude(val){
-			  return Math.floor(Math.log(val) / Math.LN10);
-			}                
-
-
-   }
-*/	
 	
 function calculateScale(config,maxSteps,minSteps,maxValue,minValue,labelTemplateString){
 		var graphMin,graphMax,graphRange,stepValue,numberOfSteps,valueRange,rangeOrderOfMagnitude,decimalNum;
@@ -3382,8 +3343,6 @@ function calculateScale(config,maxSteps,minSteps,maxValue,minValue,labelTemplate
 		stepValue = Math.pow(10, rangeOrderOfMagnitude);
 		numberOfSteps = Math.round(graphRange / stepValue);
 
-		
-		
 		if (!config.logarithmic) { // no logarithmic scale
 			//Compare number of steps to the max and min for that size graph, and add in half steps if need be.	        
 			while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
