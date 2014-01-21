@@ -838,6 +838,7 @@ window.Chart = function(context){
 			scaleShowGridLines : true,
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 			scaleGridLineWidth : 1,
+      showYAxisMin : true,      // Show the minimum value on Y axis (in original version, this minimum is not displayed - it can overlap the X labels)
       rotateLabels : "smart",   // smart <=> 0 degre if space enough; otherwise 45 degres if space enough otherwise90 degre; 
                                 // you can force an integer value between 0 and 180 degres
 			logarithmic: false, // can be 'fuzzy',true and false ('fuzzy' => if the gap between min and maximum is big it's using a logarithmic y-Axis scale
@@ -852,7 +853,7 @@ window.Chart = function(context){
 			datasetStroke : true,
 			datasetStrokeWidth : 2,
 			datasetFill : true,
-			animation : false,
+			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
 			onAnimationComplete : null,
@@ -955,6 +956,7 @@ this.StackedBar = function(data,options){
       scaleShowGridLines : true,
       scaleGridLineColor : "rgba(0,0,0,.05)",
       scaleGridLineWidth : 1, 
+      showYAxisMin : true,      // Show the minimum value on Y axis (in original version, this minimum is not displayed - it can overlap the X labels)
       rotateLabels : "smart",   // smart <=> 0 degre if space enough; otherwise 45 degres if space enough otherwise90 degre; 
                                 // you can force an integer value between 0 and 180 degres
       scaleTickSizeLeft : 5,
@@ -1070,6 +1072,7 @@ this.HorizontalStackedBar = function(data,options){
       scaleTickSizeRight : 5,
       scaleTickSizeBottom : 5,
       scaleTickSizeTop : 5,
+      showYAxisMin : true,      // Show the minimum value on Y axis (in original version, this minimum is not displayed - it can overlap the X labels)
       barShowStroke : true,
       barStrokeWidth : 2,
       barValueSpacing : 5,
@@ -1175,6 +1178,7 @@ this.HorizontalStackedBar = function(data,options){
 			scaleShowGridLines : true,
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 			scaleGridLineWidth : 1,  
+      showYAxisMin : true,      // Show the minimum value on Y axis (in original version, this minimum is not displayed - it can overlap the X labels)
       rotateLabels : "smart",   // smart <=> 0 degre if space enough; otherwise 45 degres if space enough otherwise90 degre; 
                                 // you can force an integer value between 0 and 180 degres
 			logarithmic: false, // can be 'fuzzy',true and false ('fuzzy' => if the gap between min and maximum is big it's using a logarithmic y-Axis scale
@@ -1186,7 +1190,7 @@ this.HorizontalStackedBar = function(data,options){
 			barStrokeWidth : 2,
 			barValueSpacing : 5,
 			barDatasetSpacing : 1,
-			animation : false,
+			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
 			onAnimationComplete : null,
@@ -1291,6 +1295,7 @@ this.HorizontalStackedBar = function(data,options){
       scaleTickSizeRight : 5,
       scaleTickSizeBottom : 5,
       scaleTickSizeTop : 5,
+      showYAxisMin : true,      // Show the minimum value on Y axis (in original version, this minimum is not displayed - it can overlap the X labels)
 			barShowStroke : true,
 			barStrokeWidth : 2,
 			barValueSpacing : 5,
@@ -1385,6 +1390,8 @@ this.HorizontalStackedBar = function(data,options){
 	var PolarArea = function(data,config,ctx){
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr,midPosX,midPosY;		
 
+    config.logarithmic=false;
+    
     var annotateCnt=0;
     jsGraphAnnotate[ctx.canvas.id]=new Array();
 
@@ -1494,7 +1501,7 @@ this.HorizontalStackedBar = function(data,options){
 				if (config.scaleShowLabels){
 					ctx.textAlign = "center";
 					ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
- 					var label =  calculatedScale.labels[i];
+ 					var label =  calculatedScale.labels[i+1];
 					//If the backdrop object is within the font object
 					if (config.scaleShowLabelBackdrop){
 						var textWidth = ctx.measureText(label).width;
@@ -1541,6 +1548,8 @@ this.HorizontalStackedBar = function(data,options){
 
 	var Radar = function (data,config,ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr,midPosX,midPosY;	
+
+    config.logarithmic=false;
 
     var annotateCnt=0;
     jsGraphAnnotate[ctx.canvas.id]=new Array();
@@ -1722,7 +1731,7 @@ this.HorizontalStackedBar = function(data,options){
 					ctx.textBaseline = "middle";
 					
 					if (config.scaleShowLabelBackdrop){
-						var textWidth = ctx.measureText(calculatedScale.labels[i]).width;
+						var textWidth = ctx.measureText(calculatedScale.labels[i+1]).width;
 						ctx.fillStyle = config.scaleBackdropColor;
 						ctx.beginPath();
 						ctx.rect(
@@ -1734,7 +1743,7 @@ this.HorizontalStackedBar = function(data,options){
 						ctx.fill();
 					}						
 					ctx.fillStyle = config.scaleFontColor;
-					ctx.fillText(calculatedScale.labels[i],0,-scaleHop*(i+1));
+					ctx.fillText(calculatedScale.labels[i+1],0,-scaleHop*(i+1));
 				}
 
 			}
@@ -1822,6 +1831,7 @@ this.HorizontalStackedBar = function(data,options){
 		var segmentTotal = 0;
     var msr,midPieX,midPieY;
 
+    config.logarithmic=false;
 
     var annotateCnt=0;
     jsGraphAnnotate[ctx.canvas.id]=new Array();
@@ -1909,6 +1919,8 @@ this.HorizontalStackedBar = function(data,options){
 	var Doughnut = function(data,config,ctx){
 		var segmentTotal = 0;
     var msr,midPieX,midPieY;
+
+    config.logarithmic=false;
 
 
     var annotateCnt=0;
@@ -1998,6 +2010,7 @@ this.HorizontalStackedBar = function(data,options){
 
 	var Line = function(data,config,ctx){
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX,xAxisPosY, rotateLabels = 0, msr;
+                                    
 
     var annotateCnt=0;
     jsGraphAnnotate[ctx.canvas.id]=new Array();
@@ -2063,7 +2076,7 @@ this.HorizontalStackedBar = function(data,options){
 		animationLoop(config,drawScale,drawLines,ctx,msr.clrx,msr.clry,msr.clrwidth,msr.clrheight,yAxisPosX+msr.availableWidth/2,xAxisPosY-msr.availableHeight/2,yAxisPosX,xAxisPosY,data);		
 		
 	function drawLines(animPc){
-
+  
       var totvalue=new Array();
       var maxvalue=new Array();
       
@@ -2216,28 +2229,33 @@ this.HorizontalStackedBar = function(data,options){
 			
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
-			for (var j=0; j<calculatedScale.steps; j++){
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX-config.scaleTickSizeLeft,xAxisPosY - ((j+1) * scaleHop));
-				ctx.lineWidth = config.scaleGridLineWidth;
-				ctx.strokeStyle = config.scaleGridLineColor;
-				if (config.scaleShowGridLines){
-					ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight,xAxisPosY - ((j+1) * scaleHop));					
-				}
-				else{
-					ctx.lineTo(yAxisPosX ,xAxisPosY - ((j+1) * scaleHop));
-				}
+          
+			for (var j=((config.showYAxisMin) ? -1 : 0); j<calculatedScale.steps; j++){
+
+				if(j>=0)
+        {
+          ctx.beginPath();
+				  ctx.moveTo(yAxisPosX-config.scaleTickSizeLeft,xAxisPosY - ((j+1) * scaleHop));
+				  ctx.lineWidth = config.scaleGridLineWidth;
+				  ctx.strokeStyle = config.scaleGridLineColor;
+				  if (config.scaleShowGridLines){
+					 ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight,xAxisPosY - ((j+1) * scaleHop));					
+				  }
+				  else{
+					 ctx.lineTo(yAxisPosX ,xAxisPosY - ((j+1) * scaleHop));
+				  }
 				
-				ctx.stroke();
+				  ctx.stroke();
+        }
 				
 				if (config.scaleShowLabels){
 				  if(config.yAxisLeft) {
 						ctx.textAlign = "right";
-					ctx.fillText(calculatedScale.labels[j],yAxisPosX-(config.scaleTickSizeLeft+3),xAxisPosY - ((j+1) * scaleHop));
+					ctx.fillText(calculatedScale.labels[j+1],yAxisPosX-(config.scaleTickSizeLeft+3),xAxisPosY - ((j+1) * scaleHop));
 				  }
 				  if(config.yAxisRight) {
 						ctx.textAlign = "left";
-					ctx.fillText(calculatedScale.labels[j],yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight+3),xAxisPosY - ((j+1) * scaleHop));
+					ctx.fillText(calculatedScale.labels[j+1],yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight+3),xAxisPosY - ((j+1) * scaleHop));
 				  }
 				}
 			}
@@ -2277,6 +2295,9 @@ this.HorizontalStackedBar = function(data,options){
   
   var StackedBar = function(data,config,ctx){
     var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX,xAxisPosY,barWidth, rotateLabels = 0, msr;
+
+    config.logarithmic=false;
+
     
     var annotateCnt=0;
     jsGraphAnnotate[ctx.canvas.id]=new Array();
@@ -2472,28 +2493,31 @@ this.HorizontalStackedBar = function(data,options){
 			
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
-			for (var j=0; j<calculatedScale.steps; j++){
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX-config.scaleTickSizeLeft,xAxisPosY - ((j+1) * scaleHop));
-				ctx.lineWidth = config.scaleGridLineWidth;
-				ctx.strokeStyle = config.scaleGridLineColor;
-				if (config.scaleShowGridLines){
-					ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight,xAxisPosY - ((j+1) * scaleHop));					
-				}
-				else{
-					ctx.lineTo(yAxisPosX ,xAxisPosY - ((j+1) * scaleHop));
-				}
+			for (var j=((config.showYAxisMin) ? -1 : 0); j<calculatedScale.steps; j++){
+				if(j>=0)
+        {
+          ctx.beginPath();
+				  ctx.moveTo(yAxisPosX-config.scaleTickSizeLeft,xAxisPosY - ((j+1) * scaleHop));
+				  ctx.lineWidth = config.scaleGridLineWidth;
+				  ctx.strokeStyle = config.scaleGridLineColor;
+				  if (config.scaleShowGridLines){
+					 ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight,xAxisPosY - ((j+1) * scaleHop));					
+				  }
+				  else{
+					 ctx.lineTo(yAxisPosX ,xAxisPosY - ((j+1) * scaleHop));
+				  }
 				
-				ctx.stroke();
+				  ctx.stroke();
+        }
 				
 				if (config.scaleShowLabels){
 					  if(config.yAxisLeft) {
 							ctx.textAlign = "right";
-						ctx.fillText(calculatedScale.labels[j],yAxisPosX-(config.scaleTickSizeLeft+3),xAxisPosY - ((j+1) * scaleHop));
+						ctx.fillText(calculatedScale.labels[j+1],yAxisPosX-(config.scaleTickSizeLeft+3),xAxisPosY - ((j+1) * scaleHop));
 					  }
 					  if(config.yAxisRight) {
 							ctx.textAlign = "left";
-						ctx.fillText(calculatedScale.labels[j],yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight+3),xAxisPosY - ((j+1) * scaleHop));
+						ctx.fillText(calculatedScale.labels[j+1],yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight+3),xAxisPosY - ((j+1) * scaleHop));
 					  }
 				}
 			}
@@ -2538,6 +2562,8 @@ this.HorizontalStackedBar = function(data,options){
 
   var HorizontalStackedBar = function(data,config,ctx){
     var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX,xAxisPosY,barWidth, rotateLabels = 0, msr;
+
+    config.logarithmic=false;
 
     var annotateCnt=0;
     jsGraphAnnotate[ctx.canvas.id]=new Array();
@@ -2710,31 +2736,33 @@ this.HorizontalStackedBar = function(data,options){
 			}
 			ctx.fillStyle = config.scaleFontColor;
 
-			for (var i=0; i<calculatedScale.steps; i++){
+			for (var i=((config.showYAxisMin) ? -1 : 0); i<calculatedScale.steps; i++){
 				ctx.save();
 				if (msr.rotateLabels > 0){
 					ctx.translate(yAxisPosX + (i+1)*valueHop,msr.xLabelPos);
 					ctx.rotate(-(msr.rotateLabels * (Math.PI/180)));
-					ctx.fillText(calculatedScale.labels[i], 0,0);
+					ctx.fillText(calculatedScale.labels[i+1], 0,0);
 				}
 				else{
-					ctx.fillText(calculatedScale.labels[i], yAxisPosX + ((i+1) * valueHop),msr.xLabelPos);					
+					ctx.fillText(calculatedScale.labels[i+1], yAxisPosX + ((i+1) * valueHop),msr.xLabelPos);					
 				}
   			ctx.restore();
-
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY+config.scaleTickSizeBottom);
-				ctx.lineWidth = config.scaleGridLineWidth;
-				ctx.strokeStyle = config.scaleGridLineColor;					
+        if(i>=0)
+        {
+				  ctx.beginPath();
+				  ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY+config.scaleTickSizeBottom);
+				  ctx.lineWidth = config.scaleGridLineWidth;
+				  ctx.strokeStyle = config.scaleGridLineColor;					
 				
-				//Check i isnt 0, so we dont go over the Y axis twice.
-				if(config.scaleShowGridLines && i>0){
-					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY-msr.availableHeight-config.scaleTickSizeTop );
-				}
-				else{
-					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY);				
-				}
-				ctx.stroke();
+				  //Check i isnt 0, so we dont go over the Y axis twice.
+				  if(config.scaleShowGridLines && i>0){
+					 ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY-msr.availableHeight-config.scaleTickSizeTop );
+				  }
+				  else{
+					 ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY);				
+				  }
+				  ctx.stroke();
+        }
 			}
 			
 			//Y axis
@@ -2817,6 +2845,7 @@ this.HorizontalStackedBar = function(data,options){
   	
 	var Bar = function(data,config,ctx){
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX,xAxisPosY,barWidth, rotateLabels = 0, msr;
+
 
     var annotateCnt=0;
     jsGraphAnnotate[ctx.canvas.id]=new Array();
@@ -2999,28 +3028,31 @@ this.HorizontalStackedBar = function(data,options){
 			
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
-			for (var j=0; j<calculatedScale.steps; j++){
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX-config.scaleTickSizeLeft,xAxisPosY - ((j+1) * scaleHop));
-				ctx.lineWidth = config.scaleGridLineWidth;
-				ctx.strokeStyle = config.scaleGridLineColor;
-				if (config.scaleShowGridLines){
-					ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight,xAxisPosY - ((j+1) * scaleHop));					
-				}
-				else{
-					ctx.lineTo(yAxisPosX ,xAxisPosY - ((j+1) * scaleHop));
-				}
+			for (var j=((config.showYAxisMin) ? -1 : 0); j<calculatedScale.steps; j++){
+				if(j>=0)
+        {
+          ctx.beginPath();
+				  ctx.moveTo(yAxisPosX-config.scaleTickSizeLeft,xAxisPosY - ((j+1) * scaleHop));
+				  ctx.lineWidth = config.scaleGridLineWidth;
+				  ctx.strokeStyle = config.scaleGridLineColor;
+				  if (config.scaleShowGridLines){
+					 ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight,xAxisPosY - ((j+1) * scaleHop));					
+				  }
+				  else{
+					 ctx.lineTo(yAxisPosX ,xAxisPosY - ((j+1) * scaleHop));
+				  }
 				
-				ctx.stroke();
-				
+				  ctx.stroke();
+				}
+        
 				if (config.scaleShowLabels){
           if(config.yAxisLeft) {
        			ctx.textAlign = "right";
-            ctx.fillText(calculatedScale.labels[j],yAxisPosX-(config.scaleTickSizeLeft+3),xAxisPosY - ((j+1) * scaleHop));
+            ctx.fillText(calculatedScale.labels[j+1],yAxisPosX-(config.scaleTickSizeLeft+3),xAxisPosY - ((j+1) * scaleHop));
           }
           if(config.yAxisRight) {
        			ctx.textAlign = "left";
-            ctx.fillText(calculatedScale.labels[j],yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight+3),xAxisPosY - ((j+1) * scaleHop));
+            ctx.fillText(calculatedScale.labels[j+1],yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight+3),xAxisPosY - ((j+1) * scaleHop));
           }
 				}
 			}
@@ -3060,6 +3092,7 @@ this.HorizontalStackedBar = function(data,options){
 
 	var HorizontalBar = function(data,config,ctx){
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX,xAxisPosY,barWidth, rotateLabels = 0, msr;
+
 
     var annotateCnt=0;
     jsGraphAnnotate[ctx.canvas.id]=new Array();
@@ -3181,32 +3214,35 @@ this.HorizontalStackedBar = function(data,options){
 			}
 			ctx.fillStyle = config.scaleFontColor;
       
-			for (var i=0; i<calculatedScale.steps; i++){
+			for (var i=((config.showYAxisMin) ? -1 : 0); i<calculatedScale.steps; i++){
 
 				ctx.save();
 				if (msr.rotateLabels > 0){
 					ctx.translate(yAxisPosX + (i+1)*valueHop,msr.xLabelPos);
 					ctx.rotate(-(msr.rotateLabels * (Math.PI/180)));
-					ctx.fillText(calculatedScale.labels[i], 0,0);
+					ctx.fillText(calculatedScale.labels[i+1], 0,0);
 				}
 				else{
-					ctx.fillText(calculatedScale.labels[i], yAxisPosX + (i+1)*valueHop ,msr.xLabelPos);					
+					ctx.fillText(calculatedScale.labels[i+1], yAxisPosX + (i+1)*valueHop ,msr.xLabelPos);					
 				}
   			ctx.restore();
 
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY+config.scaleTickSizeBottom);
-				ctx.lineWidth = config.scaleGridLineWidth;
-				ctx.strokeStyle = config.scaleGridLineColor;					
+        if(i>=0)
+        {
+				  ctx.beginPath();
+				  ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY+config.scaleTickSizeBottom);
+				  ctx.lineWidth = config.scaleGridLineWidth;
+				  ctx.strokeStyle = config.scaleGridLineColor;					
 				
-				//Check i isnt 0, so we dont go over the Y axis twice.
-				if(config.scaleShowGridLines && i>0){
-					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY-msr.availableHeight-config.scaleTickSizeTop );
-				}
-				else{
-					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY);				
-				}
-				ctx.stroke();
+				  //Check i isnt 0, so we dont go over the Y axis twice.
+				  if(config.scaleShowGridLines && i>0){
+					 ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY-msr.availableHeight-config.scaleTickSizeTop );
+				  }
+				  else{
+					 ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY);				
+				  }
+				  ctx.stroke();
+        }
 			}
 			
 			//Y axis
@@ -3221,7 +3257,8 @@ this.HorizontalStackedBar = function(data,options){
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
 			for (var j=0; j<data.labels.length; j++){
-				ctx.beginPath();
+				
+        ctx.beginPath();
 				ctx.moveTo(yAxisPosX-config.scaleTickSizeLeft,xAxisPosY - ((j+1) * scaleHop));
 				ctx.lineWidth = config.scaleGridLineWidth;
 				ctx.strokeStyle = config.scaleGridLineColor;
@@ -3309,7 +3346,7 @@ this.HorizontalStackedBar = function(data,options){
 		
 		function animateFrame(){
 			var easeAdjustedAnimationPercent =(config.animation)? CapValue(easingFunction(percentAnimComplete),null,0) : 1;
-      
+
       if(!(isIE() <9 && isIE()!= false))ctx.clearRect(clrx,clry,clrwidth,clrheight);
 
       dispCrossText(ctx,config,midPosX,midPosY,borderX,borderY,false,data,easeAdjustedAnimationPercent);	
@@ -3416,14 +3453,14 @@ function calculateScale(config,maxSteps,minSteps,maxValue,minValue,labelTemplate
 		if (labelTemplateString) {
 			//Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
 			if (!config.logarithmic) { // no logarithmic scale
-				for (var i = 1; i < numberOfSteps + 1; i++) {
+				for (var i = 0; i < numberOfSteps + 1; i++) {
 					labels.push(tmpl(labelTemplateString, {value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))}));
 				}
 			}else{ // logarithmic scale 10,100,1000,...
 				var value = graphMin;
 				while (value < graphMax) {
-					value *= 10;
 					labels.push(tmpl(labelTemplateString, {value: value.toFixed(getDecimalPlaces(stepValue))}));
+					value *= 10;
 				}
 			}
 		}
