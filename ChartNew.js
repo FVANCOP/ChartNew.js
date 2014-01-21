@@ -838,7 +838,8 @@ window.Chart = function(context){
 			scaleShowGridLines : true,
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 			scaleGridLineWidth : 1,
-      rotateLabels : -1,
+      rotateLabels : "smart",   // smart <=> 0 degre if space enough; otherwise 45 degres if space enough otherwise90 degre; 
+                                // you can force an integer value between 0 and 180 degres
 			logarithmic: false, // can be 'fuzzy',true and false ('fuzzy' => if the gap between min and maximum is big it's using a logarithmic y-Axis scale
       scaleTickSizeLeft : 5,
       scaleTickSizeRight : 5,
@@ -954,7 +955,8 @@ this.StackedBar = function(data,options){
       scaleShowGridLines : true,
       scaleGridLineColor : "rgba(0,0,0,.05)",
       scaleGridLineWidth : 1, 
-      rotateLabels : -1,
+      rotateLabels : "smart",   // smart <=> 0 degre if space enough; otherwise 45 degres if space enough otherwise90 degre; 
+                                // you can force an integer value between 0 and 180 degres
       scaleTickSizeLeft : 5,
       scaleTickSizeRight : 5,
       scaleTickSizeBottom : 5,
@@ -1173,7 +1175,8 @@ this.HorizontalStackedBar = function(data,options){
 			scaleShowGridLines : true,
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 			scaleGridLineWidth : 1,  
-      rotateLabels : -1,
+      rotateLabels : "smart",   // smart <=> 0 degre if space enough; otherwise 45 degres if space enough otherwise90 degre; 
+                                // you can force an integer value between 0 and 180 degres
 			logarithmic: false, // can be 'fuzzy',true and false ('fuzzy' => if the gap between min and maximum is big it's using a logarithmic y-Axis scale
       scaleTickSizeLeft : 5,
       scaleTickSizeRight : 5,
@@ -1560,6 +1563,7 @@ this.HorizontalStackedBar = function(data,options){
 		//Check and set the scale
 		labelTemplateString = (config.scaleShowLabels)? config.scaleLabel : "";
 
+ 
 		if (!config.scaleOverride){
 
 			calculatedScale = calculateScale(config,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
@@ -1580,7 +1584,8 @@ this.HorizontalStackedBar = function(data,options){
     midPosX=msr.leftNotUsableSize+(msr.availableWidth/2);
     midPosY=msr.topNotUsableSize+(msr.availableHeight/2);
  
-    calculateDrawingSizes()   	
+    calculateDrawingSizes();
+       	
 		scaleHop = maxSize/(calculatedScale.steps);
     
    
@@ -1758,7 +1763,8 @@ this.HorizontalStackedBar = function(data,options){
 		};
     
 		function calculateDrawingSizes(){
-			maxSize = (Min([msr.availableWidth,msr.availableHeight])/2);
+
+			maxSize = msr.availableWidth/2;
 
 			labelHeight = config.scaleFontSize*2;
 			
@@ -1771,6 +1777,10 @@ this.HorizontalStackedBar = function(data,options){
 			
 			//Figure out whats the largest - the height of the text or the width of what's there, and minus it from the maximum usable size.
 			maxSize -= Max([labelLength,((config.pointLabelFontSize/2)*1.5)]);				
+
+
+      maxSize= Min([maxSize,msr.availableHeight/2]);
+
 			
 			maxSize -= config.pointLabelFontSize;
 			maxSize = CapValue(maxSize, null, 0);
@@ -2154,7 +2164,12 @@ this.HorizontalStackedBar = function(data,options){
                 
 			ctx.stroke();
 			
-			if (msr.rotateLabels > 0){
+			
+      if (msr.rotateLabels > 90){
+				ctx.save();
+				ctx.textAlign = "left";
+			}
+			else if (msr.rotateLabels > 0){
 				ctx.save();
 				ctx.textAlign = "right";
 			}
@@ -2165,7 +2180,7 @@ this.HorizontalStackedBar = function(data,options){
       
 			for (var i=0; i<data.labels.length; i++){
 				ctx.save();
-				if (msr.rotateLabels > 0){
+			  if (msr.rotateLabels > 0){
 					ctx.translate(yAxisPosX + i*valueHop,msr.xLabelPos);
 					ctx.rotate(-(msr.rotateLabels * (Math.PI/180)));
 					ctx.fillText(data.labels[i], 0,0);
@@ -2406,7 +2421,11 @@ this.HorizontalStackedBar = function(data,options){
 			ctx.stroke();
 			
 			
-			if (msr.rotateLabels > 0){
+			if (msr.rotateLabels > 90){
+				ctx.save();
+				ctx.textAlign = "left";
+			}
+			else if (msr.rotateLabels > 0){
 				ctx.save();
 				ctx.textAlign = "right";
 			}
@@ -2678,7 +2697,11 @@ this.HorizontalStackedBar = function(data,options){
 			ctx.stroke();
 			
 			
-			if (msr.rotateLabels > 0){
+			if (msr.rotateLabels > 90){
+				ctx.save();
+				ctx.textAlign = "left";
+			}
+			else if (msr.rotateLabels > 0){
 				ctx.save();
 				ctx.textAlign = "right";
 			}
@@ -2925,7 +2948,11 @@ this.HorizontalStackedBar = function(data,options){
 			ctx.stroke();
 			
 			
-			if (msr.rotateLabels > 0){
+			if (msr.rotateLabels > 90){
+				ctx.save();
+				ctx.textAlign = "left";
+			}
+			else if (msr.rotateLabels > 0){
 				ctx.save();
 				ctx.textAlign = "right";
 			}
@@ -3141,7 +3168,11 @@ this.HorizontalStackedBar = function(data,options){
 			ctx.stroke();
 			
 			
-			if (msr.rotateLabels > 0){
+			if (msr.rotateLabels > 90){
+				ctx.save();
+				ctx.textAlign = "left";
+			}
+			else if (msr.rotateLabels > 0){
 				ctx.save();
 				ctx.textAlign = "right";
 			}
@@ -3826,7 +3857,6 @@ function calculateScale(config,maxSteps,minSteps,maxValue,minValue,labelTemplate
       // xAxisLabel
 
       if(drawAxis) {
-
         if(typeof(config.xAxisLabel)!= "undefined"){
           if(config.xAxisLabel.trim() != "")
           {
@@ -3842,45 +3872,36 @@ function calculateScale(config,maxSteps,minSteps,maxValue,minValue,labelTemplate
       
         if(reverseAxis==false){widestLabel=widestXLabel;nblab=data.labels.length;}
         else {widestLabel=widestYLabel;nblab=ylabels.length;}
-        if(config.rotateLabels > 0)
-        {
-             rotateLabels=config.rotateLabels
-				     xLabelHeight = Math.sin(rotateLabels*Math.PI/180) * widestLabel+spaceBefore+spaceAfter;
-             xLabelPos= height-borderWidth-config.spaceBottom-footNoteHeight-spaceLegendHeight-xAxisLabelHeight-spaceAfter-Math.sin(rotateLabels*Math.PI/180) * widestLabel;
-             xLabelWidth=Math.cos(rotateLabels*Math.PI/180)*widestLabel;
+        if(config.rotateLabels == "smart")
+        {  
+           rotateLabels=0;
+           if (availableWidth/nblab < (widestLabel+spaceBefore+spaceAfter) ){
+				     rotateLabels = 45;
+				     if (availableWidth/nblab < Math.abs(Math.cos(rotateLabels*Math.PI/180) * widestLabel) ){
+				       rotateLabels = 90;
+				     }
+           }
+        }else {
+           rotateLabels=config.rotateLabels
+           if(rotateLabels <0)rotateLabels=0;
+           if(rotateLabels>180)rotateLabels=180;
         }
-			  else if (availableWidth/nblab < (widestLabel+spaceBefore+spaceAfter) && config.rotateLabels <0 ){
-				   rotateLabels = 45;
-				   if (availableWidth/nblab < Math.cos(rotateLabels*Math.PI/180) * widestLabel ){
-				     rotateLabels = 90;
-				     xLabelHeight = widestLabel+spaceBefore+spaceAfter;
-              xLabelPos= height-borderWidth-config.spaceBottom-footNoteHeight-spaceLegendHeight-xAxisLabelHeight-spaceAfter-widestLabel;
-              xLabelWidth=2*config.scaleFontSize;
-				   }
-				   else{
-				     xLabelHeight = Math.sin(rotateLabels*Math.PI/180) * widestLabel+spaceBefore+spaceAfter;
-             xLabelPos= height-borderWidth-config.spaceBottom-footNoteHeight-spaceLegendHeight-xAxisLabelHeight-spaceAfter-Math.sin(rotateLabels*Math.PI/180) * widestLabel;
-             xLabelWidth=Math.cos(rotateLabels*Math.PI/180)*widestLabel;
-				   }
-			  }
-			  else{
-              rotateLabels=0;
-  			      xLabelHeight = config.scaleFontSize+spaceBefore+spaceAfter;
-              xLabelPos= height-borderWidth-config.spaceBottom-footNoteHeight-spaceLegendHeight-xAxisLabelHeight-spaceAfter;
-              xLabelWidth=widestLabel+spaceBefore+spaceAfter;
-  	    }
+        
+        if (rotateLabels>90)rotateLabels+=180;
+ 	      xLabelHeight = Math.abs(Math.sin(rotateLabels*Math.PI/180) * widestLabel)+Math.abs(Math.sin((rotateLabels+90)*Math.PI/180)*xAxisLabelHeight)+spaceBefore+spaceAfter;
+        xLabelPos= height-borderWidth-config.spaceBottom-footNoteHeight-spaceLegendHeight-xAxisLabelHeight-spaceAfter-Math.abs(Math.sin(rotateLabels*Math.PI/180) * widestLabel)-Math.abs(Math.sin((rotateLabels+90)*Math.PI/180)*xAxisLabelHeight);
+        xLabelWidth=Math.abs(Math.cos(rotateLabels*Math.PI/180)*widestLabel)+Math.abs(Math.cos((rotateLabels+90)*Math.PI/180)*xAxisLabelHeight);
+        
 
         leftNotUsableSize= Max ([leftNotUsableSize,borderWidth+config.spaceLeft+xLabelWidth/2] );
         rightNotUsableSize= Max ([rightNotUsableSize,borderWidth+config.spaceRight+xLabelWidth/2] );
         availableWidth=width-leftNotUsableSize-rightNotUsableSize;
-        
       }
 
       bottomNotUsableHeightWithoutXLabels=borderWidth+config.spaceBottom+footNoteHeight+spaceLegendHeight+xAxisLabelHeight;
       bottomNotUsableHeightWithXLabels=bottomNotUsableHeightWithoutXLabels+xLabelHeight;
       availableHeight=height-topNotUsableSize-bottomNotUsableHeightWithXLabels;
  
-
       
       // ----------------------- DRAW EXTERNAL ELEMENTS -------------------------------------------------
       
