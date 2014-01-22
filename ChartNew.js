@@ -2075,6 +2075,12 @@ this.HorizontalStackedBar = function(data,options){
 
 		animationLoop(config,drawScale,drawLines,ctx,msr.clrx,msr.clry,msr.clrwidth,msr.clrheight,yAxisPosX+msr.availableWidth/2,xAxisPosY-msr.availableHeight/2,yAxisPosX,xAxisPosY,data);		
 		
+ 		var zeroY = 0;
+		if (valueBounds.minValue < 0) {
+			var zeroY = calculateOffset(config,0,calculatedScale,scaleHop);
+		}
+
+    
 	function drawLines(animPc){
   
       var totvalue=new Array();
@@ -2094,6 +2100,7 @@ this.HorizontalStackedBar = function(data,options){
 				ctx.strokeStyle = data.datasets[i].strokeColor;
 				ctx.lineWidth = config.datasetStrokeWidth;
 				ctx.beginPath();
+
 				ctx.moveTo(yAxisPosX, xAxisPosY - animPc*(calculateOffset(config,data.datasets[i].data[0],calculatedScale,scaleHop)));
 
         if(animPc>=1)
@@ -2132,8 +2139,8 @@ this.HorizontalStackedBar = function(data,options){
 				}
 				ctx.stroke();
 				if (config.datasetFill){
-					ctx.lineTo(yAxisPosX + (valueHop*(data.datasets[i].data.length-1)),xAxisPosY);
-					ctx.lineTo(yAxisPosX,xAxisPosY);
+					ctx.lineTo(yAxisPosX + (valueHop*(data.datasets[i].data.length-1)),xAxisPosY-zeroY);
+					ctx.lineTo(yAxisPosX,xAxisPosY-zeroY);
 					ctx.closePath();
 					ctx.fillStyle = data.datasets[i].fillColor;
 					ctx.fill();
@@ -2919,7 +2926,7 @@ this.HorizontalStackedBar = function(data,options){
  		animationLoop(config,drawScale,drawBars,ctx,msr.clrx,msr.clry,msr.clrwidth,msr.clrheight,yAxisPosX+msr.availableWidth/2,xAxisPosY-msr.availableHeight/2,yAxisPosX,xAxisPosY,data);		
 		
 		function drawBars(animPc){
-    
+      var t1,t2,t3;
 
       var cumvalue=new Array();
       var totvalue=new Array();
@@ -2954,7 +2961,13 @@ this.HorizontalStackedBar = function(data,options){
           {
               if(typeof(data.labels[j])=="string")lgtxt2=data.labels[j].trim();
               else lgtxt2="";
-              jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["RECT",barOffset,xAxisPosY,barOffset + barWidth,xAxisPosY - calculateOffset(config,data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2),lgtxt,lgtxt2,data.datasets[i].data[j],cumvalue[j],totvalue[j],i,j];
+              t1=xAxisPosY-zeroY;
+              t2=xAxisPosY - calculateOffset(config,data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2);
+              if(t1<t2){t3=t1;t1=t2;t2=t3}
+
+
+
+              jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["RECT",barOffset,t1,barOffset + barWidth,t2,lgtxt,lgtxt2,data.datasets[i].data[j],cumvalue[j],totvalue[j],i,j];
           }
 				}
 			}
@@ -3139,6 +3152,12 @@ this.HorizontalStackedBar = function(data,options){
     xAxisPosY=msr.topNotUsableSize+msr.availableHeight+config.scaleTickSizeTop;
 
 		barWidth = (scaleHop - config.scaleGridLineWidth*2 - (config.barValueSpacing*2) - (config.barDatasetSpacing*data.datasets.length-1) - ((config.barStrokeWidth/2)*data.datasets.length-1))/data.datasets.length;
+
+		var zeroY = 0;
+		if (valueBounds.minValue < 0) {
+			var zeroY = calculateOffset(config,0,calculatedScale,valueHop);
+		}
+ 
 		
  		animationLoop(config,drawScale,drawBars,ctx,msr.clrx,msr.clry,msr.clrwidth,msr.clrheight,yAxisPosX+msr.availableWidth/2,xAxisPosY-msr.availableHeight/2,yAxisPosX,xAxisPosY,data);	
 		
@@ -3161,10 +3180,12 @@ this.HorizontalStackedBar = function(data,options){
 				for (var j=0; j<data.datasets[i].data.length; j++){
             var barOffset = xAxisPosY + config.barValueSpacing - scaleHop*(j+1) + barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i ;
             ctx.beginPath();
-            ctx.moveTo(yAxisPosX, barOffset);
+//            ctx.moveTo(yAxisPosX, barOffset);
+            ctx.moveTo(yAxisPosX+zeroY, barOffset);
             ctx.lineTo(yAxisPosX+animPc*calculateOffset(config,data.datasets[i].data[j],calculatedScale,valueHop)+(config.barStrokeWidth/2),barOffset);
             ctx.lineTo(yAxisPosX+animPc*calculateOffset(config,data.datasets[i].data[j],calculatedScale,valueHop)+(config.barStrokeWidth/2),barOffset+barWidth);
-            ctx.lineTo(yAxisPosX, barOffset+barWidth);
+//            ctx.lineTo(yAxisPosX, barOffset+barWidth);
+            ctx.lineTo(yAxisPosX+zeroY, barOffset+barWidth);
           
 					if(config.barShowStroke){
 						ctx.stroke();
@@ -3177,7 +3198,11 @@ this.HorizontalStackedBar = function(data,options){
           {
               if(typeof(data.labels[j])=="string")lgtxt2=data.labels[j].trim();
               else lgtxt2="";
-              jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["RECT",yAxisPosX,barOffset+barWidth,yAxisPosX+calculateOffset(config,data.datasets[i].data[j],calculatedScale,valueHop)+(config.barStrokeWidth/2),barOffset,lgtxt,lgtxt2,data.datasets[i].data[j],cumvalue[j],totvalue[j],i,j];
+              t1=yAxisPosX+zeroY;
+              t2=yAxisPosX+calculateOffset(config,data.datasets[i].data[j],calculatedScale,valueHop)+(config.barStrokeWidth/2)
+              if(t1>t2){t3=t1;t1=t2;t2=t3}
+
+              jsGraphAnnotate[ctx.canvas.id][annotateCnt++]=["RECT",t1,barOffset+barWidth,t2,barOffset,lgtxt,lgtxt2,data.datasets[i].data[j],cumvalue[j],totvalue[j],i,j];
           }
 				}
 			}
