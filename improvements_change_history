@@ -5,6 +5,7 @@ Change history
 13/01/2014 - Ole Kroeger - Logaritmic Y-Axis for lines and bars - parameter "logarithmic"
 18/01/2014 - Francois Vancoppenolle - rotateLabels can be choosen by the user - parameter "rotateLabels"
 21/01/2014 - Francois Vancoppenolle - minor corrections for parameter "rotateLabels" + showYAxisMin parameter
+22/01/2014 - Francois Vancoppenolle - bugs fix when negative values 
 
 
 
