@@ -6,6 +6,7 @@ Change history
 18/01/2014 - Francois Vancoppenolle - rotateLabels can be choosen by the user - parameter "rotateLabels"
 21/01/2014 - Francois Vancoppenolle - minor corrections for parameter "rotateLabels" + showYAxisMin parameter
 22/01/2014 - Francois Vancoppenolle - bugs fix when negative values 
+29/01/2014 - Francois Vancoppenolle - startAngle parameter for Pie and Doughtnut
 
 
 
