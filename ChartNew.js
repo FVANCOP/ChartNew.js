@@ -735,7 +735,8 @@ window.Chart = function(context){
       spaceTop : 0,
       spaceBottom : 0,
       spaceRight : 0,
-      spaceLeft : 0
+      spaceLeft : 0,
+      startAngle : -90
 		};		
 
 
@@ -810,7 +811,8 @@ window.Chart = function(context){
       spaceTop : 0,
       spaceBottom : 0,
       spaceRight : 0,
-      spaceLeft : 0
+      spaceLeft : 0,
+      startAngle : -90
 		};		
 
 		var config = (options)? mergeChartConfig(chart.Doughnut.defaults,options) : chart.Doughnut.defaults;
@@ -1870,7 +1872,7 @@ this.HorizontalStackedBar = function(data,options){
 				
 		function drawPieSegments (animationDecimal){
 
-			var cumulativeAngle = -Math.PI/2,
+			var cumulativeAngle = config.startAngle*(Math.PI/180),
       cumvalue=0,
 			scaleAnimation = 1,
 			rotateAnimation = 1;
@@ -1956,7 +1958,7 @@ this.HorizontalStackedBar = function(data,options){
 		animationLoop(config,null,drawPieSegments,ctx,msr.clrx,msr.clry,msr.clrwidth,msr.clrheight,midPieX,midPieY,midPieX-doughnutRadius,midPieY+doughnutRadius,data);
 		
 		function drawPieSegments (animationDecimal){
-			var cumulativeAngle = -Math.PI/2,
+ 			var cumulativeAngle = config.startAngle*(Math.PI/180),
       cumvalue=0,
 			scaleAnimation = 1,
 			rotateAnimation = 1;
