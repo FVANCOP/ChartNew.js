@@ -206,8 +206,12 @@ function doMouseMove(ctx, config, event) {
 
                 angle = Math.acos((canvas_pos.x - jsGraphAnnotate[ctx.canvas.id][i][1]) / distance);
                 if (canvas_pos.y < jsGraphAnnotate[ctx.canvas.id][i][2]) angle = -angle;
-                if (angle < -Math.PI / 2) angle = angle + 2 * Math.PI;
-                if (angle > jsGraphAnnotate[ctx.canvas.id][i][5] && angle < jsGraphAnnotate[ctx.canvas.id][i][6]) {
+                
+                while (angle < 0){angle+=2*Math.PI;}
+                while (angle > 2*Math.PI){angle-=2*Math.PI;}
+                if(angle<config.startAngle*(Math.PI/360))angle+=2*Math.PI;
+
+                if ((angle > jsGraphAnnotate[ctx.canvas.id][i][5] && angle < jsGraphAnnotate[ctx.canvas.id][i][6]) || (angle > jsGraphAnnotate[ctx.canvas.id][i][5]-2*Math.PI && angle < jsGraphAnnotate[ctx.canvas.id][i][6]-2*Math.PI)) {
 
                     annotateDIV.style.border = config.annotateBorder;
                     annotateDIV.style.padding = config.annotatePadding;
@@ -534,13 +538,6 @@ window.Chart = function (context) {
             legendBordersWidth: 1,
             legendBordersColors: "#666",
             annotateDisplay: false,
-            annotateFunction: "mousemove",
-            annotateFontFamily: "'Arial'",
-            annotateBorder: "thin solid black",
-            annotateBackgroundColor: "#66FFCC",
-            annotateFontSize: 4,
-            annotateFontStyle: "normal",
-            annotateFontColor: "#666",
             annotateLabel: "<%=(v1 == ''? '' : v1+':')+ roundToWithThousands(v2,2) + ' (' + roundToWithThousands(v6,1) + ' %)'%>",
             crossText: [""],
             crossTextOverlay: [true],
@@ -559,7 +556,8 @@ window.Chart = function (context) {
             spaceTop: 0,
             spaceBottom: 0,
             spaceRight: 0,
-            spaceLeft: 0
+            spaceLeft: 0,
+            startAngle : -90
         };
         chart.PolarArea.defaults = mergeChartConfig(chart.defaults.annotateDefualts, chart.PolarArea.defaults);
         var config = (options) ? mergeChartConfig(chart.PolarArea.defaults, options) : chart.PolarArea.defaults;
@@ -1360,6 +1358,9 @@ window.Chart = function (context) {
     var PolarArea = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
 
+        while (config.startAngle < 0){config.startAngle+=360;}
+        while (config.startAngle > 360){config.startAngle-=360;}
+
         config.logarithmic = false;
 
         var annotateCnt = 0;
@@ -1407,7 +1408,7 @@ window.Chart = function (context) {
 
 
         function drawAllSegments(animationDecimal) {
-            var startAngle = -Math.PI / 2,
+            var startAngle = config.startAngle * (Math.PI / 180),
       cumvalue = 0,
 			angleStep = (Math.PI * 2) / data.length,
 			scaleAnimation = 1,
@@ -1794,6 +1795,9 @@ window.Chart = function (context) {
         var segmentTotal = 0;
         var msr, midPieX, midPieY;
 
+        while (config.startAngle < 0){config.startAngle+=360;}
+        while (config.startAngle > 360){config.startAngle-=360;}
+
         config.logarithmic = false;
 
         var annotateCnt = 0;
@@ -1878,6 +1882,10 @@ window.Chart = function (context) {
     var Doughnut = function (data, config, ctx) {
         var segmentTotal = 0;
         var msr, midPieX, midPieY;
+        
+        while (config.startAngle < 0){config.startAngle+=360;}
+        while (config.startAngle > 360){config.startAngle-=360;}
+
 
         config.logarithmic = false;
 
