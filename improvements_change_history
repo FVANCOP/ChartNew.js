@@ -10,6 +10,7 @@ Change history
 31/01/2014 - joetime - improvements for annotations
 02/02/2014 - Francois Vancoppenolle - Minor Bugs correction
 03/02/2014 - Francois Vancoppenolle - Minor Bug correction - Code reduction (commonOptions/xyAxisCommonOptions)
+04/02/2014 - Francois vancoppenolle - Bug for X Axis Label corrected (reported by James Barnsley)
 
 
 Future Improvements
