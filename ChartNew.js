@@ -3459,9 +3459,9 @@ window.Chart = function (context) {
             }
 
             if (rotateLabels > 90) rotateLabels += 180;
-            xLabelHeight = Math.abs(Math.sin(rotateLabels * Math.PI / 180) * widestLabel) + Math.abs(Math.sin((rotateLabels + 90) * Math.PI / 180) * xAxisLabelHeight) + spaceBefore + spaceAfter;
-            xLabelPos = height - borderWidth - config.spaceBottom - footNoteHeight - spaceLegendHeight - xAxisLabelHeight - spaceAfter - Math.abs(Math.sin(rotateLabels * Math.PI / 180) * widestLabel) - Math.abs(Math.sin((rotateLabels + 90) * Math.PI / 180) * xAxisLabelHeight);
-            xLabelWidth = Math.abs(Math.cos(rotateLabels * Math.PI / 180) * widestLabel) + Math.abs(Math.cos((rotateLabels + 90) * Math.PI / 180) * xAxisLabelHeight);
+            xLabelHeight = Math.abs(Math.sin(rotateLabels * Math.PI / 180) * widestLabel) + Math.abs(Math.sin((rotateLabels + 90) * Math.PI / 180) * config.scaleFontSize) + spaceBefore + spaceAfter;
+            xLabelPos = height - borderWidth - config.spaceBottom - footNoteHeight - spaceLegendHeight - xAxisLabelHeight - spaceAfter - Math.abs(Math.sin(rotateLabels * Math.PI / 180) * widestLabel) - Math.abs(Math.sin((rotateLabels + 90) * Math.PI / 180) * config.scaleFontSize);
+            xLabelWidth = Math.abs(Math.cos(rotateLabels * Math.PI / 180) * widestLabel) + Math.abs(Math.cos((rotateLabels + 90) * Math.PI / 180) * config.scaleFontSize);
 
 
             leftNotUsableSize = Max([leftNotUsableSize, borderWidth + config.spaceLeft + xLabelWidth / 2]);
@@ -3591,8 +3591,8 @@ window.Chart = function (context) {
         if (xAxisLabelHeight > 0) {
             ctx.save();
             ctx.beginPath();
-            ctx.font = config.yAxisFontStyle + " " + config.yAxisFontSize + "px " + config.yAxisFontFamily;
-            ctx.fillStyle = config.yAxisFontColor;
+            ctx.font = config.xAxisFontStyle + " " + config.xAxisFontSize + "px " + config.xAxisFontFamily;
+            ctx.fillStyle = config.xAxisFontColor;
             ctx.textAlign = "center";
             ctx.translate(leftNotUsableSize + (availableWidth / 2), xAxisLabelPos);
             ctx.fillText(config.xAxisLabel, 0, 0);
