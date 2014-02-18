@@ -3723,24 +3723,18 @@ window.Chart = function (context) {
             ctx.stroke();
             ctx.restore();
         }
-
+	
+		// clear-rectangle start coordinates
         clrx = leftNotUsableSize;
-        clrwidth = availableWidth;
+        clry = topNotUsableSize;
 
         if (config.yAxisLeft) {
             clrx -= yLabelsWidth;
-            clrwidth += yLabelsWidth;
         }
-        if (config.yAxisRight) {
-            clrwidth += yLabelsWidth;
-        }
-
-
-
-        clry = topNotUsableSize;
-
-        clrheight = availableHeight + xLabelHeight;
-
+		
+		// clear-rectangle dimensions
+        clrwidth = ctx.canvas.width;
+        clrheight = ctx.canvas.height;
 
         return {
 
