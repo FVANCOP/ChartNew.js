@@ -2761,12 +2761,12 @@ window.Chart = function (context) {
 
                 ctx.save();
                 if (msr.rotateLabels > 0) {
-                    ctx.translate(yAxisPosX + (i + 1) * valueHop, msr.xLabelPos);
+                    ctx.translate(yAxisPosX + (i + 1) * valueHop, msr.xLabelPos + 5);
                     ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
                     ctx.fillText(calculatedScale.labels[i + 1], 0, 0);
                 }
                 else {
-                    ctx.fillText(calculatedScale.labels[i + 1], yAxisPosX + (i + 1) * valueHop, msr.xLabelPos);
+                    ctx.fillText(calculatedScale.labels[i + 1], yAxisPosX + (i + 1) * valueHop, msr.xLabelPos + 5);
                 }
                 ctx.restore();
 
@@ -2792,8 +2792,8 @@ window.Chart = function (context) {
             ctx.lineWidth = config.scaleLineWidth;
             ctx.strokeStyle = config.scaleLineColor;
             ctx.beginPath();
-            ctx.moveTo(yAxisPosX, xAxisPosY + config.scaleTickSizeBottom);
-            ctx.lineTo(yAxisPosX, xAxisPosY - msr.availableHeight - config.scaleTickSizeTop);
+            ctx.moveTo(yAxisPosX + config.scaleLineWidth, xAxisPosY + config.scaleTickSizeBottom);
+            ctx.lineTo(yAxisPosX + config.scaleLineWidth, xAxisPosY - msr.availableHeight - config.scaleTickSizeTop);
             ctx.stroke();
 
             ctx.textAlign = "right";
