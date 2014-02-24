@@ -11,6 +11,11 @@ Change history
 02/02/2014 - Francois Vancoppenolle - Minor Bugs correction
 03/02/2014 - Francois Vancoppenolle - Minor Bug correction - Code reduction (commonOptions/xyAxisCommonOptions)
 04/02/2014 - Francois vancoppenolle - Bug for X Axis Label corrected (reported by James Barnsley)
+24/02/2014 - Francois Vancoppenolle - Review how axis are drawn (correct several bugs)
+                                      New options added (options with SpaceBefore, SpaceAfter, SpaceLeft, Space Right
+                                      in the name)
+                                      Labels inside line graph (options with inGraphData in the name)
+
 
 
 Future Improvements
