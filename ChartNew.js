@@ -3012,14 +3012,21 @@ window.Chart = function (context) {
     function populateLabels(config, labelTemplateString, labels, numberOfSteps, graphMin, graphMax, stepValue) {
         if (labelTemplateString) {
             //Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
-            if (!config.logarithmic) { // no logarithmic scale
+			if (!config.logarithmic) { // no logarithmic scale
                 for (var i = 0; i < numberOfSteps + 1; i++) {
-                    labels.push(tmpl(labelTemplateString, { value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue)) }));
+				
+					if( !config.scaleCommas )
+						labels.push(tmpl(labelTemplateString, { value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue)) }));
+					else
+						labels.push(tmpl(labelTemplateString, { value: numberWithCommas( (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue)) ) }));
                 }
             } else { // logarithmic scale 10,100,1000,...
                 var value = graphMin;
                 while (value < graphMax) {
-                    labels.push(tmpl(labelTemplateString, { value: value.toFixed(getDecimalPlaces(stepValue)) }));
+					if( !config.scaleCommas )
+						labels.push(tmpl(labelTemplateString, { value: value.toFixed(getDecimalPlaces(stepValue)) }));
+					else
+						labels.push(tmpl(labelTemplateString, { value: numberWithCommas( value.toFixed(getDecimalPlaces(stepValue)) ) }));
                     value *= 10;
                 }
             }
