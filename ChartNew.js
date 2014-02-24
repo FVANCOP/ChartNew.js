@@ -930,7 +930,8 @@ window.Chart = function (context) {
         spaceTop: 0,
         spaceBottom: 0,
         spaceRight: 0,
-        spaceLeft: 0
+        spaceLeft: 0,
+		scaleCommas: false
     };
 
     chart.defaults.xyAxisCommonOptions = {
