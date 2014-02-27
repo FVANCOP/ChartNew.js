@@ -15,6 +15,7 @@ Change history
                                       New options added (options with SpaceBefore, SpaceAfter, SpaceLeft, Space Right
                                       in the name)
                                       Labels inside line graph (options with inGraphData in the name)
+26/02/2014 - Francois Vancoppenolle - option canvasBackgroundColor added (improvement proposed by joetime)
 
 
 
@@ -23,6 +24,8 @@ Future Improvements
 - labels inside the graphs
 - topXAxis
 - code reduction
+- graph download link (improvement proposed by joetime)
+
 
 
 
