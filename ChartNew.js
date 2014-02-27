@@ -860,6 +860,7 @@ window.Chart = function (context) {
         graphSpaceBefore : 5,
         graphSpaceAfter : 5,
         canvasBorders: false,
+        canvasBackgroundColor : "none",
         canvasBordersWidth: 3,
         canvasBordersColor: "black",
         graphTitle: "",
@@ -3014,7 +3015,7 @@ window.Chart = function (context) {
             //Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
             if (!config.logarithmic) { // no logarithmic scale
                 for (var i = 0; i < numberOfSteps + 1; i++) {
-                    labels.push(tmpl(labelTemplateString, { value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue)) }));
+                    labels.push(tmpl(labelTemplateString, { value: ((graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))) }));
                 }
             } else { // logarithmic scale 10,100,1000,...
                 var value = graphMin;
@@ -3214,6 +3215,10 @@ window.Chart = function (context) {
 
     //****************************************************************************************
     function setMeasures(data, config, ctx, height, width, ylabels, reverseLegend, reverseAxis, drawAxis, drawLegendOnData) {
+
+//    alert(ctx.canvas.id);
+    
+        if(config.canvasBackgroundColor != "none") ctx.canvas.style.background =config.canvasBackgroundColor;
 
         var borderWidth = 0;
 
