@@ -16,6 +16,12 @@ Change history
                                       in the name)
                                       Labels inside line graph (options with inGraphData in the name)
 26/02/2014 - Francois Vancoppenolle - option canvasBackgroundColor added (improvement proposed by joetime)
+02/03/2014 - Francois Vancoppenolle - new option startAngle for radar chart;
+                                    - new option graphMaximized for radar chart ; By default, value is false; if set
+                                      to true, the radar will not be displayed in the middle of the canvas, but at
+                                      a place where the size of the graph is maximized;
+                                    - bug correction for startAngle in Pied, Doughtnut and PolarArea graphs;
+                                    - options savePng added;
 
 
 
@@ -24,9 +30,6 @@ Future Improvements
 - labels inside the graphs
 - topXAxis
 - code reduction
-- graph download link (improvement proposed by joetime)
-
-
 
 
 Known Bugs
