@@ -1,4 +1,4 @@
-/*!
+/*
  * ChartNew.js
  * 
  * Vancoppenolle Francois - January 2014
@@ -165,6 +165,26 @@ function isIE() {
     return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
 }
 
+function saveCanvas(ctx,config)
+{
+
+        /* And ink them */
+        cvSave = ctx.getImageData(0,0,ctx.canvas.width, ctx.canvas.height);
+        ctx.fillStyle = config.savePngBackgroundColor;
+        ctx.strokeStyle = config.savePngBackgroundColor;
+        ctx.beginPath();
+        ctx.moveTo(0,0);
+        ctx.lineTo(0,ctx.canvas.height);
+        ctx.lineTo(ctx.canvas.width,ctx.canvas.height);
+        ctx.lineTo(ctx.canvas.width,0);
+        ctx.lineTo(0,0);
+        ctx.stroke();
+        ctx.fill();
+
+        document.location.href= ctx.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        ctx.putImageData(cvSave,0,0); 
+
+}
 
 
 if (isIE() < 9 && isIE() != false) {
@@ -211,7 +231,7 @@ function doMouseMove(ctx, config, event) {
                 while (angle > 2*Math.PI){angle-=2*Math.PI;}
                 if(angle<config.startAngle*(Math.PI/360))angle+=2*Math.PI;
 
-                if ((angle > jsGraphAnnotate[ctx.canvas.id][i][5] && angle < jsGraphAnnotate[ctx.canvas.id][i][6]) || (angle > jsGraphAnnotate[ctx.canvas.id][i][5]-2*Math.PI && angle < jsGraphAnnotate[ctx.canvas.id][i][6]-2*Math.PI)) {
+                if ((angle > jsGraphAnnotate[ctx.canvas.id][i][5] && angle < jsGraphAnnotate[ctx.canvas.id][i][6]) || (angle > jsGraphAnnotate[ctx.canvas.id][i][5]-2*Math.PI && angle < jsGraphAnnotate[ctx.canvas.id][i][6]-2*Math.PI)|| (angle > jsGraphAnnotate[ctx.canvas.id][i][5]+2*Math.PI && angle < jsGraphAnnotate[ctx.canvas.id][i][6]+2*Math.PI)) {
 
                     annotateDIV.style.border = config.annotateBorder;
                     annotateDIV.style.padding = config.annotatePadding;
@@ -511,7 +531,7 @@ window.Chart = function (context) {
             animateScale: false,
             onAnimationComplete: null,
             annotateLabel: "<%=(v1 == ''? '' : v1+':')+ roundToWithThousands(v2,2) + ' (' + roundToWithThousands(v6,1) + ' %)'%>",
-            startAngle : -90
+            startAngle : 90
         };
         chart.PolarArea.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.PolarArea.defaults);
         var config = (options) ? mergeChartConfig(chart.PolarArea.defaults, options) : chart.PolarArea.defaults;
@@ -557,7 +577,9 @@ window.Chart = function (context) {
             animationSteps: 60,
             animationEasing: "easeOutQuart",
             onAnimationComplete: null,
-            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? '/' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + roundToWithThousands(v3,2)%>"
+            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? '/' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + roundToWithThousands(v3,2)%>",
+            startAngle: 90,
+            graphMaximized : false   // if true, the graph will not be centered in the middle of the canvas
         };
 
         // merge annotate defaults
@@ -579,7 +601,7 @@ window.Chart = function (context) {
             animateScale: false,
             onAnimationComplete: null,
             annotateLabel: "<%=(v1 == ''? '' : v1+':')+ roundToWithThousands(v2,2) + ' (' + roundToWithThousands(v6,1) + ' %)'%>",
-            startAngle: -90
+            startAngle: 90
         };
 
         // merge annotate defaults
@@ -603,7 +625,7 @@ window.Chart = function (context) {
             animateScale: false,
             onAnimationComplete: null,
             annotateLabel: "<%=(v1 == ''? '' : v1+':')+ roundToWithThousands(v2,2) + ' (' + roundToWithThousands(v6,1) + ' %)'%>",
-            startAngle: -90
+            startAngle: 90
         };
 
         // merge annotate defaults
@@ -904,7 +926,10 @@ window.Chart = function (context) {
         legendSpaceBetweenTextVertical : 5,
         legendSpaceBetweenTextHorizontal : 5,
         legendSpaceBetweenBoxAndText : 5,
-        annotateDisplay: false,   
+        annotateDisplay: false,  
+        savePng : false,
+        savePngFunction: "mousedown right", 
+        savePngBackgroundColor : 'rgba(0,0,0,0)',
         annotateFunction: "mousemove",
         annotateFontFamily: "'Arial'",
         annotateBorder: 'none', 
@@ -984,12 +1009,8 @@ window.Chart = function (context) {
         var annotateCnt = 0;
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        if (config.annotateDisplay == true) {
-            if (cursorDivCreated == false) oCursor = new makeCursorObj('divCursor');
-            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("on" + config.annotateFunction, function (event) { doMouseMove(ctx, config, event) });
-            else ctx.canvas.addEventListener(config.annotateFunction, function (event) { doMouseMove(ctx, config, event) }, false);
-
-        }
+        defMouse(ctx,config);
+        
         clear(ctx);
         ctx.clearRect(0, 0, width, height);
 
@@ -1026,11 +1047,16 @@ window.Chart = function (context) {
 
 
         function drawAllSegments(animationDecimal) {
-            var startAngle = config.startAngle * (Math.PI / 180),
+            var startAngle = -config.startAngle * (Math.PI / 180)+2*Math.PI,
       cumvalue = 0,
 			angleStep = (Math.PI * 2) / data.length,
 			scaleAnimation = 1,
 			rotateAnimation = 1;
+ 
+            while (startAngle < 0){startAngle+=2*Math.PI;}
+            while (startAngle > 2*Math.PI){startAngle-=2*Math.PI;}
+
+
             if (config.animation) {
                 if (config.animateScale) {
                     scaleAnimation = animationDecimal;
@@ -1135,17 +1161,15 @@ window.Chart = function (context) {
     var Radar = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
 
+        while (config.startAngle < 0){config.startAngle+=360;}
+        while (config.startAngle > 360){config.startAngle-=360;}
+        
         config.logarithmic = false;
 
         var annotateCnt = 0;
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        if (config.annotateDisplay == true) {
-            if (cursorDivCreated == false) oCursor = new makeCursorObj('divCursor');
-            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("on" + config.annotateFunction, function (event) { doMouseMove(ctx, config, event) });
-            else ctx.canvas.addEventListener(config.annotateFunction, function (event) { doMouseMove(ctx, config, event) }, false);
-
-        }
+        defMouse(ctx,config);
 
         //If no labels are defined set to an empty array, so referencing length for looping doesn't blow up.
         if (!data.labels) data.labels = [];
@@ -1174,15 +1198,13 @@ window.Chart = function (context) {
             msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, true, false, false, true);
         }
 
-
-        midPosX = msr.leftNotUsableSize + (msr.availableWidth / 2);
-        midPosY = msr.topNotUsableSize + (msr.availableHeight / 2);
-
         calculateDrawingSizes();
 
+//        midPosX = msr.leftNotUsableSize + (msr.availableWidth / 2);
+        midPosY = msr.topNotUsableSize + (msr.availableHeight / 2);
         scaleHop = maxSize / (calculatedScale.steps);
 
-
+//window.alert(calculatedScale.steps+" "+calculatedScale.graphMin+" "+calculatedScale.graphMax);
 
         //Wrap in an animation loop wrapper
         animationLoop(config, drawScale, drawAllDataPoints, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPosX, midPosY, midPosX - maxSize, midPosY + maxSize, data);
@@ -1202,6 +1224,7 @@ window.Chart = function (context) {
             ctx.save();
             //translate to the centre of the canvas.
             ctx.translate(midPosX, midPosY);
+            ctx.rotate((90-config.startAngle)*Math.PI/180);
 
             //We accept multiple data sets for radar charts, so show loop through each set
             for (var i = 0; i < data.datasets.length; i++) {
@@ -1219,11 +1242,10 @@ window.Chart = function (context) {
                     if (i == 0) divprev = 0;
                     else divprev = data.datasets[i].data[0] - data.datasets[i - 1].data[0];
                     if (i == data.datasets.length - 1) divnext = 0;
-                    else divnext = data.datasets[i + 1].data[0] - data.datasets[i].data[0];
+                    else divnext = data.datasets[i + 1].data[0] - data.datasets[i].data[0];                                                                                                                    
                     if (typeof (data.labels[0]) == "string") lgtxt2 = data.labels[0].trim();
                     else lgtxt2 = "";
-
-                    jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["POINT", midPosX, midPosY - 1 * calculateOffset(config, data.datasets[i].data[0], calculatedScale, scaleHop), lgtxt, lgtxt2, data.datasets[i].data[0], divprev, divnext, maxvalue[0], totvalue[0], i, 0];
+                    jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["POINT", midPosX + Math.cos(config.startAngle*Math.PI/180 - 0 * rotationDegree) * calculateOffset(config, data.datasets[i].data[0], calculatedScale, scaleHop), midPosY - Math.sin(config.startAngle*Math.PI/180 - 0 * rotationDegree) * calculateOffset(config, data.datasets[i].data[0], calculatedScale, scaleHop), lgtxt, lgtxt2, data.datasets[i].data[0], divprev, divnext, maxvalue[0], totvalue[0], i, 0];
                 }
 
                 for (var j = 1; j < data.datasets[i].data.length; j++) {
@@ -1237,7 +1259,7 @@ window.Chart = function (context) {
                         else divnext = data.datasets[i + 1].data[j] - data.datasets[i].data[j];
                         if (typeof (data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
                         else lgtxt2 = "";
-                        jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["POINT", midPosX + Math.cos((Math.PI / 2) - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop), midPosY - Math.sin((Math.PI / 2) - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop), lgtxt, lgtxt2, data.datasets[i].data[j], divprev, divnext, maxvalue[j], totvalue[j], i, j];
+                        jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["POINT", midPosX + Math.cos(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop), midPosY - Math.sin(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop), lgtxt, lgtxt2, data.datasets[i].data[j], divprev, divnext, maxvalue[j], totvalue[j], i, j];
                     }
 
 
@@ -1277,7 +1299,9 @@ window.Chart = function (context) {
             var rotationDegree = (2 * Math.PI) / data.datasets[0].data.length;
             ctx.save();
             ctx.translate(midPosX, midPosY);
-
+            
+            ctx.rotate((90-config.startAngle)*Math.PI/180);
+    
             if (config.angleShowLineOut) {
                 ctx.strokeStyle = config.angleLineColor;
                 ctx.lineWidth = config.angleLineWidth;
@@ -1306,8 +1330,12 @@ window.Chart = function (context) {
                     ctx.stroke();
 
                 }
+            }
 
-                if (config.scaleShowLabels) {
+            ctx.rotate(-(90-config.startAngle)*Math.PI/180);
+            if (config.scaleShowLabels) {
+              for (var i = 0; i < calculatedScale.steps; i++) {
+
                     ctx.textAlign = 'center';
                     ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
                     ctx.textBaseline = "middle";
@@ -1317,28 +1345,33 @@ window.Chart = function (context) {
                         ctx.fillStyle = config.scaleBackdropColor;
                         ctx.beginPath();
                         ctx.rect(
-							Math.round(-textWidth / 2 - config.scaleBackdropPaddingX),     //X
-							Math.round((-scaleHop * (i + 1)) - config.scaleFontSize * 0.5 - config.scaleBackdropPaddingY),//Y
-							Math.round(textWidth + (config.scaleBackdropPaddingX * 2)), //Width
-							Math.round(config.scaleFontSize + (config.scaleBackdropPaddingY * 2)) //Height
-						);
+              							Math.round(Math.cos(config.startAngle*Math.PI/180)* (scaleHop * (i + 1))-textWidth / 2 - config.scaleBackdropPaddingX),     //X
+							              Math.round((-Math.sin(config.startAngle*Math.PI/180)*scaleHop * (i + 1)) - config.scaleFontSize * 0.5 - config.scaleBackdropPaddingY),//Y
+							              Math.round(textWidth + (config.scaleBackdropPaddingX * 2)), //Width
+							              Math.round(config.scaleFontSize + (config.scaleBackdropPaddingY * 2)) //Height
+            						);
                         ctx.fill();
                     }
                     ctx.fillStyle = config.scaleFontColor;
-                    ctx.fillText(calculatedScale.labels[i + 1], 0, -scaleHop * (i + 1));
+                    ctx.fillText(calculatedScale.labels[i + 1], Math.cos(config.startAngle*Math.PI/180)* (scaleHop * (i + 1)), -Math.sin(config.startAngle*Math.PI/180)*scaleHop * (i + 1));
                 }
-
             }
+
             for (var k = 0; k < data.labels.length; k++) {
                 ctx.font = config.pointLabelFontStyle + " " + config.pointLabelFontSize + "px " + config.pointLabelFontFamily;
                 ctx.fillStyle = config.pointLabelFontColor;
-                var opposite = Math.sin(rotationDegree * k) * (maxSize + config.pointLabelFontSize);
-                var adjacent = Math.cos(rotationDegree * k) * (maxSize + config.pointLabelFontSize);
+                var opposite = Math.sin((90-config.startAngle)*Math.PI/180+rotationDegree * k) * (maxSize + config.pointLabelFontSize);
+                var adjacent = Math.cos((90-config.startAngle)*Math.PI/180+rotationDegree * k) * (maxSize + config.pointLabelFontSize);
 
-                if (rotationDegree * k == Math.PI || rotationDegree * k == 0) {
+                var vangle=(90-config.startAngle)*Math.PI/180+rotationDegree * k;
+                while(vangle<0)vangle=vangle+2*Math.PI;
+                while(vangle>2*Math.PI)vangle=vangle-2*Math.PI;
+               
+
+                if (vangle == Math.PI || vangle == 0) {
                     ctx.textAlign = "center";
                 }
-                else if (rotationDegree * k > Math.PI) {
+                else if (vangle > Math.PI) {
                     ctx.textAlign = "right";
                 }
                 else {
@@ -1354,32 +1387,68 @@ window.Chart = function (context) {
         };
 
         function calculateDrawingSizes() {
+            var midX, mxlb,maxL,maxR,iter,nbiter,prevMaxSize,prevMidX;                        
 
-            maxSize = msr.availableWidth / 2;
+            var rotationDegree = (2 * Math.PI) / data.datasets[0].data.length;
+            var rotateAngle=config.startAngle*Math.PI/180;
 
-            labelHeight = config.scaleFontSize * 2;
-
-            var labelLength = 0;
-            for (var i = 0; i < data.labels.length; i++) {
-                ctx.font = config.pointLabelFontStyle + " " + config.pointLabelFontSize + "px " + config.pointLabelFontFamily;
-                var textMeasurement = ctx.measureText(data.labels[i]).width;
-                if (textMeasurement > labelLength) labelLength = textMeasurement;
+            // Compute range for Mid Point of graph
+            ctx.font = config.pointLabelFontStyle + " " + config.pointLabelFontSize + "px " + config.pointLabelFontFamily;
+            if(!config.graphMaximized) {
+              maxR=msr.availableWidth/2;
+              maxL=msr.availableWidth/2;
+              nbiter=1;
+            }
+            else {
+              maxR=msr.availableWidth/2;
+              maxL=msr.availableWidth/2;
+              nbiter=40;
+              for (var i = 0; i < data.labels.length; i++) {
+                var textMeasurement = ctx.measureText(data.labels[i]).width+config.scaleFontSize;
+                mxlb=(msr.availableWidth-textMeasurement)/(1+Math.abs(Math.cos(rotateAngle)));
+                if((rotateAngle < Math.PI/2 && rotateAngle > -Math.PI/2) || rotateAngle > 3*Math.PI/2){
+                  if (mxlb<maxR)maxR=mxlb;
+                }
+                else if (Math.cos(rotateAngle) !=0){
+                  if (mxlb<maxL)maxL=mxlb;
+                }
+                rotateAngle-=rotationDegree;                
+              }
             }
 
-            //Figure out whats the largest - the height of the text or the width of what's there, and minus it from the maximum usable size.
-            maxSize -= Max([labelLength, ((config.pointLabelFontSize / 2) * 1.5)]);
-
-
-            maxSize = Min([maxSize, msr.availableHeight / 2]);
-
-
-            maxSize -= config.pointLabelFontSize;
-            maxSize = CapValue(maxSize, null, 0);
-
-            scaleHeight = maxSize;
+            // compute max Radius and midPoint in that range
+            prevMaxSize=0;
+            prevMidX=0;
+            for (midX=maxR,iter=0;iter<nbiter; ++iter, midX+=(msr.availableWidth-maxL-maxR)/nbiter){            
+              maxSize=Max([midX,msr.availableWidth-midX]);
+              var rotateAngle=config.startAngle*Math.PI/180;
+              mxlb=msr.available;
+              for (var i = 0; i < data.labels.length; i++) {
+                var textMeasurement = ctx.measureText(data.labels[i]).width+config.scaleFontSize;
+                if((rotateAngle < Math.PI/2 && rotateAngle > -Math.PI/2) || rotateAngle > 3*Math.PI/2){
+                  mxlb=((msr.availableWidth-midX)- textMeasurement)/Math.abs(Math.cos(rotateAngle));
+                }
+                else if (Math.cos(rotateAngle!=0)){
+                  mxlb=(midX- textMeasurement)/Math.abs(Math.cos(rotateAngle));
+                }
+                if (mxlb < maxSize)maxSize=mxlb;
+                if(Math.sin(rotateAngle)*msr.availableHeight/2 > msr.availableHeight/2 - config.scaleFontSize*2){
+                    mxlb=Math.sin(rotateAngle)*msr.availableHeight/2-1.5*config.scaleFontSize;
+                    if(mxlb < maxSize)maxSize=mxlb;
+                } 
+                rotateAngle-=rotationDegree;                
+              }
+              if(maxSize>prevMaxSize){
+                prevMaxSize=maxSize;
+                midPosX=midX;
+              }
+            }
+            
+            maxSize =prevMaxSize - config.scaleFontSize/2;      
             //If the label height is less than 5, set it to 5 so we don't have lines on top of each other.
             labelHeight = Default(labelHeight, 5);
         };
+
 
         function getValueBounds() {
             var upperValue = Number.MIN_VALUE;
@@ -1404,8 +1473,6 @@ window.Chart = function (context) {
                 maxSteps: maxSteps,
                 minSteps: minSteps
             };
-
-
         }
     }
 
@@ -1421,13 +1488,7 @@ window.Chart = function (context) {
         var annotateCnt = 0;
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        if (config.annotateDisplay == true) {
-            if (cursorDivCreated == false) {
-                oCursor = new makeCursorObj('divCursor');
-            }
-            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("on" + config.annotateFunction, function (event) { doMouseMove(ctx, config, event) });
-            else ctx.canvas.addEventListener(config.annotateFunction, function (event) { doMouseMove(ctx, config, event) }, false);
-        }
+        defMouse(ctx,config);
 
         //In case we have a canvas that is not a square. Minus 5 pixels as padding round the edge.
 
@@ -1453,10 +1514,15 @@ window.Chart = function (context) {
 
         function drawPieSegments(animationDecimal) {
 
-            var cumulativeAngle = config.startAngle * (Math.PI / 180),
-      cumvalue = 0,
-			scaleAnimation = 1,
-			rotateAnimation = 1;
+            var cumulativeAngle = -config.startAngle * (Math.PI / 180)+2*Math.PI ,
+               cumvalue = 0,
+			         scaleAnimation = 1,
+			         rotateAnimation = 1;
+ 
+            while (cumulativeAngle < 0){cumulativeAngle+=2*Math.PI;}
+            while (cumulativeAngle > 2*Math.PI){cumulativeAngle-=2*Math.PI;}
+
+
             if (config.animation) {
                 if (config.animateScale) {
                     scaleAnimation = animationDecimal;
@@ -1473,12 +1539,12 @@ window.Chart = function (context) {
             for (var i = 0; i < data.length; i++) {
                 var segmentAngle = rotateAnimation * ((data[i].value / segmentTotal) * (Math.PI * 2));
                 ctx.beginPath();
-                ctx.arc(midPieX, midPieY, scaleAnimation * pieRadius, cumulativeAngle, cumulativeAngle + segmentAngle);
+                ctx.arc(midPieX, midPieY, scaleAnimation * pieRadius, cumulativeAngle, cumulativeAngle+segmentAngle );
+
                 ctx.lineTo(midPieX, midPieY);
                 ctx.closePath();
                 ctx.fillStyle = data[i].color;
                 ctx.fill();
-
                 cumulativeAngle += segmentAngle;
                 cumvalue += data[i].value;
 
@@ -1511,12 +1577,7 @@ window.Chart = function (context) {
         var annotateCnt = 0;
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        if (config.annotateDisplay == true) {
-            if (cursorDivCreated == false) oCursor = new makeCursorObj('divCursor');
-            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("on" + config.annotateFunction, function (event) { doMouseMove(ctx, config, event) });
-            else ctx.canvas.addEventListener(config.annotateFunction, function (event) { doMouseMove(ctx, config, event) }, false);
-        }
-        //In case we have a canvas that is not a square. Minus 5 pixels as padding round the edge.
+        defMouse(ctx,config);
 
         clear(ctx);
         ctx.clearRect(0, 0, width, height);
@@ -1540,11 +1601,15 @@ window.Chart = function (context) {
         animationLoop(config, null, drawPieSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPieX, midPieY, midPieX - doughnutRadius, midPieY + doughnutRadius, data);
 
         function drawPieSegments(animationDecimal) {
-            var cumulativeAngle = config.startAngle * (Math.PI / 180),
-      cumvalue = 0,
-			scaleAnimation = 1,
-			rotateAnimation = 1;
-            if (config.animation) {
+            var cumulativeAngle = -config.startAngle * (Math.PI / 180)+2*Math.PI ,
+               cumvalue = 0,
+			         scaleAnimation = 1,
+			         rotateAnimation = 1;
+ 
+            while (cumulativeAngle < 0){cumulativeAngle+=2*Math.PI;}
+            while (cumulativeAngle > 2*Math.PI){cumulativeAngle-=2*Math.PI;}
+
+          if (config.animation) {
                 if (config.animateScale) {
                     scaleAnimation = animationDecimal;
                 }
@@ -1597,11 +1662,7 @@ window.Chart = function (context) {
 
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        if (config.annotateDisplay == true) {
-            if (cursorDivCreated == false) oCursor = new makeCursorObj('divCursor');
-            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("on" + config.annotateFunction, function (event) { doMouseMove(ctx, config, event) });
-            else ctx.canvas.addEventListener(config.annotateFunction, function (event) { doMouseMove(ctx, config, event) }, false);
-        }
+        defMouse(ctx,config);
 
         clear(ctx);
         ctx.clearRect(0, 0, width, height);
@@ -1907,12 +1968,7 @@ window.Chart = function (context) {
         var annotateCnt = 0;
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        if (config.annotateDisplay == true) {
-            if (cursorDivCreated == false) oCursor = new makeCursorObj('divCursor');
-            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("on" + config.annotateFunction, function (event) { doMouseMove(ctx, config, event) });
-            else ctx.canvas.addEventListener(config.annotateFunction, function (event) { doMouseMove(ctx, config, event) }, false);
-
-        }
+        defMouse(ctx,config);
 
         clear(ctx);
         ctx.clearRect(0, 0, width, height);
@@ -2161,11 +2217,7 @@ window.Chart = function (context) {
         var annotateCnt = 0;
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        if (config.annotateDisplay == true) {
-            if (cursorDivCreated == false) oCursor = new makeCursorObj('divCursor');
-            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("on" + config.annotateFunction, function (event) { doMouseMove(ctx, config, event) });
-            else ctx.canvas.addEventListener(config.annotateFunction, function (event) { doMouseMove(ctx, config, event) }, false);
-        }
+        defMouse(ctx,config);
 
         clear(ctx);
         ctx.clearRect(0, 0, width, height);
@@ -2429,11 +2481,8 @@ window.Chart = function (context) {
 
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        if (config.annotateDisplay == true) {
-            if (cursorDivCreated == false) oCursor = new makeCursorObj('divCursor');
-            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("on" + config.annotateFunction, function (event) { doMouseMove(ctx, config, event) });
-            else ctx.canvas.addEventListener(config.annotateFunction, function (event) { doMouseMove(ctx, config, event) }, false);
-        }
+        defMouse(ctx,config);
+
         clear(ctx);
         ctx.clearRect(0, 0, width, height);
 
@@ -2668,11 +2717,8 @@ window.Chart = function (context) {
         var annotateCnt = 0;
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        if (config.annotateDisplay == true) {
-            if (cursorDivCreated == false) oCursor = new makeCursorObj('divCursor');
-            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("on" + config.annotateFunction, function (event) { doMouseMove(ctx, config, event) });
-            else ctx.canvas.addEventListener(config.annotateFunction, function (event) { doMouseMove(ctx, config, event) }, false);
-        }
+        defMouse(ctx,config);
+
         clear(ctx);
         ctx.clearRect(0, 0, width, height);
 
@@ -3215,9 +3261,7 @@ window.Chart = function (context) {
 
     //****************************************************************************************
     function setMeasures(data, config, ctx, height, width, ylabels, reverseLegend, reverseAxis, drawAxis, drawLegendOnData) {
-
-//    alert(ctx.canvas.id);
-    
+   
         if(config.canvasBackgroundColor != "none") ctx.canvas.style.background =config.canvasBackgroundColor;
 
         var borderWidth = 0;
@@ -3714,4 +3758,43 @@ window.Chart = function (context) {
     function log10(val) {
         return Math.log(val) / Math.LN10;
     }
+    
+    function defMouse(ctx,config) {
+
+        if (config.annotateDisplay == true) {
+            if (cursorDivCreated == false) oCursor = new makeCursorObj('divCursor');
+            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("on" + config.annotateFunction.split(' ')[0], function (event) { 
+              if ((config.annotateFunction.split(' ')[1]=="left" && event.which==1) ||
+                  (config.annotateFunction.split(' ')[1]=="middle" && event.which==2) ||
+                  (config.annotateFunction.split(' ')[1]=="right" && event.which==3) ||
+                  (typeof(config.annotateFunction.split(' ')[1])!="string")) doMouseMove(ctx, config, event) 
+              });
+            else ctx.canvas.addEventListener(config.annotateFunction.split(' ')[0], function (event) { 
+              if ((config.annotateFunction.split(' ')[1]=="left" && event.which==1) ||
+                  (config.annotateFunction.split(' ')[1]=="middle" && event.which==2) ||
+                  (config.annotateFunction.split(' ')[1]=="right" && event.which==3) ||
+                  (typeof(config.annotateFunction.split(' ')[1])!="string")) doMouseMove(ctx, config, event) 
+            }, false);
+        }
+        
+        if(config.savePng)
+        {
+            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("on"+ config.savePngFunction.split(' ')[0], function(event) { 
+              if ((config.savePngFunction.split(' ')[1]=="left" && event.which==1) ||
+                  (config.savePngFunction.split(' ')[1]=="middle" && event.which==2) ||
+                  (config.savePngFunction.split(' ')[1]=="right" && event.which==3) ||
+                  (typeof(config.savePngFunction.split(' ')[1])!="string")) saveCanvas(ctx,config); 
+              });  
+            else ctx.canvas.addEventListener(config.savePngFunction.split(' ')[0], function (event) {   
+              if ((config.savePngFunction.split(' ')[1]=="left" && event.which==1) ||
+                  (config.savePngFunction.split(' ')[1]=="middle" && event.which==2) ||
+                  (config.savePngFunction.split(' ')[1]=="right" && event.which==3) ||
+                  (typeof(config.savePngFunction.split(' ')[1])!="string")) saveCanvas(ctx,config); 
+              }
+              ,false);
+  
+        }
+
+    }
+    
 };
