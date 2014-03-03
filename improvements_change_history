@@ -22,6 +22,7 @@ Change history
                                       a place where the size of the graph is maximized;
                                     - bug correction for startAngle in Pied, Doughtnut and PolarArea graphs;
                                     - options savePng added;
+03/03/2014 - Francois Vancoppenolle - Correction of a bug when scale steps are defined
 
 
 
