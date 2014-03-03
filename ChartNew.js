@@ -639,7 +639,7 @@ window.Chart = function (context) {
     this.Line = function (data, options) {
 
         chart.Line.defaults = {
-			      inGraphDataShow: true,
+			      inGraphDataShow: false,
 			      inGraphDataPaddingX: 3,
 			      inGraphDataPaddingY: 3,
             inGraphDataTmpl: "<%=v3%>",
@@ -1028,9 +1028,10 @@ window.Chart = function (context) {
                 steps: config.scaleSteps,
                 stepValue: config.scaleStepWidth,
                 graphMin: config.scaleStartValue,
+                graphMax: config.scaleStartValue+config.scaleSteps*config.scaleStepWidth,
                 labels: []
             }
-            populateLabels(config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, config.scaleStepWidth);
+            populateLabels(config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
             msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, true, false, false, false);
         }
 
@@ -1192,19 +1193,17 @@ window.Chart = function (context) {
                 steps: config.scaleSteps,
                 stepValue: config.scaleStepWidth,
                 graphMin: config.scaleStartValue,
+                graphMax: config.scaleStartValue+config.scaleSteps*config.scaleStepWidth,
                 labels: []
             }
-            populateLabels(config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, config.scaleStepWidth);
+            populateLabels(config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
             msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, true, false, false, true);
         }
 
         calculateDrawingSizes();
 
-//        midPosX = msr.leftNotUsableSize + (msr.availableWidth / 2);
         midPosY = msr.topNotUsableSize + (msr.availableHeight / 2);
         scaleHop = maxSize / (calculatedScale.steps);
-
-//window.alert(calculatedScale.steps+" "+calculatedScale.graphMin+" "+calculatedScale.graphMax);
 
         //Wrap in an animation loop wrapper
         animationLoop(config, drawScale, drawAllDataPoints, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPosX, midPosY, midPosX - maxSize, midPosY + maxSize, data);
@@ -1694,9 +1693,10 @@ window.Chart = function (context) {
                 steps: config.scaleSteps,
                 stepValue: config.scaleStepWidth,
                 graphMin: config.scaleStartValue,
+                graphMax: config.scaleStartValue+config.scaleSteps*config.scaleStepWidth,
                 labels: []
             }
-            populateLabels(config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, config.scaleStepWidth);
+            populateLabels(config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
             msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, false, false, true, true);
         }
 
@@ -2513,9 +2513,10 @@ window.Chart = function (context) {
                 steps: config.scaleSteps,
                 stepValue: config.scaleStepWidth,
                 graphMin: config.scaleStartValue,
+                graphMax: config.scaleStartValue+config.scaleSteps*config.scaleStepWidth,
                 labels: []
             }
-            populateLabels(config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, config.scaleStepWidth);
+            populateLabels(config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
             msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, true, false, true, true);
         }
 
@@ -2735,9 +2736,10 @@ window.Chart = function (context) {
                 steps: config.scaleSteps,
                 stepValue: config.scaleStepWidth,
                 graphMin: config.scaleStartValue,
+                graphMax: config.scaleStartValue+config.scaleSteps*config.scaleStepWidth,
                 labels: []
             }
-            populateLabels(config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, config.scaleStepWidth);
+            populateLabels(config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
             msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, true, true, true, true);
         }
 
