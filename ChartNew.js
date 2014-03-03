@@ -664,6 +664,8 @@ window.Chart = function (context) {
             scaleFontStyle: "normal",
             scaleFontColor: "#666",
             scaleShowGridLines: true,
+            scaleXGridLinesStep : 1,
+            scaleYGridLinesStep : 1,
             scaleGridLineColor: "rgba(0,0,0,.05)",
             scaleGridLineWidth: 1,
             showYAxisMin: true,      // Show the minimum value on Y axis (in original version, this minimum is not displayed - it can overlap the X labels)
@@ -715,6 +717,8 @@ window.Chart = function (context) {
             scaleFontStyle: "normal",
             scaleFontColor: "#666",
             scaleShowGridLines: true,
+            scaleXGridLinesStep : 1,
+            scaleYGridLinesStep : 1,
             scaleGridLineColor: "rgba(0,0,0,.05)",
             scaleGridLineWidth: 1,
             showYAxisMin: true,      // Show the minimum value on Y axis (in original version, this minimum is not displayed - it can overlap the X labels)
@@ -761,6 +765,8 @@ window.Chart = function (context) {
             scaleFontStyle: "normal",
             scaleFontColor: "#666",
             scaleShowGridLines: true,
+            scaleXGridLinesStep : 1,
+            scaleYGridLinesStep : 1,
             scaleGridLineColor: "rgba(0,0,0,.05)",
             scaleGridLineWidth: 1,
             scaleTickSizeLeft: 5,
@@ -804,6 +810,8 @@ window.Chart = function (context) {
             scaleFontStyle: "normal",
             scaleFontColor: "#666",
             scaleShowGridLines: true,
+            scaleXGridLinesStep : 1,
+            scaleYGridLinesStep : 1,
             scaleGridLineColor: "rgba(0,0,0,.05)",
             scaleGridLineWidth: 1,
             showYAxisMin: true,      // Show the minimum value on Y axis (in original version, this minimum is not displayed - it can overlap the X labels)
@@ -849,6 +857,8 @@ window.Chart = function (context) {
             scaleFontStyle: "normal",
             scaleFontColor: "#666",
             scaleShowGridLines: true,
+            scaleXGridLinesStep : 1,
+            scaleYGridLinesStep : 1,
             scaleGridLineColor: "rgba(0,0,0,.05)",
             scaleGridLineWidth: 1,
             scaleTickSizeLeft: 5,
@@ -1851,7 +1861,8 @@ window.Chart = function (context) {
                 ctx.strokeStyle = config.scaleGridLineColor;
 
                 //Check i isnt 0, so we dont go over the Y axis twice.
-                if (config.scaleShowGridLines && i > 0) {
+
+                if (config.scaleShowGridLines && i > 0 && i % config.scaleXGridLinesStep==0 ) {
                     ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - config.scaleTickSizeTop);
                 }
                 else {
@@ -1874,7 +1885,7 @@ window.Chart = function (context) {
                ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY - ((j + 1) * scaleHop));
                ctx.lineWidth = config.scaleGridLineWidth;
                ctx.strokeStyle = config.scaleGridLineColor;
-               if (config.scaleShowGridLines) {
+               if (config.scaleShowGridLines && j % config.scaleYGridLinesStep==0 ) {
                    ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, xAxisPosY - ((j + 1) * scaleHop));
                }
                else {
@@ -1888,7 +1899,6 @@ window.Chart = function (context) {
             ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
 
             //X Labels                                                          
-
             ctx.textBaseline = "top";
             if (msr.rotateLabels > 90) {
                 ctx.save();
@@ -1901,12 +1911,14 @@ window.Chart = function (context) {
             else {
                 ctx.textAlign = "center";
             }
+            
+
             ctx.fillStyle = config.scaleFontColor;
 
             for (var i = 0; i < data.labels.length; i++) {
                 ctx.save();
                 if (msr.rotateLabels > 0) {
-                    ctx.translate(yAxisPosX + i * valueHop, msr.xLabelPos);
+                    ctx.translate(yAxisPosX + i * valueHop - config.scaleFontSize/2, msr.xLabelPos);
                     ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
                     ctx.fillText(data.labels[i], 0, 0);
                 }
@@ -2095,7 +2107,7 @@ window.Chart = function (context) {
                 ctx.strokeStyle = config.scaleGridLineColor;
 
                 //Check i isnt 0, so we dont go over the Y axis twice.
-                if (config.scaleShowGridLines && i > 0) {
+                if (config.scaleShowGridLines && i>0 && i % config.scaleXGridLinesStep==0 ) {
                     ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - config.scaleTickSizeTop);
                 }
                 else {
@@ -2118,7 +2130,7 @@ window.Chart = function (context) {
                ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY - ((j + 1) * scaleHop));
                ctx.lineWidth = config.scaleGridLineWidth;
                ctx.strokeStyle = config.scaleGridLineColor;
-               if (config.scaleShowGridLines) {
+               if (config.scaleShowGridLines && j % config.scaleYGridLinesStep==0 ) {
                    ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, xAxisPosY - ((j + 1) * scaleHop));
                }
                else {
@@ -2150,7 +2162,7 @@ window.Chart = function (context) {
             for (var i = 0; i < data.labels.length; i++) {
                 ctx.save();
                 if (msr.rotateLabels > 0) {
-                    ctx.translate(yAxisPosX + i * valueHop + (barWidth / 2), msr.xLabelPos);
+                    ctx.translate(yAxisPosX + i * valueHop + (barWidth / 2)- config.scaleFontSize/2, msr.xLabelPos);
                     ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
                     ctx.fillText(data.labels[i], 0, 0);
                 }
@@ -2359,7 +2371,7 @@ window.Chart = function (context) {
                     ctx.strokeStyle = config.scaleGridLineColor;
 
                     //Check i isnt 0, so we dont go over the Y axis twice.
-                    if (config.scaleShowGridLines && i > 0) {
+                    if (config.scaleShowGridLines && i>0 && i % config.scaleXGridLinesStep==0 ) {
                         ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - config.scaleTickSizeTop);
                     }
                     else {
@@ -2383,7 +2395,7 @@ window.Chart = function (context) {
                 ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY - ((j + 1) * scaleHop));
                 ctx.lineWidth = config.scaleGridLineWidth;
                 ctx.strokeStyle = config.scaleGridLineColor;
-                if (config.scaleShowGridLines) {
+                if (config.scaleShowGridLines &&  j % config.scaleYGridLinesStep==0 ) {
                     ctx.lineTo(yAxisPosX + msr.availableWidth, xAxisPosY - ((j + 1) * scaleHop));
                 }
                 else {
@@ -2415,7 +2427,7 @@ window.Chart = function (context) {
             for (var i = ((config.showYAxisMin) ? -1 : 0) ; i < calculatedScale.steps; i++) {
                 ctx.save();
                 if (msr.rotateLabels > 0) {
-                    ctx.translate(yAxisPosX + (i + 1) * valueHop, msr.xLabelPos);
+                    ctx.translate(yAxisPosX + (i + 1) * valueHop- config.scaleFontSize/2, msr.xLabelPos);
                     ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
                     ctx.fillText(calculatedScale.labels[i + 1], 0, 0);
                 }
@@ -2603,7 +2615,7 @@ window.Chart = function (context) {
                 ctx.strokeStyle = config.scaleGridLineColor;
 
                 //Check i isnt 0, so we dont go over the Y axis twice.
-                if (config.scaleShowGridLines && i > 0) {
+                if (config.scaleShowGridLines && i>0 && i % config.scaleXGridLinesStep==0 ) {
                     ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - config.scaleTickSizeTop);
                 }
                 else {
@@ -2626,7 +2638,7 @@ window.Chart = function (context) {
                ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY - ((j + 1) * scaleHop));
                ctx.lineWidth = config.scaleGridLineWidth;
                ctx.strokeStyle = config.scaleGridLineColor;
-               if (config.scaleShowGridLines) {
+               if (config.scaleShowGridLines && j % config.scaleYGridLinesStep==0 ) {
                    ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, xAxisPosY - ((j + 1) * scaleHop));
                }
                else {
@@ -2658,7 +2670,7 @@ window.Chart = function (context) {
             for (var i = 0; i < data.labels.length; i++) {
                 ctx.save();
                 if (msr.rotateLabels > 0) {
-                    ctx.translate(yAxisPosX + i * valueHop + (valueHop / 2), msr.xLabelPos);
+                    ctx.translate(yAxisPosX + i * valueHop + (valueHop / 2)- config.scaleFontSize/2, msr.xLabelPos);
                     ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
                     ctx.fillText(data.labels[i], 0, 0);
                 }
@@ -2828,7 +2840,7 @@ window.Chart = function (context) {
                     ctx.strokeStyle = config.scaleGridLineColor;
 
                     //Check i isnt 0, so we dont go over the Y axis twice.
-                    if (config.scaleShowGridLines && i > 0) {
+                    if (config.scaleShowGridLines && i>0 && i % config.scaleXGridLinesStep==0 ) {
                         ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - config.scaleTickSizeTop);
                     }
                     else {
@@ -2852,7 +2864,7 @@ window.Chart = function (context) {
                 ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY - ((j + 1) * scaleHop));
                 ctx.lineWidth = config.scaleGridLineWidth;
                 ctx.strokeStyle = config.scaleGridLineColor;
-                if (config.scaleShowGridLines) {
+                if (config.scaleShowGridLines && j % config.scaleYGridLinesStep==0 ) {
                     ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, xAxisPosY - ((j + 1) * scaleHop));
                 }
                 else {
@@ -2884,7 +2896,7 @@ window.Chart = function (context) {
             for (var i = ((config.showYAxisMin) ? -1 : 0) ; i < calculatedScale.steps; i++) {
                 ctx.save();
                 if (msr.rotateLabels > 0) {
-                    ctx.translate(yAxisPosX + (i + 1) * valueHop, msr.xLabelPos);
+                    ctx.translate(yAxisPosX + (i + 1) * valueHop - config.scaleFontSize/2, msr.xLabelPos);
                     ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
                     ctx.fillText(calculatedScale.labels[i + 1], 0, 0);
                 }
