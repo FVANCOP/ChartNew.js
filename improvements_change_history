@@ -26,6 +26,7 @@ Change history
                                     - Options scaleXGridLinesStep and scaleYGridLinesStep added (improvement proposed by Ruben Rutten)
                                     - When the X Labels is not horizontal, the position of the labels has been readjusted.
                                                (Bug reported by Ruben Rutten)
+04/03/2014 - Francois Vancoppenolle - Option dynamicDisplay added; If set to true, the animation of the graph starts when the graph is visible on screen.
 
 
 
@@ -34,6 +35,8 @@ Future Improvements
 - labels inside the graphs
 - topXAxis
 - code reduction
+- formatting the numbers
+- personnal default options.
 
 
 Known Bugs
