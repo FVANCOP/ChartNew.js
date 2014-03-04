@@ -21,7 +21,7 @@
  *     Subtitle
  *     X Axis Label
  *     Y Axis Label
- *     Unit Label
+ *     Unit Label                                                                                       
  *     Y Axis on the right and/or the left
  *     Annotates
  *     canvas Border
@@ -195,6 +195,85 @@ if (isIE() < 9 && isIE() != false) {
         }
     }
 }
+
+var dynamicDisplay = new Array();
+var dynamicDisplayList = new Array();
+
+function dynamicFunction(data,config,ctx,tpgraph)
+{
+        if(config.dynamicDisplay)
+        {
+           if(typeof(dynamicDisplay[ctx.canvas.id])=="undefined")
+           {
+              dynamicDisplayList[dynamicDisplayList["length"]]=ctx.canvas.id;
+              dynamicDisplay[ctx.canvas.id]=[ctx.canvas,false,false,data,config,ctx.canvas,tpgraph];
+              dynamicDisplay[ctx.canvas.id][1]=isScrolledIntoView(ctx.canvas);
+              window.onscroll = scrollFunction;
+           }
+           if(dynamicDisplay[ctx.canvas.id][1]==false || dynamicDisplay[ctx.canvas.id][2]==true)return false;
+           dynamicDisplay[ctx.canvas.id][2]=true;
+        }
+        return true;
+}
+
+function isScrolledIntoView(element)
+{
+    var xPosition = 0;
+    var yPosition = 0;
+
+    elem=element;  
+    while(elem) {
+        xPosition += (elem.offsetLeft - elem.scrollLeft + elem.clientLeft);
+        yPosition += (elem.offsetTop - elem.scrollTop + elem.clientTop);
+        elem = elem.offsetParent;
+    }
+    
+    if (xPosition+element.width/2 >= window.pageXOffset &&
+        xPosition+element.width/2 <= window.pageXOffset + window.innerWidth &&
+        yPosition+element.height/2 >= window.pageYOffset &&
+        yPosition+element.height/2 <= window.pageYOffset+window.innerHeight
+        )return(true);
+    else return false;
+}
+
+function scrollFunction(){
+    for (var i=0;i<dynamicDisplayList["length"];i++) {
+      if (isScrolledIntoView(dynamicDisplay[dynamicDisplayList[i]][5]) && dynamicDisplay[dynamicDisplayList[i]][2]==false) {
+        dynamicDisplay[dynamicDisplayList[i]][1]=true;
+        switch(dynamicDisplay[dynamicDisplayList[i]][6]){
+          case "Bar":
+             new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).Bar(dynamicDisplay[dynamicDisplayList[i]][3],dynamicDisplay[dynamicDisplayList[i]][4]);
+             break;
+          case "Pie":
+             new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).Pie(dynamicDisplay[dynamicDisplayList[i]][3],dynamicDisplay[dynamicDisplayList[i]][4]);
+             break;
+          case "Doughnut":
+             new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).Doughnut(dynamicDisplay[dynamicDisplayList[i]][3],dynamicDisplay[dynamicDisplayList[i]][4]);
+             break;
+          case "Radar":
+             new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).Radar(dynamicDisplay[dynamicDisplayList[i]][3],dynamicDisplay[dynamicDisplayList[i]][4]);
+             break;
+          case "PolarArea":
+             new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).PolarArea(dynamicDisplay[dynamicDisplayList[i]][3],dynamicDisplay[dynamicDisplayList[i]][4]);
+             break;
+          case "HorizontalBar":
+             new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).HorizontalBar(dynamicDisplay[dynamicDisplayList[i]][3],dynamicDisplay[dynamicDisplayList[i]][4]);
+             break;
+          case "StackedBar":
+             new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).StackedBar(dynamicDisplay[dynamicDisplayList[i]][3],dynamicDisplay[dynamicDisplayList[i]][4]);
+             break;
+          case "HorizontalStackedBar":
+             new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).HorizontalStackedBar(dynamicDisplay[dynamicDisplayList[i]][3],dynamicDisplay[dynamicDisplayList[i]][4]);
+             break;
+          case "Line":
+             new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).Line(dynamicDisplay[dynamicDisplayList[i]][3],dynamicDisplay[dynamicDisplayList[i]][4]);
+             break;
+        }
+      }
+    }
+};  
+                                                     
+
 
 var jsGraphAnnotate = new Array();
 
@@ -889,6 +968,7 @@ window.Chart = function (context) {
 
     chart.defaults = {};
     chart.defaults.commonOptions = {
+        dynamicDisplay : false,
         graphSpaceBefore : 5,
         graphSpaceAfter : 5,
         canvasBorders: false,
@@ -1010,6 +1090,9 @@ window.Chart = function (context) {
 
     var PolarArea = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
+
+        if (!dynamicFunction(data,config,ctx,"PolarArea"))return;
+
 
         while (config.startAngle < 0){config.startAngle+=360;}
         while (config.startAngle > 360){config.startAngle-=360;}
@@ -1171,6 +1254,8 @@ window.Chart = function (context) {
 
     var Radar = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
+
+        if (!dynamicFunction(data,config,ctx,"Radar"))return;
 
         while (config.startAngle < 0){config.startAngle+=360;}
         while (config.startAngle > 360){config.startAngle-=360;}
@@ -1485,9 +1570,12 @@ window.Chart = function (context) {
         }
     }
 
+
     var Pie = function (data, config, ctx) {
         var segmentTotal = 0;
         var msr, midPieX, midPieY;
+
+        if (!dynamicFunction(data,config,ctx,"Pie"))return;
 
         while (config.startAngle < 0){config.startAngle+=360;}
         while (config.startAngle > 360){config.startAngle-=360;}
@@ -1575,6 +1663,8 @@ window.Chart = function (context) {
     var Doughnut = function (data, config, ctx) {
         var segmentTotal = 0;
         var msr, midPieX, midPieY;
+
+        if (!dynamicFunction(data,config,ctx,"Doughnut"))return;
         
         while (config.startAngle < 0){config.startAngle+=360;}
         while (config.startAngle > 360){config.startAngle-=360;}
@@ -1668,6 +1758,8 @@ window.Chart = function (context) {
   
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, rotateLabels = 0, msr;
         var annotateCnt = 0;
+
+        if (!dynamicFunction(data,config,ctx,"Line"))return;
 
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
@@ -1975,6 +2067,9 @@ window.Chart = function (context) {
 
     var StackedBar = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
+
+        if (!dynamicFunction(data,config,ctx,"StackedBar"))return;
+
         config.logarithmic = false;
 
         var annotateCnt = 0;
@@ -2224,6 +2319,9 @@ window.Chart = function (context) {
 
     var HorizontalStackedBar = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
+
+        if (!dynamicFunction(data,config,ctx,"HorizontalStackedBar"))return;
+
         config.logarithmic = false;
 
         var annotateCnt = 0;
@@ -2491,6 +2589,8 @@ window.Chart = function (context) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
         var annotateCnt = 0;
 
+        if (!dynamicFunction(data,config,ctx,"Bar"))return;
+        
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
         defMouse(ctx,config);
@@ -2726,6 +2826,8 @@ window.Chart = function (context) {
 
     var HorizontalBar = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
+
+        if (!dynamicFunction(data,config,ctx,"HorizontalBar"))return;
 
         var annotateCnt = 0;
         jsGraphAnnotate[ctx.canvas.id] = new Array();
