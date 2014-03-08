@@ -1235,6 +1235,11 @@ window.Chart = function (context) {
                 if (data[i].value < lowerValue) { lowerValue = data[i].value; }
             };
 
+			if (upperValue == lowerValue) {
+				upperValue = upperValue*2;
+				lowerValue = 0;
+			}
+
             if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
             if (!isNaN(config.graphMax)) upperValue = config.graphMax;
 
@@ -1554,6 +1559,11 @@ window.Chart = function (context) {
                     if (data.datasets[i].data[j] < lowerValue) { lowerValue = data.datasets[i].data[j] }
                 }
             }
+
+			if (upperValue == lowerValue) {
+				upperValue = upperValue*2;
+				lowerValue = 0;
+			}
 
             if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
             if (!isNaN(config.graphMax)) upperValue = config.graphMax;
@@ -2048,6 +2058,11 @@ window.Chart = function (context) {
                     if (data.datasets[i].data[j] < lowerValue) { lowerValue = data.datasets[i].data[j] };
                 }
             };
+
+			if (upperValue == lowerValue) {
+				upperValue = upperValue*2;
+				lowerValue = 0;
+			}
 
             // AJOUT CHANGEMENT
             if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
@@ -2807,6 +2822,11 @@ window.Chart = function (context) {
                     if (data.datasets[i].data[j] < lowerValue) { lowerValue = data.datasets[i].data[j] };
                 }
             };
+
+			if (upperValue == lowerValue) {
+				upperValue = upperValue*2;
+				lowerValue = 0;
+			}
 
             // AJOUT CHANGEMENT
             if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
