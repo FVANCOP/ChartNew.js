@@ -3055,6 +3055,11 @@ window.Chart = function (context) {
                     if (data.datasets[i].data[j] < lowerValue) { lowerValue = data.datasets[i].data[j] };
                 }
             };
+            
+			if (upperValue == lowerValue) {
+				upperValue = upperValue*2;
+				lowerValue = 0;
+			}
 
             // AJOUT CHANGEMENT
             if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
