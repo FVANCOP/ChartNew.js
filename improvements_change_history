@@ -7,7 +7,7 @@ Change history
 21/01/2014 - Francois Vancoppenolle - minor corrections for parameter "rotateLabels" + showYAxisMin parameter
 22/01/2014 - Francois Vancoppenolle - bugs fix when negative values 
 29/01/2014 - Francois Vancoppenolle - startAngle parameter for Pie and Doughtnut
-31/01/2014 - joetime - improvements for annotations
+31/01/2014 - joetime                - improvements for annotations
 02/02/2014 - Francois Vancoppenolle - Minor Bugs correction
 03/02/2014 - Francois Vancoppenolle - Minor Bug correction - Code reduction (commonOptions/xyAxisCommonOptions)
 04/02/2014 - Francois vancoppenolle - Bug for X Axis Label corrected (reported by James Barnsley)
@@ -23,10 +23,15 @@ Change history
                                     - bug correction for startAngle in Pied, Doughtnut and PolarArea graphs;
                                     - options savePng added;
 03/03/2014 - Francois Vancoppenolle - Correction of a bug when scale steps are defined
-                                    - Options scaleXGridLinesStep and scaleYGridLinesStep added (improvement proposed by Ruben Rutten)
-                                    - When the X Labels is not horizontal, the position of the labels has been readjusted.
+                                    - Options scaleXGridLinesStep and scaleYGridLinesStep added (improvement proposed by
+                                      Ruben Rutten)
+                                    - When the X Labels is not horizontal, the position of the labels has been 
+                                      readjusted.
                                                (Bug reported by Ruben Rutten)
-04/03/2014 - Francois Vancoppenolle - Option dynamicDisplay added; If set to true, the animation of the graph starts when the graph is visible on screen.
+04/03/2014 - Francois Vancoppenolle - Option dynamicDisplay added; If set to true, the animation of the graph starts 
+                                      when the graph is visible on screen.
+09/03/2014 - Francois Vancoppenolle - Labels in Bar/HorizontalBar (options with inGraphData in the name);
+                                    - possibility to remove X Axis Display (options xAxisBottom)
 
 
 
