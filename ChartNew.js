@@ -875,6 +875,19 @@ window.Chart = function (context) {
 
     this.Bar = function (data, options) {
         chart.Bar.defaults = {
+			      inGraphDataShow: false,
+			      inGraphDataPaddingX: 0,
+			      inGraphDataPaddingY: 3,
+            inGraphDataTmpl: "<%=v3%>",
+            inGraphDataAlign : "center",
+            inGraphDataVAlign : "bottom",
+            inGraphDataRotate : 0,
+            inGraphDataFontFamily: "'Arial'",
+            inGraphDataFontSize: 12,
+            inGraphDataFontStyle: "normal",
+            inGraphDataFontColor: "#666",
+            inGraphDataXPosition : 2,
+            inGraphDataYPosition : 3,
             scaleOverlay: false,
             scaleOverride: false,
             scaleSteps: null,
@@ -922,6 +935,19 @@ window.Chart = function (context) {
 
     this.HorizontalBar = function (data, options) {
         chart.HorizontalBar.defaults = {
+			      inGraphDataShow: false,
+			      inGraphDataPaddingX: 3,
+			      inGraphDataPaddingY: 0,
+            inGraphDataTmpl: "<%=v3%>",
+            inGraphDataAlign : "left",
+            inGraphDataVAlign : "middle",
+            inGraphDataRotate : 0,
+            inGraphDataFontFamily: "'Arial'",
+            inGraphDataFontSize: 12,
+            inGraphDataFontStyle: "normal",
+            inGraphDataFontColor: "#666",
+            inGraphDataXPosition : 3,
+            inGraphDataYPosition : 2,
             scaleOverlay: false,
             scaleOverride: false,
             scaleSteps: null,
@@ -1856,7 +1882,7 @@ window.Chart = function (context) {
                     if (i == data.datasets.length - 1) divnext = data.datasets[i].data[0];
                     else divnext = data.datasets[i].data[0] - data.datasets[i + 1].data[0];
 
-                    if (typeof (data.labels[0]) == "string") lgtxt2 = data.labels[0].trim();
+                    if (typeof (data.labels[0]) == "string") lgtxt2 = data.labels[i].trim();
                     else lgtxt2 = "";
 
                     jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["POINT", yAxisPosX, xAxisPosY - (calculateOffset(config, data.datasets[i].data[0], calculatedScale, scaleHop)), lgtxt, lgtxt2, data.datasets[i].data[0], divprev, divnext, maxvalue[0], totvalue[0], i, 0];
@@ -2000,34 +2026,37 @@ window.Chart = function (context) {
         function drawLabels() {
             ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
 
-            //X Labels                                                          
-            ctx.textBaseline = "top";
-            if (msr.rotateLabels > 90) {
-                ctx.save();
-                ctx.textAlign = "left";
-            }
-            else if (msr.rotateLabels > 0) {
-                ctx.save();
-                ctx.textAlign = "right";
-            }
-            else {
-                ctx.textAlign = "center";
-            }
+            //X Labels     
+            if(config.xAxisTop || config.xAxisTop) {                                                    
+              ctx.textBaseline = "top";
+              if (msr.rotateLabels > 90) {
+                  ctx.save();
+                  ctx.textAlign = "left";
+              }
+              else if (msr.rotateLabels > 0) {
+                  ctx.save();
+                  ctx.textAlign = "right";
+              }
+              else {
+                  ctx.textAlign = "center";
             
+              }
+              ctx.fillStyle = config.scaleFontColor;
 
-            ctx.fillStyle = config.scaleFontColor;
-
-            for (var i = 0; i < data.labels.length; i++) {
-                ctx.save();
-                if (msr.rotateLabels > 0) {
+              if(config.xAxisBottom){
+                for (var i = 0; i < data.labels.length; i++) {
+                  ctx.save();
+                  if (msr.rotateLabels > 0) {
                     ctx.translate(yAxisPosX + i * valueHop - config.scaleFontSize/2, msr.xLabelPos);
                     ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
                     ctx.fillText(data.labels[i], 0, 0);
-                }
-                else {
+                  }
+                  else {
                     ctx.fillText(data.labels[i], yAxisPosX + i * valueHop, msr.xLabelPos);
-                }
+                  }
                 ctx.restore();
+                }
+              }
             }
 
             //Y Labels
@@ -2255,31 +2284,36 @@ window.Chart = function (context) {
 
             //X axis labels                                                          
 
-            ctx.textBaseline = "top";
-            if (msr.rotateLabels > 90) {
-                ctx.save();
-                ctx.textAlign = "left";
-            }
-            else if (msr.rotateLabels > 0) {
-                ctx.save();
-                ctx.textAlign = "right";
-            }
-            else {
-                ctx.textAlign = "center";
-            }
-            ctx.fillStyle = config.scaleFontColor;
+            if(config.xAxisTop || config.xAxisTop) {                                                    
 
-            for (var i = 0; i < data.labels.length; i++) {
-                ctx.save();
-                if (msr.rotateLabels > 0) {
-                    ctx.translate(yAxisPosX + i * valueHop + (barWidth / 2)- config.scaleFontSize/2, msr.xLabelPos);
-                    ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-                    ctx.fillText(data.labels[i], 0, 0);
+              ctx.textBaseline = "top";
+              if (msr.rotateLabels > 90) {
+                  ctx.save();
+                  ctx.textAlign = "left";
+              }
+              else if (msr.rotateLabels > 0) {
+                  ctx.save();
+                  ctx.textAlign = "right";
+              }
+              else {
+                  ctx.textAlign = "center";
+              }
+              ctx.fillStyle = config.scaleFontColor;
+
+              if(config.xAxisBottom){
+                for (var i = 0; i < data.labels.length; i++) {
+                    ctx.save();
+                    if (msr.rotateLabels > 0) {
+                        ctx.translate(yAxisPosX + i * valueHop + (barWidth / 2)- config.scaleFontSize/2, msr.xLabelPos);
+                        ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
+                        ctx.fillText(data.labels[i], 0, 0);
+                    }
+                    else {
+                        ctx.fillText(data.labels[i], yAxisPosX + i * valueHop + (barWidth / 2), msr.xLabelPos);
+                    }
+                    ctx.restore();
                 }
-                else {
-                    ctx.fillText(data.labels[i], yAxisPosX + i * valueHop + (barWidth / 2), msr.xLabelPos);
-                }
-                ctx.restore();
+              }
             }
 
             //Y axis
@@ -2523,31 +2557,35 @@ window.Chart = function (context) {
 
             //X axis line                                                          
 
-            ctx.textBaseline = "top";
-            if (msr.rotateLabels > 90) {
-                ctx.save();
-                ctx.textAlign = "left";
-            }
-            else if (msr.rotateLabels > 0) {
-                ctx.save();
-                ctx.textAlign = "right";
-            }
-            else {
-                ctx.textAlign = "center";
-            }
-            ctx.fillStyle = config.scaleFontColor;
+            if(config.xAxisTop || config.xAxisTop) {                                                    
+              ctx.textBaseline = "top";
+              if (msr.rotateLabels > 90) {
+                  ctx.save();
+                  ctx.textAlign = "left";
+              }
+              else if (msr.rotateLabels > 0) {
+                  ctx.save();
+                  ctx.textAlign = "right";
+             }
+              else {
+                  ctx.textAlign = "center";
+              }
+              ctx.fillStyle = config.scaleFontColor;
 
-            for (var i = ((config.showYAxisMin) ? -1 : 0) ; i < calculatedScale.steps; i++) {
-                ctx.save();
-                if (msr.rotateLabels > 0) {
-                    ctx.translate(yAxisPosX + (i + 1) * valueHop- config.scaleFontSize/2, msr.xLabelPos);
-                    ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-                    ctx.fillText(calculatedScale.labels[i + 1], 0, 0);
+              if(config.xAxisBottom){
+                for (var i = ((config.showYAxisMin) ? -1 : 0) ; i < calculatedScale.steps; i++) {
+                    ctx.save();
+                    if (msr.rotateLabels > 0) {
+                        ctx.translate(yAxisPosX + (i + 1) * valueHop- config.scaleFontSize/2, msr.xLabelPos);
+                        ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
+                        ctx.fillText(calculatedScale.labels[i + 1], 0, 0);
+                   }
+                   else {
+                      ctx.fillText(calculatedScale.labels[i + 1], yAxisPosX + ((i + 1) * valueHop), msr.xLabelPos);
+                   }
+                   ctx.restore();
                 }
-                else {
-                    ctx.fillText(calculatedScale.labels[i + 1], yAxisPosX + ((i + 1) * valueHop), msr.xLabelPos);
-                }
-                ctx.restore();
+              }
             }
 
             //Y axis
@@ -2685,6 +2723,7 @@ window.Chart = function (context) {
                     if (typeof (data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
                     else lgtxt = "";
                 }
+
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
                     var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
 
@@ -2709,6 +2748,48 @@ window.Chart = function (context) {
                         jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["RECT", barOffset, t1, barOffset + barWidth, t2, lgtxt, lgtxt2, data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
                     }
                 }
+            }
+
+            if(animPc >=1 && config.inGraphDataShow) {
+              for (var i = 0; i < data.datasets.length; i++) { for (var j = 0; j < data.datasets[i].data.length; j++) { cumvalue[j] = 0; } }
+
+              for (var i = 0; i < data.datasets.length; i++) {
+                if (typeof (data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
+                else lgtxt = "";
+
+                for (var j = 0; j < data.datasets[i].data.length; j++) {
+
+                    if (typeof (data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
+
+              			ctx.save();
+                	  ctx.textAlign = config.inGraphDataAlign;
+                    ctx.textBaseline = config.inGraphDataVAlign;
+						        ctx.font = config.inGraphDataFontStyle + ' ' + config.inGraphDataFontSize + 'px ' + config.inGraphDataFontFamily;
+       			        ctx.fillStyle = config.inGraphDataFontColor;
+
+                    var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
+
+                    ctx.beginPath();
+                    var yPos =0, xPos=0;
+
+                    if(config.inGraphDataXPosition==1) { xPos=barOffset+config.inGraphDataPaddingX; } 
+                    else if(config.inGraphDataXPosition==2) { xPos=barOffset+barWidth/2+config.inGraphDataPaddingX ;}
+                    else if(config.inGraphDataXPosition==3) { xPos=barOffset+barWidth+config.inGraphDataPaddingX;} 
+                    if(config.inGraphDataYPosition==1) { yPos=xAxisPosY - zeroY- config.inGraphDataPaddingY; }
+                    else if(config.inGraphDataYPosition==2) { yPos=xAxisPosY -(calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2))/2- config.inGraphDataPaddingY; }
+                    else if(config.inGraphDataYPosition==3) { yPos=xAxisPosY -calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2)- config.inGraphDataPaddingY; }
+                    
+                    ctx.translate(xPos,yPos);
+
+                    var dispString = tmplbis(config.inGraphDataTmpl, { v1 : lgtxt, v2 : lgtxt2, v3 : data.datasets[i].data[j], v4 : cumvalue[j], v5: totvalue[j], v6 : i, v7 : j});
+                    ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
+       			        ctx.fillText(dispString, 0,0);
+					    	    ctx.restore();
+
+                    cumvalue[j] += data.datasets[i].data[j];
+                }
+              }
+                
             }
         }
 
@@ -2767,32 +2848,35 @@ window.Chart = function (context) {
             ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
 
             //X axis line                                                          
+            if(config.xAxisTop || config.xAxisTop) {                                                    
+              ctx.textBaseline = "top";
+              if (msr.rotateLabels > 90) {
+                  ctx.save();
+                  ctx.textAlign = "left";
+              }
+              else if (msr.rotateLabels > 0) {
+                  ctx.save();
+                  ctx.textAlign = "right";
+              }
+              else {
+                  ctx.textAlign = "center";
+              }
+              ctx.fillStyle = config.scaleFontColor;
 
-            ctx.textBaseline = "top";
-            if (msr.rotateLabels > 90) {
-                ctx.save();
-                ctx.textAlign = "left";
-            }
-            else if (msr.rotateLabels > 0) {
-                ctx.save();
-                ctx.textAlign = "right";
-            }
-            else {
-                ctx.textAlign = "center";
-            }
-            ctx.fillStyle = config.scaleFontColor;
-
-            for (var i = 0; i < data.labels.length; i++) {
-                ctx.save();
-                if (msr.rotateLabels > 0) {
-                    ctx.translate(yAxisPosX + i * valueHop + (valueHop / 2)- config.scaleFontSize/2, msr.xLabelPos);
-                    ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-                    ctx.fillText(data.labels[i], 0, 0);
-                }
-                else {
-                    ctx.fillText(data.labels[i], yAxisPosX + i * valueHop + (valueHop / 2), msr.xLabelPos);
-                }
-                ctx.restore();
+              if(config.xAxisBottom){
+                for (var i = 0; i < data.labels.length; i++) {
+                    ctx.save();
+                    if (msr.rotateLabels > 0) {
+                        ctx.translate(yAxisPosX + i * valueHop + (valueHop / 2)- config.scaleFontSize/2, msr.xLabelPos);
+                        ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
+                        ctx.fillText(data.labels[i], 0, 0);
+                    }
+                    else {
+                        ctx.fillText(data.labels[i], yAxisPosX + i * valueHop + (valueHop / 2), msr.xLabelPos);
+                    }
+                    ctx.restore();
+                 }
+              }
             }
 
             //Y axis
@@ -2941,6 +3025,51 @@ window.Chart = function (context) {
                     }
                 }
             }
+  
+          if(animPc >=1 && config.inGraphDataShow) {
+              for (var i = 0; i < data.datasets.length; i++) { for (var j = 0; j < data.datasets[i].data.length; j++) { cumvalue[j] = 0; } }
+
+              for (var i = 0; i < data.datasets.length; i++) {
+                if (typeof (data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
+                else lgtxt = "";
+
+                for (var j = 0; j < data.datasets[i].data.length; j++) {
+
+                    if (typeof (data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
+
+              			ctx.save();
+                	  ctx.textAlign = config.inGraphDataAlign;
+                    ctx.textBaseline = config.inGraphDataVAlign;
+						        ctx.font = config.inGraphDataFontStyle + ' ' + config.inGraphDataFontSize + 'px ' + config.inGraphDataFontFamily;
+       			        ctx.fillStyle = config.inGraphDataFontColor;
+
+                    var barOffset = xAxisPosY + config.barValueSpacing - scaleHop * (j + 1) + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
+
+                    ctx.beginPath();
+                    var yPos =0, xPos=0;
+
+                    if(config.inGraphDataYPosition==1) { yPos=barOffset-config.inGraphDataPaddingY+barWidth; } 
+                    else if(config.inGraphDataYPosition==2) { yPos=barOffset+barWidth/2-config.inGraphDataPaddingY ;}
+                    else if(config.inGraphDataYPosition==3) { yPos=barOffset-config.inGraphDataPaddingY;} 
+
+                    if(config.inGraphDataXPosition==1) { xPos=yAxisPosX + zeroY +config.inGraphDataPaddingX; }
+                    else if(config.inGraphDataXPosition==2) { xPos=yAxisPosX + (calculateOffset(config, data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2))/2 + config.inGraphDataPaddingX; }
+                    else if(config.inGraphDataXPosition==3) { xPos=yAxisPosX + calculateOffset(config, data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2) + config.inGraphDataPaddingX; }
+                    
+                    ctx.translate(xPos,yPos);
+
+                    var dispString = tmplbis(config.inGraphDataTmpl, { v1 : lgtxt, v2 : lgtxt2, v3 : data.datasets[i].data[j], v4 : cumvalue[j], v5: totvalue[j], v6 : i, v7 : j});
+                    ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
+       			        ctx.fillText(dispString, 0,0);
+					    	    ctx.restore();
+
+                    cumvalue[j] += data.datasets[i].data[j];
+                }
+              }
+                
+            }
+  
+
         }
 
         function drawScale() {
@@ -3000,32 +3129,35 @@ window.Chart = function (context) {
             ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
 
             //X axis line                                                          
+            if(config.xAxisTop || config.xAxisTop) {                                                    
+              ctx.textBaseline = "top";
+              if (msr.rotateLabels > 90) {
+                  ctx.save();
+                  ctx.textAlign = "left";
+              }
+              else if (msr.rotateLabels > 0) {
+                  ctx.save();
+                  ctx.textAlign = "right";
+              }
+              else {
+                  ctx.textAlign = "center";
+              }
+              ctx.fillStyle = config.scaleFontColor;
 
-            ctx.textBaseline = "top";
-            if (msr.rotateLabels > 90) {
-                ctx.save();
-                ctx.textAlign = "left";
-            }
-            else if (msr.rotateLabels > 0) {
-                ctx.save();
-                ctx.textAlign = "right";
-            }
-            else {
-                ctx.textAlign = "center";
-            }
-            ctx.fillStyle = config.scaleFontColor;
-
-            for (var i = ((config.showYAxisMin) ? -1 : 0) ; i < calculatedScale.steps; i++) {
-                ctx.save();
-                if (msr.rotateLabels > 0) {
-                    ctx.translate(yAxisPosX + (i + 1) * valueHop - config.scaleFontSize/2, msr.xLabelPos);
-                    ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-                    ctx.fillText(calculatedScale.labels[i + 1], 0, 0);
+              if(config.xAxisBottom){
+                for (var i = ((config.showYAxisMin) ? -1 : 0) ; i < calculatedScale.steps; i++) {
+                    ctx.save();
+                    if (msr.rotateLabels > 0) {
+                        ctx.translate(yAxisPosX + (i + 1) * valueHop - config.scaleFontSize/2, msr.xLabelPos);
+                        ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
+                        ctx.fillText(calculatedScale.labels[i + 1], 0, 0);
+                    }
+                    else {
+                        ctx.fillText(calculatedScale.labels[i + 1], yAxisPosX + (i + 1) * valueHop, msr.xLabelPos);
+                    }
+                    ctx.restore();
                 }
-                else {
-                    ctx.fillText(calculatedScale.labels[i + 1], yAxisPosX + (i + 1) * valueHop, msr.xLabelPos);
-                }
-                ctx.restore();
+              }
             }
 
             //Y axis
@@ -3612,7 +3744,7 @@ window.Chart = function (context) {
 
         xLabelWidth = 0;
 
-        if (drawAxis) {
+        if (drawAxis && (config.xAxisBottom || config.xAxisTop)) {
             if (reverseAxis == false) { widestLabel = widestXLabel; nblab = data.labels.length; }
             else { widestLabel = widestYLabel; nblab = ylabels.length; }
             if (config.rotateLabels == "smart") {
@@ -3639,9 +3771,18 @@ window.Chart = function (context) {
             availableWidth = width - leftNotUsableSize - rightNotUsableSize;
         }
 
-        bottomNotUsableHeightWithoutXLabels = borderWidth + config.spaceBottom + footNoteHeight + spaceLegendHeight + xAxisLabelHeight;
-        bottomNotUsableHeightWithXLabels = bottomNotUsableHeightWithoutXLabels + xLabelHeight;
-        availableHeight = height - topNotUsableSize - bottomNotUsableHeightWithXLabels;
+        if(config.xAxisBottom)
+        {
+          bottomNotUsableHeightWithoutXLabels = borderWidth + config.spaceBottom + footNoteHeight + spaceLegendHeight + xAxisLabelHeight;
+          bottomNotUsableHeightWithXLabels = bottomNotUsableHeightWithoutXLabels + xLabelHeight;
+          availableHeight = height - topNotUsableSize - bottomNotUsableHeightWithXLabels;
+        }
+        else
+        {
+          bottomNotUsableHeightWithoutXLabels = borderWidth + config.spaceBottom + footNoteHeight + spaceLegendHeight + xAxisLabelHeight;
+          bottomNotUsableHeightWithXLabels = bottomNotUsableHeightWithoutXLabels ;
+          availableHeight = height - topNotUsableSize - bottomNotUsableHeightWithXLabels;
+        }
 
         // ----------------------- DRAW EXTERNAL ELEMENTS -------------------------------------------------
 
@@ -3754,16 +3895,18 @@ window.Chart = function (context) {
         // Draw X Axis Label
 
         if (xAxisLabelHeight > 0) {
-            ctx.save();
-            ctx.beginPath();
-            ctx.font = config.xAxisFontStyle + " " + config.xAxisFontSize + "px " + config.xAxisFontFamily;
-            ctx.fillStyle = config.xAxisFontColor;
-            ctx.textAlign = "center";
-            ctx.textBaseline = "bottom";
-            ctx.translate(leftNotUsableSize + (availableWidth / 2), xAxisLabelPos);
-            ctx.fillText(config.xAxisLabel, 0, 0);
-            ctx.stroke();
-            ctx.restore();
+            if (config.xAxisBottom) {
+              ctx.save();
+              ctx.beginPath();
+              ctx.font = config.xAxisFontStyle + " " + config.xAxisFontSize + "px " + config.xAxisFontFamily;
+              ctx.fillStyle = config.xAxisFontColor;
+              ctx.textAlign = "center";
+              ctx.textBaseline = "bottom";
+              ctx.translate(leftNotUsableSize + (availableWidth / 2), xAxisLabelPos);
+              ctx.fillText(config.xAxisLabel, 0, 0);
+              ctx.stroke();
+              ctx.restore();
+            }
         }
 
         // Draw Legend
