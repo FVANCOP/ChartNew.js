@@ -2027,7 +2027,7 @@ window.Chart = function (context) {
             ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
 
             //X Labels     
-            if(config.xAxisTop || config.xAxisTop) {                                                    
+            if(config.xAxisTop || config.xAxisBottom) {                                                    
               ctx.textBaseline = "top";
               if (msr.rotateLabels > 90) {
                   ctx.save();
@@ -2284,7 +2284,7 @@ window.Chart = function (context) {
 
             //X axis labels                                                          
 
-            if(config.xAxisTop || config.xAxisTop) {                                                    
+            if(config.xAxisTop || config.xAxisBottom) {                                                    
 
               ctx.textBaseline = "top";
               if (msr.rotateLabels > 90) {
@@ -2557,7 +2557,7 @@ window.Chart = function (context) {
 
             //X axis line                                                          
 
-            if(config.xAxisTop || config.xAxisTop) {                                                    
+            if(config.xAxisTop || config.xAxisBottom) {                                                    
               ctx.textBaseline = "top";
               if (msr.rotateLabels > 90) {
                   ctx.save();
@@ -2848,7 +2848,7 @@ window.Chart = function (context) {
             ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
 
             //X axis line                                                          
-            if(config.xAxisTop || config.xAxisTop) {                                                    
+            if(config.xAxisTop || config.xAxisBottom) {                                                    
               ctx.textBaseline = "top";
               if (msr.rotateLabels > 90) {
                   ctx.save();
@@ -3129,7 +3129,7 @@ window.Chart = function (context) {
             ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
 
             //X axis line                                                          
-            if(config.xAxisTop || config.xAxisTop) {                                                    
+            if(config.xAxisTop || config.xAxisBottom) {                                                    
               ctx.textBaseline = "top";
               if (msr.rotateLabels > 90) {
                   ctx.save();
