@@ -165,21 +165,66 @@ function isIE() {
     return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
 }
 
-function saveCanvas(ctx,config)
-{
+function mergeChartConfig(defaults, userDefined) {
+        var returnObj = {};
+        for (var attrname in defaults) { returnObj[attrname] = defaults[attrname]; }
+        for (var attrname in userDefined) { returnObj[attrname] = userDefined[attrname]; }
+        return returnObj;
+}
 
-        /* And ink them */
+function sleep(ms)
+{
+		var dt = new Date();
+		dt.setTime(dt.getTime() + ms);
+		while (new Date().getTime() < dt.getTime());
+}
+
+function saveCanvas(ctx,data,config,tpgraph)
+{
         cvSave = ctx.getImageData(0,0,ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = config.savePngBackgroundColor;
-        ctx.strokeStyle = config.savePngBackgroundColor;
-        ctx.beginPath();
-        ctx.moveTo(0,0);
-        ctx.lineTo(0,ctx.canvas.height);
-        ctx.lineTo(ctx.canvas.width,ctx.canvas.height);
-        ctx.lineTo(ctx.canvas.width,0);
-        ctx.lineTo(0,0);
-        ctx.stroke();
-        ctx.fill();
+
+        var saveCanvasConfig = {
+          savePng : false,
+          annotateDisplay : false,
+          animation : false,
+          dynamicDisplay : false
+        };
+    
+        var savePngConfig = mergeChartConfig(config, saveCanvasConfig);
+
+        savePngConfig.clearRect = false;
+       
+        /* And ink them */
+
+        switch(tpgraph){
+          case "Bar":
+             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).Bar(data,savePngConfig);
+             break;
+          case "Pie":
+             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).Pie(data,savePngConfig);
+             break;
+          case "Doughnut":
+             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).Doughnut(data,savePngConfig);
+             break;
+          case "Radar":
+             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).Radar(data,savePngConfig);
+             break;
+          case "PolarArea":
+             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).PolarArea(data,savePngConfig);
+             break;
+          case "HorizontalBar":
+             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).HorizontalBar(data,savePngConfig);
+             break;
+          case "StackedBar":
+             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).StackedBar(data,savePngConfig);
+             break;
+          case "HorizontalStackedBar":
+             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).HorizontalStackedBar(data,savePngConfig);
+             break;
+          case "Line":
+             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).Line(data,savePngConfig);
+             break;
+        }
 
         document.location.href= ctx.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
         ctx.putImageData(cvSave,0,0); 
@@ -994,6 +1039,7 @@ window.Chart = function (context) {
 
     chart.defaults = {};
     chart.defaults.commonOptions = {
+        clearRect : true,       // do not change clearRect options; for internal use only
         dynamicDisplay : false,
         graphSpaceBefore : 5,
         graphSpaceAfter : 5,
@@ -1045,7 +1091,7 @@ window.Chart = function (context) {
         annotateDisplay: false,  
         savePng : false,
         savePngFunction: "mousedown right", 
-        savePngBackgroundColor : 'rgba(0,0,0,0)',
+        savePngBackgroundColor : 'WHITE',
         annotateFunction: "mousemove",
         annotateFontFamily: "'Arial'",
         annotateBorder: 'none', 
@@ -1128,10 +1174,9 @@ window.Chart = function (context) {
         var annotateCnt = 0;
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        defMouse(ctx,config);
+        defMouse(ctx,data,config,"PolarArea");
         
-        clear(ctx);
-        ctx.clearRect(0, 0, width, height);
+        setRect(ctx,config);
 
         valueBounds = getValueBounds();
         //Check and set the scale
@@ -1296,18 +1341,16 @@ window.Chart = function (context) {
         var annotateCnt = 0;
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        defMouse(ctx,config);
+        defMouse(ctx,data,config,"Radar");
 
         //If no labels are defined set to an empty array, so referencing length for looping doesn't blow up.
         if (!data.labels) data.labels = [];
 
-        clear(ctx);
-        ctx.clearRect(0, 0, width, height);
-
+        setRect(ctx,config);
+        
         valueBounds = getValueBounds();
         //Check and set the scale
         labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
-
 
         if (!config.scaleOverride) {
 
@@ -1621,12 +1664,11 @@ window.Chart = function (context) {
         var annotateCnt = 0;
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        defMouse(ctx,config);
+        defMouse(ctx,data,config,"Pie");
 
         //In case we have a canvas that is not a square. Minus 5 pixels as padding round the edge.
 
-        clear(ctx);
-        ctx.clearRect(0, 0, width, height);
+        setRect(ctx,config);
 
         msr = setMeasures(data, config, ctx, height, width, null, true, false, false, false);
 
@@ -1712,11 +1754,9 @@ window.Chart = function (context) {
         var annotateCnt = 0;
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        defMouse(ctx,config);
+        defMouse(ctx,data,config,"Doughnut");
 
-        clear(ctx);
-        ctx.clearRect(0, 0, width, height);
-
+        setRect(ctx,config);
         msr = setMeasures(data, config, ctx, height, width, null, true, false, false, false);
 
 
@@ -1799,11 +1839,9 @@ window.Chart = function (context) {
 
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        defMouse(ctx,config);
+        defMouse(ctx,data,config,"Line");
 
-        clear(ctx);
-        ctx.clearRect(0, 0, width, height);
-
+        setRect(ctx,config);
         valueBounds = getValueBounds();
 
         // true or fuzzy (error for negativ values (included 0))
@@ -1851,12 +1889,12 @@ window.Chart = function (context) {
         xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
 
         drawLabels();
-        animationLoop(config, drawScale, drawLines, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
         var zeroY = 0;
         if (valueBounds.minValue < 0) {
             var zeroY = calculateOffset(config, 0, calculatedScale, scaleHop);
         }
-
+        animationLoop(config, drawScale, drawLines, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
+        
         function drawLines(animPc) {
             var totvalue = new Array();
             var maxvalue = new Array();
@@ -1942,6 +1980,7 @@ window.Chart = function (context) {
                 if (config.datasetFill) {
                     ctx.lineTo(yAxisPosX + (valueHop * (data.datasets[i].data.length - 1)), xAxisPosY - zeroY);
                     ctx.lineTo(yAxisPosX, xAxisPosY - zeroY);
+                    ctx.lineTo(yAxisPosX, xAxisPosY - animPc * (calculateOffset(config, data.datasets[i].data[0], calculatedScale, scaleHop)));
                     ctx.closePath();
                     ctx.fillStyle = data.datasets[i].fillColor;
                     ctx.fill();
@@ -2119,10 +2158,9 @@ window.Chart = function (context) {
         var annotateCnt = 0;
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        defMouse(ctx,config);
+        defMouse(ctx,data,config,"StackedBar");
 
-        clear(ctx);
-        ctx.clearRect(0, 0, width, height);
+        setRect(ctx,config);
 
         valueBounds = getValueBounds();
         //Check and set the scale
@@ -2376,11 +2414,9 @@ window.Chart = function (context) {
         var annotateCnt = 0;
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        defMouse(ctx,config);
+        defMouse(ctx,data,config,"HorizontalStackedBar");
 
-        clear(ctx);
-        ctx.clearRect(0, 0, width, height);
-
+        setRect(ctx,config);
         valueBounds = getValueBounds();
         //Check and set the scale
         labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
@@ -2646,11 +2682,9 @@ window.Chart = function (context) {
         
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        defMouse(ctx,config);
+        defMouse(ctx,data,config,"Bar");
 
-        clear(ctx);
-        ctx.clearRect(0, 0, width, height);
-
+        setRect(ctx,config);
         valueBounds = getValueBounds();
 
         // true or fuzzy (error for negativ values (included 0))
@@ -2936,11 +2970,9 @@ window.Chart = function (context) {
         var annotateCnt = 0;
         jsGraphAnnotate[ctx.canvas.id] = new Array();
 
-        defMouse(ctx,config);
+        defMouse(ctx,data,config,"HorizontalBar");
 
-        clear(ctx);
-        ctx.clearRect(0, 0, width, height);
-
+        setRect(ctx,config);
         valueBounds = getValueBounds();
         //Check and set the scale
         labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
@@ -3230,12 +3262,14 @@ window.Chart = function (context) {
 
         if (typeof drawScale !== "function") drawScale = function () { };
 
-        requestAnimFrame(animLoop);
+        if(config.clearRect)requestAnimFrame(animLoop);
+        else animLoop();
+        
 
         function animateFrame() {
             var easeAdjustedAnimationPercent = (config.animation) ? CapValue(easingFunction(percentAnimComplete), null, 0) : 1;
 
-            if (!(isIE() < 9 && isIE() != false)) ctx.clearRect(clrx, clry, clrwidth, clrheight);
+            if (!(isIE() < 9 && isIE() != false) && config.clearRect) ctx.clearRect(clrx, clry, clrwidth, clrheight);
 
             dispCrossText(ctx, config, midPosX, midPosY, borderX, borderY, false, data, easeAdjustedAnimationPercent);
 
@@ -4043,7 +4077,30 @@ window.Chart = function (context) {
         return Math.log(val) / Math.LN10;
     }
     
-    function defMouse(ctx,config) {
+    function setRect(ctx,config)
+    {
+        if(config.clearRect){
+          clear(ctx);
+          ctx.clearRect(0, 0, width, height);
+        } else {
+          clear(ctx);
+          ctx.clearRect(0, 0, width, height);
+          ctx.fillStyle = config.savePngBackgroundColor;
+          ctx.strokeStyle = config.savePngBackgroundColor;
+          ctx.beginPath();
+          ctx.moveTo(0,0);
+          ctx.lineTo(0,ctx.canvas.height);
+          ctx.lineTo(ctx.canvas.width,ctx.canvas.height);
+          ctx.lineTo(ctx.canvas.width,0);
+          ctx.lineTo(0,0);
+          ctx.stroke();
+          ctx.fill(); 
+
+        }
+    }
+
+    
+    function defMouse(ctx,data,config,tpgraph) {
 
         if (config.annotateDisplay == true) {
             if (cursorDivCreated == false) oCursor = new makeCursorObj('divCursor');
@@ -4067,13 +4124,13 @@ window.Chart = function (context) {
               if ((config.savePngFunction.split(' ')[1]=="left" && event.which==1) ||
                   (config.savePngFunction.split(' ')[1]=="middle" && event.which==2) ||
                   (config.savePngFunction.split(' ')[1]=="right" && event.which==3) ||
-                  (typeof(config.savePngFunction.split(' ')[1])!="string")) saveCanvas(ctx,config); 
+                  (typeof(config.savePngFunction.split(' ')[1])!="string")) saveCanvas(ctx,data,config,tpgraph); 
               });  
             else ctx.canvas.addEventListener(config.savePngFunction.split(' ')[0], function (event) {   
               if ((config.savePngFunction.split(' ')[1]=="left" && event.which==1) ||
                   (config.savePngFunction.split(' ')[1]=="middle" && event.which==2) ||
                   (config.savePngFunction.split(' ')[1]=="right" && event.which==3) ||
-                  (typeof(config.savePngFunction.split(' ')[1])!="string")) saveCanvas(ctx,config); 
+                  (typeof(config.savePngFunction.split(' ')[1])!="string")) saveCanvas(ctx,data,config,tpgraph); 
               }
               ,false);
   
