@@ -1,3 +1,6 @@
+
+
+
 /*
  * ChartNew.js
  * 
@@ -35,20 +38,49 @@
  */
 
 
+     var charJSPersonnalDefaultOptions = { }
+         
+     var charJSPersonnalDefaultOptionsLine = { }
+     var charJSPersonnalDefaultOptionsRadar = { }
+     var charJSPersonnalDefaultOptionsPolarArea = { }
+     var charJSPersonnalDefaultOptionsPie = { }
+     var charJSPersonnalDefaultOptionsDoughnut = { }
+     var charJSPersonnalDefaultOptionsBar = { }
+     var charJSPersonnalDefaultOptionsStackedBar = { }
+     var charJSPersonnalDefaultOptionsHorizontalBar = { }
+     var charJSPersonnalDefaultOptionsHorizontalStackedBar = { }
+
+
+
 ///////// FUNCTIONS THAN CAN BE USED IN THE TEMPLATES ///////////////////////////////////////////
 
 
+
 function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    
+    if(typeof(x)=="number")return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    else return(x);
 }
 
 function roundTo(num, place) {
-    return +(Math.round(num + "e+" + place) + "e-" + place);
+    if(typeof(num)=="number")return +(Math.round(num + "e+" + place) + "e-" + place);
+    else return(num);
 }
 
-function roundToWithThousands(num, place) {
-    return numberWithCommas(roundTo(num, place));
+function roundToWithThousands(config, num, place) {
+
+    if(config.decimalSeparator!="." && typeof(num)=="string")
+    {
+      vl=numberWithCommas(roundTo(1*num.replace(config.decimalSeparator,"."),place));
+      return vl.toString().replace(/\./g,config.decimalSeparator);
+    }
+    else
+    {
+      return numberWithCommas(roundTo(num, place));
+    }
 }
+
+
 
 
 ///////// ANNOTATE PART OF THE SCRIPT ///////////////////////////////////////////
@@ -62,6 +94,46 @@ Distributed by Hypergurl
 ********************************************************************************/
 
 var cachebis = {};
+
+function fmtChartJSPerso(config,value,fmt)
+{
+  switch(fmt){
+    case "SampleJS_Format":
+      if(typeof(value)=="number")return_value="My Format : " + value.toString()+ " $";
+      else return_value=value + "XX";
+      break;
+    case "Change_Month":
+      if(typeof(value)=="string")return_value=value.toString()+ " 2014";
+      else return_value=value.toString()+"YY";
+      break;
+      
+    default: 
+      return_value=value;
+      break;
+    }  
+  return(return_value);
+}
+
+function fmtChartJS(config,value,fmt)
+{
+
+//alert(fmt);
+  if(fmt=="none" && typeof(value)=="number")
+  {
+
+    if(config.decimalSeparator!=".")
+    {
+      return_value=value.toString().replace(/\./g,config.decimalSeparator);
+    }
+    else return_value=value;
+  }
+  else
+  {
+    return_value=fmtChartJSPerso(config,value,fmt);
+  }
+  return(return_value);
+}
+
 
 function tmplbis(str, data) {
     // Figure out if we're getting a template, or if we need to
@@ -198,31 +270,31 @@ function saveCanvas(ctx,data,config,tpgraph)
 
         switch(tpgraph){
           case "Bar":
-             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).Bar(data,savePngConfig);
+             new Chart(ctx.canvas.getContext("2d")).Bar(data,savePngConfig);
              break;
           case "Pie":
-             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).Pie(data,savePngConfig);
+             new Chart(ctx.canvas.getContext("2d")).Pie(data,savePngConfig);
              break;
           case "Doughnut":
-             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).Doughnut(data,savePngConfig);
+             new Chart(ctx.canvas.getContext("2d")).Doughnut(data,savePngConfig);
              break;
           case "Radar":
-             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).Radar(data,savePngConfig);
+             new Chart(ctx.canvas.getContext("2d")).Radar(data,savePngConfig);
              break;
           case "PolarArea":
-             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).PolarArea(data,savePngConfig);
+             new Chart(ctx.canvas.getContext("2d")).PolarArea(data,savePngConfig);
              break;
           case "HorizontalBar":
-             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).HorizontalBar(data,savePngConfig);
+             new Chart(ctx.canvas.getContext("2d")).HorizontalBar(data,savePngConfig);
              break;
           case "StackedBar":
-             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).StackedBar(data,savePngConfig);
+             new Chart(ctx.canvas.getContext("2d")).StackedBar(data,savePngConfig);
              break;
           case "HorizontalStackedBar":
-             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).HorizontalStackedBar(data,savePngConfig);
+             new Chart(ctx.canvas.getContext("2d")).HorizontalStackedBar(data,savePngConfig);
              break;
           case "Line":
-             new Chart(document.getElementById(ctx.canvas.id).getContext("2d")).Line(data,savePngConfig);
+             new Chart(ctx.canvas.getContext("2d")).Line(data,savePngConfig);
              break;
         }
 
@@ -362,25 +434,25 @@ function doMouseMove(ctx, config, event) {
                     annotateDIV.style.borderRadius = config.annotateBorderRadius;
                     annotateDIV.style.backgroundColor = config.annotateBackgroundColor;
 
-                    v1 = jsGraphAnnotate[ctx.canvas.id][i][7];       // V1=Label
-                    v2 = jsGraphAnnotate[ctx.canvas.id][i][8];       // V2=Data Value
-                    v3 = jsGraphAnnotate[ctx.canvas.id][i][9];       // V3=Cumulated Value
-                    v4 = jsGraphAnnotate[ctx.canvas.id][i][10];      // V4=Total Data Value
-                    v5 = jsGraphAnnotate[ctx.canvas.id][i][11];      // V5=Angle
-                    v6 = 100 * v2 / v4;                                  // v6=Percentage;
-                    v7 = jsGraphAnnotate[ctx.canvas.id][i][1];       // v7=midPointX of arc;
-                    v8 = jsGraphAnnotate[ctx.canvas.id][i][2];       // v8=midPointY of arc;
-                    v9 = jsGraphAnnotate[ctx.canvas.id][i][3];       // v9=radius Minimum;
-                    v10 = jsGraphAnnotate[ctx.canvas.id][i][4];      // v10=radius Maximum;
-                    v11 = jsGraphAnnotate[ctx.canvas.id][i][5];      // v11=start angle;
-                    v12 = jsGraphAnnotate[ctx.canvas.id][i][6];      // v12=stop angle;
-                    v13 = jsGraphAnnotate[ctx.canvas.id][i][7];      // v13=position in Data;
+                    v1 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][7],config.fmtV1);       // V1=Label
+                    v2 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][8],config.fmtV2);       // V2=Data Value
+                    v3 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][9],config.fmtV3);       // V3=Cumulated Value
+                    v4 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][10],config.fmtV4);      // V4=Total Data Value
+                    v5 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][11],config.fmtV5);      // V5=Angle
+                    v6 = fmtChartJS(config,100 * jsGraphAnnotate[ctx.canvas.id][i][8] / jsGraphAnnotate[ctx.canvas.id][i][10],config.fmtV6);                                  // v6=Percentage;
+                    v7 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][1],config.fmtV7);       // v7=midPointX of arc;
+                    v8 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][2],config.fmtV8);       // v8=midPointY of arc;
+                    v9 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][3],config.fmtV9);       // v9=radius Minimum;
+                    v10 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][4],config.fmtV10);      // v10=radius Maximum;
+                    v11 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][5],config.fmtV11);      // v11=start angle;
+                    v12 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][6],config.fmtV12);      // v12=stop angle;
+                    v13 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][7],config.fmtV13);      // v13=position in Data;
 
                     graphPosX = canvas_pos.x;
                     graphPosY = canvas_pos.y;
 
                     // create label text
-                    dispString = tmplbis(config.annotateLabel, { v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, v13: v13, graphPosX: graphPosX, graphPosY: graphPosY });
+                    dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, v13: v13, graphPosX: graphPosX, graphPosY: graphPosY });
                     annotateDIV.innerHTML = font + dispString + "</font>";
 
 
@@ -398,23 +470,24 @@ function doMouseMove(ctx, config, event) {
                 annotateDIV.style.borderRadius = config.annotateBorderRadius;
                 annotateDIV.style.backgroundColor = config.annotateBackgroundColor;
 
-                v1 = jsGraphAnnotate[ctx.canvas.id][i][5];       // V1=Label1
-                v2 = jsGraphAnnotate[ctx.canvas.id][i][6];       // V2=Label2
-                v3 = jsGraphAnnotate[ctx.canvas.id][i][7];       // V3=Data Value
-                v4 = jsGraphAnnotate[ctx.canvas.id][i][8];       // V4=Cumulated Value
-                v5 = jsGraphAnnotate[ctx.canvas.id][i][9];      // V5=Total Data Value
-                v6 = 100 * v3 / v5;                                  // v6=Percentage;
-                v7 = jsGraphAnnotate[ctx.canvas.id][i][1];       // v7=top X of rectangle;
-                v8 = jsGraphAnnotate[ctx.canvas.id][i][2];       // v8=top Y of rectangle;
-                v9 = jsGraphAnnotate[ctx.canvas.id][i][3];       // v9=bottom X of rectangle;
-                v10 = jsGraphAnnotate[ctx.canvas.id][i][4];      // v10=bottom Y of rectangle;
-                v11 = jsGraphAnnotate[ctx.canvas.id][i][10];      // v11=position in Dataset;
-                v12 = jsGraphAnnotate[ctx.canvas.id][i][11];      // v12=position in Dataset[v11].Data;
+                v6 = fmtChartJS(config,100 * jsGraphAnnotate[ctx.canvas.id][i][7] / jsGraphAnnotate[ctx.canvas.id][i][9],config.fmtV6);                                  // v6=Percentage;
+                v1 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][5],config.fmtV1);       // V1=Label1
+                v2 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][6],config.fmtV2);       // V2=Label2
+                v3 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][7],config.fmtV3);       // V3=Data Value
+                v4 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][8],config.fmtV4);       // V4=Cumulated Value
+                v5 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][9],config.fmtV5);      // V5=Total Data Value
+                v6 = fmtChartJS(config,100 * jsGraphAnnotate[ctx.canvas.id][i][7] / jsGraphAnnotate[ctx.canvas.id][i][9],config.fmtV6);                                  // v6=Percentage;
+                v7 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][1],config.fmtV7);       // v7=top X of rectangle;
+                v8 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][2],config.fmtV8);       // v8=top Y of rectangle;
+                v9 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][3],config.fmtV9);       // v9=bottom X of rectangle;
+                v10 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][4],config.fmtV10);      // v10=bottom Y of rectangle;
+                v11 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][10],config.fmtV11);      // v11=position in Dataset;
+                v12 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][11],config.fmtV12);      // v12=position in Dataset[v11].Data;
 
                 graphPosX = canvas_pos.x;
                 graphPosY = canvas_pos.y;
 
-                dispString = tmplbis(config.annotateLabel, { v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY });
+                dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY });
                 annotateDIV.innerHTML = font + dispString + "</font>";
 
                 x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
@@ -432,23 +505,23 @@ function doMouseMove(ctx, config, event) {
                 annotateDIV.style.borderRadius = config.annotateBorderRadius;
                 annotateDIV.style.backgroundColor = config.annotateBackgroundColor;
 
-                v1 = jsGraphAnnotate[ctx.canvas.id][i][3];       // V1=Label1
-                v2 = jsGraphAnnotate[ctx.canvas.id][i][4];       // V2=Label2
-                v3 = jsGraphAnnotate[ctx.canvas.id][i][5];       // V3=Data Value
-                v4 = jsGraphAnnotate[ctx.canvas.id][i][6];       // V4=Difference with Previous line
-                v5 = jsGraphAnnotate[ctx.canvas.id][i][7];      // V5=Difference with next line;
-                v6 = jsGraphAnnotate[ctx.canvas.id][i][8];      // V6=max;
-                v7 = jsGraphAnnotate[ctx.canvas.id][i][9];      // V7=Total;
-                v8 = 100 * v3 / v7;                                  // v8=percentage;
-                v9 = jsGraphAnnotate[ctx.canvas.id][i][1];       // v9=pos X of point;
-                v10 = jsGraphAnnotate[ctx.canvas.id][i][2];       // v10=pos Y of point;
-                v11 = jsGraphAnnotate[ctx.canvas.id][i][10];      // v11=position in Dataset;
-                v12 = jsGraphAnnotate[ctx.canvas.id][i][11];      // v12=position in Dataset[v11].Data;
+                v1 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][3],config.fmtV1);       // V1=Label1
+                v2 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][4],config.fmtV2);       // V2=Label2
+                v3 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][5],config.fmtV3);       // V3=Data Value
+                v4 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][6],config.fmtV4);       // V4=Difference with Previous line
+                v5 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][7],config.fmtV5);      // V5=Difference with next line;
+                v6 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][8],config.fmtV6);      // V6=max;
+                v7 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][9],config.fmtV7);      // V7=Total;
+                v8 = fmtChartJS(config,100 * jsGraphAnnotate[ctx.canvas.id][i][5] / jsGraphAnnotate[ctx.canvas.id][i][9],config.fmtV8);                                  // v8=percentage;
+                v9 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][1],config.fmtV9);       // v9=pos X of point;
+                v10 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][2],config.fmtV10);       // v10=pos Y of point;
+                v11 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][10],config.fmtV11);      // v11=position in Dataset;
+                v12 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][11],config.fmtV12);      // v12=position in Dataset[v11].Data;
 
                 graphPosX = canvas_pos.x;
                 graphPosY = canvas_pos.y;
 
-                dispString = tmplbis(config.annotateLabel, { v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY });
+                dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY });
                 annotateDIV.innerHTML = font + dispString + "</font>";
 
                 x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
@@ -467,7 +540,7 @@ function doMouseMove(ctx, config, event) {
 
 ///////// GRAPHICAL PART OF THE SCRIPT ///////////////////////////////////////////
 
-
+ 
 
 //Define the global Chart Variable as a class.
 window.Chart = function (context) {
@@ -654,11 +727,15 @@ window.Chart = function (context) {
             animateRotate: true,
             animateScale: false,
             onAnimationComplete: null,
-            annotateLabel: "<%=(v1 == ''? '' : v1+':')+ roundToWithThousands(v2,2) + ' (' + roundToWithThousands(v6,1) + ' %)'%>",
+            annotateLabel: "<%=(v1 == ''? '' : v1+':')+ roundToWithThousands(config,v2,2) + ' (' + roundToWithThousands(config,v6,1) + ' %)'%>",
             startAngle : 90
         };
         chart.PolarArea.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.PolarArea.defaults);
+        chart.PolarArea.defaults = mergeChartConfig(chart.PolarArea.defaults, charJSPersonnalDefaultOptions);
+        chart.PolarArea.defaults = mergeChartConfig(chart.PolarArea.defaults, charJSPersonnalDefaultOptionsPolarArea);
+
         var config = (options) ? mergeChartConfig(chart.PolarArea.defaults, options) : chart.PolarArea.defaults;
+        
 
         return new PolarArea(data, config, context);
     };
@@ -701,13 +778,16 @@ window.Chart = function (context) {
             animationSteps: 60,
             animationEasing: "easeOutQuart",
             onAnimationComplete: null,
-            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? '/' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + roundToWithThousands(v3,2)%>",
+            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? '/' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + roundToWithThousands(config,v3,2)%>",
             startAngle: 90,
             graphMaximized : false   // if true, the graph will not be centered in the middle of the canvas
         };
 
         // merge annotate defaults
         chart.Radar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Radar.defaults) ;
+        chart.Radar.defaults = mergeChartConfig(chart.Radar.defaults, charJSPersonnalDefaultOptions);
+        chart.Radar.defaults = mergeChartConfig(chart.Radar.defaults, charJSPersonnalDefaultOptionsRadar);
+
         var config = (options) ? mergeChartConfig(chart.Radar.defaults, options) : chart.Radar.defaults;
 
         return new Radar(data, config, context);
@@ -724,12 +804,14 @@ window.Chart = function (context) {
             animateRotate: true,
             animateScale: false,
             onAnimationComplete: null,
-            annotateLabel: "<%=(v1 == ''? '' : v1+':')+ roundToWithThousands(v2,2) + ' (' + roundToWithThousands(v6,1) + ' %)'%>",
+            annotateLabel: "<%=(v1 == ''? '' : v1+':')+ roundToWithThousands(config,v2,2) + ' (' + roundToWithThousands(config,v6,1) + ' %)'%>",
             startAngle: 90
         };
 
         // merge annotate defaults
         chart.Pie.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Pie.defaults);
+        chart.Pie.defaults = mergeChartConfig(chart.Pie.defaults, charJSPersonnalDefaultOptions);
+        chart.Pie.defaults = mergeChartConfig(chart.Pie.defaults, charJSPersonnalDefaultOptionsPie);
         var config = (options) ? mergeChartConfig(chart.Pie.defaults, options) : chart.Pie.defaults;
 
         return new Pie(data, config, context);
@@ -748,12 +830,14 @@ window.Chart = function (context) {
             animateRotate: true,
             animateScale: false,
             onAnimationComplete: null,
-            annotateLabel: "<%=(v1 == ''? '' : v1+':')+ roundToWithThousands(v2,2) + ' (' + roundToWithThousands(v6,1) + ' %)'%>",
+            annotateLabel: "<%=(v1 == ''? '' : v1+':')+ roundToWithThousands(config,v2,2) + ' (' + roundToWithThousands(config,v6,1) + ' %)'%>",
             startAngle: 90
         };
 
         // merge annotate defaults
         chart.Doughnut.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Doughnut.defaults);
+        chart.Doughnut.defaults = mergeChartConfig(chart.Doughnut.defaults, charJSPersonnalDefaultOptions);
+        chart.Doughnut.defaults = mergeChartConfig(chart.Doughnut.defaults, charJSPersonnalDefaultOptionsDoughnut);
         var config = (options) ? mergeChartConfig(chart.Doughnut.defaults, options) : chart.Doughnut.defaults;
 
         return new Doughnut(data, config, context);
@@ -811,13 +895,15 @@ window.Chart = function (context) {
             animationSteps: 60,
             animationEasing: "easeOutQuart",
             onAnimationComplete: null,
-            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? '/' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + roundToWithThousands(v3,2)%>"
+            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? '/' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + roundToWithThousands(config,v3,2)%>"
             
         };
 
         // merge annotate defaults
         chart.Line.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Line.defaults);
         chart.Line.defaults = mergeChartConfig(chart.defaults.xyAxisCommonOptions, chart.Line.defaults);
+        chart.Line.defaults = mergeChartConfig(chart.Line.defaults, charJSPersonnalDefaultOptions);
+        chart.Line.defaults = mergeChartConfig(chart.Line.defaults, charJSPersonnalDefaultOptionsLine);
         
         var config = (options) ? mergeChartConfig(chart.Line.defaults, options) : chart.Line.defaults;
 
@@ -860,13 +946,15 @@ window.Chart = function (context) {
             animationSteps: 60,
             animationEasing: "easeOutQuart",
             onAnimationComplete: null,
-            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? '/' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + roundToWithThousands(v3,2) + ' (' + roundToWithThousands(v6,1) + ' %)'%>"
+            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? '/' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + roundToWithThousands(config,v3,2) + ' (' + roundToWithThousands(config,v6,1) + ' %)'%>"
          };   
             
 
         // merge annotate defaults
         chart.StackedBar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.StackedBar.defaults);
         chart.StackedBar.defaults = mergeChartConfig(chart.defaults.xyAxisCommonOptions, chart.StackedBar.defaults);
+        chart.StackedBar.defaults = mergeChartConfig(chart.StackedBar.defaults, charJSPersonnalDefaultOptions);
+        chart.StackedBar.defaults = mergeChartConfig(chart.StackedBar.defaults, charJSPersonnalDefaultOptionsStackedBar);
 
         var config = (options) ? mergeChartConfig(chart.StackedBar.defaults, options) : chart.StackedBar.defaults;
         return new StackedBar(data, config, context);
@@ -907,13 +995,15 @@ window.Chart = function (context) {
             animationSteps: 60,
             animationEasing: "easeOutQuart",
             onAnimationComplete: null,
-            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? '/' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + roundToWithThousands(v3,2) + ' (' + roundToWithThousands(v6,1) + ' %)'%>"
+            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? '/' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + roundToWithThousands(config,v3,2) + ' (' + roundToWithThousands(config,v6,1) + ' %)'%>"
          };   
             
 
         // merge annotate defaults
         chart.HorizontalStackedBar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.HorizontalStackedBar.defaults);
         chart.HorizontalStackedBar.defaults = mergeChartConfig(chart.defaults.xyAxisCommonOptions, chart.HorizontalStackedBar.defaults);
+        chart.HorizontalStackedBar.defaults = mergeChartConfig(chart.HorizontalStackedBar.defaults, charJSPersonnalDefaultOptions);
+        chart.HorizontalStackedBar.defaults = mergeChartConfig(chart.HorizontalStackedBar.defaults, charJSPersonnalDefaultOptionsHorizontalStackedBar);
         var config = (options) ? mergeChartConfig(chart.HorizontalStackedBar.defaults, options) : chart.HorizontalStackedBar.defaults;
         return new HorizontalStackedBar(data, config, context);
     }
@@ -967,12 +1057,14 @@ window.Chart = function (context) {
             animationSteps: 60,
             animationEasing: "easeOutQuart",
             onAnimationComplete: null,
-            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? '/' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + roundToWithThousands(v3,2) + ' (' + roundToWithThousands(v6,1) + ' %)'%>"
+            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? '/' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + roundToWithThousands(config,v3,2) + ' (' + roundToWithThousands(config,v6,1) + ' %)'%>"
          };   
 
         // merge annotate defaults
         chart.Bar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Bar.defaults);
         chart.Bar.defaults = mergeChartConfig(chart.defaults.xyAxisCommonOptions, chart.Bar.defaults);
+        chart.Bar.defaults = mergeChartConfig(chart.Bar.defaults, charJSPersonnalDefaultOptions);
+        chart.Bar.defaults = mergeChartConfig(chart.Bar.defaults, charJSPersonnalDefaultOptionsBar);
         var config = (options) ? mergeChartConfig(chart.Bar.defaults, options) : chart.Bar.defaults;
 
         return new Bar(data, config, context);
@@ -1025,13 +1117,15 @@ window.Chart = function (context) {
             animationSteps: 60,
             animationEasing: "easeOutQuart",
             onAnimationComplete: null,
-            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? '/' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + roundToWithThousands(v3,2) + ' (' + roundToWithThousands(v6,1) + ' %)'%>"
+            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? '/' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + roundToWithThousands(config,v3,2) + ' (' + roundToWithThousands(config,v6,1) + ' %)'%>"
             
         };
 
         // merge annotate defaults
         chart.HorizontalBar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.HorizontalBar.defaults);
         chart.HorizontalBar.defaults = mergeChartConfig(chart.defaults.xyAxisCommonOptions, chart.HorizontalBar.defaults);
+        chart.HorizontalBar.defaults = mergeChartConfig(chart.HorizontalBar.defaults, charJSPersonnalDefaultOptions);
+        chart.HorizontalBar.defaults = mergeChartConfig(chart.HorizontalBar.defaults, charJSPersonnalDefaultOptionsHorizontalBar);
         var config = (options) ? mergeChartConfig(chart.HorizontalBar.defaults, options) : chart.HorizontalBar.defaults;
 
         return new HorizontalBar(data, config, context);
@@ -1118,7 +1212,24 @@ window.Chart = function (context) {
         spaceTop: 0,
         spaceBottom: 0,
         spaceRight: 0,
-        spaceLeft: 0
+        spaceLeft: 0,
+        decimalSeparator : ".",
+        fmtV1 : "none",
+        fmtV2 : "none",
+        fmtV3 : "none",
+        fmtV4 : "none",
+        fmtV5 : "none",
+        fmtV6 : "none",
+        fmtV7 : "none",
+        fmtV8 : "none",
+        fmtV9 : "none",
+        fmtV10 : "none",
+        fmtV11 : "none",
+        fmtV12 : "none",
+        fmtV13 : "none",
+        fmtXLabel : "none",
+        fmtYLabel : "none",
+        fmtLegend : "none"
     };
 
     chart.defaults.xyAxisCommonOptions = {
@@ -1183,7 +1294,6 @@ window.Chart = function (context) {
         labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
 
         if (!config.scaleOverride) {
-
             calculatedScale = calculateScale(config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
             msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, true, false, false, false);
         }
@@ -1379,7 +1489,6 @@ window.Chart = function (context) {
 
         //Radar specific functions.
         function drawAllDataPoints(animationDecimal) {
-
 
             var totvalue = new Array();
             var maxvalue = new Array();
@@ -1882,6 +1991,7 @@ window.Chart = function (context) {
         scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
         valueHop = Math.floor(msr.availableWidth / (data.labels.length - 1));
 
+        msr.clrwidth=msr.clrwidth-(msr.availableWidth-(data.labels.length - 1) * valueHop);
         msr.availableWidth = (data.labels.length - 1) * valueHop;
         msr.availableHeight = (calculatedScale.steps) * scaleHop;
 
@@ -1893,9 +2003,12 @@ window.Chart = function (context) {
         if (valueBounds.minValue < 0) {
             var zeroY = calculateOffset(config, 0, calculatedScale, scaleHop);
         }
+
+
         animationLoop(config, drawScale, drawLines, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
         
         function drawLines(animPc) {
+        
             var totvalue = new Array();
             var maxvalue = new Array();
 
@@ -1934,9 +2047,9 @@ window.Chart = function (context) {
 				       	    	    dotY = xAxisPosY - animPc*(calculateOffset(config, data.datasets[i].data[0],calculatedScale,scaleHop)),
    						       	    paddingTextX = config.inGraphDataPaddingX,
 	    				      	    paddingTextY = config.inGraphDataPaddingY;
-                        var dispString = tmplbis(config.inGraphDataTmpl, { v1 : lgtxt, v2 : lgtxt2, v3 : data.datasets[i].data[0], v4 : divprev, v5 : divnext, v6 : maxvalue[0], v7 : totvalue[0], v8 : i, v9 : 0});
+                        var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,data.datasets[i].data[0],config.fmtV3), v4 : fmtChartJS(config,divprev,config.fmtV4), v5 : fmtChartJS(config,divnext,config.fmtV5), v6 : fmtChartJS(config,maxvalue[0],config.fmtV6), v7 : fmtChartJS(config,totvalue[0],config.fmtV7), v8 : fmtChartJS(config,i,config.fmtV8), v9 : fmtChartJS(config,0,config.fmtV9)});
  			     			        ctx.translate(xPos(0) + paddingTextX, yPos(i,0) - paddingTextY);
-                        ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
+                        ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));                                                                                                                                                                                                                                                                                                          
  			     			        ctx.fillText(dispString, 0,0);
 					    	        ctx.restore();
                       }
@@ -1968,7 +2081,7 @@ window.Chart = function (context) {
 					       	    	    dotY = xAxisPosY - animPc*(calculateOffset(config, data.datasets[i].data[j],calculatedScale,scaleHop)),
     						       	    paddingTextX = config.inGraphDataPaddingX,
 		    				      	    paddingTextY = config.inGraphDataPaddingY;
-                          var dispString = tmplbis(config.inGraphDataTmpl, { v1 : lgtxt, v2 : lgtxt2, v3 : data.datasets[i].data[j], v4 : divprev, v5 : divnext, v6 : maxvalue[j], v7 : totvalue[j], v8 : i, v9 : j});
+                          var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,divprev,config.fmtV4), v5 : fmtChartJS(config,divnext,config.fmtV5), v6 : fmtChartJS(config,maxvalue[j],config.fmtV6), v7 : fmtChartJS(config,totvalue[j],config.fmtV7), v8 : fmtChartJS(config,i,config.fmtV8), v9 : fmtChartJS(config,j,config.fmtV9)});
                           ctx.translate(xPos(j) + paddingTextX, yPos(i,j) - paddingTextY);
                           ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
   			     			        ctx.fillText(dispString, 0,0);
@@ -2007,6 +2120,8 @@ window.Chart = function (context) {
             function xPos(iteration) {
                 return yAxisPosX + (valueHop * iteration);
             }
+
+
         }
 
         function drawScale() {
@@ -2088,10 +2203,10 @@ window.Chart = function (context) {
                   if (msr.rotateLabels > 0) {
                     ctx.translate(yAxisPosX + i * valueHop - config.scaleFontSize/2, msr.xLabelPos);
                     ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-                    ctx.fillText(data.labels[i], 0, 0);
+                    ctx.fillText(fmtChartJS(config,data.labels[i],config.fmtXLabel), 0, 0);
                   }
                   else {
-                    ctx.fillText(data.labels[i], yAxisPosX + i * valueHop, msr.xLabelPos);
+                    ctx.fillText(fmtChartJS(config,data.labels[i],config.fmtXLabel), yAxisPosX + i * valueHop, msr.xLabelPos);
                   }
                 ctx.restore();
                 }
@@ -2178,7 +2293,7 @@ window.Chart = function (context) {
             }
             for (var i = 0; i < calculatedScale.steps; i++) {
                 if (labelTemplateString) {
-                    calculatedScale.labels.push(tmpl(labelTemplateString, { value: 1 * ((config.scaleStartValue + (config.scaleStepWidth * (i + 1))).toFixed(getDecimalPlaces(config.scaleStepWidth))) }));
+                    calculatedScale.labels.push(tmpl(labelTemplateString, { value: fmtChartJS(config,1 * ((config.scaleStartValue + (config.scaleStepWidth * (i + 1))).toFixed(getDecimalPlaces(config.scaleStepWidth))),config.fmtYLabel) }));
                 }
             }
             msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, true, false, true, true);
@@ -2190,6 +2305,7 @@ window.Chart = function (context) {
         scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
         valueHop = Math.floor(msr.availableWidth / (data.labels.length));
 
+        msr.clrwidth=msr.clrwidth - (msr.availableWidth - ((data.labels.length) * valueHop));
         msr.availableWidth = (data.labels.length) * valueHop;
         msr.availableHeight = (calculatedScale.steps) * scaleHop;
 
@@ -2344,10 +2460,10 @@ window.Chart = function (context) {
                     if (msr.rotateLabels > 0) {
                         ctx.translate(yAxisPosX + i * valueHop + (barWidth / 2)- config.scaleFontSize/2, msr.xLabelPos);
                         ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-                        ctx.fillText(data.labels[i], 0, 0);
+                        ctx.fillText(fmtChartJS(config,data.labels[i],config.fmtXLabel), 0, 0);
                     }
                     else {
-                        ctx.fillText(data.labels[i], yAxisPosX + i * valueHop + (barWidth / 2), msr.xLabelPos);
+                        ctx.fillText(fmtChartJS(config,data.labels[i],config.fmtXLabel), yAxisPosX + i * valueHop + (barWidth / 2), msr.xLabelPos);
                     }
                     ctx.restore();
                 }
@@ -2435,7 +2551,7 @@ window.Chart = function (context) {
 
             for (var i = 0; i < calculatedScale.steps; i++) {
                 if (labelTemplateString) {
-                    calculatedScale.labels.push(tmpl(labelTemplateString, { value: 1 * ((config.scaleStartValue + (config.scaleStepWidth * (i + 1))).toFixed(getDecimalPlaces(config.scaleStepWidth))) }));
+                    calculatedScale.labels.push(tmpl(labelTemplateString, { value: fmtChartJS(config,1 * ((config.scaleStartValue + (config.scaleStepWidth * (i + 1))).toFixed(getDecimalPlaces(config.scaleStepWidth))),config.fmtYLabel) }));
                 }
             }
             msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, true, true, true, true);
@@ -2447,6 +2563,7 @@ window.Chart = function (context) {
         scaleHop = Math.floor(msr.availableHeight / data.labels.length);
         valueHop = Math.floor(msr.availableWidth / (calculatedScale.steps));
 
+        msr.clrwidth=msr.clrwidth - (msr.availableWidth - (calculatedScale.steps * valueHop));
         msr.availableWidth = (calculatedScale.steps) * valueHop;
         msr.availableHeight = (data.labels.length) * scaleHop;
 
@@ -2632,11 +2749,11 @@ window.Chart = function (context) {
                 if (config.scaleShowLabels) {
                     if (config.yAxisLeft) {
                         ctx.textAlign = "right";
-                        ctx.fillText(data.labels[j], yAxisPosX - (config.scaleTickSizeLeft + 3), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2);
+                        ctx.fillText(fmtChartJS(config,data.labels[j],config.fmtXLabel), yAxisPosX - (config.scaleTickSizeLeft + 3), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2);
                     }
                     if (config.yAxisRight) {
                         ctx.textAlign = "left";
-                        ctx.fillText(data.labels[j], yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + 3), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2);
+                        ctx.fillText(fmtChartJS(config,data.labels[j],config.fmtXLabel), yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + 3), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2);
                     }
                 }
             }
@@ -2725,6 +2842,7 @@ window.Chart = function (context) {
         scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
         valueHop = Math.floor(msr.availableWidth / (data.labels.length));
 
+        msr.clrwidth=msr.clrwidth - (msr.availableWidth - ((data.labels.length) * valueHop));
         msr.availableWidth = (data.labels.length) * valueHop;
         msr.availableHeight = (calculatedScale.steps) * scaleHop;
 
@@ -2815,7 +2933,7 @@ window.Chart = function (context) {
                     
                     ctx.translate(xPos,yPos);
 
-                    var dispString = tmplbis(config.inGraphDataTmpl, { v1 : lgtxt, v2 : lgtxt2, v3 : data.datasets[i].data[j], v4 : cumvalue[j], v5: totvalue[j], v6 : i, v7 : j});
+                    var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,cumvalue[j],config.fmtV4), v5 : fmtChartJS(config,totvalue[j],config.fmtV5), v6 : fmtChartJS(config,i,config.fmtV6), v7 : fmtChartJS(config,j,config.fmtV7)});
                     ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
        			        ctx.fillText(dispString, 0,0);
 					    	    ctx.restore();
@@ -2903,10 +3021,10 @@ window.Chart = function (context) {
                     if (msr.rotateLabels > 0) {
                         ctx.translate(yAxisPosX + i * valueHop + (valueHop / 2)- config.scaleFontSize/2, msr.xLabelPos);
                         ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-                        ctx.fillText(data.labels[i], 0, 0);
+                        ctx.fillText(fmtChartJS(config,data.labels[i],config.fmtXLabel), 0, 0);
                     }
                     else {
-                        ctx.fillText(data.labels[i], yAxisPosX + i * valueHop + (valueHop / 2), msr.xLabelPos);
+                        ctx.fillText(fmtChartJS(config,data.labels[i],config.fmtXLabel), yAxisPosX + i * valueHop + (valueHop / 2), msr.xLabelPos);
                     }
                     ctx.restore();
                  }
@@ -2999,6 +3117,7 @@ window.Chart = function (context) {
         scaleHop = Math.floor(msr.availableHeight / data.labels.length);
         valueHop = Math.floor(msr.availableWidth / (calculatedScale.steps));
 
+        msr.clrwidth=msr.clrwidth - (msr.availableWidth - (calculatedScale.steps * valueHop));
         msr.availableWidth = (calculatedScale.steps) * valueHop;
         msr.availableHeight = (data.labels.length) * scaleHop;
 
@@ -3090,7 +3209,7 @@ window.Chart = function (context) {
                     
                     ctx.translate(xPos,yPos);
 
-                    var dispString = tmplbis(config.inGraphDataTmpl, { v1 : lgtxt, v2 : lgtxt2, v3 : data.datasets[i].data[j], v4 : cumvalue[j], v5: totvalue[j], v6 : i, v7 : j});
+                    var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,cumvalue[j],config.fmtV4), v5 : fmtChartJS(config,totvalue[j],config.fmtV5), v6 : fmtChartJS(config,i,config.fmtV6), v7 : fmtChartJS(config,j,config.fmtV7)});
                     ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
        			        ctx.fillText(dispString, 0,0);
 					    	    ctx.restore();
@@ -3200,11 +3319,11 @@ window.Chart = function (context) {
                 if (config.scaleShowLabels) {
                     if (config.yAxisLeft) {
                         ctx.textAlign = "right";
-                        ctx.fillText(data.labels[j], yAxisPosX - (config.scaleTickSizeLeft + 3), xAxisPosY - (j * scaleHop) - scaleHop / 2);
+                        ctx.fillText(fmtChartJS(config,data.labels[j],config.fmtXLabel), yAxisPosX - (config.scaleTickSizeLeft + 3), xAxisPosY - (j * scaleHop) - scaleHop / 2);
                     }
                     if (config.yAxisRight) {
                         ctx.textAlign = "left";
-                        ctx.fillText(data.labels[j], yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + 3), xAxisPosY - (j * scaleHop) - scaleHop / 2);
+                        ctx.fillText(fmtChartJS(config,data.labels[j],config.fmtXLabel), yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + 3), xAxisPosY - (j * scaleHop) - scaleHop / 2);
                     }
                 }
             }
@@ -3254,6 +3373,8 @@ window.Chart = function (context) {
 
     function animationLoop(config, drawScale, drawData, ctx, clrx, clry, clrwidth, clrheight, midPosX, midPosY, borderX, borderY, data) {
 
+        var cntiter=0;
+        
         if (isIE() < 9 && isIE() != false) config.animation = false;
 
         var animFrameAmount = (config.animation) ? 1 / CapValue(config.animationSteps, Number.MAX_VALUE, 1) : 1,
@@ -3268,6 +3389,8 @@ window.Chart = function (context) {
 
         function animateFrame() {
             var easeAdjustedAnimationPercent = (config.animation) ? CapValue(easingFunction(percentAnimComplete), null, 0) : 1;
+            if(1*cntiter>=1*CapValue(config.animationSteps, Number.MAX_VALUE, 1) || config.animation==false)easeAdjustedAnimationPercent=1;
+            else if(easeAdjustedAnimationPercent>=1)easeAdjustedAnimationPercent=0.9999;
 
             if (!(isIE() < 9 && isIE() != false) && config.clearRect) ctx.clearRect(clrx, clry, clrwidth, clrheight);
 
@@ -3284,10 +3407,12 @@ window.Chart = function (context) {
         }
         function animLoop() {
             //We need to check if the animation is incomplete (less than 1), or complete (1).
+            cntiter++;
             percentAnimComplete += animFrameAmount;
+            if(cntiter==config.animationSteps || config.animation==false )percentAnimComplete=1;
             animateFrame();
             //Stop the loop continuing forever
-            if (percentAnimComplete <= 1) {
+            if (percentAnimComplete < 1) {
                 requestAnimFrame(animLoop);
             }
             else {
@@ -3306,7 +3431,7 @@ window.Chart = function (context) {
 			window.oRequestAnimationFrame ||
 			window.msRequestAnimationFrame ||
 			function (callback) {
-			    window.setTimeout(callback, 1000 / 60);
+			    window.setTimeout(callback, 1000/60 );
 			};
     })();
 
@@ -3368,12 +3493,12 @@ window.Chart = function (context) {
             //Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
             if (!config.logarithmic) { // no logarithmic scale
                 for (var i = 0; i < numberOfSteps + 1; i++) {
-                    labels.push(tmpl(labelTemplateString, { value: ((graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))) }));
+                    labels.push(tmpl(labelTemplateString, { value: fmtChartJS(config,1*((graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))),config.fmtYLabel) }));
                 }
             } else { // logarithmic scale 10,100,1000,...
                 var value = graphMin;
                 while (value < graphMax) {
-                    labels.push(tmpl(labelTemplateString, { value: value.toFixed(getDecimalPlaces(stepValue)) }));
+                    labels.push(tmpl(labelTemplateString, { value: fmtChartJS(config,1*value.toFixed(getDecimalPlaces(stepValue)),config.fmtYLabel) }));
                     value *= 10;
                 }
             }
@@ -3621,7 +3746,7 @@ window.Chart = function (context) {
         if (drawAxis) {
             ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
             for (var i = 0; i < data.labels.length; i++) {
-                var textLength = ctx.measureText(data.labels[i]).width;
+                var textLength = ctx.measureText(fmtChartJS(config,data.labels[i],config.fmtXLabel)).width;
                 //If the text length is longer - make that equal to longest text!
                 widestXLabel = (textLength > widestXLabel) ? textLength : widestXLabel;
             }
@@ -3637,7 +3762,7 @@ window.Chart = function (context) {
                 for (var i = ylabels.length - 1; i >= 0; i--) {
                     if (typeof (ylabels[i]) == "string") {
                         if (ylabels[i].trim() != "") {
-                            var textLength = ctx.measureText(ylabels[i]).width;
+                            var textLength = ctx.measureText(fmtChartJS(config,ylabels[i],config.fmtYLabel)).width;
                             //If the text length is longer - make that equal to longest text!
                             widestYLabel = (textLength > widestYLabel) ? textLength : widestYLabel;
                         }
@@ -3660,13 +3785,13 @@ window.Chart = function (context) {
             }
 
             if (config.yAxisLeft) {
-                if (reverseAxis == false) leftNotUsableSize = borderWidth + config.spaceLeft + yAxisLabelWidth + widestYLabel + config.yAxisSpaceLeft + config.yAxisSpaceRight;
-                else leftNotUsableSize = borderWidth + config.spaceLeft + yAxisLabelWidth + widestXLabel + config.yAxisSpaceLeft + config.yAxisSpaceRight;
+                if (reverseAxis == false) leftNotUsableSize = borderWidth + config.spaceLeft + yAxisLabelWidth + widestYLabel + 3 + config.yAxisSpaceLeft + config.yAxisSpaceRight;
+                else leftNotUsableSize = borderWidth + config.spaceLeft + yAxisLabelWidth + widestXLabel + 3 + config.yAxisSpaceLeft + config.yAxisSpaceRight;
             }
 
             if (config.yAxisRight) {
-                if (reverseAxis == false) rightNotUsableSize = borderWidth + config.spaceRight + yAxisLabelWidth + widestYLabel + config.yAxisSpaceLeft + config.yAxisSpaceRight;
-                else rightNotUsableSize = borderWidth + config.spaceRight + yAxisLabelWidth + widestXLabel + config.yAxisSpaceLeft + config.yAxisSpaceRight;
+                if (reverseAxis == false) rightNotUsableSize = borderWidth + config.spaceRight + yAxisLabelWidth + widestYLabel + 3 + config.yAxisSpaceLeft + config.yAxisSpaceRight;
+                else rightNotUsableSize = borderWidth + config.spaceRight + yAxisLabelWidth + widestXLabel + 3 + config.yAxisSpaceLeft + config.yAxisSpaceRight;
             }
         }
 
