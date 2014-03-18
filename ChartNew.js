@@ -60,12 +60,12 @@ function numberWithCommas(x) {
     
     if(typeof(x)=="number")return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     else return(x);
-}
+};
 
 function roundTo(num, place) {
     if(typeof(num)=="number")return +(Math.round(num + "e+" + place) + "e-" + place);
     else return(num);
-}
+} ;
 
 function roundToWithThousands(config, num, place) {
 
@@ -78,7 +78,7 @@ function roundToWithThousands(config, num, place) {
     {
       return numberWithCommas(roundTo(num, place));
     }
-}
+};
 
 
 
@@ -95,8 +95,7 @@ Distributed by Hypergurl
 
 var cachebis = {};
 
-function fmtChartJSPerso(config,value,fmt)
-{
+function fmtChartJSPerso(config,value,fmt){
   switch(fmt){
     case "SampleJS_Format":
       if(typeof(value)=="number")return_value="My Format : " + value.toString()+ " $";
@@ -112,10 +111,9 @@ function fmtChartJSPerso(config,value,fmt)
       break;
     }  
   return(return_value);
-}
+};
 
-function fmtChartJS(config,value,fmt)
-{
+function fmtChartJS(config,value,fmt){
 
 //alert(fmt);
   if(fmt=="none" && typeof(value)=="number")
@@ -132,7 +130,7 @@ function fmtChartJS(config,value,fmt)
     return_value=fmtChartJSPerso(config,value,fmt);
   }
   return(return_value);
-}
+};
 
 
 function tmplbis(str, data) {
@@ -176,7 +174,7 @@ function createCursorDiv() {
         document.body.appendChild(div);
         cursorDivCreated = true;
     }
-}
+} ;
 
 
 //Default browsercheck, added to all scripts!
@@ -189,22 +187,21 @@ function checkBrowser() {
     this.ns4 = (document.layers && !this.dom) ? 1 : 0;
     this.bw = (this.ie5 || this.ie4 || this.ns4 || this.ns5)
     return this
-}
-bw = new checkBrowser()
+};
+bw = new checkBrowser();
 
 //Set these variables:
-fromLeft = 10 // How much from the left of the cursor should the div be?
-fromTop = 10 // How much from the top of the cursor should the div be?
+fromLeft = 10; // How much from the left of the cursor should the div be?
+fromTop = 10; // How much from the top of the cursor should the div be?
 
 /********************************************************************
 Initilizes the objects
 *********************************************************************/
 
 function cursorInit() {
-
     scrolled = bw.ns4 || bw.ns5 ? "window.pageYOffset" : "document.body.scrollTop"
     if (bw.ns4) document.captureEvents(Event.MOUSEMOVE)
-}
+} ;
 /********************************************************************
 Contructs the cursorobjects
 *********************************************************************/
@@ -219,7 +216,7 @@ function makeCursorObj(obj, nest) {
     cursorInit();
 
     return this
-}
+} ;
 function b_moveIt(x, y) {
 
 
@@ -227,7 +224,7 @@ function b_moveIt(x, y) {
     this.y = y;
     this.css.left = this.x + "px";
     this.css.top = this.y + "px";
-}
+};
 
 
 
@@ -235,24 +232,22 @@ function b_moveIt(x, y) {
 function isIE() {
     var myNav = navigator.userAgent.toLowerCase();
     return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
-}
+};
 
 function mergeChartConfig(defaults, userDefined) {
         var returnObj = {};
         for (var attrname in defaults) { returnObj[attrname] = defaults[attrname]; }
         for (var attrname in userDefined) { returnObj[attrname] = userDefined[attrname]; }
         return returnObj;
-}
+};
 
-function sleep(ms)
-{
+function sleep(ms){
 		var dt = new Date();
 		dt.setTime(dt.getTime() + ms);
 		while (new Date().getTime() < dt.getTime());
-}
+} ;
 
-function saveCanvas(ctx,data,config,tpgraph)
-{
+function saveCanvas(ctx,data,config,tpgraph) {
         cvSave = ctx.getImageData(0,0,ctx.canvas.width, ctx.canvas.height);
 
         var saveCanvasConfig = {
@@ -301,23 +296,22 @@ function saveCanvas(ctx,data,config,tpgraph)
         document.location.href= ctx.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
         ctx.putImageData(cvSave,0,0); 
 
-}
+} ;
 
 
-if (isIE() < 9 && isIE() != false) {
+//if (isIE() < 9 && isIE() != false) {
 
     if (typeof String.prototype.trim !== 'function') {
         String.prototype.trim = function () {
             return this.replace(/^\s+|\s+$/g, '');
         }
-    }
-}
+    };
+//};
 
 var dynamicDisplay = new Array();
 var dynamicDisplayList = new Array();
 
-function dynamicFunction(data,config,ctx,tpgraph)
-{
+function dynamicFunction(data,config,ctx,tpgraph){
         if(config.dynamicDisplay)
         {
            if(typeof(dynamicDisplay[ctx.canvas.id])=="undefined")
@@ -331,10 +325,9 @@ function dynamicFunction(data,config,ctx,tpgraph)
            dynamicDisplay[ctx.canvas.id][2]=true;
         }
         return true;
-}
+} ;
 
-function isScrolledIntoView(element)
-{
+function isScrolledIntoView(element){
     var xPosition = 0;
     var yPosition = 0;
 
@@ -351,7 +344,7 @@ function isScrolledIntoView(element)
         yPosition+element.height/2 <= window.pageYOffset+window.innerHeight
         )return(true);
     else return false;
-}
+};
 
 function scrollFunction(){
     for (var i=0;i<dynamicDisplayList["length"];i++) {
@@ -400,7 +393,7 @@ function getMousePos(canvas, evt) {
         x: evt.clientX - rect.left,
         y: evt.clientY - rect.top
     };
-}
+};
 
 function doMouseMove(ctx, config, event) {
 
@@ -534,7 +527,7 @@ function doMouseMove(ctx, config, event) {
         }
     }
 
-}
+} ;
 
 
 
@@ -694,7 +687,7 @@ window.Chart = function (context) {
         context.canvas.height = height * window.devicePixelRatio;
         context.canvas.width = width * window.devicePixelRatio;
         context.scale(window.devicePixelRatio, window.devicePixelRatio);
-    }
+    };
 
 
     this.PolarArea = function (data, options) {
@@ -908,7 +901,7 @@ window.Chart = function (context) {
         var config = (options) ? mergeChartConfig(chart.Line.defaults, options) : chart.Line.defaults;
 
         return new Line(data, config, context);
-    }
+    };
 
     this.StackedBar = function (data, options) {
 
@@ -958,7 +951,7 @@ window.Chart = function (context) {
 
         var config = (options) ? mergeChartConfig(chart.StackedBar.defaults, options) : chart.StackedBar.defaults;
         return new StackedBar(data, config, context);
-    }
+    } ;
 
     this.HorizontalStackedBar = function (data, options) {
 
@@ -1006,7 +999,7 @@ window.Chart = function (context) {
         chart.HorizontalStackedBar.defaults = mergeChartConfig(chart.HorizontalStackedBar.defaults, charJSPersonnalDefaultOptionsHorizontalStackedBar);
         var config = (options) ? mergeChartConfig(chart.HorizontalStackedBar.defaults, options) : chart.HorizontalStackedBar.defaults;
         return new HorizontalStackedBar(data, config, context);
-    }
+    } ;
 
     this.Bar = function (data, options) {
         chart.Bar.defaults = {
@@ -1068,7 +1061,7 @@ window.Chart = function (context) {
         var config = (options) ? mergeChartConfig(chart.Bar.defaults, options) : chart.Bar.defaults;
 
         return new Bar(data, config, context);
-    }
+    } ;
 
     this.HorizontalBar = function (data, options) {
         chart.HorizontalBar.defaults = {
@@ -1129,7 +1122,7 @@ window.Chart = function (context) {
         var config = (options) ? mergeChartConfig(chart.HorizontalBar.defaults, options) : chart.HorizontalBar.defaults;
 
         return new HorizontalBar(data, config, context);
-    }
+    } ;
 
     chart.defaults = {};
     chart.defaults.commonOptions = {
@@ -1371,7 +1364,7 @@ window.Chart = function (context) {
             }
 
 
-        }
+        } ;
 
 
         function drawScale() {
@@ -1407,7 +1400,7 @@ window.Chart = function (context) {
                     ctx.fillText(label, midPosX, midPosY - (scaleHop * (i + 1)));
                 }
             }
-        }
+        } ;
         function getValueBounds() {
             var upperValue = Number.MIN_VALUE;
             var lowerValue = Number.MAX_VALUE;
@@ -1435,8 +1428,8 @@ window.Chart = function (context) {
             };
 
 
-        }
-    }
+        } ;
+    } ;
 
     var Radar = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
@@ -1570,7 +1563,7 @@ window.Chart = function (context) {
 
 
 
-        }
+        } ;
         function drawScale() {
 
             var rotationDegree = (2 * Math.PI) / data.datasets[0].data.length;
@@ -1756,7 +1749,7 @@ window.Chart = function (context) {
                 minSteps: minSteps
             };
         }
-    }
+    } ;
 
 
     var Pie = function (data, config, ctx) {
@@ -1822,6 +1815,7 @@ window.Chart = function (context) {
 
             for (var i = 0; i < data.length; i++) {
                 var segmentAngle = rotateAnimation * ((data[i].value / segmentTotal) * (Math.PI * 2));
+                if(segmentAngle >= Math.PI*2)segmentAngle=Math.PI*2-0.001;  // but on Android when segmentAngle is >= 2*PI;
                 ctx.beginPath();
                 ctx.arc(midPieX, midPieY, scaleAnimation * pieRadius, cumulativeAngle, cumulativeAngle+segmentAngle );
 
@@ -1844,8 +1838,8 @@ window.Chart = function (context) {
                     ctx.stroke();
                 }
             }
-        }
-    }
+        };
+    } ;
 
     var Doughnut = function (data, config, ctx) {
         var segmentTotal = 0;
@@ -1909,6 +1903,7 @@ window.Chart = function (context) {
 
             for (var i = 0; i < data.length; i++) {
                 var segmentAngle = rotateAnimation * ((data[i].value / segmentTotal) * (Math.PI * 2));
+                if(segmentAngle >= Math.PI*2)segmentAngle=Math.PI*2-0.001;  // but on Android when segmentAngle is >= 2*PI;
                 ctx.beginPath();
                 ctx.arc(midPieX, midPieY, scaleAnimation * doughnutRadius, cumulativeAngle, cumulativeAngle + segmentAngle, false);
                 ctx.arc(midPieX, midPieY, scaleAnimation * cutoutRadius, cumulativeAngle + segmentAngle, cumulativeAngle, true);
@@ -1933,11 +1928,11 @@ window.Chart = function (context) {
                     ctx.stroke();
                 }
             }
-        }
+        } ;
 
 
 
-    }
+    } ;
 
     var Line = function (data, config, ctx) {
   
@@ -2112,17 +2107,17 @@ window.Chart = function (context) {
                         ctx.stroke();
                     }
                 }
-            }
+            };
 
             function yPos(dataSet, iteration) {
                 return xAxisPosY - animPc * (calculateOffset(config, data.datasets[dataSet].data[iteration], calculatedScale, scaleHop));
-            }
+            };
             function xPos(iteration) {
                 return yAxisPosX + (valueHop * iteration);
-            }
+            };
 
 
-        }
+        } ;
 
         function drawScale() {
 
@@ -2175,7 +2170,7 @@ window.Chart = function (context) {
                }
                ctx.stroke();
             }
-        }
+        } ;
 
         function drawLabels() {
             ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
@@ -2230,7 +2225,7 @@ window.Chart = function (context) {
                     }
                 }
             }
-        }
+        } ;
 
         function getValueBounds() {
             var upperValue = Number.MIN_VALUE;
@@ -2260,8 +2255,8 @@ window.Chart = function (context) {
                 maxSteps: maxSteps,
                 minSteps: minSteps
             };
-        }
-    }
+        };
+    } ;
 
     var StackedBar = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
@@ -2380,7 +2375,7 @@ window.Chart = function (context) {
                     }
                 }
             }
-        }
+        } ;
 
         function drawScale() {
 
@@ -2431,7 +2426,7 @@ window.Chart = function (context) {
                }
                ctx.stroke();
             }
-        }
+        } ;
 
         function drawLabels() {
             ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
@@ -2486,7 +2481,7 @@ window.Chart = function (context) {
                     }
                 }
             }
-        }
+        } ;
 
         function getValueBounds() {
             var upperValue = Number.MIN_VALUE;
@@ -2517,8 +2512,8 @@ window.Chart = function (context) {
                 maxSteps: maxSteps,
                 minSteps: minSteps
             };
-        }
-    }
+        } ;
+    } ;
 
     var HorizontalStackedBar = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
@@ -2582,7 +2577,7 @@ window.Chart = function (context) {
             var scalingFactor = CapValue(adjustedValue / outerValue, 1, 0);
 
             return (scaleHop * calculatedScale.steps) * scalingFactor;
-        }
+        } ;
 
         function drawBars(animPc) {
             ctx.lineWidth = config.barStrokeWidth;
@@ -2650,7 +2645,7 @@ window.Chart = function (context) {
                     }
                 }
             }
-        }
+        } ;
 
         function drawScale() {
 
@@ -2703,7 +2698,7 @@ window.Chart = function (context) {
                 }
                 ctx.stroke();
             }
-        }
+        } ;
 
         function drawLabels() {
             ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
@@ -2757,7 +2752,7 @@ window.Chart = function (context) {
                     }
                 }
             }
-        }
+        } ;
 
         function getValueBounds() {
             var upperValue = Number.MIN_VALUE;
@@ -2788,8 +2783,8 @@ window.Chart = function (context) {
                 maxSteps: maxSteps,
                 minSteps: minSteps
             };
-        }
-    }
+        };
+    } ;
 
     var Bar = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
@@ -2943,7 +2938,7 @@ window.Chart = function (context) {
               }
                 
             }
-        }
+        } ;
 
         function drawScale() {
 
@@ -2994,7 +2989,7 @@ window.Chart = function (context) {
                }
                ctx.stroke();
             }
-        }
+        } ;
 
         function drawLabels() {
             ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
@@ -3047,7 +3042,7 @@ window.Chart = function (context) {
                     }
                 }
             }
-        }
+        } ;
 
         function getValueBounds() {
             var upperValue = Number.MIN_VALUE;
@@ -3077,8 +3072,8 @@ window.Chart = function (context) {
                 maxSteps: maxSteps,
                 minSteps: minSteps
             };
-        }
-    }
+        } ;
+    } ;
 
     var HorizontalBar = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
@@ -3221,7 +3216,7 @@ window.Chart = function (context) {
             }
   
 
-        }
+        } ;
 
         function drawScale() {
 
@@ -3274,7 +3269,7 @@ window.Chart = function (context) {
                 }
                 ctx.stroke();
             }
-        }
+        } ;
 
         function drawLabels() {
             ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
@@ -3327,7 +3322,7 @@ window.Chart = function (context) {
                     }
                 }
             }
-        }
+        } ;
 
         function getValueBounds() {
             var upperValue = Number.MIN_VALUE;
@@ -3357,8 +3352,8 @@ window.Chart = function (context) {
                 maxSteps: maxSteps,
                 minSteps: minSteps
             };
-        }
-    }
+        } ;
+    } ;
 
     function calculateOffset(config, val, calculatedScale, scaleHop) {
         if (!config.logarithmic) { // no logarithmic scale
@@ -3369,7 +3364,7 @@ window.Chart = function (context) {
         } else { // logarithmic scale
             return CapValue(log10(val) * scaleHop - calculateOrderOfMagnitude(calculatedScale.graphMin) * scaleHop, undefined, 0);
         }
-    }
+    } ;
 
     function animationLoop(config, drawScale, drawData, ctx, clrx, clry, clrwidth, clrheight, midPosX, midPosY, borderX, borderY, data) {
 
@@ -3404,7 +3399,7 @@ window.Chart = function (context) {
                 drawData(easeAdjustedAnimationPercent);
             }
             dispCrossText(ctx, config, midPosX, midPosY, borderX, borderY, true, data, easeAdjustedAnimationPercent);
-        }
+        };
         function animLoop() {
             //We need to check if the animation is incomplete (less than 1), or complete (1).
             cntiter++;
@@ -3418,8 +3413,8 @@ window.Chart = function (context) {
             else {
                 if (typeof config.onAnimationComplete == "function") config.onAnimationComplete();
             }
-        }
-    }
+        } ;
+    } ;
 
     //Declare global functions to be called within this namespace here.
 
@@ -3481,11 +3476,11 @@ window.Chart = function (context) {
             labels: labels,
             maxValue: maxValue
         }
-    }
+    } ;
 
     function calculateOrderOfMagnitude(val) {
         return Math.floor(Math.log(val) / Math.LN10);
-    }
+    } ;
 
     //Populate an array of all the labels by interpolating the string.
     function populateLabels(config, labelTemplateString, labels, numberOfSteps, graphMin, graphMax, stepValue) {
@@ -3503,7 +3498,7 @@ window.Chart = function (context) {
                 }
             }
         }
-    }
+    } ;
 
     //Max value from array
     function Max(array) {
@@ -3527,7 +3522,7 @@ window.Chart = function (context) {
     //Is a number function
     function isNumber(n) {
         return !isNaN(parseFloat(n)) && isFinite(n);
-    }
+    } ;
 
     //Apply cap a value at a high or low number
     function CapValue(valueToCap, maxValue, minValue) {
@@ -3542,7 +3537,7 @@ window.Chart = function (context) {
             }
         }
         return valueToCap;
-    }
+    };
 
     function getDecimalPlaces(num) {
         var numberOfDecimalPlaces;
@@ -3553,14 +3548,14 @@ window.Chart = function (context) {
             return 0;
         }
 
-    }
+    };
 
     function mergeChartConfig(defaults, userDefined) {
         var returnObj = {};
         for (var attrname in defaults) { returnObj[attrname] = defaults[attrname]; }
         for (var attrname in userDefined) { returnObj[attrname] = userDefined[attrname]; }
         return returnObj;
-    }
+    };
 
     //Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
     var cache = {};
@@ -3689,7 +3684,7 @@ window.Chart = function (context) {
                 ctx.restore();
             }
         }
-    }
+    };
 
     //****************************************************************************************
     function setMeasures(data, config, ctx, height, width, ylabels, reverseLegend, reverseAxis, drawAxis, drawLegendOnData) {
@@ -4196,11 +4191,11 @@ window.Chart = function (context) {
             clrwidth: clrwidth,
             clrheight: clrheight
         };
-    }
+    } ;
 
     function log10(val) {
         return Math.log(val) / Math.LN10;
-    }
+    } ;
     
     function setRect(ctx,config)
     {
@@ -4222,7 +4217,7 @@ window.Chart = function (context) {
           ctx.fill(); 
 
         }
-    }
+    } ;
 
     
     function defMouse(ctx,data,config,tpgraph) {
@@ -4261,6 +4256,6 @@ window.Chart = function (context) {
   
         }
 
-    }
+    };
     
 };
