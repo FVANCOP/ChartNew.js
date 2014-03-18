@@ -13,8 +13,6 @@ So, I have re-worked Chart.js. Most of the changes, are associated to requests i
 
 
 
-This first version probably contains lot of bugs (for instance, it doesn't work on android/IPhone), but I think that it can be used without big troubles on a PC.
-
 New Charts integrated in this version compared to Graph.js
 
     HorizontalBar
@@ -35,6 +33,7 @@ New Items in graph compared to Graph.js :
     Footnote
     crossText (you can put a text over the graph at the place of your choice)
     graphMin / graphMax
+    
 
 A quick sample can be found on http://www.favomo.be/graphjs
 
