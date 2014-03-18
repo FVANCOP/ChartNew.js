@@ -32,6 +32,10 @@ Change history
                                       when the graph is visible on screen.
 09/03/2014 - Francois Vancoppenolle - Labels in Bar/HorizontalBar (options with inGraphData in the name);
                                     - possibility to remove X Axis Display (options xAxisBottom)
+17/03/2014 - Francois Vancoppenolle - Option decimalSeparator added (default value : ".");
+                                      Correction of a bug (issue #15 problem for animationSteps);
+                                      New options (name starting with "fmt") - need to be documented;
+18/03/2014 - Francois Vancoppenolle - works now on Android
 
 
 
@@ -46,7 +50,6 @@ Future Improvements
 
 Known Bugs
 ----------
-- graphs are not displayed on smart phones;
 
 - If the first label is long, it can be truncated
 
