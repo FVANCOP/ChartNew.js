@@ -36,6 +36,8 @@ Change history
                                       Correction of a bug (issue #15 problem for animationSteps);
                                       New options (name starting with "fmt") - need to be documented;
 18/03/2014 - Francois Vancoppenolle - works now on Android
+                                    - default options can be changed in a smart way (charJSPersonnalDefaultOptions)
+27/03/2014 - Francois Vancoppenolle - Labels in StackedBar/HorizontalStackedBar (options with inGraphData in the name);
 
 
 
@@ -44,9 +46,8 @@ Future Improvements
 - labels inside the graphs
 - topXAxis
 - code reduction
-- formatting the numbers
-- personnal default options.
-
+- animate Canvas when mouse is over a piece of graph (like in http://zurb.com/playground/pizza-pie-charts)
+- documentation 
 
 Known Bugs
 ----------
