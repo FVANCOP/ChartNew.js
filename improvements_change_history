@@ -38,6 +38,7 @@ Change history
 18/03/2014 - Francois Vancoppenolle - works now on Android
                                     - default options can be changed in a smart way (charJSPersonnalDefaultOptions)
 27/03/2014 - Francois Vancoppenolle - Labels in StackedBar/HorizontalStackedBar (options with inGraphData in the name);
+03/04/2014 - Francois Vancoppenolle - Labels in Pie/Doughnut (options inGraphData in the name)
 
 
 
