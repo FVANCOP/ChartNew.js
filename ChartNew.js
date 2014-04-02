@@ -1,6 +1,5 @@
 
 
-
 /*
  * ChartNew.js
  * 
@@ -792,7 +791,7 @@ window.Chart = function (context) {
     this.Pie = function (data, options) {
         chart.Pie.defaults = {
 			      inGraphDataShow: false,
-			      inGraphDataPaddingRadius: 0,
+			      inGraphDataPaddingRadius: 5,
 			      inGraphDataPaddingAngle: 0,
             inGraphDataTmpl: "<%=(v1 == ''? '' : v1+':')+ roundToWithThousands(config,v2,2) + ' (' + roundToWithThousands(config,v6,1) + ' %)'%>",
             inGraphDataAlign : "off-center",   // "right", "center", "left", "off-center" or "to-center"
