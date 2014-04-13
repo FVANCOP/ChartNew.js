@@ -1,4 +1,6 @@
 
+
+
 /*
  * ChartNew.js
  * 
@@ -795,7 +797,7 @@ window.Chart = function (context) {
             inGraphDataTmpl: "<%=(v1 == ''? '' : v1+':')+ roundToWithThousands(config,v2,2) + ' (' + roundToWithThousands(config,v6,1) + ' %)'%>",
             inGraphDataAlign : "off-center",   // "right", "center", "left", "off-center" or "to-center"
             inGraphDataVAlign : "off-center",  // "bottom", "center", "top", "off-center" or "to-center"
-            inGraphDataRotate : 0,   // rotateAngle value (0->360) or "inRadiusAxis"
+            inGraphDataRotate : 0,   // rotateAngle value (0->360) , "inRadiusAxis" or "inRadiusAxisRotateLabels"
             inGraphDataFontFamily: "'Arial'",
             inGraphDataFontSize: 12,
             inGraphDataFontStyle: "normal",
@@ -830,12 +832,12 @@ window.Chart = function (context) {
 
         chart.Doughnut.defaults = {
 			      inGraphDataShow: false,
-			      inGraphDataPaddingRadius: 0,
+			      inGraphDataPaddingRadius: 5,
 			      inGraphDataPaddingAngle: 0,
             inGraphDataTmpl: "<%=(v1 == ''? '' : v1+':')+ roundToWithThousands(config,v2,2) + ' (' + roundToWithThousands(config,v6,1) + ' %)'%>",
             inGraphDataAlign : "off-center",   // "right", "center", "left", "off-center" or "to-center"
             inGraphDataVAlign : "off-center",  // "bottom", "center", "top", "off-center" or "to-center"
-            inGraphDataRotate : 0,   // rotateAngle value (0->360) or "inRadiusAxis"
+            inGraphDataRotate : 0,   // rotateAngle value (0->360) , "inRadiusAxis" or "inRadiusAxisRotateLabels"
             inGraphDataFontFamily: "'Arial'",
             inGraphDataFontSize: 12,
             inGraphDataFontStyle: "normal",
@@ -1914,21 +1916,22 @@ window.Chart = function (context) {
 
                          
   				        	     ctx.save();
+           
                          if(config.inGraphDataAlign=="off-center"){
-                           if(config.inGraphDataRotate=="inRadiusAxis" || posAngle< Math.PI/2 || (posAngle > 3*Math.PI/2 && posAngle < 5*Math.PI/2))ctx.textAlign = "left";
+                           if(config.inGraphDataRotate=="inRadiusAxis" || (posAngle+2*Math.PI)%(2*Math.PI) > 3*Math.PI/2 || (posAngle+2*Math.PI)%(2*Math.PI) < Math.PI/2)ctx.textAlign = "left";
                            else ctx.textAlign="right";
                          }
                          else if(config.inGraphDataAlign=="to-center"){
-                           if(config.inGraphDataRotate=="inRadiusAxis" || posAngle< Math.PI/2 || (posAngle > 3*Math.PI/2 && posAngle < 5*Math.PI/2))ctx.textAlign = "right";
+                           if(config.inGraphDataRotate=="inRadiusAxis" || (posAngle+2*Math.PI)%(2*Math.PI) > 3*Math.PI/2 || (posAngle+2*Math.PI)%(2*Math.PI) < Math.PI/2)ctx.textAlign = "right";
                            else ctx.textAlign="left";
                          }
-   					             else ctx.textAlign = config.inGraphDataAlign;
+   					             else ctx.textAlign = config.inGraphDataAlign;  
                          if(config.inGraphDataVAlign=="off-center"){
-                            if((posAngle> Math.PI && posAngle<2*Math.PI) || (posAngle< 0 && posAngle>-Math.PI) || (posAngle< -2*Math.PI && posAngle>-3*Math.PI))ctx.textBaseline = "top";
+                            if((posAngle+2*Math.PI)%(2*Math.PI)>Math.PI)ctx.textBaseline = "top";
                             else ctx.textBaseline = "bottom";
                          }
                          else if(config.inGraphDataVAlign=="to-center"){
-                            if((posAngle> Math.PI && posAngle<2*Math.PI) || (posAngle< 0 && posAngle>-Math.PI) || (posAngle< -2*Math.PI && posAngle>-3*Math.PI))ctx.textBaseline = "bottom";
+                            if((posAngle+2*Math.PI)%(2*Math.PI)>Math.PI)ctx.textBaseline = "bottom";
                             else ctx.textBaseline = "top";
                          }
                          else ctx.textBaseline = config.inGraphDataVAlign;
@@ -1938,9 +1941,16 @@ window.Chart = function (context) {
 
                          var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,data[i].value,config.fmtV2), v3 : fmtChartJS(config,cumvalue,config.fmtV3), v4 : fmtChartJS(config,totvalue,config.fmtV4), v5 : fmtChartJS(config,segmentAngle,config.fmtV5), v6 : fmtChartJS(config,100 * data[i].value / totvalue,config.fmtV6), v7 : fmtChartJS(config,midPieX,config.fmtV7),v8 : fmtChartJS(config,midPieY,config.fmtV8),v9 : fmtChartJS(config,0,config.fmtV9),v10 : fmtChartJS(config,pieRadius,config.fmtV10),v11 : fmtChartJS(config,cumulativeAngle-segmentAngle,config.fmtV11),v12 : fmtChartJS(config,cumulativeAngle,config.fmtV12),v13 : fmtChartJS(config,i,config.fmtV13)});
                          ctx.translate(midPieX + labelRadius*Math.cos(posAngle), midPieY - labelRadius*Math.sin(posAngle));
+                         
                          if(config.inGraphDataRotate=="inRadiusAxis")ctx.rotate(2*Math.PI-posAngle);
+                         else if(config.inGraphDataRotate=="inRadiusAxisRotateLabels")
+                         {
+                          if ((posAngle+2*Math.PI)%(2*Math.PI)>Math.PI/2 && (posAngle+2*Math.PI)%(2*Math.PI)<3*Math.PI/2)ctx.rotate(3*Math.PI-posAngle);
+                          else ctx.rotate(2*Math.PI-posAngle); 
+                         }
                          else ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-  			     			       ctx.fillText(dispString, 0,0);
+  			     			       
+                          ctx.fillText(dispString, 0,0);
                          ctx.restore();
                     }
                 }
@@ -1995,7 +2005,7 @@ window.Chart = function (context) {
                   var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,data[i].value,config.fmtV2), v3 : fmtChartJS(config,cumvalue,config.fmtV3), v4 : fmtChartJS(config,totvalue,config.fmtV4), v5 : fmtChartJS(config,segmentAngle,config.fmtV5), v6 : fmtChartJS(config,100 * data[i].value / totvalue,config.fmtV6), v7 : fmtChartJS(config,midPieX,config.fmtV7),v8 : fmtChartJS(config,midPieY,config.fmtV8),v9 : fmtChartJS(config,0,config.fmtV9),v10 : fmtChartJS(config,pieRadius,config.fmtV10),v11 : fmtChartJS(config,cumulativeAngle-segmentAngle,config.fmtV11),v12 : fmtChartJS(config,cumulativeAngle,config.fmtV12),v13 : fmtChartJS(config,i,config.fmtV13)});
                   var textMeasurement = ctx.measureText(dispString).width;
                 
-                  var MaxRadiusX=  Math.abs((msr.availableWidth / 2 - textMeasurement)/Math.cos(posAngle))-5;
+                  var MaxRadiusX=  Math.abs((msr.availableWidth / 2 - textMeasurement)/Math.cos(posAngle))-config.inGraphDataPaddingRadius -5;
                   if(MaxRadiusX<pieRadius)pieRadius=MaxRadiusX;
                 
                 }
@@ -2034,11 +2044,6 @@ window.Chart = function (context) {
 
         setRect(ctx,config);
         msr = setMeasures(data, config, ctx, height, width, null, true, false, false, false);
-
-
-//        midPieX = msr.leftNotUsableSize + (msr.availableWidth / 2);
-//        midPieY = msr.topNotUsableSize + (msr.availableHeight / 2);
-//        var doughnutRadius = Min([msr.availableHeight / 2, msr.availableWidth / 2]) - 5;
 
         calculateDrawingSize();
 
@@ -2112,21 +2117,22 @@ window.Chart = function (context) {
 
                          
   				        	     ctx.save();
-                         if(config.inGraphDataAlign=="off-center"){
-                           if(config.inGraphDataRotate=="inRadiusAxis" || posAngle< Math.PI/2 || (posAngle > 3*Math.PI/2 && posAngle < 5*Math.PI/2))ctx.textAlign = "left";
+                         
+                        if(config.inGraphDataAlign=="off-center"){
+                           if(config.inGraphDataRotate=="inRadiusAxis" || (posAngle+2*Math.PI)%(2*Math.PI) > 3*Math.PI/2 || (posAngle+2*Math.PI)%(2*Math.PI) < Math.PI/2)ctx.textAlign = "left";
                            else ctx.textAlign="right";
                          }
                          else if(config.inGraphDataAlign=="to-center"){
-                           if(config.inGraphDataRotate=="inRadiusAxis" || posAngle< Math.PI/2 || (posAngle > 3*Math.PI/2 && posAngle < 5*Math.PI/2))ctx.textAlign = "right";
+                           if(config.inGraphDataRotate=="inRadiusAxis" || (posAngle+2*Math.PI)%(2*Math.PI) > 3*Math.PI/2 || (posAngle+2*Math.PI)%(2*Math.PI) < Math.PI/2)ctx.textAlign = "right";
                            else ctx.textAlign="left";
                          }
-   					             else ctx.textAlign = config.inGraphDataAlign;
+   					             else ctx.textAlign = config.inGraphDataAlign;  
                          if(config.inGraphDataVAlign=="off-center"){
-                            if((posAngle> Math.PI && posAngle<2*Math.PI) || (posAngle< 0 && posAngle>-Math.PI) || (posAngle< -2*Math.PI && posAngle>-3*Math.PI))ctx.textBaseline = "top";
+                            if((posAngle+2*Math.PI)%(2*Math.PI)>Math.PI)ctx.textBaseline = "top";
                             else ctx.textBaseline = "bottom";
                          }
                          else if(config.inGraphDataVAlign=="to-center"){
-                            if((posAngle> Math.PI && posAngle<2*Math.PI) || (posAngle< 0 && posAngle>-Math.PI) || (posAngle< -2*Math.PI && posAngle>-3*Math.PI))ctx.textBaseline = "bottom";
+                            if((posAngle+2*Math.PI)%(2*Math.PI)>Math.PI)ctx.textBaseline = "bottom";
                             else ctx.textBaseline = "top";
                          }
                          else ctx.textBaseline = config.inGraphDataVAlign;
@@ -2136,7 +2142,13 @@ window.Chart = function (context) {
 
                          var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,data[i].value,config.fmtV2), v3 : fmtChartJS(config,cumvalue,config.fmtV3), v4 : fmtChartJS(config,totvalue,config.fmtV4), v5 : fmtChartJS(config,segmentAngle,config.fmtV5), v6 : fmtChartJS(config,100 * data[i].value / totvalue,config.fmtV6), v7 : fmtChartJS(config,midPieX,config.fmtV7),v8 : fmtChartJS(config,midPieY,config.fmtV8),v9 : fmtChartJS(config,cutoutRadius,config.fmtV9),v10 : fmtChartJS(config,doughnutRadius,config.fmtV10),v11 : fmtChartJS(config,cumulativeAngle-segmentAngle,config.fmtV11),v12 : fmtChartJS(config,cumulativeAngle,config.fmtV12),v13 : fmtChartJS(config,i,config.fmtV13)});
                          ctx.translate(midPieX + labelRadius*Math.cos(posAngle), midPieY - labelRadius*Math.sin(posAngle));
+
                          if(config.inGraphDataRotate=="inRadiusAxis")ctx.rotate(2*Math.PI-posAngle);
+                         else if(config.inGraphDataRotate=="inRadiusAxisRotateLabels")
+                         {
+                          if ((posAngle+2*Math.PI)%(2*Math.PI)>Math.PI/2 && (posAngle+2*Math.PI)%(2*Math.PI)<3*Math.PI/2)ctx.rotate(3*Math.PI-posAngle);
+                          else ctx.rotate(2*Math.PI-posAngle); 
+                         }
                          else ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
   			     			       ctx.fillText(dispString, 0,0);
                          ctx.restore();
@@ -2194,7 +2206,7 @@ window.Chart = function (context) {
                   var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,data[i].value,config.fmtV2), v3 : fmtChartJS(config,cumvalue,config.fmtV3), v4 : fmtChartJS(config,totvalue,config.fmtV4), v5 : fmtChartJS(config,segmentAngle,config.fmtV5), v6 : fmtChartJS(config,100 * data[i].value / totvalue,config.fmtV6), v7 : fmtChartJS(config,midPieX,config.fmtV7),v8 : fmtChartJS(config,midPieY,config.fmtV8),v9 : fmtChartJS(config,cutoutRadius,config.fmtV9),v10 : fmtChartJS(config,doughnutRadius,config.fmtV10),v11 : fmtChartJS(config,cumulativeAngle-segmentAngle,config.fmtV11),v12 : fmtChartJS(config,cumulativeAngle,config.fmtV12),v13 : fmtChartJS(config,i,config.fmtV13)});
                   var textMeasurement = ctx.measureText(dispString).width;
                 
-                  var MaxRadiusX=  Math.abs((msr.availableWidth / 2 - textMeasurement)/Math.cos(posAngle))-5;
+                  var MaxRadiusX=  Math.abs((msr.availableWidth / 2 - textMeasurement)/Math.cos(posAngle))-config.inGraphDataPaddingRadius - 5;
                   if(MaxRadiusX<doughnutRadius)doughnutRadius=MaxRadiusX;
                 
                 }
