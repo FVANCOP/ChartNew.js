@@ -1,5 +1,4 @@
 
-
 /*
  * ChartNew.js
  * 
@@ -2303,7 +2302,7 @@ window.Chart = function (context) {
                     if (i == data.datasets.length - 1) divnext = data.datasets[i].data[0];
                     else divnext = data.datasets[i].data[0] - data.datasets[i + 1].data[0];
 
-                    if (typeof (data.labels[0]) == "string") lgtxt2 = data.labels[i].trim();
+                    if (typeof (data.labels[0]) == "string") lgtxt2 = data.labels[0].trim();
                     else lgtxt2 = "";
 
                     jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["POINT", yAxisPosX, xAxisPosY - (calculateOffset(config, data.datasets[i].data[0], calculatedScale, scaleHop)), lgtxt, lgtxt2, data.datasets[i].data[0], divprev, divnext, maxvalue[0], totvalue[0], i, 0];
