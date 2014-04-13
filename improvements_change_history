@@ -32,13 +32,18 @@ Change history
                                       when the graph is visible on screen.
 09/03/2014 - Francois Vancoppenolle - Labels in Bar/HorizontalBar (options with inGraphData in the name);
                                     - possibility to remove X Axis Display (options xAxisBottom)
-17/03/2014 - Francois Vancoppenolle - Option decimalSeparator added (default value : ".");
+17/03/2014 - Francois Vancoppenolle - Option decimalSeparator added (dStrainy
+alue : ".");
                                       Correction of a bug (issue #15 problem for animationSteps);
                                       New options (name starting with "fmt") - need to be documented;
 18/03/2014 - Francois Vancoppenolle - works now on Android
                                     - default options can be changed in a smart way (charJSPersonnalDefaultOptions)
 27/03/2014 - Francois Vancoppenolle - Labels in StackedBar/HorizontalStackedBar (options with inGraphData in the name);
 03/04/2014 - Francois Vancoppenolle - Labels in Pie/Doughnut (options inGraphData in the name)
+13/04/2014 - Francois Vancoppenolle - Bug in annotate corrected (bug reported by Varsha Vekariya)
+                                    - Bug in Pie/Doughnut inGraphData corrected
+                                    - For Pie/Doughnut, option inGraphDataRotate can now be initialized to "inRadiusAxisRotateLabels"
+                                          (request introduced by Strainy)
 
 
 
