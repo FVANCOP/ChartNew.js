@@ -32,8 +32,7 @@ Change history
                                       when the graph is visible on screen.
 09/03/2014 - Francois Vancoppenolle - Labels in Bar/HorizontalBar (options with inGraphData in the name);
                                     - possibility to remove X Axis Display (options xAxisBottom)
-17/03/2014 - Francois Vancoppenolle - Option decimalSeparator added (dStrainy
-alue : ".");
+17/03/2014 - Francois Vancoppenolle - Option decimalSeparator added (default value : ".");
                                       Correction of a bug (issue #15 problem for animationSteps);
                                       New options (name starting with "fmt") - need to be documented;
 18/03/2014 - Francois Vancoppenolle - works now on Android
@@ -44,6 +43,7 @@ alue : ".");
                                     - Bug in Pie/Doughnut inGraphData corrected
                                     - For Pie/Doughnut, option inGraphDataRotate can now be initialized to "inRadiusAxisRotateLabels"
                                           (request introduced by Strainy)
+15/04/2014 - Francois Vancoppenolle - support for a missing data value in line chart
 
 
 
@@ -54,6 +54,7 @@ Future Improvements
 - code reduction
 - animate Canvas when mouse is over a piece of graph (like in http://zurb.com/playground/pizza-pie-charts)
 - documentation 
+- support for missing data value in all chart type (currently only supported for line chart)
 
 Known Bugs
 ----------
