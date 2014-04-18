@@ -2,7 +2,7 @@ Change history
 --------------
 
 10/01/2014 - Francois Vancoppenolle - creation of the Github entry
-13/01/2014 - Ole Kroeger - Logaritmic Y-Axis for lines and bars - parameter "logarithmic"
+13/01/2014 - Ole Kroeger            - Logaritmic Y-Axis for lines and bars - parameter "logarithmic"
 18/01/2014 - Francois Vancoppenolle - rotateLabels can be choosen by the user - parameter "rotateLabels"
 21/01/2014 - Francois Vancoppenolle - minor corrections for parameter "rotateLabels" + showYAxisMin parameter
 22/01/2014 - Francois Vancoppenolle - bugs fix when negative values 
@@ -44,17 +44,17 @@ Change history
                                     - For Pie/Doughnut, option inGraphDataRotate can now be initialized to "inRadiusAxisRotateLabels"
                                           (request introduced by Strainy)
 15/04/2014 - Francois Vancoppenolle - support for a missing data value in line chart
+18/04/2014 - Francois Vancoppenolle - support for a missing data value in all chart types
+                                    - Labels in Radar and PolarArea
 
 
 
 Future Improvements
 -------------------
-- labels inside the graphs
 - topXAxis
 - code reduction
 - animate Canvas when mouse is over a piece of graph (like in http://zurb.com/playground/pizza-pie-charts)
 - documentation 
-- support for missing data value in all chart type (currently only supported for line chart)
 
 Known Bugs
 ----------
