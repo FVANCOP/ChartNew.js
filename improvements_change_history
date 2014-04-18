@@ -58,7 +58,8 @@ Future Improvements
 
 Known Bugs
 ----------
-
+- dynamicDisplay not working on IOS 5
+- Pie not working on some devices
 - If the first label is long, it can be truncated
 
    In "sample.html", if you put : 
