@@ -1562,8 +1562,8 @@ window.Chart = function (context) {
                 if (data[i].value < lowerValue) { lowerValue = 1*data[i].value; }
             };
 
-			if (upperValue == lowerValue) {
-				upperValue = upperValue*2;
+			if (Math.abs(upperValue - lowerValue)<0.00000001) {
+				upperValue = Max([upperValue*2,1]);
 				lowerValue = 0;
 			}
 
@@ -1942,8 +1942,8 @@ window.Chart = function (context) {
                 }
             }
 
-			if (upperValue == lowerValue) {
-				upperValue = upperValue*2;
+			if (Math.abs(upperValue - lowerValue)<0.00000001) {
+				upperValue = Max([upperValue*2,1]);
 				lowerValue = 0;
 			}
 
@@ -2667,8 +2667,8 @@ window.Chart = function (context) {
                 }
             };
 
-			if (upperValue == lowerValue) {
-				upperValue = upperValue*2;
+			if (Math.abs(upperValue - lowerValue)<0.00000001) {
+				upperValue = Max([upperValue*2,1]);
 				lowerValue = 0;
 			}
 
@@ -2969,11 +2969,15 @@ window.Chart = function (context) {
                 }
             };
 
+
             // AJOUT CHANGEMENT
             if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
             if (!isNaN(config.graphMax)) upperValue = config.graphMax;
 
-
+      			if (Math.abs(upperValue - lowerValue)<0.00000001) {
+			       	upperValue = Max([upperValue*2,1]);
+				      lowerValue = 0;
+			      }
             var maxSteps = Math.floor((scaleHeight / (labelHeight * 0.66)));
             var minSteps = Math.floor((scaleHeight / labelHeight * 0.5));
 
@@ -3278,9 +3282,16 @@ window.Chart = function (context) {
                 }
             };
 
+
             // AJOUT CHANGEMENT
             if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
             if (!isNaN(config.graphMax)) upperValue = config.graphMax;
+
+			if (Math.abs(upperValue - lowerValue)<0.00000001) {
+				upperValue = Max([upperValue*2,1]);
+				lowerValue = 0;
+			}
+
 
             var maxSteps = Math.floor((scaleHeight / (labelHeight * 0.66)));
             var minSteps = Math.floor((scaleHeight / labelHeight * 0.5));
@@ -3568,8 +3579,8 @@ window.Chart = function (context) {
                 }
             };
 
-			if (upperValue == lowerValue) {
-				upperValue = upperValue*2;
+			if (Math.abs(upperValue - lowerValue)<0.00000001) {
+				upperValue = Max([upperValue*2,1]);
 				lowerValue = 0;
 			}
 
@@ -3855,8 +3866,8 @@ window.Chart = function (context) {
                 }
             };
             
-			if (upperValue == lowerValue) {
-				upperValue = upperValue*2;
+			if (Math.abs(upperValue - lowerValue)<0.00000001) {
+				upperValue = Max([upperValue*2,1]);
 				lowerValue = 0;
 			}
 
