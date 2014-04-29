@@ -47,6 +47,8 @@ Change history
 18/04/2014 - Francois Vancoppenolle - support for a missing data value in all chart types
                                     - Labels in Radar and PolarArea
 27/04/2014 - Francois Vancoppenolle - Issue 21 fixed -> No chart when entry is NULL - Bug reported by "theBear"
+29/04/2014 - Francois Vancoppenolle - option thousandSeparator added - Default value : "" 
+                                          (request introduced by Sebastian Pertsch)
 
 
 
