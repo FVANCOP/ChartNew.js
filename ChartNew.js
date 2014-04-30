@@ -1,6 +1,5 @@
 
 
-
 /*
  * ChartNew.js
  * 
@@ -130,7 +129,7 @@ function fmtChartJS(config,value,fmt){
           part1=part1.substring(0,posdec);
         }        
         part1=part1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, config.thousandSeparator);
-        part2=part2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, config.thousandSeparator);
+        // part2=part2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, config.thousandSeparator);
         part2=part2.split('').reverse().join('');   // reverse string
         return_value=part1
         if(part2!="")return_value=return_value+config.decimalSeparator+part2;
