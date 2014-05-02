@@ -7,7 +7,7 @@ Simple HTML5 Charts using the canvas element
 
 
 
-For my personnal use, I had to integrate lot of changes into Chart.js (https://github.com/nnick/Chart.js. 
+For my personnal use, I had to integrate lot of changes into Chart.js (https://github.com/nnnick/Chart.js. 
 
 So, I have re-worked Chart.js. Most of the changes, are associated to requests in "GitHub" issues of Chart.js.
 
