@@ -59,6 +59,7 @@ Future Improvements
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
 - non evolutive animation in Pie/Doughnut (https://github.com/nnnick/Chart.js/issues/357)
 - code reduction
+- "carriage Return" for X labels (labels displayed on multiple lines)
 - animate Canvas when mouse is over a piece of graph (like in http://zurb.com/playground/pizza-pie-charts)
 - documentation 
 
