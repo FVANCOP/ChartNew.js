@@ -435,15 +435,15 @@ function doMouseMove(ctx, config, event) {
     var annotateDIV = document.getElementById('divCursor');
     show = false;
 
-	annotateDIV.className = (config.annotateclassName) ? config.annotateclassName : '';
-	annotateDIV.style.border = (config.annotateclassName) ? '' : config.annotateBorder;
-	annotateDIV.style.padding = (config.annotateclassName) ? '' : config.annotatePadding;
-	annotateDIV.style.borderRadius = (config.annotateclassName) ? '' : config.annotateBorderRadius;
-	annotateDIV.style.backgroundColor = (config.annotateclassName) ? '' : config.annotateBackgroundColor;
-	annotateDIV.style.color = (config.annotateclassName) ? '' : config.annotateFontColor;
-	annotateDIV.style.fontFamily = (config.annotateclassName) ? '' : config.annotateFontFamily;
-	annotateDIV.style.fontSize = (config.annotateclassName) ? '' : config.annotateFontSize;
-	annotateDIV.style.fontStyle = (config.annotateclassName) ? '' : config.annotateFontStyle;
+	annotateDIV.className = (config.annotateClassName) ? config.annotateClassName : '';
+	annotateDIV.style.border = (config.annotateClassName) ? '' : config.annotateBorder;
+	annotateDIV.style.padding = (config.annotateClassName) ? '' : config.annotatePadding;
+	annotateDIV.style.borderRadius = (config.annotateClassName) ? '' : config.annotateBorderRadius;
+	annotateDIV.style.backgroundColor = (config.annotateClassName) ? '' : config.annotateBackgroundColor;
+	annotateDIV.style.color = (config.annotateClassName) ? '' : config.annotateFontColor;
+	annotateDIV.style.fontFamily = (config.annotateClassName) ? '' : config.annotateFontFamily;
+	annotateDIV.style.fontSize = (config.annotateClassName) ? '' : config.annotateFontSize;
+	annotateDIV.style.fontStyle = (config.annotateClassName) ? '' : config.annotateFontStyle;
 
     canvas_pos = getMousePos(ctx.canvas, event);
     for (i = 0; i < jsGraphAnnotate[ctx.canvas.id]["length"]; i++) {
