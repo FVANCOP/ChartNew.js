@@ -328,9 +328,8 @@ function saveCanvas(ctx,data,config,tpgraph) {
              break;
         }
 
-        document.location.href= ctx.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-        ctx.putImageData(cvSave,0,0); 
-
+    var image = ctx.canvas.toDataURL();
+    window.location.href = image;
 } ;
 
 
