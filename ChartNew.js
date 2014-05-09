@@ -484,6 +484,7 @@ function doMouseMove(ctx, config, event) {
                     // create label text
                     dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, v13: v13, graphPosX: graphPosX, graphPosY: graphPosY });
                     annotateDIV.innerHTML = dispString;
+					show = true;
 
 
                     x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
@@ -513,6 +514,7 @@ function doMouseMove(ctx, config, event) {
 
                 dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY });
                 annotateDIV.innerHTML = dispString;
+				show = true;
 
                 x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
                 y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
@@ -543,6 +545,7 @@ function doMouseMove(ctx, config, event) {
 
                 dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY });
                 annotateDIV.innerHTML = dispString;
+				show = true;
 
                 x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
                 y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
@@ -550,8 +553,9 @@ function doMouseMove(ctx, config, event) {
                 oCursor.moveIt(x + fromLeft, y + fromTop);
 
             }
-
         }
+
+		annotateDIV.style.display = show ? '' : 'none';
     }
 
 } ;
