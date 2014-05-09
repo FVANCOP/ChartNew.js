@@ -432,13 +432,18 @@ function getMousePos(canvas, evt) {
 
 function doMouseMove(ctx, config, event) {
 
-    font = "<font face=" + config.annotateFontFamily + " size=" + config.annotateFontSize + "px style=\"font-style:" + config.annotateFontStyle + ";color:" + config.annotateFontColor + "\">";
-
     var annotateDIV = document.getElementById('divCursor');
+    show = false;
 
-    annotateDIV.innerHTML = "";
-    annotateDIV.style.border = "";
-    annotateDIV.style.backgroundColor = "";
+	annotateDIV.className = (config.annotateclassName) ? config.annotateclassName : '';
+	annotateDIV.style.border = (config.annotateclassName) ? '' : config.annotateBorder;
+	annotateDIV.style.padding = (config.annotateclassName) ? '' : config.annotatePadding;
+	annotateDIV.style.borderRadius = (config.annotateclassName) ? '' : config.annotateBorderRadius;
+	annotateDIV.style.backgroundColor = (config.annotateclassName) ? '' : config.annotateBackgroundColor;
+	annotateDIV.style.color = (config.annotateclassName) ? '' : config.annotateFontColor;
+	annotateDIV.style.fontFamily = (config.annotateclassName) ? '' : config.annotateFontFamily;
+	annotateDIV.style.fontSize = (config.annotateclassName) ? '' : config.annotateFontSize;
+	annotateDIV.style.fontStyle = (config.annotateclassName) ? '' : config.annotateFontStyle;
 
     canvas_pos = getMousePos(ctx.canvas, event);
     for (i = 0; i < jsGraphAnnotate[ctx.canvas.id]["length"]; i++) {
@@ -456,11 +461,6 @@ function doMouseMove(ctx, config, event) {
                 if(angle<config.startAngle*(Math.PI/360))angle+=2*Math.PI;
 
                 if ((angle > jsGraphAnnotate[ctx.canvas.id][i][5] && angle < jsGraphAnnotate[ctx.canvas.id][i][6]) || (angle > jsGraphAnnotate[ctx.canvas.id][i][5]-2*Math.PI && angle < jsGraphAnnotate[ctx.canvas.id][i][6]-2*Math.PI)|| (angle > jsGraphAnnotate[ctx.canvas.id][i][5]+2*Math.PI && angle < jsGraphAnnotate[ctx.canvas.id][i][6]+2*Math.PI)) {
-
-                    annotateDIV.style.border = config.annotateBorder;
-                    annotateDIV.style.padding = config.annotatePadding;
-                    annotateDIV.style.borderRadius = config.annotateBorderRadius;
-                    annotateDIV.style.backgroundColor = config.annotateBackgroundColor;
 
                     v1 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][7],config.fmtV1);       // V1=Label
                     v2 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][8],config.fmtV2);       // V2=Data Value
@@ -483,7 +483,7 @@ function doMouseMove(ctx, config, event) {
 
                     // create label text
                     dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, v13: v13, graphPosX: graphPosX, graphPosY: graphPosY });
-                    annotateDIV.innerHTML = font + dispString + "</font>";
+                    annotateDIV.innerHTML = dispString;
 
 
                     x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
@@ -495,11 +495,6 @@ function doMouseMove(ctx, config, event) {
         } else if (jsGraphAnnotate[ctx.canvas.id][i][0] == "RECT") {
             if (canvas_pos.x > jsGraphAnnotate[ctx.canvas.id][i][1] && canvas_pos.x < jsGraphAnnotate[ctx.canvas.id][i][3] && canvas_pos.y < jsGraphAnnotate[ctx.canvas.id][i][2] && canvas_pos.y > jsGraphAnnotate[ctx.canvas.id][i][4]) {
 
-                annotateDIV.style.border = config.annotateBorder;
-                annotateDIV.style.padding = config.annotatePadding;
-                annotateDIV.style.borderRadius = config.annotateBorderRadius;
-                annotateDIV.style.backgroundColor = config.annotateBackgroundColor;
-  
                 v1 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][5],config.fmtV1);       // V1=Label1
                 v2 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][6],config.fmtV2);       // V2=Label2
                 v3 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][7],config.fmtV3);       // V3=Data Value
@@ -517,7 +512,7 @@ function doMouseMove(ctx, config, event) {
                 graphPosY = canvas_pos.y;
 
                 dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY });
-                annotateDIV.innerHTML = font + dispString + "</font>";
+                annotateDIV.innerHTML = dispString;
 
                 x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
                 y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
@@ -528,11 +523,6 @@ function doMouseMove(ctx, config, event) {
         } else if (jsGraphAnnotate[ctx.canvas.id][i][0] == "POINT") {
             distance = Math.sqrt((canvas_pos.x - jsGraphAnnotate[ctx.canvas.id][i][1]) * (canvas_pos.x - jsGraphAnnotate[ctx.canvas.id][i][1]) + (canvas_pos.y - jsGraphAnnotate[ctx.canvas.id][i][2]) * (canvas_pos.y - jsGraphAnnotate[ctx.canvas.id][i][2]));
             if (distance < 10) {
-
-                annotateDIV.style.border = config.annotateBorder;
-                annotateDIV.style.padding = config.annotatePadding;
-                annotateDIV.style.borderRadius = config.annotateBorderRadius;
-                annotateDIV.style.backgroundColor = config.annotateBackgroundColor;
 
                 v1 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][3],config.fmtV1);       // V1=Label1
                 v2 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][4],config.fmtV2);       // V2=Label2
@@ -552,7 +542,7 @@ function doMouseMove(ctx, config, event) {
                 graphPosY = canvas_pos.y;
 
                 dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY });
-                annotateDIV.innerHTML = font + dispString + "</font>";
+                annotateDIV.innerHTML = dispString;
 
                 x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
                 y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
