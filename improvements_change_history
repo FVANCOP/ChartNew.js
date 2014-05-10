@@ -51,7 +51,10 @@ Change history
                                           (request introduced by Sebastian Pertsch)
 01/05/2014 - Francois Vancoppenolle/sjt88 - fix a problem when lot of data in the graph (more than number of available pixels)
 04/05/2014 - Francois Vancoppenolle - fix of several bugs; code simplification
-
+10/05/2014 - John Rayes             - Improvement in savePng functions - issue #26
+                                    - Changes in annotate templates - issue #24
+                                    - annotate can be defined through CSS (option annotateClassName added) - Issue #25
+           - Francois Vancoppenolle - fix of several bugs detected while writing the documentation.
 
 Future Improvements
 -------------------
