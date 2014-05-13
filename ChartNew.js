@@ -4045,7 +4045,7 @@ window.Chart = function (context) {
                 requestAnimFrame(animLoop);
             }
             else {
-                if (typeof config.onAnimationComplete == "function") config.onAnimationComplete();
+                if (typeof config.onAnimationComplete == "function") config.onAnimationComplete(ctx,config,data);
             }
         } ;
     } ;
