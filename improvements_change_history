@@ -55,6 +55,10 @@ Change history
                                     - Changes in annotate templates - issue #24
                                     - annotate can be defined through CSS (option annotateClassName added) - Issue #25
            - Francois Vancoppenolle - fix of several bugs detected while writing the documentation.
+13/05/2014 - Francois Vancoppenolle - fix bug for option fmtYLabel
+                                    - for all bar graphs (stacked/Horizontal), possibility to specify the color of each bar;
+                                          (request introduced by abraxas1484 - Issue 28)
+                                    - fix bug when only one value on line - signaled by Umarmukthar 
 
 Future Improvements
 -------------------
