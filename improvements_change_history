@@ -60,6 +60,8 @@ Change history
                                           (request introduced by abraxas1484 - Issue 28)
                                     - fix bug when only one value on line - signaled by Umarmukthar 
 13/05/2014 - Francois Vancoppenolle - parameters (ctx,config,data) passed to function onAnimationComplete
+15/05/2014 - Francois Vancoppenolle & Justin Sternberg - option barBorderRadius added for Bar and horizontalBar
+
 
 Future Improvements
 -------------------
