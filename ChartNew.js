@@ -1176,6 +1176,7 @@ window.Chart = function (context) {
             barStrokeWidth: 2,
             barValueSpacing: 5,
             barDatasetSpacing: 1,
+            barBorderRadius : 0,
             animation: true,
             animationSteps: 60,
             animationEasing: "easeOutQuart",
@@ -1236,6 +1237,7 @@ window.Chart = function (context) {
             barStrokeWidth: 2,
             barValueSpacing: 5,
             barDatasetSpacing: 1,
+            barBorderRadius : 0,
             animation: true,
             animationSteps: 60,
             animationEasing: "easeOutQuart",
@@ -3485,16 +3487,8 @@ window.Chart = function (context) {
                   if (!(typeof(data.datasets[i].data[j])=='undefined')) {
                     var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
 
-                    ctx.beginPath();
-                    ctx.moveTo(barOffset, xAxisPosY - zeroY);
-                    ctx.lineTo(barOffset, xAxisPosY - animPc * calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2));
-                    ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc * calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2));
-                    ctx.lineTo(barOffset + barWidth, xAxisPosY - zeroY);
-                    if (config.barShowStroke) {
-                        ctx.stroke();
-                    }
-                    ctx.closePath();
-                    ctx.fill();
+                    var barHeight = animPc*calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2);
+          					roundRect( ctx, barOffset, xAxisPosY, barWidth, barHeight, config.barShowStroke, config.barBorderRadius,zeroY );
 
                     cumvalue[j] += 1*data.datasets[i].data[j];
                     if (animPc >= 1) {
@@ -3554,6 +3548,23 @@ window.Chart = function (context) {
               }
                 
             }
+        } ;
+
+        function roundRect(ctx, x, y, w, h, stroke, radius,zeroY ) {
+
+  		    ctx.beginPath();
+			    ctx.moveTo(x + radius, y - zeroY);
+			    ctx.lineTo(x + w - radius, y-zeroY);
+			    ctx.quadraticCurveTo(x + w, y-zeroY, x + w, y-zeroY);
+			    ctx.lineTo(x + w, y - h + radius);
+			    ctx.quadraticCurveTo(x + w, y - h, x + w - radius, y - h);
+			    ctx.lineTo(x + radius, y - h);
+			    ctx.quadraticCurveTo(x, y - h, x, y - h + radius);
+			    ctx.lineTo(x, y -zeroY);
+			    ctx.quadraticCurveTo(x, y-zeroY, x + radius, y-zeroY);
+			    if(stroke)ctx.stroke();
+			    ctx.closePath();
+			    ctx.fill();
         } ;
 
         function drawScale() {
@@ -3692,6 +3703,7 @@ window.Chart = function (context) {
     } ;
 
     var HorizontalBar = function (data, config, ctx) {
+config.animation=false;
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
 
         if (!dynamicFunction(data,config,ctx,"HorizontalBar"))return;
@@ -3772,19 +3784,10 @@ window.Chart = function (context) {
                 
                   if (!(typeof(data.datasets[i].data[j])=='undefined')) {
                     var barOffset = xAxisPosY + config.barValueSpacing - scaleHop * (j + 1) + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
-                    ctx.beginPath();
-                    //            ctx.moveTo(yAxisPosX, barOffset);
-                    ctx.moveTo(yAxisPosX + zeroY, barOffset);
-                    ctx.lineTo(yAxisPosX + animPc * calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset);
-                    ctx.lineTo(yAxisPosX + animPc * calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset + barWidth);
-                    //            ctx.lineTo(yAxisPosX, barOffset+barWidth);
-                    ctx.lineTo(yAxisPosX + zeroY, barOffset + barWidth);
 
-                    if (config.barShowStroke) {
-                        ctx.stroke();
-                    }
-                    ctx.closePath();
-                    ctx.fill();
+                    var barHeight = animPc * calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
+          					roundRect( ctx, barOffset, yAxisPosX, barWidth, barHeight, config.barShowStroke, config.barBorderRadius,zeroY );
+
 
                     cumvalue[j] += 1*data.datasets[i].data[j];
                     if (animPc >= 1) {
@@ -3850,6 +3853,24 @@ window.Chart = function (context) {
   
 
         } ;
+        
+        function roundRect(ctx, x, y, w, h, stroke, radius,zeroY ) {
+  		    ctx.beginPath();
+			    ctx.moveTo(y +zeroY, x + radius  );
+			    ctx.lineTo(y +zeroY, x + w - radius );
+			    ctx.quadraticCurveTo(y + zeroY, x + w, y + zeroY, x + w);
+			    ctx.lineTo(y + h - radius, x + w );
+			    ctx.quadraticCurveTo(y + h, x + w, y + h, x + w - radius);
+			    ctx.lineTo(y + h , x + radius);
+			    ctx.quadraticCurveTo(y + h, x  , y + h - radius , x  );
+			    ctx.lineTo(y+zeroY, x );
+			    ctx.quadraticCurveTo(y+zeroY, x , y+zeroY, x+radius);
+
+			    if(stroke)ctx.stroke();
+			    ctx.closePath();
+			    ctx.fill();
+        } ;
+        
 
         function drawScale() {
 
