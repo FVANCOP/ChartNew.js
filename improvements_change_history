@@ -67,6 +67,8 @@ Future Improvements
 -------------------
 - topXAxis
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
+- display the legend on other places (center, bottom or top on the left/right of the graph;
+  center, right, left over/under the graph). 
 - non evolutive animation in Pie/Doughnut (https://github.com/nnnick/Chart.js/issues/357)
 - line in Bar chart (and StackeBar) (https://github.com/FVANCOP/ChartNew.js/issues/23)
 - code reduction
