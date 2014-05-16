@@ -2234,7 +2234,7 @@ window.Chart = function (context) {
 
     var Doughnut = function (data, config, ctx) {
         var segmentTotal = 0;
-        var msr, midPieX, midPieY;
+        var msr, midPieX, midPieY, doughnutRadius;
 
         if (!dynamicFunction(data,config,ctx,"Doughnut"))return;
         
