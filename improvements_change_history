@@ -61,7 +61,7 @@ Change history
                                     - fix bug when only one value on line - signaled by Umarmukthar 
 13/05/2014 - Francois Vancoppenolle - parameters (ctx,config,data) passed to function onAnimationComplete
 15/05/2014 - Francois Vancoppenolle & Justin Sternberg - option barBorderRadius added for Bar and horizontalBar
-
+18/05/2014 - Blaine Kasten          - bug in doughNut fixed (see issue #32)
 
 Future Improvements
 -------------------
