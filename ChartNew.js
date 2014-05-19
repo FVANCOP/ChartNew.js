@@ -588,6 +588,7 @@ annotateDIV.style.display = show ? '' : 'none';
 
 //Define the global Chart Variable as a class.
 window.Chart = function (context) {
+    if (!context.canvas.id) throw new Error('CHART ERROR: Your canvas must have an id associated to it.')
 
     var chart = this;
 
