@@ -587,8 +587,7 @@ annotateDIV.style.display = show ? '' : 'none';
  
 
 //Define the global Chart Variable as a class.
-window.Chart = function (context) {
-    if (!context.canvas.id) throw new Error('CHART ERROR: Your canvas must have an id associated to it.')
+window.Chart = function (context){
 
     var chart = this;
 
@@ -2234,6 +2233,8 @@ window.Chart = function (context) {
     } ;
 
     var Doughnut = function (data, config, ctx) {
+    	if (!ctx.canvas.id && config.annotateDisplay) throw new Error('CHART ERROR: You must have an ID on your chart to use annotateDisplay');
+    	
         var segmentTotal = 0;
         var msr, midPieX, midPieY, doughnutRadius;
 
