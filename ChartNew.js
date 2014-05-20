@@ -336,7 +336,7 @@ function saveCanvas(ctx,data,config,tpgraph) {
         if(config.savePngOuput=="NewWindow"){
           var image = ctx.canvas.toDataURL();
           ctx.putImageData(cvSave,0,0); 
-          window.open(image);
+          window.open(image,'_blank');
         }
         if(config.savePngOuput=="CurrentWindow"){
           var image = ctx.canvas.toDataURL();
@@ -366,6 +366,12 @@ var dynamicDisplayList = new Array();
 function dynamicFunction(data,config,ctx,tpgraph){
         if(config.dynamicDisplay)
         {
+           if(ctx.canvas.id=="")
+           {
+             var cvdate = new Date();
+             var cvmillsec = cvdate.getTime();
+             ctx.canvas.id="Canvas_"+cvmillsec;
+           }
            if(typeof(dynamicDisplay[ctx.canvas.id])=="undefined")
            {
               dynamicDisplayList[dynamicDisplayList["length"]]=ctx.canvas.id;
@@ -434,8 +440,6 @@ function scrollFunction(){
       }
     }
 };  
-                                                     
-
 
 var jsGraphAnnotate = new Array();
 
@@ -463,37 +467,37 @@ function doMouseMove(ctx, config, event) {
     annotateDIV.style.fontStyle = (config.annotateClassName) ? '' : config.annotateFontStyle;
 
     canvas_pos = getMousePos(ctx.canvas, event);
-    for (i = 0; i < jsGraphAnnotate[ctx.canvas.id]["length"]; i++) {
+    for (i = 0; i < jsGraphAnnotate[ctx.ChartNewId]["length"]; i++) {
 
-        if (jsGraphAnnotate[ctx.canvas.id][i][0] == "ARC") // Arc
+        if (jsGraphAnnotate[ctx.ChartNewId][i][0] == "ARC") // Arc
         {
-            distance = Math.sqrt((canvas_pos.x - jsGraphAnnotate[ctx.canvas.id][i][1]) * (canvas_pos.x - jsGraphAnnotate[ctx.canvas.id][i][1]) + (canvas_pos.y - jsGraphAnnotate[ctx.canvas.id][i][2]) * (canvas_pos.y - jsGraphAnnotate[ctx.canvas.id][i][2]));
-            if (distance > jsGraphAnnotate[ctx.canvas.id][i][3] && distance < jsGraphAnnotate[ctx.canvas.id][i][4]) {
+            distance = Math.sqrt((canvas_pos.x - jsGraphAnnotate[ctx.ChartNewId][i][1]) * (canvas_pos.x - jsGraphAnnotate[ctx.ChartNewId][i][1]) + (canvas_pos.y - jsGraphAnnotate[ctx.ChartNewId][i][2]) * (canvas_pos.y - jsGraphAnnotate[ctx.ChartNewId][i][2]));
+            if (distance > jsGraphAnnotate[ctx.ChartNewId][i][3] && distance < jsGraphAnnotate[ctx.ChartNewId][i][4]) {
 
-                angle = Math.acos((canvas_pos.x - jsGraphAnnotate[ctx.canvas.id][i][1]) / distance);
-                if (canvas_pos.y < jsGraphAnnotate[ctx.canvas.id][i][2]) angle = -angle;
+                angle = Math.acos((canvas_pos.x - jsGraphAnnotate[ctx.ChartNewId][i][1]) / distance);
+                if (canvas_pos.y < jsGraphAnnotate[ctx.ChartNewId][i][2]) angle = -angle;
                 
                 while (angle < 0){angle+=2*Math.PI;}
                 while (angle > 2*Math.PI){angle-=2*Math.PI;}
                 if(angle<config.startAngle*(Math.PI/360))angle+=2*Math.PI;
 
-                if ((angle > jsGraphAnnotate[ctx.canvas.id][i][5] && angle < jsGraphAnnotate[ctx.canvas.id][i][6]) || (angle > jsGraphAnnotate[ctx.canvas.id][i][5]-2*Math.PI && angle < jsGraphAnnotate[ctx.canvas.id][i][6]-2*Math.PI)|| (angle > jsGraphAnnotate[ctx.canvas.id][i][5]+2*Math.PI && angle < jsGraphAnnotate[ctx.canvas.id][i][6]+2*Math.PI)) {
+                if ((angle > jsGraphAnnotate[ctx.ChartNewId][i][5] && angle < jsGraphAnnotate[ctx.ChartNewId][i][6]) || (angle > jsGraphAnnotate[ctx.ChartNewId][i][5]-2*Math.PI && angle < jsGraphAnnotate[ctx.ChartNewId][i][6]-2*Math.PI)|| (angle > jsGraphAnnotate[ctx.ChartNewId][i][5]+2*Math.PI && angle < jsGraphAnnotate[ctx.ChartNewId][i][6]+2*Math.PI)) {
 
-                    v1 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][7],config.fmtV1); // V1=Label
-                    v2 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][8],config.fmtV2); // V2=Data Value
-                    v3 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][9],config.fmtV3); // V3=Cumulated Value
-                    v4 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][10],config.fmtV4); // V4=Total Data Value
-                    v5 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][11],config.fmtV5); // V5=Angle
+                    v1 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][7],config.fmtV1); // V1=Label
+                    v2 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][8],config.fmtV2); // V2=Data Value
+                    v3 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][9],config.fmtV3); // V3=Cumulated Value
+                    v4 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][10],config.fmtV4); // V4=Total Data Value
+                    v5 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][11],config.fmtV5); // V5=Angle
     
-                    v6 = fmtChartJS(config,100 * jsGraphAnnotate[ctx.canvas.id][i][8] / jsGraphAnnotate[ctx.canvas.id][i][10],config.fmtV6); // v6=Percentage;
+                    v6 = fmtChartJS(config,100 * jsGraphAnnotate[ctx.ChartNewId][i][8] / jsGraphAnnotate[ctx.ChartNewId][i][10],config.fmtV6); // v6=Percentage;
                     v6 = roundToWithThousands(config, v6, config.roundPct);
-                    v7 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][1],config.fmtV7); // v7=midPointX of arc;
-                    v8 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][2],config.fmtV8); // v8=midPointY of arc;
-                    v9 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][3],config.fmtV9); // v9=radius Minimum;
-                    v10 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][4],config.fmtV10); // v10=radius Maximum;
-                    v11 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][5],config.fmtV11); // v11=start angle;
-                    v12 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][6],config.fmtV12); // v12=stop angle;
-                    v13 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][12],config.fmtV13); // v13=position in Data;
+                    v7 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][1],config.fmtV7); // v7=midPointX of arc;
+                    v8 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][2],config.fmtV8); // v8=midPointY of arc;
+                    v9 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][3],config.fmtV9); // v9=radius Minimum;
+                    v10 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][4],config.fmtV10); // v10=radius Maximum;
+                    v11 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][5],config.fmtV11); // v11=start angle;
+                    v12 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][6],config.fmtV12); // v12=stop angle;
+                    v13 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][12],config.fmtV13); // v13=position in Data;
 
                     graphPosX = canvas_pos.x;
                     graphPosY = canvas_pos.y;
@@ -510,22 +514,22 @@ function doMouseMove(ctx, config, event) {
                     oCursor.moveIt(x + fromLeft, y + fromTop);
                 }
             }
-        } else if (jsGraphAnnotate[ctx.canvas.id][i][0] == "RECT") {
-            if (canvas_pos.x > jsGraphAnnotate[ctx.canvas.id][i][1] && canvas_pos.x < jsGraphAnnotate[ctx.canvas.id][i][3] && canvas_pos.y < jsGraphAnnotate[ctx.canvas.id][i][2] && canvas_pos.y > jsGraphAnnotate[ctx.canvas.id][i][4]) {
+        } else if (jsGraphAnnotate[ctx.ChartNewId][i][0] == "RECT") {
+            if (canvas_pos.x > jsGraphAnnotate[ctx.ChartNewId][i][1] && canvas_pos.x < jsGraphAnnotate[ctx.ChartNewId][i][3] && canvas_pos.y < jsGraphAnnotate[ctx.ChartNewId][i][2] && canvas_pos.y > jsGraphAnnotate[ctx.ChartNewId][i][4]) {
 
-                v1 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][5],config.fmtV1); // V1=Label1
-                v2 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][6],config.fmtV2); // V2=Label2
-                v3 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][7],config.fmtV3); // V3=Data Value
-                v4 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][8],config.fmtV4); // V4=Cumulated Value
-                v5 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][9],config.fmtV5); // V5=Total Data Value
-                v6 = fmtChartJS(config,100 * jsGraphAnnotate[ctx.canvas.id][i][7] / jsGraphAnnotate[ctx.canvas.id][i][9],config.fmtV6); // v6=Percentage;
+                v1 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][5],config.fmtV1); // V1=Label1
+                v2 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][6],config.fmtV2); // V2=Label2
+                v3 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][7],config.fmtV3); // V3=Data Value
+                v4 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][8],config.fmtV4); // V4=Cumulated Value
+                v5 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][9],config.fmtV5); // V5=Total Data Value
+                v6 = fmtChartJS(config,100 * jsGraphAnnotate[ctx.ChartNewId][i][7] / jsGraphAnnotate[ctx.ChartNewId][i][9],config.fmtV6); // v6=Percentage;
                 v6 = roundToWithThousands(config, v6, config.roundPct);
-                v7 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][1],config.fmtV7); // v7=top X of rectangle;
-                v8 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][2],config.fmtV8); // v8=top Y of rectangle;
-                v9 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][3],config.fmtV9); // v9=bottom X of rectangle;
-                v10 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][4],config.fmtV10); // v10=bottom Y of rectangle;
-                v11 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][10],config.fmtV11); // v11=position in Dataset;
-                v12 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][11],config.fmtV12); // v12=position in Dataset[v11].Data;
+                v7 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][1],config.fmtV7); // v7=top X of rectangle;
+                v8 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][2],config.fmtV8); // v8=top Y of rectangle;
+                v9 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][3],config.fmtV9); // v9=bottom X of rectangle;
+                v10 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][4],config.fmtV10); // v10=bottom Y of rectangle;
+                v11 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][10],config.fmtV11); // v11=position in Dataset;
+                v12 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][11],config.fmtV12); // v12=position in Dataset[v11].Data;
                 graphPosX = canvas_pos.x;
                 graphPosY = canvas_pos.y;
 
@@ -539,23 +543,23 @@ function doMouseMove(ctx, config, event) {
                 oCursor.moveIt(x + fromLeft, y + fromTop);
             }
 
-        } else if (jsGraphAnnotate[ctx.canvas.id][i][0] == "POINT") {
-            distance = Math.sqrt((canvas_pos.x - jsGraphAnnotate[ctx.canvas.id][i][1]) * (canvas_pos.x - jsGraphAnnotate[ctx.canvas.id][i][1]) + (canvas_pos.y - jsGraphAnnotate[ctx.canvas.id][i][2]) * (canvas_pos.y - jsGraphAnnotate[ctx.canvas.id][i][2]));
+        } else if (jsGraphAnnotate[ctx.ChartNewId][i][0] == "POINT") {
+            distance = Math.sqrt((canvas_pos.x - jsGraphAnnotate[ctx.ChartNewId][i][1]) * (canvas_pos.x - jsGraphAnnotate[ctx.ChartNewId][i][1]) + (canvas_pos.y - jsGraphAnnotate[ctx.ChartNewId][i][2]) * (canvas_pos.y - jsGraphAnnotate[ctx.ChartNewId][i][2]));
             if (distance < 10) {
 
-                v1 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][3],config.fmtV1); // V1=Label1
-                v2 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][4],config.fmtV2); // V2=Label2
-                v3 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][5],config.fmtV3); // V3=Data Value
-                v4 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][6],config.fmtV4); // V4=Difference with Previous line
-                v5 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][7],config.fmtV5); // V5=Difference with next line;
-                v6 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][8],config.fmtV6); // V6=max;
-                v7 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][9],config.fmtV7); // V7=Total;
-                v8 = fmtChartJS(config,100 * jsGraphAnnotate[ctx.canvas.id][i][5] / jsGraphAnnotate[ctx.canvas.id][i][9],config.fmtV8); // v8=percentage;
+                v1 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][3],config.fmtV1); // V1=Label1
+                v2 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][4],config.fmtV2); // V2=Label2
+                v3 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][5],config.fmtV3); // V3=Data Value
+                v4 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][6],config.fmtV4); // V4=Difference with Previous line
+                v5 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][7],config.fmtV5); // V5=Difference with next line;
+                v6 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][8],config.fmtV6); // V6=max;
+                v7 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][9],config.fmtV7); // V7=Total;
+                v8 = fmtChartJS(config,100 * jsGraphAnnotate[ctx.ChartNewId][i][5] / jsGraphAnnotate[ctx.ChartNewId][i][9],config.fmtV8); // v8=percentage;
                 v8 = roundToWithThousands(config, v8, config.roundPct);
-                v9 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][1],config.fmtV9); // v9=pos X of point;
-                v10 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][2],config.fmtV10); // v10=pos Y of point;
-                v11 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][10],config.fmtV11); // v11=position in Dataset;
-                v12 = fmtChartJS(config,jsGraphAnnotate[ctx.canvas.id][i][11],config.fmtV12); // v12=position in Dataset[v11].Data;
+                v9 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][1],config.fmtV9); // v9=pos X of point;
+                v10 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][2],config.fmtV10); // v10=pos Y of point;
+                v11 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][10],config.fmtV11); // v11=position in Dataset;
+                v12 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][11],config.fmtV12); // v12=position in Dataset[v11].Data;
 
                 graphPosX = canvas_pos.x;
                 graphPosY = canvas_pos.y;
@@ -1403,7 +1407,14 @@ window.Chart = function (context) {
     };
 
     var PolarArea = function (data, config, ctx) {
+    
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
+    
+        if(typeof ctx.ChartNewId == undefined){
+          var cvdate = new Date();
+          var cvmillsec = cvdate.getTime();
+          ctx.ChartNewId = "PolarArea_"+cvmillsec;
+        }
 
         if (!dynamicFunction(data,config,ctx,"PolarArea"))return;
 
@@ -1419,7 +1430,7 @@ window.Chart = function (context) {
         config.logarithmic = false;
 
         var annotateCnt = 0;
-        jsGraphAnnotate[ctx.canvas.id] = new Array();
+        jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"PolarArea");
         
@@ -1516,7 +1527,7 @@ window.Chart = function (context) {
  
                     if (typeof (data[i].title) == "string") lgtxt = data[i].title.trim();
                     else lgtxt = "";
-                    jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["ARC", midPosX, midPosY, 0, calculateOffset(config, 1*data[i].value, calculatedScale, scaleHop), startAngle - angleStep, startAngle, lgtxt, 1*data[i].value, cumvalue, totvalue, angleStep, i];
+                    jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["ARC", midPosX, midPosY, 0, calculateOffset(config, 1*data[i].value, calculatedScale, scaleHop), startAngle - angleStep, startAngle, lgtxt, 1*data[i].value, cumvalue, totvalue, angleStep, i];
 
                     if (config.inGraphDataShow) {
                     
@@ -1644,6 +1655,12 @@ window.Chart = function (context) {
     var Radar = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
 
+        if(typeof ctx.ChartNewId == "undefined"){
+          var cvdate = new Date();
+          var cvmillsec = cvdate.getTime();
+          ctx.ChartNewId="Radar_"+cvmillsec;
+        }
+
         if (!dynamicFunction(data,config,ctx,"Radar"))return;
 
         while (config.startAngle < 0){config.startAngle+=360;}
@@ -1652,7 +1669,7 @@ window.Chart = function (context) {
         config.logarithmic = false;
 
         var annotateCnt = 0;
-        jsGraphAnnotate[ctx.canvas.id] = new Array();
+        jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"Radar");
 
@@ -1733,7 +1750,7 @@ window.Chart = function (context) {
                         else divnext = data.datasets[i + 1].data[j] - data.datasets[i].data[j];
                         if (typeof (data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
                         else lgtxt2 = "";
-                        jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["POINT", midPosX + Math.cos(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop), midPosY - Math.sin(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop), lgtxt, lgtxt2, 1*data.datasets[i].data[j], divprev, divnext, maxvalue[j], totvalue[j], i, j];
+                        jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["POINT", midPosX + Math.cos(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop), midPosY - Math.sin(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop), lgtxt, lgtxt2, 1*data.datasets[i].data[j], divprev, divnext, maxvalue[j], totvalue[j], i, j];
                      }
                    }
                 }
@@ -2024,6 +2041,12 @@ window.Chart = function (context) {
         var segmentTotal = 0;
         var msr, midPieX, midPieY,pieRadius;
 
+        if(typeof ctx.ChartNewId == "undefined"){
+          var cvdate = new Date();
+          var cvmillsec = cvdate.getTime();
+          ctx.ChartNewId="Pie_"+cvmillsec;
+        }
+
         if (!dynamicFunction(data,config,ctx,"Pie"))return;
 
         while (config.startAngle < 0){config.startAngle+=360;}
@@ -2032,7 +2055,7 @@ window.Chart = function (context) {
         config.logarithmic = false;
 
         var annotateCnt = 0;
-        jsGraphAnnotate[ctx.canvas.id] = new Array();
+        jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"Pie");
 
@@ -2110,7 +2133,7 @@ window.Chart = function (context) {
                 if (animationDecimal >= 1) {
                     if (typeof (data[i].title) == "string") lgtxt = data[i].title.trim();
                     else lgtxt = "";
-                    jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["ARC", midPieX, midPieY, 0, pieRadius, cumulativeAngle - segmentAngle, cumulativeAngle, lgtxt, 1*data[i].value, cumvalue, totvalue, segmentAngle, i];
+                    jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["ARC", midPieX, midPieY, 0, pieRadius, cumulativeAngle - segmentAngle, cumulativeAngle, lgtxt, 1*data[i].value, cumvalue, totvalue, segmentAngle, i];
 
 
                     if (config.inGraphDataShow) {
@@ -2236,6 +2259,13 @@ window.Chart = function (context) {
         var segmentTotal = 0;
         var msr, midPieX, midPieY, doughnutRadius;
 
+        if(typeof ctx.ChartNewId == "undefined"){
+          var cvdate = new Date();
+          var cvmillsec = cvdate.getTime();
+          ctx.ChartNewId="Doughnut_"+cvmillsec;
+        }
+
+
         if (!dynamicFunction(data,config,ctx,"Doughnut"))return;
         
         var realCumulativeAngle=config.startAngle* (Math.PI / 180)+2*Math.PI;
@@ -2251,7 +2281,7 @@ window.Chart = function (context) {
 
 
         var annotateCnt = 0;
-        jsGraphAnnotate[ctx.canvas.id] = new Array();
+        jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"Doughnut");
 
@@ -2316,7 +2346,7 @@ window.Chart = function (context) {
                     if (typeof (data[i].title) == "string") lgtxt = data[i].title.trim();
                     else lgtxt = "";
 
-                    jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["ARC", midPieX, midPieY, cutoutRadius, doughnutRadius, cumulativeAngle - segmentAngle, cumulativeAngle, lgtxt, 1*data[i].value, cumvalue, totvalue, segmentAngle, i];
+                    jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["ARC", midPieX, midPieY, cutoutRadius, doughnutRadius, cumulativeAngle - segmentAngle, cumulativeAngle, lgtxt, 1*data[i].value, cumvalue, totvalue, segmentAngle, i];
                     if (config.inGraphDataShow) {
                     
                          if(config.inGraphDataAnglePosition==1)posAngle=realCumulativeAngle+config.inGraphDataPaddingAngle*(Math.PI/180);
@@ -2440,6 +2470,13 @@ window.Chart = function (context) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, rotateLabels = 0, msr;
         var annotateCnt = 0;
 
+        if(typeof ctx.ChartNewId == "undefined"){
+          var cvdate = new Date();
+          var cvmillsec = cvdate.getTime();
+          ctx.ChartNewId="Line_"+cvmillsec;
+        }
+
+
         // adapt data when length is 1;
         var mxlgt=0;
         for (var i = 0; i < data.datasets.length; i++) mxlgt=Max([mxlgt,data.datasets[i].data.length]);
@@ -2455,7 +2492,7 @@ window.Chart = function (context) {
 
         if (!dynamicFunction(data,config,ctx,"Line"))return;
 
-        jsGraphAnnotate[ctx.canvas.id] = new Array();
+        jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"Line");
 
@@ -2562,7 +2599,7 @@ window.Chart = function (context) {
 
                         if (typeof (data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
                         else lgtxt2 = "";
-                        jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["POINT", xPos(j), yPos(i, j), lgtxt, lgtxt2, 1*data.datasets[i].data[j], divprev, divnext, maxvalue[j], totvalue[j], i, j];
+                        jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["POINT", xPos(j), yPos(i, j), lgtxt, lgtxt2, 1*data.datasets[i].data[j], divprev, divnext, maxvalue[j], totvalue[j], i, j];
         		    				if (config.inGraphDataShow) {
   				          			ctx.save();
    					          	  ctx.textAlign = config.inGraphDataAlign;
@@ -2763,12 +2800,18 @@ window.Chart = function (context) {
     
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
 
+        if(typeof ctx.ChartNewId == "undefined"){
+          var cvdate = new Date();
+          var cvmillsec = cvdate.getTime();
+          ctx.ChartNewId="StackedBar_"+cvmillsec;
+        }
+
         if (!dynamicFunction(data,config,ctx,"StackedBar"))return;
 
         config.logarithmic = false;
 
         var annotateCnt = 0;
-        jsGraphAnnotate[ctx.canvas.id] = new Array();
+        jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"StackedBar");
 
@@ -2856,7 +2899,7 @@ window.Chart = function (context) {
                         if (animPc >= 1) {
                          if (typeof (data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
                          else lgtxt2 = "";
-                         jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["RECT", barOffset, xAxisPosY - yStart[j] + 1, barOffset + barWidth, xAxisPosY - calculateOffset(config, (yFpt[j]>=0)* calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j], lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+                         jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["RECT", barOffset, xAxisPosY - yStart[j] + 1, barOffset + barWidth, xAxisPosY - calculateOffset(config, (yFpt[j]>=0)* calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j], lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
                         }
                         yStart[j] += animPc * calculateOffset(config, (yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) - (config.barStrokeWidth / 2);
                         if (yFpt[j]==-1)yFpt[j]=i;
@@ -3072,12 +3115,18 @@ window.Chart = function (context) {
     var HorizontalStackedBar = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
 
+        if(typeof ctx.ChartNewId == "undefined"){
+          var cvdate = new Date();
+          var cvmillsec = cvdate.getTime();
+          ctx.ChartNewId="HorizontalStackedBar_"+cvmillsec;
+        }
+
         if (!dynamicFunction(data,config,ctx,"HorizontalStackedBar"))return;
 
         config.logarithmic = false;
 
         var annotateCnt = 0;
-        jsGraphAnnotate[ctx.canvas.id] = new Array();
+        jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"HorizontalStackedBar");
 
@@ -3178,7 +3227,7 @@ window.Chart = function (context) {
                         if (animPc >= 1) {
                             if (typeof (data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
                             else lgtxt2 = "";
-                            jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["RECT", yAxisPosX + yStart[j] + 1, barOffset + barWidth, yAxisPosX + yStart[j] + HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset, lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+                            jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["RECT", yAxisPosX + yStart[j] + 1, barOffset + barWidth, yAxisPosX + yStart[j] + HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset, lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
                         }
                         yStart[j] += animPc * HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
                         if (yFpt[j]==-1)yFpt[j]=i;
@@ -3396,9 +3445,15 @@ window.Chart = function (context) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
         var annotateCnt = 0;
 
+        if(typeof ctx.ChartNewId == "undefined"){
+          var cvdate = new Date();
+          var cvmillsec = cvdate.getTime();
+          ctx.ChartNewId="Bar_"+cvmillsec;
+        }
+
         if (!dynamicFunction(data,config,ctx,"Bar"))return;
         
-        jsGraphAnnotate[ctx.canvas.id] = new Array();
+        jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"Bar");
 
@@ -3497,7 +3552,7 @@ window.Chart = function (context) {
                         t1 = xAxisPosY - zeroY;
                         t2 = xAxisPosY - calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2);
                         if (t1 < t2) { t3 = t1; t1 = t2; t2 = t3 }
-                        jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["RECT", barOffset, t1, barOffset + barWidth, t2, lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+                        jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["RECT", barOffset, t1, barOffset + barWidth, t2, lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
                     }
                   }
                 }
@@ -3703,13 +3758,19 @@ window.Chart = function (context) {
     } ;
 
     var HorizontalBar = function (data, config, ctx) {
-config.animation=false;
+
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
+
+        if(typeof ctx.ChartNewId == "undefined"){
+          var cvdate = new Date();
+          var cvmillsec = cvdate.getTime();
+          ctx.ChartNewId="HorizontalBar_"+cvmillsec;
+        }
 
         if (!dynamicFunction(data,config,ctx,"HorizontalBar"))return;
 
         var annotateCnt = 0;
-        jsGraphAnnotate[ctx.canvas.id] = new Array();
+        jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"HorizontalBar");
 
@@ -3797,7 +3858,7 @@ config.animation=false;
                         t2 = yAxisPosX + calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2)
                         if (t1 > t2) { t3 = t1; t1 = t2; t2 = t3 }
 
-                        jsGraphAnnotate[ctx.canvas.id][annotateCnt++] = ["RECT", t1, barOffset + barWidth, t2, barOffset, lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+                        jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["RECT", t1, barOffset + barWidth, t2, barOffset, lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
                     }
                   }
                 }
