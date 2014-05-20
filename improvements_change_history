@@ -62,6 +62,7 @@ Change history
 13/05/2014 - Francois Vancoppenolle - parameters (ctx,config,data) passed to function onAnimationComplete
 15/05/2014 - Francois Vancoppenolle & Justin Sternberg - option barBorderRadius added for Bar and horizontalBar
 18/05/2014 - Blaine Kasten          - bug in doughNut fixed (see issue #32)
+20/05/2014 - Blaine Kasten - Francois Vancoppenolle - fix bug when Canvas has no ID (see issue #34)
 
 Future Improvements
 -------------------
@@ -76,6 +77,8 @@ Future Improvements
 - "carriage Return" for X labels (labels displayed on multiple lines)
 - animate Canvas when mouse is over a piece of graph (like in http://zurb.com/playground/pizza-pie-charts)
 - documentation 
+- dynamicDisplay defines a canvas.id when not defined; Avoid defining a canvas.id (issue 35)
+
 
 Known Bugs
 ----------
