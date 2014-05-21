@@ -63,6 +63,7 @@ Change history
 15/05/2014 - Francois Vancoppenolle & Justin Sternberg - option barBorderRadius added for Bar and horizontalBar
 18/05/2014 - Blaine Kasten          - bug in doughNut fixed (see issue #32)
 20/05/2014 - Blaine Kasten - Francois Vancoppenolle - fix bug when Canvas has no ID (see issue #34)
+21/05/2014 - Romain Sauvaire        - problem detected with Google Closure Compiler fixed (see issue #36)
 
 Future Improvements
 -------------------
