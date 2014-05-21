@@ -282,7 +282,7 @@ function mergeChartConfig(defaults, userDefined) {
 function sleep(ms){
         var dt = new Date();
         dt.setTime(dt.getTime() + ms);
-        while (new Date().getTime() < dt.getTime());
+        while (new Date().getTime() < dt.getTime()){};
 } ;
 
 function saveCanvas(ctx,data,config,tpgraph) {
