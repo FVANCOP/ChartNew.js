@@ -30,6 +30,7 @@ Change history
                                                (Bug reported by Ruben Rutten)
 04/03/2014 - Francois Vancoppenolle - Option dynamicDisplay added; If set to true, the animation of the graph starts 
                                       when the graph is visible on screen.
+08/03/2014 - gkres                  - Fix bug when all values are identical (issue #13)
 09/03/2014 - Francois Vancoppenolle - Labels in Bar/HorizontalBar (options with inGraphData in the name);
                                     - possibility to remove X Axis Display (options xAxisBottom)
 17/03/2014 - Francois Vancoppenolle - Option decimalSeparator added (default value : ".");
