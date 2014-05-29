@@ -1,70 +1,74 @@
 Change history
 --------------
 
-10/01/2014 - Francois Vancoppenolle - creation of the Github entry
-13/01/2014 - Ole Kroeger            - Logaritmic Y-Axis for lines and bars - parameter "logarithmic"
-18/01/2014 - Francois Vancoppenolle - rotateLabels can be choosen by the user - parameter "rotateLabels"
-21/01/2014 - Francois Vancoppenolle - minor corrections for parameter "rotateLabels" + showYAxisMin parameter
-22/01/2014 - Francois Vancoppenolle - bugs fix when negative values 
-29/01/2014 - Francois Vancoppenolle - startAngle parameter for Pie and Doughtnut
-31/01/2014 - joetime                - improvements for annotations
-02/02/2014 - Francois Vancoppenolle - Minor Bugs correction
-03/02/2014 - Francois Vancoppenolle - Minor Bug correction - Code reduction (commonOptions/xyAxisCommonOptions)
-04/02/2014 - Francois vancoppenolle - Bug for X Axis Label corrected (reported by James Barnsley)
-24/02/2014 - Francois Vancoppenolle - Review how axis are drawn (correct several bugs)
-                                      New options added (options with SpaceBefore, SpaceAfter, SpaceLeft, Space Right
-                                      in the name)
-                                      Labels inside line graph (options with inGraphData in the name)
-26/02/2014 - Francois Vancoppenolle - option canvasBackgroundColor added (improvement proposed by joetime)
-02/03/2014 - Francois Vancoppenolle - new option startAngle for radar chart;
-                                    - new option graphMaximized for radar chart ; By default, value is false; if set
-                                      to true, the radar will not be displayed in the middle of the canvas, but at
-                                      a place where the size of the graph is maximized;
-                                    - bug correction for startAngle in Pied, Doughtnut and PolarArea graphs;
-                                    - options savePng added;
+21/05/2014 - Romain Sauvaire        - problem detected with Google Closure Compiler fixed (see issue #36)
+20/05/2014 - Blaine Kasten - Francois Vancoppenolle - fix bug when Canvas has no ID (see issue #34)
+18/05/2014 - Blaine Kasten          - bug in doughNut fixed (see issue #32)
+15/05/2014 - Francois Vancoppenolle & Justin Sternberg - option barBorderRadius added for Bar and horizontalBar
+13/05/2014 - Francois Vancoppenolle - parameters (ctx,config,data) passed to function onAnimationComplete
+13/05/2014 - Francois Vancoppenolle - fix bug for option fmtYLabel
+                                    - for all bar graphs (stacked/Horizontal), possibility to specify the color of each bar;
+                                          (request introduced by abraxas1484 - Issue 28)
+                                    - fix bug when only one value on line - signaled by Umarmukthar 
+10/05/2014 - John Rayes             - Improvement in savePng functions - issue #26
+                                    - Changes in annotate templates - issue #24
+                                    - annotate can be defined through CSS (option annotateClassName added) - Issue #25
+           - Francois Vancoppenolle - fix of several bugs detected while writing the documentation.
+04/05/2014 - Francois Vancoppenolle - fix of several bugs; code simplification
+01/05/2014 - Francois Vancoppenolle/sjt88 - fix a problem when lot of data in the graph (more than number of available pixels)
+29/04/2014 - Francois Vancoppenolle - option thousandSeparator added - Default value : "" 
+                                          (request introduced by Sebastian Pertsch)
+27/04/2014 - Francois Vancoppenolle - Issue 21 fixed -> No chart when entry is NULL - Bug reported by "theBear"
+
+18/04/2014 - Francois Vancoppenolle - support for a missing data value in all chart types
+                                    - Labels in Radar and PolarArea
+
+15/04/2014 - Francois Vancoppenolle - support for a missing data value in line chart
+13/04/2014 - Francois Vancoppenolle - Bug in annotate corrected (bug reported by Varsha Vekariya)
+                                    - Bug in Pie/Doughnut inGraphData corrected
+                                    - For Pie/Doughnut, option inGraphDataRotate can now be initialized to "inRadiusAxisRotateLabels"
+                                          (request introduced by Strainy)
+03/04/2014 - Francois Vancoppenolle - Labels in Pie/Doughnut (options inGraphData in the name)
+
+27/03/2014 - Francois Vancoppenolle - Labels in StackedBar/HorizontalStackedBar (options with inGraphData in the name);
+18/03/2014 - Francois Vancoppenolle - works now on Android
+                                    - default options can be changed in a smart way (charJSPersonnalDefaultOptions)
+17/03/2014 - Francois Vancoppenolle - Option decimalSeparator added (default value : ".");
+                                      Correction of a bug (issue #15 problem for animationSteps);
+                                      New options (name starting with "fmt") - need to be documented;
+09/03/2014 - Francois Vancoppenolle - Labels in Bar/HorizontalBar (options with inGraphData in the name);
+                                    - possibility to remove X Axis Display (options xAxisBottom)
+08/03/2014 - gkres                  - Fix bug when all values are identical (issue #13)
+04/03/2014 - Francois Vancoppenolle - Option dynamicDisplay added; If set to true, the animation of the graph starts 
+                                      when the graph is visible on screen.
 03/03/2014 - Francois Vancoppenolle - Correction of a bug when scale steps are defined
                                     - Options scaleXGridLinesStep and scaleYGridLinesStep added (improvement proposed by
                                       Ruben Rutten)
                                     - When the X Labels is not horizontal, the position of the labels has been 
                                       readjusted.
                                                (Bug reported by Ruben Rutten)
-04/03/2014 - Francois Vancoppenolle - Option dynamicDisplay added; If set to true, the animation of the graph starts 
-                                      when the graph is visible on screen.
-08/03/2014 - gkres                  - Fix bug when all values are identical (issue #13)
-09/03/2014 - Francois Vancoppenolle - Labels in Bar/HorizontalBar (options with inGraphData in the name);
-                                    - possibility to remove X Axis Display (options xAxisBottom)
-17/03/2014 - Francois Vancoppenolle - Option decimalSeparator added (default value : ".");
-                                      Correction of a bug (issue #15 problem for animationSteps);
-                                      New options (name starting with "fmt") - need to be documented;
-18/03/2014 - Francois Vancoppenolle - works now on Android
-                                    - default options can be changed in a smart way (charJSPersonnalDefaultOptions)
-27/03/2014 - Francois Vancoppenolle - Labels in StackedBar/HorizontalStackedBar (options with inGraphData in the name);
-03/04/2014 - Francois Vancoppenolle - Labels in Pie/Doughnut (options inGraphData in the name)
-13/04/2014 - Francois Vancoppenolle - Bug in annotate corrected (bug reported by Varsha Vekariya)
-                                    - Bug in Pie/Doughnut inGraphData corrected
-                                    - For Pie/Doughnut, option inGraphDataRotate can now be initialized to "inRadiusAxisRotateLabels"
-                                          (request introduced by Strainy)
-15/04/2014 - Francois Vancoppenolle - support for a missing data value in line chart
-18/04/2014 - Francois Vancoppenolle - support for a missing data value in all chart types
-                                    - Labels in Radar and PolarArea
-27/04/2014 - Francois Vancoppenolle - Issue 21 fixed -> No chart when entry is NULL - Bug reported by "theBear"
-29/04/2014 - Francois Vancoppenolle - option thousandSeparator added - Default value : "" 
-                                          (request introduced by Sebastian Pertsch)
-01/05/2014 - Francois Vancoppenolle/sjt88 - fix a problem when lot of data in the graph (more than number of available pixels)
-04/05/2014 - Francois Vancoppenolle - fix of several bugs; code simplification
-10/05/2014 - John Rayes             - Improvement in savePng functions - issue #26
-                                    - Changes in annotate templates - issue #24
-                                    - annotate can be defined through CSS (option annotateClassName added) - Issue #25
-           - Francois Vancoppenolle - fix of several bugs detected while writing the documentation.
-13/05/2014 - Francois Vancoppenolle - fix bug for option fmtYLabel
-                                    - for all bar graphs (stacked/Horizontal), possibility to specify the color of each bar;
-                                          (request introduced by abraxas1484 - Issue 28)
-                                    - fix bug when only one value on line - signaled by Umarmukthar 
-13/05/2014 - Francois Vancoppenolle - parameters (ctx,config,data) passed to function onAnimationComplete
-15/05/2014 - Francois Vancoppenolle & Justin Sternberg - option barBorderRadius added for Bar and horizontalBar
-18/05/2014 - Blaine Kasten          - bug in doughNut fixed (see issue #32)
-20/05/2014 - Blaine Kasten - Francois Vancoppenolle - fix bug when Canvas has no ID (see issue #34)
-21/05/2014 - Romain Sauvaire        - problem detected with Google Closure Compiler fixed (see issue #36)
+02/03/2014 - Francois Vancoppenolle - new option startAngle for radar chart;
+                                    - new option graphMaximized for radar chart ; By default, value is false; if set
+                                      to true, the radar will not be displayed in the middle of the canvas, but at
+                                      a place where the size of the graph is maximized;
+                                    - bug correction for startAngle in Pied, Doughtnut and PolarArea graphs;
+                                    - options savePng added;
+26/02/2014 - Francois Vancoppenolle - option canvasBackgroundColor added (improvement proposed by joetime)
+24/02/2014 - Francois Vancoppenolle - Review how axis are drawn (correct several bugs)
+                                      New options added (options with SpaceBefore, SpaceAfter, SpaceLeft, Space Right
+                                      in the name)
+                                      Labels inside line graph (options with inGraphData in the name)
+04/02/2014 - Francois vancoppenolle - Bug for X Axis Label corrected (reported by James Barnsley)
+03/02/2014 - Francois Vancoppenolle - Minor Bug correction - Code reduction (commonOptions/xyAxisCommonOptions)
+02/02/2014 - Francois Vancoppenolle - Minor Bugs correction
+31/01/2014 - joetime                - improvements for annotations
+29/01/2014 - Francois Vancoppenolle - startAngle parameter for Pie and Doughtnut
+22/01/2014 - Francois Vancoppenolle - bugs fix when negative values 
+21/01/2014 - Francois Vancoppenolle - minor corrections for parameter "rotateLabels" + showYAxisMin parameter
+18/01/2014 - Francois Vancoppenolle - rotateLabels can be choosen by the user - parameter "rotateLabels"
+13/01/2014 - Ole Kroeger            - Logaritmic Y-Axis for lines and bars - parameter "logarithmic"
+10/01/2014 - Francois Vancoppenolle - creation of the Github entry
+
 
 Future Improvements
 -------------------
@@ -82,7 +86,7 @@ Future Improvements
 - dynamicDisplay defines a canvas.id when not defined; Avoid defining a canvas.id (issue 35)
 - Different units for Y-axes on left and right (issue #41)
 - live update of the data (see : http://www.jqchart.com/jquery/chart/RealTime/LiveData)
-
+- responsive chart (see issue #43)
 
 Known Bugs
 ----------
