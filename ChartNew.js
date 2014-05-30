@@ -7,8 +7,8 @@
  * Vancoppenolle Francois - January 2014
  * francois.vancoppenolle@favomo.be
  *
- * Source location : http:\\www.favomo.be\ChartNew
- * GitHub community : https://github.com/FVANCOP/GraphNew.js
+ * demo location : http:\\www.favomo.be\graphjs
+ * GitHub community : https://github.com/FVANCOP/ChartNew.js
  *
  * This file is an adaptation of the chart.js source developped by Nick Downie (2013)
  * https://github.com/nnnick/Chart.js
