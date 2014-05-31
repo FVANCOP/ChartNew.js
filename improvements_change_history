@@ -1,6 +1,13 @@
 Change history
 --------------
 
+31/05/2014 - Vancoppenolle Francois - New options implemented : animationStartValue : 0,animationStopValue : 1, 
+                                                                animationCount : 1, animationPauseTime : 5, 
+                                                                animationBackward : false, 
+				      New options implemented : defaultStrokeColor, defaultFillColor
+                                      Bug fix for Y-Labels (only a few labels were displayed)
+                                      Bug fix for colors (see issue #46 - reported by Dave Collins)
+                                      + Other minor bug fix
 21/05/2014 - Romain Sauvaire        - problem detected with Google Closure Compiler fixed (see issue #36)
 20/05/2014 - Blaine Kasten - Francois Vancoppenolle - fix bug when Canvas has no ID (see issue #34)
 18/05/2014 - Blaine Kasten          - bug in doughNut fixed (see issue #32)
