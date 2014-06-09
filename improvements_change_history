@@ -1,6 +1,8 @@
 Change history
 --------------
 
+09/06/2014 - Vancoppenolle François - Colors can be specified through a function (see issue #48)
+                                    - minor bug fixed
 31/05/2014 - Vancoppenolle Francois - New options implemented : animationStartValue : 0,animationStopValue : 1, 
                                                                 animationCount : 1, animationPauseTime : 5, 
                                                                 animationBackward : false, 
