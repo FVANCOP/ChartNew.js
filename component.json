@@ -1,0 +1,11 @@
+{
+  "name": "ChartNew.js",
+  "version": "0.3.0",
+  "description": "Simple HTML5 Charts using the canvas element",
+  "keywords": ["charts"],
+  "homepage": "https://github.com/FVANCOP/ChartNew.js",
+  "author": "FVANCOP",
+  "main": ["ChartNew.js"],
+  "dependencies": {
+  }
+}
