@@ -1,6 +1,7 @@
 Change history
 --------------
 
+11/06/2014 - Vancoppenolle François - "Personnal" corrected to "Personal"
 09/06/2014 - Vancoppenolle François - Colors can be specified through a function (see issue #48)
                                     - minor bug fixed
 31/05/2014 - Vancoppenolle Francois - New options implemented : animationStartValue : 0,animationStopValue : 1, 
