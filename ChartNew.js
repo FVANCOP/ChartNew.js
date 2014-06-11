@@ -38,17 +38,17 @@
  */
 
 
-     var charJSPersonnalDefaultOptions = { }
+     var charJSPersonalDefaultOptions = { }
          
-     var charJSPersonnalDefaultOptionsLine = { }
-     var charJSPersonnalDefaultOptionsRadar = { }
-     var charJSPersonnalDefaultOptionsPolarArea = { }
-     var charJSPersonnalDefaultOptionsPie = { }
-     var charJSPersonnalDefaultOptionsDoughnut = { }
-     var charJSPersonnalDefaultOptionsBar = { }
-     var charJSPersonnalDefaultOptionsStackedBar = { }
-     var charJSPersonnalDefaultOptionsHorizontalBar = { }
-     var charJSPersonnalDefaultOptionsHorizontalStackedBar = { }
+     var charJSPersonalDefaultOptionsLine = { }
+     var charJSPersonalDefaultOptionsRadar = { }
+     var charJSPersonalDefaultOptionsPolarArea = { }
+     var charJSPersonalDefaultOptionsPie = { }
+     var charJSPersonalDefaultOptionsDoughnut = { }
+     var charJSPersonalDefaultOptionsBar = { }
+     var charJSPersonalDefaultOptionsStackedBar = { }
+     var charJSPersonalDefaultOptionsHorizontalBar = { }
+     var charJSPersonalDefaultOptionsHorizontalStackedBar = { }
 
 
 
@@ -792,8 +792,8 @@ window.Chart = function (context) {
             startAngle : 90
         };
         chart.PolarArea.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.PolarArea.defaults);
-        chart.PolarArea.defaults = mergeChartConfig(chart.PolarArea.defaults, charJSPersonnalDefaultOptions);
-        chart.PolarArea.defaults = mergeChartConfig(chart.PolarArea.defaults, charJSPersonnalDefaultOptionsPolarArea);
+        chart.PolarArea.defaults = mergeChartConfig(chart.PolarArea.defaults, charJSPersonalDefaultOptions);
+        chart.PolarArea.defaults = mergeChartConfig(chart.PolarArea.defaults, charJSPersonalDefaultOptionsPolarArea);
 
         var config = (options) ? mergeChartConfig(chart.PolarArea.defaults, options) : chart.PolarArea.defaults;
         
@@ -856,8 +856,8 @@ window.Chart = function (context) {
 
         // merge annotate defaults
         chart.Radar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Radar.defaults) ;
-        chart.Radar.defaults = mergeChartConfig(chart.Radar.defaults, charJSPersonnalDefaultOptions);
-        chart.Radar.defaults = mergeChartConfig(chart.Radar.defaults, charJSPersonnalDefaultOptionsRadar);
+        chart.Radar.defaults = mergeChartConfig(chart.Radar.defaults, charJSPersonalDefaultOptions);
+        chart.Radar.defaults = mergeChartConfig(chart.Radar.defaults, charJSPersonalDefaultOptionsRadar);
 
         var config = (options) ? mergeChartConfig(chart.Radar.defaults, options) : chart.Radar.defaults;
 
@@ -895,8 +895,8 @@ window.Chart = function (context) {
 
         // merge annotate defaults
         chart.Pie.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Pie.defaults);
-        chart.Pie.defaults = mergeChartConfig(chart.Pie.defaults, charJSPersonnalDefaultOptions);
-        chart.Pie.defaults = mergeChartConfig(chart.Pie.defaults, charJSPersonnalDefaultOptionsPie);
+        chart.Pie.defaults = mergeChartConfig(chart.Pie.defaults, charJSPersonalDefaultOptions);
+        chart.Pie.defaults = mergeChartConfig(chart.Pie.defaults, charJSPersonalDefaultOptionsPie);
         var config = (options) ? mergeChartConfig(chart.Pie.defaults, options) : chart.Pie.defaults;
 
         return new Pie(data, config, context);
@@ -935,8 +935,8 @@ window.Chart = function (context) {
 
         // merge annotate defaults
         chart.Doughnut.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Doughnut.defaults);
-        chart.Doughnut.defaults = mergeChartConfig(chart.Doughnut.defaults, charJSPersonnalDefaultOptions);
-        chart.Doughnut.defaults = mergeChartConfig(chart.Doughnut.defaults, charJSPersonnalDefaultOptionsDoughnut);
+        chart.Doughnut.defaults = mergeChartConfig(chart.Doughnut.defaults, charJSPersonalDefaultOptions);
+        chart.Doughnut.defaults = mergeChartConfig(chart.Doughnut.defaults, charJSPersonalDefaultOptionsDoughnut);
         var config = (options) ? mergeChartConfig(chart.Doughnut.defaults, options) : chart.Doughnut.defaults;
 
         return new Doughnut(data, config, context);
@@ -1000,8 +1000,8 @@ window.Chart = function (context) {
         // merge annotate defaults
         chart.Line.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Line.defaults);
         chart.Line.defaults = mergeChartConfig(chart.defaults.xyAxisCommonOptions, chart.Line.defaults);
-        chart.Line.defaults = mergeChartConfig(chart.Line.defaults, charJSPersonnalDefaultOptions);
-        chart.Line.defaults = mergeChartConfig(chart.Line.defaults, charJSPersonnalDefaultOptionsLine);
+        chart.Line.defaults = mergeChartConfig(chart.Line.defaults, charJSPersonalDefaultOptions);
+        chart.Line.defaults = mergeChartConfig(chart.Line.defaults, charJSPersonalDefaultOptionsLine);
         
         var config = (options) ? mergeChartConfig(chart.Line.defaults, options) : chart.Line.defaults;
 
@@ -1064,8 +1064,8 @@ window.Chart = function (context) {
         // merge annotate defaults
         chart.StackedBar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.StackedBar.defaults);
         chart.StackedBar.defaults = mergeChartConfig(chart.defaults.xyAxisCommonOptions, chart.StackedBar.defaults);
-        chart.StackedBar.defaults = mergeChartConfig(chart.StackedBar.defaults, charJSPersonnalDefaultOptions);
-        chart.StackedBar.defaults = mergeChartConfig(chart.StackedBar.defaults, charJSPersonnalDefaultOptionsStackedBar);
+        chart.StackedBar.defaults = mergeChartConfig(chart.StackedBar.defaults, charJSPersonalDefaultOptions);
+        chart.StackedBar.defaults = mergeChartConfig(chart.StackedBar.defaults, charJSPersonalDefaultOptionsStackedBar);
 
         var config = (options) ? mergeChartConfig(chart.StackedBar.defaults, options) : chart.StackedBar.defaults;
         return new StackedBar(data, config, context);
@@ -1126,8 +1126,8 @@ window.Chart = function (context) {
         // merge annotate defaults
         chart.HorizontalStackedBar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.HorizontalStackedBar.defaults);
         chart.HorizontalStackedBar.defaults = mergeChartConfig(chart.defaults.xyAxisCommonOptions, chart.HorizontalStackedBar.defaults);
-        chart.HorizontalStackedBar.defaults = mergeChartConfig(chart.HorizontalStackedBar.defaults, charJSPersonnalDefaultOptions);
-        chart.HorizontalStackedBar.defaults = mergeChartConfig(chart.HorizontalStackedBar.defaults, charJSPersonnalDefaultOptionsHorizontalStackedBar);
+        chart.HorizontalStackedBar.defaults = mergeChartConfig(chart.HorizontalStackedBar.defaults, charJSPersonalDefaultOptions);
+        chart.HorizontalStackedBar.defaults = mergeChartConfig(chart.HorizontalStackedBar.defaults, charJSPersonalDefaultOptionsHorizontalStackedBar);
         var config = (options) ? mergeChartConfig(chart.HorizontalStackedBar.defaults, options) : chart.HorizontalStackedBar.defaults;
         return new HorizontalStackedBar(data, config, context);
     } ;
@@ -1188,8 +1188,8 @@ window.Chart = function (context) {
         // merge annotate defaults
         chart.Bar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Bar.defaults);
         chart.Bar.defaults = mergeChartConfig(chart.defaults.xyAxisCommonOptions, chart.Bar.defaults);
-        chart.Bar.defaults = mergeChartConfig(chart.Bar.defaults, charJSPersonnalDefaultOptions);
-        chart.Bar.defaults = mergeChartConfig(chart.Bar.defaults, charJSPersonnalDefaultOptionsBar);
+        chart.Bar.defaults = mergeChartConfig(chart.Bar.defaults, charJSPersonalDefaultOptions);
+        chart.Bar.defaults = mergeChartConfig(chart.Bar.defaults, charJSPersonalDefaultOptionsBar);
         var config = (options) ? mergeChartConfig(chart.Bar.defaults, options) : chart.Bar.defaults;
 
         return new Bar(data, config, context);
@@ -1250,8 +1250,8 @@ window.Chart = function (context) {
         // merge annotate defaults
         chart.HorizontalBar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.HorizontalBar.defaults);
         chart.HorizontalBar.defaults = mergeChartConfig(chart.defaults.xyAxisCommonOptions, chart.HorizontalBar.defaults);
-        chart.HorizontalBar.defaults = mergeChartConfig(chart.HorizontalBar.defaults, charJSPersonnalDefaultOptions);
-        chart.HorizontalBar.defaults = mergeChartConfig(chart.HorizontalBar.defaults, charJSPersonnalDefaultOptionsHorizontalBar);
+        chart.HorizontalBar.defaults = mergeChartConfig(chart.HorizontalBar.defaults, charJSPersonalDefaultOptions);
+        chart.HorizontalBar.defaults = mergeChartConfig(chart.HorizontalBar.defaults, charJSPersonalDefaultOptionsHorizontalBar);
         var config = (options) ? mergeChartConfig(chart.HorizontalBar.defaults, options) : chart.HorizontalBar.defaults;
 
         return new HorizontalBar(data, config, context);
