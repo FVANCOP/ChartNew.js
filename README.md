@@ -7,18 +7,17 @@ Simple HTML5 Charts using the canvas element
 
 
 
-For my personnal use, I had to integrate lot of changes into Chart.js (https://github.com/nnick/Chart.js. 
+For my personnal use, I had to integrate lot of changes into Chart.js (https://github.com/nnnick/Chart.js. 
 
 So, I have re-worked Chart.js. Most of the changes, are associated to requests in "GitHub" issues of Chart.js.
 
 
 
-This first version probably contains lot of bugs (for instance, it doesn't work on android/IPhone), but I think that it can be used without big troubles on a PC.
-
 New Charts integrated in this version compared to Graph.js
 
     HorizontalBar
     HorizontalStackedBar
+	Line,Bar with logarithmic y-Axis
 
 New Items in graph compared to Graph.js :
 
@@ -34,6 +33,7 @@ New Items in graph compared to Graph.js :
     Footnote
     crossText (you can put a text over the graph at the place of your choice)
     graphMin / graphMax
+    
 
 A quick sample can be found on http://www.favomo.be/graphjs
 
