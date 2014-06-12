@@ -3396,12 +3396,32 @@ window.Chart = function (context) {
 		// for BarLineCharts
 		var nrOfBars = data.datasets.length;
 		
-		var  nrOfLines = 0;
-		for (var i = 0; i < nrOfBars; i++) {
+		var nrOfLines = 0;
+		var lineDatasets = [];
+		var barDatasets = [];
+		for (var i = 0; i < data.datasets.length; i++) {
 			if (data.datasets[i].type == "Line") {
 				nrOfLines++;
+				lineDatasets.push(i);
+			} else {
+				barDatasets.push(i);
 			}
 		}
+
+		// change the order (at first all bars then the lines) (form of BubbleSort)
+		var bufferDataset,l = 0;
+		for (var i = data.datasets.length-1; i >= 0; i--) {
+			if (lineDatasets.indexOf(i) >= 0) {
+				l++;
+				for (var b = i; b < data.datasets.length-l; b++) {
+					bufferDataset = data.datasets[b+1];
+					data.datasets[b+1] = data.datasets[b];
+					data.datasets[b] = bufferDataset;
+				}
+				
+			}
+		}
+	
 		nrOfBars -= nrOfLines;
 		
 		
@@ -3464,7 +3484,7 @@ window.Chart = function (context) {
         yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
         xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
 
-        barWidth = (valueHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * data.datasets.length - 1) - ((config.barStrokeWidth / 2) * data.datasets.length - 1)) / data.datasets.length;
+        barWidth = (valueHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * nrOfBars - 1) - ((config.barStrokeWidth / 2) * nrOfBars - 1)) / nrOfBars;
 
         var zeroY = 0;
         if (valueBounds.minValue < 0) {

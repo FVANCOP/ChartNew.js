@@ -13,12 +13,21 @@
 	labels : ["January","February","March","April","May","June","July"],
 	datasets : [
 		{
+			type: "Line",
+			fill: false,
+			strokeColor : "rgb(230, 14, 14)",
+			pointColor : "rgb(205, 151, 155)",
+			pointStrokeColor : "#f56691",
+			data : [0.30,0.44,0.42,0.19,0.90,0.37,1.20],
+      title : "line 1"
+		},
+		{
 			fillColor : "rgba(220,220,220,0.5)",
 			strokeColor : "rgba(220,220,220,1)",
 			pointColor : "rgba(220,220,220,1)",
 			pointStrokeColor : "#fff",
 			data : [0.65,0.59,0.90,0.81,0.56,0.55,0.40],
-      title : "pFirst data"
+      title : "Bar 1"
 		},
 		{
 			fillColor : "rgba(151,187,205,0.5)",
@@ -26,17 +35,18 @@
 			pointColor : "rgba(151,187,205,1)",
 			pointStrokeColor : "#fff",
 			data : [0.28,0.48,0.40,0.19,0.96,0.27,1.00],
-      title : "pSecond data"
+      title : "Bar 2"
 		},
 		{
 			type: "Line",
 			fill: false,
-			strokeColor : "rgb(230, 14, 14)",
-			pointColor : "rgb(205, 151, 155)",
-			pointStrokeColor : "#f56691",
-			data : [0.30,0.44,0.42,0.19,0.90,0.37,1.20],
-      title : "line data"
-		}
+			fillColor : "rgba(151, 205, 172, 0.5)",
+			strokeColor : "rgb(87, 147, 106)",
+			pointColor : "rgb(151, 205, 172)",
+			pointStrokeColor : "#fff",
+			data : [0.42,0.58,0.44,0.22,0.84,0.17,0.70],
+      title : "Line 3"
+		},
 	]
 }
   
