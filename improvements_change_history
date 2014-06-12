@@ -1,6 +1,7 @@
 Change history
 --------------
 
+12/06/2014 - Ole Kröger 			- Add BarLine Chart (part of BarChart) (see issue #23)
 09/06/2014 - Vancoppenolle François - Colors can be specified through a function (see issue #48)
                                     - minor bug fixed
 31/05/2014 - Vancoppenolle Francois - New options implemented : animationStartValue : 0,animationStopValue : 1, 
