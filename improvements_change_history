@@ -1,6 +1,7 @@
 Change history
 --------------
 
+12/06/2014 - Ole Kröger 			- Add BarLine Chart (part of BarChart) (see issue #23)
 11/06/2014 - Vancoppenolle François - "Personnal" corrected to "Personal"
 09/06/2014 - Vancoppenolle François - Colors can be specified through a function (see issue #48)
                                     - minor bug fixed

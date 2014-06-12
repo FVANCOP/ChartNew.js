@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+  <meta name="generator" content="PSPad editor, www.pspad.com">
+  <title></title>
+  <!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+  </head>
+  <body>
+  <canvas id="mycanvas" height="800" width="1400"></canvas>                                              
+  <script>
+ var BarLineData = {
+	labels : ["January","February","March","April","May","June","July"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [0.65,0.59,0.90,0.81,0.56,0.55,0.40],
+      title : "pFirst data"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			data : [0.28,0.48,0.40,0.19,0.96,0.27,1.00],
+      title : "pSecond data"
+		},
+		{
+			type: "Line",
+			fill: false,
+			strokeColor : "rgb(230, 14, 14)",
+			pointColor : "rgb(205, 151, 155)",
+			pointStrokeColor : "#f56691",
+			data : [0.30,0.44,0.42,0.19,0.90,0.37,1.20],
+      title : "line data"
+		}
+	]
+}
+  
+  var opts= {};
+  
+  window.onload = function() {
+    var myBar = new Chart(document.getElementById("mycanvas").getContext("2d")).Bar(BarLineData,opts);
+    }
+    </script>
+
+  </body>
+</html>
