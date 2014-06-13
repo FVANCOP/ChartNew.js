@@ -188,7 +188,8 @@ function tmplbis(str, data) {
 
         // Convert the template into pure JavaScript
         str
-          .replace(/[\r\t\n]/g, " ")
+          .replace(/[\r\n]/g, "\\n")
+          .replace(/[\t]/g, " ")
           .split("<%").join("\t")
           .replace(/((^|%>)[^\t]*)'/g, "$1\r")
           .replace(/\t=(.*?)%>/g, "',$1,'")
@@ -200,6 +201,25 @@ function tmplbis(str, data) {
     // Provide some basic currying to the user
     return data ? fn(data) : fn;
 };
+
+/**
+ * ctx.prototype
+ * fillText option for canvas Multiline Support
+ * @param text string \n for newline
+ * @param x x position
+ * @param y y position
+ * @param lineHeight lineHeight
+ */
+CanvasRenderingContext2D.prototype.fillTextMultiLine = function(text, x, y,lineHeight) {
+  var lines = text.split("\n");
+  // if its one line => in the middle 
+  // two lines one above the mid one below etc.	
+  y -= ((lines.length-1)/2)*lineHeight;
+  for (var i = 0; i < lines.length; i++) {
+    this.fillText(lines[i], x, y);
+    y += lineHeight;
+  }
+}
 
 
 cursorDivCreated = false;
@@ -3213,7 +3233,7 @@ window.Chart = function (context) {
                         ctx.translate(xPos,yPos);
 
                         ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-      			            ctx.fillText(dispString, 0,0);
+						 	ctx.fillTextMultiLine(dispString,0,0,config.inGraphDataFontSize);
 					    	        ctx.restore();
 
 
@@ -3955,7 +3975,7 @@ window.Chart = function (context) {
 
                     var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,cumvalue[j],config.fmtV4), v5 : fmtChartJS(config,totvalue[j],config.fmtV5), v6 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV6),config.roundPct),v7 : fmtChartJS(config,t1,config.fmtV7),v8 : fmtChartJS(config,barOffset + barWidth,config.fmtV8),v9 : fmtChartJS(config,t2,config.fmtV9),v10 : fmtChartJS(config,barOffset,config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12)});
                     ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-       			        ctx.fillText(dispString, 0,0);
+       			       ctx.fillTextMultiLine(dispString,0,0,config.inGraphDataFontSize);
 					    	    ctx.restore();
 
                   }
