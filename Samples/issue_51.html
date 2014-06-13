@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+  <meta name="generator" content="PSPad editor, www.pspad.com">
+  <title></title>
+  <!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+  </head>
+  <body>
+  <canvas id="mycanvas" height="600" width="1000"></canvas>                                              
+  <script>
+var HorizontalStackedBarData = {
+	labels : ["January","February","March"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [65,55,90],
+      title : "passed"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			data : [75,65,120],
+      title : "finished"
+		}, 
+		{
+			fillColor : "rgba(159, 205, 151, 0.5)",
+			strokeColor : "rgba(159, 205, 151, 1",
+			pointColor : "rgba(159, 205, 151, 1)",
+			pointStrokeColor : "#fff",
+			data : [90,75,130],
+      title : "all"
+		}, 
+		
+	]
+}
+
+  var opts= {inGraphDataTmpl: "<%=v4%>", inGraphDataShow: true, annotateDisplay: true, annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + Math.round((v4/v5)*10000)/100 + ' %)'%>"};
+  
+  window.onload = function() {
+    var myBar = new Chart(document.getElementById("mycanvas").getContext("2d")).HorizontalStackedBar(HorizontalStackedBarData,opts);
+    }
+    </script>
+
+  </body>
+</html>
