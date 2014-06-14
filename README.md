@@ -17,8 +17,8 @@ New Charts integrated in this version compared to Graph.js
 
 * HorizontalBar
 * HorizontalStackedBar
-* [Line,Bar with logarithmic y-Axis](wiki/100_110_Scale)
-* [BarLine (bar chart with an integrated line chart)](wiki/070_020_Bar#barline)
+* [Line,Bar with logarithmic y-Axis](../../wiki/100_110_Scale)
+* [BarLine (bar chart with an integrated line chart)](../../wiki/070_020_Bar#barline)
 	
 
 New Items in graph compared to Graph.js :
@@ -29,11 +29,11 @@ New Items in graph compared to Graph.js :
 * Y Axis Label
 * Unit Label
 * Y Axis on the right and/or the left
-* [Annotates](wiki/100_020_Annotations) (content can be configured through "templates")
+* [Annotates](../../wiki/100_020_Annotations) (content can be configured through "templates")
 * canvas Border
-* [Legend](wiki/100_090_Legend)
+* [Legend](../../wiki/100_090_Legend)
 * Footnote
-* [crossText](wiki/100_040_CrossText) (you can put a text over the graph at the place of your choice)
+* [crossText](../../wiki/100_040_CrossText) (you can put a text over the graph at the place of your choice)
 * graphMin / graphMax
     
 
