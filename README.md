@@ -29,7 +29,7 @@ New Items in graph compared to Graph.js :
 * Y Axis Label
 * Unit Label
 * Y Axis on the right and/or the left
-* [Annotates](https://github.com/FVANCOP/ChartNew.js/wiki/100_020_Annotations) (content can be configured through "templates")
+* [Annotates](wiki/100_020_Annotations) (content can be configured through "templates")
 * canvas Border
 * [Legend](wiki/100_090_Legend)
 * Footnote
