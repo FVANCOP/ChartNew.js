@@ -7,7 +7,7 @@ Simple HTML5 Charts using the canvas element
 
 
 
-For my personnal use, I had to integrate lot of changes into Chart.js (https://github.com/nnnick/Chart.js. 
+For my personnal use, I had to integrate lot of changes into Chart.js (https://github.com/nnnick/Chart.js). 
 
 So, I have re-worked Chart.js. Most of the changes, are associated to requests in "GitHub" issues of Chart.js.
 
@@ -17,7 +17,9 @@ New Charts integrated in this version compared to Graph.js
 
     HorizontalBar
     HorizontalStackedBar
-	Line,Bar with logarithmic y-Axis
+    Line,Bar with logarithmic y-Axis
+    [BarLine (bar chart with an integrated line chart)](wiki/070_020_Bar#barline)
+	
 
 New Items in graph compared to Graph.js :
 
