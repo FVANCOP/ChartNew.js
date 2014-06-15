@@ -11,6 +11,8 @@ For my personnal use, I had to integrate lot of changes into Chart.js (https://g
 
 So, I have re-worked Chart.js. Most of the changes, are associated to requests in "GitHub" issues of Chart.js.
 
+June 2014 - Ole Kröger is now a co-developper of the project. More ideas, more people to give support. Welcome to him. 
+
 
 
 New Charts integrated in this version compared to Graph.js
@@ -42,8 +44,10 @@ A quick sample can be found on http://www.favomo.be/graphjs
 Another sample : http://www.favomo.be/graphjs/demo.html
 
 
-I did not document how to use the new items but most of them will be easy to understand. If someone can write it, it would be great (my english is not suffisant to do that correctly) - If you want to contact me, you will find my email address in ChartNew.js
-
 This version is down-compatible (on PC) with the version of Chart.js available on 13 January 2014.
 
 Hope it will be usefull for some of you ! Perhaps a start for a new community developpement... Why not ?
+
+# Documentation
+
+Full documentation is now available via the "wiki" entry that you will find on the right side of the screen. Do not hesitate to propose changes in the documentation when there are languages faults or things that are not clear.
