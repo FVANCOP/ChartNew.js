@@ -51,3 +51,6 @@ Hope it will be usefull for some of you ! Perhaps a start for a new community de
 # Documentation
 
 Full documentation is now available via the "wiki" entry that you will find on the right side of the screen. Do not hesitate to propose changes in the documentation when there are languages faults or things that are not clear.
+
+
+[Link to the wiki documentation](https://github.com/FVANCOP/ChartNew.js/wiki)
