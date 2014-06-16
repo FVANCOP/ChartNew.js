@@ -188,7 +188,8 @@ function tmplbis(str, data) {
 
         // Convert the template into pure JavaScript
         str
-          .replace(/[\r\t\n]/g, " ")
+          .replace(/[\r\n]/g, "\\n")
+          .replace(/[\t]/g, " ")
           .split("<%").join("\t")
           .replace(/((^|%>)[^\t]*)'/g, "$1\r")
           .replace(/\t=(.*?)%>/g, "',$1,'")
@@ -200,6 +201,30 @@ function tmplbis(str, data) {
     // Provide some basic currying to the user
     return data ? fn(data) : fn;
 };
+
+/**
+ * ctx.prototype
+ * fillText option for canvas Multiline Support
+ * @param text string \n for newline
+ * @param x x position
+ * @param y y position
+ * @param yLevel = "bottom" => last line has this y-Pos [default], = "middle" => the middle line has this y-Pos)
+ * @param lineHeight lineHeight
+ */
+CanvasRenderingContext2D.prototype.fillTextMultiLine = function(text, x, y,yLevel, lineHeight) {
+  var lines = text.split("\n");
+  // if its one line => in the middle 
+  // two lines one above the mid one below etc.	
+  if (yLevel == "middle") {
+  	y -= ((lines.length-1)/2)*lineHeight;
+  } else { // default
+	y -= (lines.length-1)*lineHeight;  
+  }
+  for (var i = 0; i < lines.length; i++) {
+    this.fillText(lines[i], x, y);
+    y += lineHeight;
+  }
+}
 
 
 cursorDivCreated = false;
@@ -1582,7 +1607,7 @@ window.Chart = function (context) {
                          }
                          else ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
   			     			       
-                         ctx.fillText(dispString, 0,0);
+                         ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
                          ctx.restore();
                          realStartAngle-=angleStep;
                     }                }
@@ -1858,7 +1883,7 @@ window.Chart = function (context) {
 
                        var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,divprev,config.fmtV4), v5 : fmtChartJS(config,divnext,config.fmtV5), v6 : fmtChartJS(config,maxvalue[j],config.fmtV6), v7 : fmtChartJS(config,totvalue[j],config.fmtV7), v8 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV8),config.roundPct),v9 : fmtChartJS(config,midPosX + Math.cos(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop),config.fmtV9),v10 : fmtChartJS(config,midPosY - Math.sin(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop),config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12)});
  	         
-                       ctx.fillText(dispString, 0,0);
+                       ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
                        ctx.restore();              
 
                     }
@@ -2204,7 +2229,7 @@ window.Chart = function (context) {
                          }
                          else ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
   			     			       
-                          ctx.fillText(dispString, 0,0);
+                          ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
                          ctx.restore();
                     }
                 }
@@ -2414,7 +2439,7 @@ window.Chart = function (context) {
                           else ctx.rotate(2*Math.PI-posAngle); 
                          }
                          else ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-  			     			       ctx.fillText(dispString, 0,0);
+  			     			       ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
                          ctx.restore();
                     }
 
@@ -2556,7 +2581,13 @@ window.Chart = function (context) {
         }
         msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
         msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
-
+		var inGraphDataHeight = 0;
+		if (config.inGraphDataShow) {
+			// values are at the top of the bars and must be visible padding-top:2px
+			inGraphDataHeight = (config.inGraphDataTmpl.split("\n").length)*config.inGraphDataFontSize+2;
+			msr.availableHeight -= inGraphDataHeight;
+		}
+		
         scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
         valueHop = Math.floor(msr.availableWidth / (data.labels.length - 1));
         if(valueHop ==0)valueHop = (msr.availableWidth / (data.labels.length - 1));
@@ -2566,7 +2597,7 @@ window.Chart = function (context) {
         msr.availableHeight = (calculatedScale.steps) * scaleHop;
 
         yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
-        xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
+        xAxisPosY = msr.topNotUsableSize + msr.availableHeight + inGraphDataHeight + config.scaleTickSizeTop;
 
         drawLabels();
         var zeroY = 0;
@@ -2882,7 +2913,7 @@ window.Chart = function (context) {
                         ctx.translate(xPos,yPos);
 
                         ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-   	    		            ctx.fillText(dispString, 0,0);
+   	    		            ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
     			    	        ctx.restore();
 
                         yStart[j] += animPc * calculateOffset(config, (yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) - (config.barStrokeWidth / 2);
@@ -3213,7 +3244,7 @@ window.Chart = function (context) {
                         ctx.translate(xPos,yPos);
 
                         ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-      			            ctx.fillText(dispString, 0,0);
+						 	ctx.fillTextMultiLine(dispString,0,0,"middle",config.inGraphDataFontSize);
 					    	        ctx.restore();
 
 
@@ -3422,6 +3453,7 @@ window.Chart = function (context) {
 			}
 		}
 	
+		
 		nrOfBars -= nrOfLines;
 		
 		
@@ -3437,6 +3469,7 @@ window.Chart = function (context) {
         
         msr = setMeasures(data, config, ctx, height, width, [""], true, false, true, true,true);
         valueBounds = getValueBounds();
+		
 
         // true or fuzzy (error for negativ values (included 0))
         if (config.logarithmic !== false) {
@@ -3472,18 +3505,27 @@ window.Chart = function (context) {
 
         msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
         msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
-
+		var inGraphDataHeight = 0;
+		if (config.inGraphDataShow) {
+			// values are at the top of the bars and must be visible padding-top:2px
+			inGraphDataHeight = (config.inGraphDataTmpl.split("\n").length)*config.inGraphDataFontSize+2;
+			msr.availableHeight -= inGraphDataHeight;
+		}
+		
         scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
+		console.log(scaleHop);
         valueHop = Math.floor(msr.availableWidth / (data.labels.length));
         if(valueHop ==0)valueHop = (msr.availableWidth / (data.labels.length - 1));
 
         msr.clrwidth=msr.clrwidth - (msr.availableWidth - ((data.labels.length) * valueHop));
         msr.availableWidth = (data.labels.length) * valueHop;
         msr.availableHeight = (calculatedScale.steps) * scaleHop;
+		
 
         yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
-        xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
-
+        xAxisPosY = msr.topNotUsableSize + msr.availableHeight + inGraphDataHeight  + config.scaleTickSizeTop;
+		
+		
         barWidth = (valueHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * nrOfBars - 1) - ((config.barStrokeWidth / 2) * nrOfBars - 1)) / nrOfBars;
 
         var zeroY = 0;
@@ -3642,7 +3684,7 @@ window.Chart = function (context) {
 											  v11 : fmtChartJS(config,i,config.fmtV11),
 											  v12 : fmtChartJS(config,j,config.fmtV12)});
                     ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-       			        ctx.fillText(dispString, 0,0);
+       			        ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
 					    	    ctx.restore();
 
                   }
@@ -3955,7 +3997,7 @@ window.Chart = function (context) {
 
                     var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,cumvalue[j],config.fmtV4), v5 : fmtChartJS(config,totvalue[j],config.fmtV5), v6 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV6),config.roundPct),v7 : fmtChartJS(config,t1,config.fmtV7),v8 : fmtChartJS(config,barOffset + barWidth,config.fmtV8),v9 : fmtChartJS(config,t2,config.fmtV9),v10 : fmtChartJS(config,barOffset,config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12)});
                     ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-       			        ctx.fillText(dispString, 0,0);
+       			       ctx.fillTextMultiLine(dispString,0,0,"middle",config.inGraphDataFontSize);
 					    	    ctx.restore();
 
                   }
@@ -4493,7 +4535,7 @@ window.Chart = function (context) {
                 }
                 else disptxt = config.crossText[i];
 
-                ctx.fillText(disptxt, 0, 0);
+               	ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
                 ctx.stroke();
                 ctx.restore();
             }
@@ -4632,7 +4674,8 @@ window.Chart = function (context) {
         }
 
         topNotUsableSize = borderWidth + config.spaceTop + graphTitleHeight + graphSubTitleHeight + yAxisUnitHeight + config.graphSpaceBefore;
-
+		
+		
         // footNote
 
         if (typeof (config.footNote) != "undefined") {
@@ -5103,7 +5146,7 @@ window.Chart = function (context) {
 					  var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,divprev,config.fmtV4), v5 : fmtChartJS(config,divnext,config.fmtV5), v6 : fmtChartJS(config,maxvalue[j],config.fmtV6), v7 : fmtChartJS(config,totvalue[j],config.fmtV7), v8 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV8),config.roundPct),v9 : fmtChartJS(config,yAxisPosX+ (valueHop *k),config.fmtV9),v10 : fmtChartJS(config,xAxisPosY - (calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)),config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12)});
 					  ctx.translate(xPos(j) + paddingTextX, yPos(i,j) - paddingTextY);
 					  ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-								ctx.fillText(dispString, 0,0);
+								ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
 					  ctx.restore();
 					}
 				  }

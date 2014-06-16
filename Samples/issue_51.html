@@ -35,12 +35,11 @@ var HorizontalStackedBarData = {
 			pointStrokeColor : "#fff",
 			data : [90,75,130],
       title : "all"
-		}, 
-		
+		}
 	]
 }
 
-  var opts= {inGraphDataTmpl: "<%=v4%>", inGraphDataShow: true, annotateDisplay: true, annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + Math.round((v4/v5)*10000)/100 + ' %)'%>"};
+  var opts= {inGraphDataTmpl: "<%=v1%>\n<%=v4%>", inGraphDataShow: true, annotateDisplay: true, annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + Math.round((v4/v5)*10000)/100 + ' %)'%>"};
   
   window.onload = function() {
     var myBar = new Chart(document.getElementById("mycanvas").getContext("2d")).HorizontalStackedBar(HorizontalStackedBarData,opts);
