@@ -179,13 +179,12 @@ function addParameters2Function(data,fctName,fctList) {
 
 	  // difference to current value (v3)
 	  dif = false;
-
 	  if (fctName.substr(-3) == "Dif") {
 		 fctName = fctName.substr(0,fctName.length-3);
 		 dif = true;
 	  }
 
-	  if (typeof eval(fctName) == "function") {
+    if (typeof eval(fctName) == "function") {
 	  	var parameter = eval(fctList+"."+fctName);
 		if (dif) {
 			return window[fctName](parameter)/data.v3;
@@ -196,7 +195,7 @@ function addParameters2Function(data,fctName,fctList) {
 }
 
 function tmplbis(str, data) {
-	str = str.replace(/<%=(.*?)\(([0-9]?)\)%>/g, function($0,$1,$2) {
+ 	  str = str.replace(/<%=(.*?)\(([0-9]?)\)%>/g, function($0,$1,$2) {
 													if ($2) { var rndFac = $2; } else {var rndFac = 2; }
 													var value = addParameters2Function(data,$1,"mathFunctions");
 													if (value) {
@@ -207,13 +206,9 @@ function tmplbis(str, data) {
 
     // Figure out if we're getting a template, or if we need to
     // load the template - and be sure to cache the result.
-	// first check if it's can be an id
-    var fn = /^[A-Za-z][-A-Za-z0-9_:.]*$/.test(str) ?
-      cachebis[str] = cachebis[str] ||
-		tmplbis(document.getElementById(str).innerHTML) :
-
-
-
+  	// first check if it's can be an id
+    var fn = /^[A-Za-z][-A-Za-z0-9_:.]*$/.test(str) ?     cachebis[str] = cachebis[str] ||
+        tmplbis(document.getElementById(str).innerHTML) :
 
       // Generate a reusable function that will serve as a template
       // generator (and which will be cached).
@@ -237,9 +232,6 @@ function tmplbis(str, data) {
 
     // Provide some basic currying to the user
     return data ? fn(data) : fn;
-
-
-
 };
 
 /**
@@ -252,18 +244,36 @@ function tmplbis(str, data) {
  * @param lineHeight lineHeight
  */
 CanvasRenderingContext2D.prototype.fillTextMultiLine = function(text, x, y,yLevel, lineHeight) {
-	var lines = text.split("\n");
+
+  var lines = (""+text).split("\n");
   // if its one line => in the middle 
   // two lines one above the mid one below etc.	
   if (yLevel == "middle") {
   	y -= ((lines.length-1)/2)*lineHeight;
-  } else { // default
-	y -= (lines.length-1)*lineHeight;  
+  } else if(yLevel=="bottom") { // default
+	  y -= (lines.length-1)*lineHeight;  
   }
   for (var i = 0; i < lines.length; i++) {
     this.fillText(lines[i], x, y);
     y += lineHeight;
   }
+}
+
+CanvasRenderingContext2D.prototype.measureTextMultiLine = function(text,lineHeight) {
+  var textWidth=0;
+  var lg;
+  var lines = (""+text).split("\n");
+  var textHeight=lines.length*lineHeight;
+  // if its one line => in the middle 
+  // two lines one above the mid one below etc.	
+  for (var i = 0; i < lines.length; i++) {
+    lg= this.measureText(lines[i]).width ;
+    if(lg>textWidth)textWidth=lg;
+  }
+  return {
+    textWidth: textWidth,
+    textHeight: textHeight
+  };
 }
 
 
@@ -516,7 +526,7 @@ function getMousePos(canvas, evt) {
     };
 };
 
-function doMouseMove(ctx, config, event, data) {
+function doMouseMove(ctx, config, event,data) {
 
     var annotateDIV = document.getElementById('divCursor');
     show = false;
@@ -568,7 +578,7 @@ function doMouseMove(ctx, config, event, data) {
                     graphPosY = canvas_pos.y;
 
                     // create label text
-                    dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, v13: v13, graphPosX: graphPosX, graphPosY: graphPosY });
+                    dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, v13: v13, graphPosX: graphPosX, graphPosY: graphPosY} );
                     annotateDIV.innerHTML = dispString;
                     show = true;
 
@@ -1647,7 +1657,7 @@ window.Chart = function (context) {
                          }
                          else ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
   			     			       
-                         ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
+                         ctx.fillTextMultiLine(dispString,0,0,ctx.textBaseline,config.inGraphDataFontSize);
                          ctx.restore();
                          realStartAngle-=angleStep;
                     }                }
@@ -1676,7 +1686,7 @@ window.Chart = function (context) {
                     var label = calculatedScale.labels[i + 1];
                     //If the backdrop object is within the font object
                     if (config.scaleShowLabelBackdrop) {
-                        var textWidth = ctx.measureText(label).width;
+                        var textWidth = ctx.measureTextMultiLine(label,config.scaleFontSize).textWidth;
                         ctx.fillStyle = config.scaleBackdropColor;
                         ctx.beginPath();
                         ctx.rect(
@@ -1689,7 +1699,7 @@ window.Chart = function (context) {
                     }
                     ctx.textBaseline = "middle";
                     ctx.fillStyle = config.scaleFontColor;
-                    ctx.fillText(label, midPosX, midPosY - (scaleHop * (i + 1)));
+                    ctx.fillTextMultiLine(label, midPosX, midPosY - (scaleHop * (i + 1)),ctx.textBaseline,config.scaleFontSize);
                 }
             }
         } ;
@@ -1923,7 +1933,7 @@ window.Chart = function (context) {
 
                        var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,divprev,config.fmtV4), v5 : fmtChartJS(config,divnext,config.fmtV5), v6 : fmtChartJS(config,maxvalue[j],config.fmtV6), v7 : fmtChartJS(config,totvalue[j],config.fmtV7), v8 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV8),config.roundPct),v9 : fmtChartJS(config,midPosX + Math.cos(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop),config.fmtV9),v10 : fmtChartJS(config,midPosY - Math.sin(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop),config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12)});
  	         
-                       ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
+                       ctx.fillTextMultiLine(dispString,0,0,ctx.textBaseline,config.inGraphDataFontSize);
                        ctx.restore();              
 
                     }
@@ -1980,7 +1990,7 @@ window.Chart = function (context) {
                     ctx.textBaseline = "middle";
 
                     if (config.scaleShowLabelBackdrop) {
-                        var textWidth = ctx.measureText(calculatedScale.labels[i + 1]).width;
+                        var textWidth = ctx.measureTextMultiLine(calculatedScale.labels[i + 1],config.scaleFontSize).textWidth;
                         ctx.fillStyle = config.scaleBackdropColor;
                         ctx.beginPath();
                         ctx.rect(
@@ -1992,7 +2002,7 @@ window.Chart = function (context) {
                         ctx.fill();
                     }
                     ctx.fillStyle = config.scaleFontColor;
-                    ctx.fillText(calculatedScale.labels[i + 1], Math.cos(config.startAngle*Math.PI/180)* (scaleHop * (i + 1)), -Math.sin(config.startAngle*Math.PI/180)*scaleHop * (i + 1));
+                    ctx.fillTextMultiLine(calculatedScale.labels[i + 1], Math.cos(config.startAngle*Math.PI/180)* (scaleHop * (i + 1)), -Math.sin(config.startAngle*Math.PI/180)*scaleHop * (i + 1),ctx.textBaseline,config.scaleFontSize);
                 }
             }
 
@@ -2019,7 +2029,7 @@ window.Chart = function (context) {
 
                 ctx.textBaseline = "middle";
 
-                ctx.fillText(data.labels[k], opposite, -adjacent);
+                ctx.fillTextMultiLine(data.labels[k], opposite, -adjacent,ctx.textBaseline,config.pointLabelFontSize);
 
             }
             ctx.restore();
@@ -2042,7 +2052,7 @@ window.Chart = function (context) {
               maxL=msr.availableWidth/2;
               nbiter=40;
               for (var i = 0; i < data.labels.length; i++) {
-                var textMeasurement = ctx.measureText(data.labels[i]).width+config.scaleFontSize;
+                var textMeasurement = ctx.measureTextMultiLine(data.labels[i],config.scaleFontSize).textWidth+ctx.measureTextMultiLine(data.labels[i],config.scaleFontSize).textHeight;
                 mxlb=(msr.availableWidth-textMeasurement)/(1+Math.abs(Math.cos(rotateAngle)));
                 if((rotateAngle < Math.PI/2 && rotateAngle > -Math.PI/2) || rotateAngle > 3*Math.PI/2){
                   if (mxlb<maxR)maxR=mxlb;
@@ -2063,7 +2073,7 @@ window.Chart = function (context) {
               var rotateAngle=config.startAngle*Math.PI/180;
               mxlb=msr.available;
               for (var i = 0; i < data.labels.length; i++) {
-                var textMeasurement = ctx.measureText(data.labels[i]).width+config.scaleFontSize;
+                var textMeasurement = ctx.measureTextMultiLine(data.labels[i],config.scaleFontSize).textWidth+ctx.measureTextMultiLine(data.labels[i],config.scaleFontSize).textHeight;
                 if((rotateAngle < Math.PI/2 && rotateAngle > -Math.PI/2) || rotateAngle > 3*Math.PI/2){
                   mxlb=((msr.availableWidth-midX)- textMeasurement)/Math.abs(Math.cos(rotateAngle));
                 }
@@ -2269,7 +2279,7 @@ window.Chart = function (context) {
                          }
                          else ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
   			     			       
-                          ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
+                          ctx.fillTextMultiLine(dispString,0,0,ctx.textBaseline,config.inGraphDataFontSize);
                          ctx.restore();
                     }
                 }
@@ -2479,7 +2489,7 @@ window.Chart = function (context) {
                           else ctx.rotate(2*Math.PI-posAngle); 
                          }
                          else ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-  			     			       ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
+  			     			       ctx.fillTextMultiLine(dispString,0,0,ctx.textBaseline,config.inGraphDataFontSize);
                          ctx.restore();
                     }
 
@@ -2553,6 +2563,8 @@ window.Chart = function (context) {
    
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, rotateLabels = 0, msr;
         var annotateCnt = 0;
+
+
 
         if(typeof ctx.ChartNewId == "undefined"){
           var cvdate = new Date();
@@ -2645,19 +2657,11 @@ window.Chart = function (context) {
 
 
         animationLoop(config, drawScale, drawLines, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
-
-
-
+        
         function drawLines(animPc) {
         	drawLinesDataset(animPc,data,config,ctx,
 							 {xAxisPosY:xAxisPosY,yAxisPosX:yAxisPosX,valueHop:valueHop,scaleHop:scaleHop,
 							  zeroY:zeroY,calculatedScale:calculatedScale,annotateCnt:annotateCnt});
-		  if (animPc >= 1) {
-			  if (typeof drawMath == "function") {
-				  drawMath(ctx,config,data,{xAxisPosY:xAxisPosY,yAxisPosX:yAxisPosX,valueHop:valueHop,scaleHop:scaleHop,
-							  zeroY:zeroY,calculatedScale:calculatedScale,calculateOffset:calculateOffset});
-			  }
-		  }
         } ;
 
         function drawScale() {
@@ -2737,12 +2741,12 @@ window.Chart = function (context) {
                 for (var i = 0; i < data.labels.length; i++) {
                   ctx.save();
                   if (msr.rotateLabels > 0) {
-                    ctx.translate(yAxisPosX + i * valueHop - config.scaleFontSize/2, msr.xLabelPos);
+                    ctx.translate(yAxisPosX + i * valueHop - msr.highestXLabel/2, msr.xLabelPos);
                     ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-                    ctx.fillText(fmtChartJS(config,data.labels[i],config.fmtXLabel), 0, 0);
+                    ctx.fillTextMultiLine(fmtChartJS(config,data.labels[i],config.fmtXLabel), 0, 0,ctx.textBaseline,config.scaleFontSize);
                   }
                   else {
-                    ctx.fillText(fmtChartJS(config,data.labels[i],config.fmtXLabel), yAxisPosX + i * valueHop, msr.xLabelPos);
+                    ctx.fillTextMultiLine(fmtChartJS(config,data.labels[i],config.fmtXLabel), yAxisPosX + i * valueHop, msr.xLabelPos,ctx.textBaseline,config.scaleFontSize);
                   }
                 ctx.restore();
                 }
@@ -2758,11 +2762,11 @@ window.Chart = function (context) {
                 if (config.scaleShowLabels) {
                     if (config.yAxisLeft) {
                         ctx.textAlign = "right";
-                        ctx.fillText(calculatedScale.labels[j + 1], yAxisPosX - (config.scaleTickSizeLeft + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop));
+                        ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (config.scaleTickSizeLeft + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop),ctx.textBaseline,config.scaleFontSize);
                     }
                     if (config.yAxisRight) {
                         ctx.textAlign = "left";
-                        ctx.fillText(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop));
+                        ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop),ctx.textBaseline,config.scaleFontSize);
                     }
                 }
             }
@@ -2771,18 +2775,10 @@ window.Chart = function (context) {
         function getValueBounds() {
             var upperValue = Number.MIN_VALUE;
             var lowerValue = Number.MAX_VALUE;
-
             for (var i = 0; i < data.datasets.length; i++) {
-				var mathFctName = data.datasets[i].drawMathDeviation;
-				var mathValueHeight = 0;
-				if (typeof eval(mathFctName) == "function") {
-					var parameter = {data:data,datasetNr: i};
-					mathValueHeight = window[mathFctName](parameter);
-				 }
-
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
-                    if (1*data.datasets[i].data[j]+mathValueHeight > upperValue) { upperValue = 1*data.datasets[i].data[j]+mathValueHeight };
-                    if (1*data.datasets[i].data[j]-mathValueHeight < lowerValue) { lowerValue = 1*data.datasets[i].data[j]-mathValueHeight };
+                    if (1*data.datasets[i].data[j] > upperValue) { upperValue = 1*data.datasets[i].data[j] };
+                    if (1*data.datasets[i].data[j] < lowerValue) { lowerValue = 1*data.datasets[i].data[j] };
                 }
             };
 
@@ -2797,8 +2793,6 @@ window.Chart = function (context) {
 
       			labelHeight = config.scaleFontSize;
             scaleHeight = msr.availableHeight;
-
-//scaleHeight+" "+labelHeight);
 
             var maxSteps = Math.floor((scaleHeight / (labelHeight * 0.66)));
             var minSteps = Math.floor((scaleHeight / labelHeight * 0.5));
@@ -2967,7 +2961,7 @@ window.Chart = function (context) {
                         ctx.translate(xPos,yPos);
 
                         ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-   	    		            ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
+   	    		            ctx.fillTextMultiLine(dispString,0,0,ctx.textBaseline,config.inGraphDataFontSize);
     			    	        ctx.restore();
 
                         yStart[j] += animPc * calculateOffset(config, (yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) - (config.barStrokeWidth / 2);
@@ -3054,12 +3048,12 @@ window.Chart = function (context) {
                 for (var i = 0; i < data.labels.length; i++) {
                     ctx.save();
                     if (msr.rotateLabels > 0) {
-                        ctx.translate(yAxisPosX + i * valueHop + (barWidth / 2)- config.scaleFontSize/2, msr.xLabelPos);
+                        ctx.translate(yAxisPosX + i * valueHop + (barWidth / 2)- msr.highestXLabel/2, msr.xLabelPos);
                         ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-                        ctx.fillText(fmtChartJS(config,data.labels[i],config.fmtXLabel), 0, 0);
+                        ctx.fillTextMultiLine(fmtChartJS(config,data.labels[i],config.fmtXLabel), 0, 0,ctx.textBaseline,config.scaleFontSize);
                     }
                     else {
-                        ctx.fillText(fmtChartJS(config,data.labels[i],config.fmtXLabel), yAxisPosX + i * valueHop + (barWidth / 2), msr.xLabelPos);
+                        ctx.fillTextMultiLine(fmtChartJS(config,data.labels[i],config.fmtXLabel), yAxisPosX + i * valueHop + (barWidth / 2), msr.xLabelPos,ctx.textBaseline,config.scaleFontSize);
                     }
                     ctx.restore();
                 }
@@ -3074,11 +3068,11 @@ window.Chart = function (context) {
                 if (config.scaleShowLabels) {
                     if (config.yAxisLeft) {
                         ctx.textAlign = "right";
-                        ctx.fillText(calculatedScale.labels[j + 1], yAxisPosX - (config.scaleTickSizeLeft + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop));
+                        ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (config.scaleTickSizeLeft + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop),ctx.textBaseline,config.scaleFontSize);
                     }
                     if (config.yAxisRight) {
                         ctx.textAlign = "left";
-                        ctx.fillText(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop));
+                        ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop),ctx.textBaseline,config.scaleFontSize);
                     }
                 }
             }
@@ -3298,7 +3292,7 @@ window.Chart = function (context) {
                         ctx.translate(xPos,yPos);
 
                         ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-						 	ctx.fillTextMultiLine(dispString,0,0,"middle",config.inGraphDataFontSize);
+						 	          ctx.fillTextMultiLine(dispString,0,0,ctx.textBaseline,config.inGraphDataFontSize);
 					    	        ctx.restore();
 
 
@@ -3388,12 +3382,12 @@ window.Chart = function (context) {
                 for (var i = ((config.showYAxisMin) ? -1 : 0) ; i < calculatedScale.steps; i++) {
                     ctx.save();
                     if (msr.rotateLabels > 0) {
-                        ctx.translate(yAxisPosX + (i + 1) * valueHop- config.scaleFontSize/2, msr.xLabelPos);
+                        ctx.translate(yAxisPosX + (i + 1) * valueHop- msr.highestXLabel/2, msr.xLabelPos);
                         ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-                        ctx.fillText(calculatedScale.labels[i + 1], 0, 0);
+                        ctx.fillTextMultiLine(calculatedScale.labels[i + 1], 0, 0,ctx.textBaseline,config.scaleFontSize);
                    }
                    else {
-                      ctx.fillText(calculatedScale.labels[i + 1], yAxisPosX + ((i + 1) * valueHop), msr.xLabelPos);
+                      ctx.fillTextMultiLine(calculatedScale.labels[i + 1], yAxisPosX + ((i + 1) * valueHop), msr.xLabelPos,ctx.textBaseline,config.scaleFontSize);
                    }
                    ctx.restore();
                 }
@@ -3408,11 +3402,11 @@ window.Chart = function (context) {
                 if (config.scaleShowLabels) {
                     if (config.yAxisLeft) {
                         ctx.textAlign = "right";
-                        ctx.fillText(fmtChartJS(config,data.labels[j],config.fmtXLabel), yAxisPosX - (config.scaleTickSizeLeft + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2);
+                        ctx.fillTextMultiLine(fmtChartJS(config,data.labels[j],config.fmtXLabel), yAxisPosX - (config.scaleTickSizeLeft + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2,ctx.textBaseline,config.scaleFontSize);
                     }
                     if (config.yAxisRight) {
                         ctx.textAlign = "left";
-                        ctx.fillText(fmtChartJS(config,data.labels[j],config.fmtXLabel), yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2);
+                        ctx.fillTextMultiLine(fmtChartJS(config,data.labels[j],config.fmtXLabel), yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2,ctx.textBaseline,config.scaleFontSize);
                     }
                 }
             }
@@ -3660,7 +3654,7 @@ window.Chart = function (context) {
                     var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
 
                     var barHeight = animPc*(calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, scaleHop)-zeroY) + (config.barStrokeWidth / 2);
-          			roundRect( ctx, barOffset, xAxisPosY-zeroY, barWidth, barHeight, config.barShowStroke, config.barBorderRadius);
+              			roundRect( ctx, barOffset, xAxisPosY-zeroY, barWidth, barHeight, config.barShowStroke, config.barBorderRadius);
 
                     cumvalue[j] += 1*data.datasets[i].data[j];
                     if (animPc >= 1) {
@@ -3737,7 +3731,7 @@ window.Chart = function (context) {
 											  v11 : fmtChartJS(config,i,config.fmtV11),
 											  v12 : fmtChartJS(config,j,config.fmtV12)});
                     ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-       			        ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
+       			        ctx.fillTextMultiLine(dispString,0,0,ctx.textBaseline,config.inGraphDataFontSize);
 					    	    ctx.restore();
 
                   }
@@ -3747,17 +3741,17 @@ window.Chart = function (context) {
             }
         } ;
 
-        function roundRect(ctx, x, y, w, h, stroke, radius) {
+        function roundRect(ctx, x, y, w, h, stroke, radius ) {
 
   		    ctx.beginPath();
-			    ctx.moveTo(x + radius, y );
+			    ctx.moveTo(x + radius, y);
 			    ctx.lineTo(x + w - radius, y);
 			    ctx.quadraticCurveTo(x + w, y, x + w, y);
 			    ctx.lineTo(x + w, y - h + radius);
 			    ctx.quadraticCurveTo(x + w, y - h, x + w - radius, y - h);
 			    ctx.lineTo(x + radius, y - h);
 			    ctx.quadraticCurveTo(x, y - h, x, y - h + radius);
-			    ctx.lineTo(x, y);
+			    ctx.lineTo(x, y );
 			    ctx.quadraticCurveTo(x, y, x + radius, y);
 			    if(stroke)ctx.stroke();
 			    ctx.closePath();
@@ -3838,12 +3832,12 @@ window.Chart = function (context) {
                 for (var i = 0; i < data.labels.length; i++) {
                     ctx.save();
                     if (msr.rotateLabels > 0) {
-                        ctx.translate(yAxisPosX + i * valueHop + (valueHop / 2)- config.scaleFontSize/2, msr.xLabelPos);
+                        ctx.translate(yAxisPosX + i * valueHop + (valueHop / 2)- msr.highestXLabel/2, msr.xLabelPos);
                         ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-                        ctx.fillText(fmtChartJS(config,data.labels[i],config.fmtXLabel), 0, 0);
+                        ctx.fillTextMultiLine(fmtChartJS(config,data.labels[i],config.fmtXLabel), 0, 0,ctx.textBaseline,config.scaleFontSize);
                     }
                     else {
-                        ctx.fillText(fmtChartJS(config,data.labels[i],config.fmtXLabel), yAxisPosX + i * valueHop + (valueHop / 2), msr.xLabelPos);
+                        ctx.fillTextMultiLine(fmtChartJS(config,data.labels[i],config.fmtXLabel), yAxisPosX + i * valueHop + (valueHop / 2), msr.xLabelPos,ctx.textBaseline,config.scaleFontSize);
                     }
                     ctx.restore();
                  }
@@ -3858,11 +3852,11 @@ window.Chart = function (context) {
                 if (config.scaleShowLabels) {
                     if (config.yAxisLeft) {
                         ctx.textAlign = "right";
-                        ctx.fillText(calculatedScale.labels[j + 1], yAxisPosX - (config.scaleTickSizeLeft + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop));
+                        ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (config.scaleTickSizeLeft + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop),ctx.textBaseline,config.scaleFontSize);
                     }
                     if (config.yAxisRight) {
                         ctx.textAlign = "left";
-                        ctx.fillText(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop));
+                        ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop),ctx.textBaseline,config.scaleFontSize);
                     }
                 }
             }
@@ -4050,7 +4044,7 @@ window.Chart = function (context) {
 
                     var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,cumvalue[j],config.fmtV4), v5 : fmtChartJS(config,totvalue[j],config.fmtV5), v6 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV6),config.roundPct),v7 : fmtChartJS(config,t1,config.fmtV7),v8 : fmtChartJS(config,barOffset + barWidth,config.fmtV8),v9 : fmtChartJS(config,t2,config.fmtV9),v10 : fmtChartJS(config,barOffset,config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12)});
                     ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-       			       ctx.fillTextMultiLine(dispString,0,0,"middle",config.inGraphDataFontSize);
+                    ctx.fillTextMultiLine(dispString,0,0,ctx.textBaseline,config.inGraphDataFontSize);
 					    	    ctx.restore();
 
                   }
@@ -4156,12 +4150,12 @@ window.Chart = function (context) {
                 for (var i = ((config.showYAxisMin) ? -1 : 0) ; i < calculatedScale.steps; i++) {
                     ctx.save();
                     if (msr.rotateLabels > 0) {
-                        ctx.translate(yAxisPosX + (i + 1) * valueHop - config.scaleFontSize/2, msr.xLabelPos);
+                        ctx.translate(yAxisPosX + (i + 1) * valueHop - msr.highestXLabel/2, msr.xLabelPos);
                         ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-                        ctx.fillText(calculatedScale.labels[i + 1], 0, 0);
+                        ctx.fillTextMultiLine(calculatedScale.labels[i + 1], 0, 0,ctx.textBaseline,config.scaleFontSize);
                     }
                     else {
-                        ctx.fillText(calculatedScale.labels[i + 1], yAxisPosX + (i + 1) * valueHop, msr.xLabelPos);
+                        ctx.fillTextMultiLine(calculatedScale.labels[i + 1], yAxisPosX + (i + 1) * valueHop, msr.xLabelPos,ctx.textBaseline,config.scaleFontSize);
                     }
                     ctx.restore();
                 }
@@ -4176,11 +4170,11 @@ window.Chart = function (context) {
                 if (config.scaleShowLabels) {
                     if (config.yAxisLeft) {
                         ctx.textAlign = "right";
-                        ctx.fillText(fmtChartJS(config,data.labels[j],config.fmtXLabel), yAxisPosX - (config.scaleTickSizeLeft + config.yAxisSpaceRight), xAxisPosY - (j * scaleHop) - scaleHop / 2);
+                        ctx.fillTextMultiLine(fmtChartJS(config,data.labels[j],config.fmtXLabel), yAxisPosX - (config.scaleTickSizeLeft + config.yAxisSpaceRight), xAxisPosY - (j * scaleHop) - scaleHop / 2,ctx.textBaseline,config.scaleFontSize);
                     }
                     if (config.yAxisRight) {
                         ctx.textAlign = "left";
-                        ctx.fillText(fmtChartJS(config,data.labels[j],config.fmtXLabel), yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - (j * scaleHop) - scaleHop / 2);
+                        ctx.fillTextMultiLine(fmtChartJS(config,data.labels[j],config.fmtXLabel), yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - (j * scaleHop) - scaleHop / 2,ctx.textBaseline,config.scaleFontSize);
                     }
                 }
             }
@@ -4336,6 +4330,7 @@ window.Chart = function (context) {
     })();
 
     function calculateScale(config, maxSteps, minSteps, maxValue, minValue, labelTemplateString) {
+
         var graphMin, graphMax, graphRange, stepValue, numberOfSteps, valueRange, rangeOrderOfMagnitude, decimalNum;
 
         if (!config.logarithmic) { // no logarithmic scale
@@ -4353,6 +4348,8 @@ window.Chart = function (context) {
         graphRange = graphMax - graphMin;
         stepValue = Math.pow(10, rangeOrderOfMagnitude);
         numberOfSteps = Math.round(graphRange / stepValue);
+
+
 
         if (!config.logarithmic) { // no logarithmic scale
 
@@ -4372,7 +4369,6 @@ window.Chart = function (context) {
         }
 
         var labels = [];
-
         populateLabels(config, labelTemplateString, labels, numberOfSteps, graphMin, graphMax, stepValue);
 
 
@@ -4588,7 +4584,7 @@ window.Chart = function (context) {
                 }
                 else disptxt = config.crossText[i];
 
-               	ctx.fillText(disptxt,0,0);
+               	ctx.fillTextMultiLine(disptxt,0,0,ctx.textBaseline,config.inGraphDataFontSize);
                 ctx.stroke();
                 ctx.restore();
             }
@@ -4634,6 +4630,10 @@ window.Chart = function (context) {
         var xLabelHeight = 0;
 
         var widestXLabel = 1;
+        var highestXLabel = 1;
+
+        var widestYLabel = 1;
+        var highestYLabel = 1;
 
         var leftNotUsableSize = 0;
         var rightNotUsableSize = 0;
@@ -4650,9 +4650,10 @@ window.Chart = function (context) {
         if (drawAxis) {
             ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
             for (var i = 0; i < data.labels.length; i++) {
-                var textLength = ctx.measureText(fmtChartJS(config,data.labels[i],config.fmtXLabel)).width;
+                var textMsr = ctx.measureTextMultiLine(fmtChartJS(config,data.labels[i],config.fmtXLabel),config.scaleFontSize);
                 //If the text length is longer - make that equal to longest text!
-                widestXLabel = (textLength > widestXLabel) ? textLength : widestXLabel;
+                widestXLabel = (textMsr.textWidth > widestXLabel) ? textMsr.textWidth : widestXLabel;
+                highestXLabel= (textMsr.textHeight > highestXLabel) ? textMsr.textHeight : highestXLabel;
             }
         }
 
@@ -4666,9 +4667,10 @@ window.Chart = function (context) {
                 for (var i = ylabels.length - 1; i >= 0; i--) {
                     if (typeof (ylabels[i]) == "string") {
                         if (ylabels[i].trim() != "") {
-                            var textLength = ctx.measureText(fmtChartJS(config,ylabels[i],config.fmtYLabel)).width;
+                            var textMsr = ctx.measureTextMultiLine(fmtChartJS(config,ylabels[i],config.fmtYLabel),config.scaleFontSize);
                             //If the text length is longer - make that equal to longest text!
-                            widestYLabel = (textLength > widestYLabel) ? textLength : widestYLabel;
+                            widestYLabel = (textMsr.textWidth > widestYLabel) ? textMsr.textWidth : widestYLabel;
+                            highestYLabel= (textMsr.textHeight > highestYLabel) ? textMsr.textHeight : highestYLabel;
                         }
                     }
                 }
@@ -4809,8 +4811,8 @@ window.Chart = function (context) {
         xLabelWidth = 0;
 
         if (drawAxis && (config.xAxisBottom || config.xAxisTop)) {
-            if (reverseAxis == false) { widestLabel = widestXLabel; nblab = data.labels.length; }
-            else { widestLabel = widestYLabel; nblab = ylabels.length; }
+            if (reverseAxis == false) { var widestLabel = widestXLabel; var highestLabel=highestXLabel;nblab = data.labels.length; }
+            else { var widestLabel = widestYLabel; var highestLabel=highestYLabel; nblab = ylabels.length; }
             if (config.rotateLabels == "smart") {
                 rotateLabels = 0;
                 if ((availableWidth + config.xAxisSpaceBetweenLabels) / nblab < (widestLabel + config.xAxisSpaceBetweenLabels)) {
@@ -4826,9 +4828,9 @@ window.Chart = function (context) {
             }
 
             if (rotateLabels > 90) rotateLabels += 180;
-            xLabelHeight = Math.abs(Math.sin(rotateLabels * Math.PI / 180) * widestLabel) + Math.abs(Math.sin((rotateLabels + 90) * Math.PI / 180) * config.scaleFontSize) + config.xAxisSpaceBefore + config.xAxisSpaceAfter;
+            xLabelHeight = Math.abs(Math.sin(rotateLabels * Math.PI / 180) * widestLabel) + Math.abs(Math.sin((rotateLabels + 90) * Math.PI / 180) * highestLabel) + config.xAxisSpaceBefore + config.xAxisSpaceAfter;
             xLabelPos = height - borderWidth - config.spaceBottom - footNoteHeight - spaceLegendHeight - xAxisLabelHeight - (xLabelHeight - config.xAxisSpaceBefore)-config.graphSpaceAfter;
-            xLabelWidth = Math.abs(Math.cos(rotateLabels * Math.PI / 180) * widestLabel) + Math.abs(Math.cos((rotateLabels + 90) * Math.PI / 180) * config.scaleFontSize);
+            xLabelWidth = Math.abs(Math.cos(rotateLabels * Math.PI / 180) * widestLabel) + Math.abs(Math.cos((rotateLabels + 90) * Math.PI / 180) * highestLabel);
 
             leftNotUsableSize = Max([leftNotUsableSize, borderWidth + config.spaceLeft + xLabelWidth / 2]);
             rightNotUsableSize = Max([rightNotUsableSize, borderWidth + config.spaceRight + xLabelWidth / 2]);
@@ -5097,7 +5099,7 @@ window.Chart = function (context) {
         clrwidth = availableWidth;
         clry = topNotUsableSize;
         clrheight = availableHeight;
-
+ 
         return {
             leftNotUsableSize: leftNotUsableSize,
             rightNotUsableSize: rightNotUsableSize,
@@ -5107,6 +5109,9 @@ window.Chart = function (context) {
             bottomNotUsableHeightWithXLabels: bottomNotUsableHeightWithXLabels,
             availableHeight: availableHeight,
             widestXLabel: widestXLabel,
+            highestXLabel: highestXLabel,
+            widestYLabel: widestYLabel,
+            highestYLabel: highestYLabel,
             rotateLabels: rotateLabels,
             xLabelPos: xLabelPos,
             clrx: clrx,
@@ -5199,7 +5204,7 @@ window.Chart = function (context) {
 					  var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,divprev,config.fmtV4), v5 : fmtChartJS(config,divnext,config.fmtV5), v6 : fmtChartJS(config,maxvalue[j],config.fmtV6), v7 : fmtChartJS(config,totvalue[j],config.fmtV7), v8 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV8),config.roundPct),v9 : fmtChartJS(config,yAxisPosX+ (valueHop *k),config.fmtV9),v10 : fmtChartJS(config,xAxisPosY - (calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)),config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12),data:data});
 					  ctx.translate(xPos(j) + paddingTextX, yPos(i,j) - paddingTextY);
 					  ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-								ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
+								ctx.fillTextMultiLine(dispString,0,0,ctx.textBaseline,config.inGraphDataFontSize);
 					  ctx.restore();
 					}
 				  }
@@ -5231,7 +5236,7 @@ window.Chart = function (context) {
 					if (!(typeof(data.datasets[i].data[k])=='undefined')) { 
 					  ctx.beginPath();
 					  ctx.arc(xPos(k), yPos(i,k), config.pointDotRadius, 0, Math.PI * 2, true);
-					  ctx.fill();
+            ctx.fill();
 					  ctx.stroke();
 					}
 				}
@@ -5284,13 +5289,13 @@ window.Chart = function (context) {
               if ((config.annotateFunction.split(' ')[1]=="left" && event.which==1) ||
                   (config.annotateFunction.split(' ')[1]=="middle" && event.which==2) ||
                   (config.annotateFunction.split(' ')[1]=="right" && event.which==3) ||
-                  (typeof(config.annotateFunction.split(' ')[1])!="string")) doMouseMove(ctx, config, event, data)
+                  (typeof(config.annotateFunction.split(' ')[1])!="string")) doMouseMove(ctx, config, event,data) 
               });
             else ctx.canvas.addEventListener(config.annotateFunction.split(' ')[0], function (event) { 
               if ((config.annotateFunction.split(' ')[1]=="left" && event.which==1) ||
                   (config.annotateFunction.split(' ')[1]=="middle" && event.which==2) ||
                   (config.annotateFunction.split(' ')[1]=="right" && event.which==3) ||
-                  (typeof(config.annotateFunction.split(' ')[1])!="string")) doMouseMove(ctx, config, event, data)
+                  (typeof(config.annotateFunction.split(' ')[1])!="string")) doMouseMove(ctx, config, event,data) 
             }, false);
         }
         
@@ -5300,13 +5305,13 @@ window.Chart = function (context) {
               if ((config.savePngFunction.split(' ')[1]=="left" && event.which==1) ||
                   (config.savePngFunction.split(' ')[1]=="middle" && event.which==2) ||
                   (config.savePngFunction.split(' ')[1]=="right" && event.which==3) ||
-                  (typeof(config.savePngFunction.split(' ')[1])!="string")) saveCanvas(ctx,data,config,tpgraph, data);
+                  (typeof(config.savePngFunction.split(' ')[1])!="string")) saveCanvas(ctx,data,config,tpgraph); 
               });  
             else ctx.canvas.addEventListener(config.savePngFunction.split(' ')[0], function (event) {   
               if ((config.savePngFunction.split(' ')[1]=="left" && event.which==1) ||
                   (config.savePngFunction.split(' ')[1]=="middle" && event.which==2) ||
                   (config.savePngFunction.split(' ')[1]=="right" && event.which==3) ||
-                  (typeof(config.savePngFunction.split(' ')[1])!="string")) saveCanvas(ctx,data,config,tpgraph,data);
+                  (typeof(config.savePngFunction.split(' ')[1])!="string")) saveCanvas(ctx,data,config,tpgraph); 
               }
               ,false);
   
