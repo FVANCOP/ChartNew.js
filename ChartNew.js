@@ -170,13 +170,50 @@ function fmtChartJS(config,value,fmt){
   return(return_value);
 };
 
+function addParameters2Function(data,fctName,fctList) {
+	  var mathFunctions = {
+		  mean: {data:data.data,datasetNr:data.v11},
+		  varianz: {data:data.data, datasetNr:data.v11},
+		  stddev: {data:data.data, datasetNr:data.v11}
+	  };
+
+	  // difference to current value (v3)
+	  dif = false;
+
+	  if (fctName.substr(-3) == "Dif") {
+		 fctName = fctName.substr(0,fctName.length-3);
+		 dif = true;
+	  }
+
+	  if (typeof eval(fctName) == "function") {
+	  	var parameter = eval(fctList+"."+fctName);
+		if (dif) {
+			return window[fctName](parameter)/data.v3;
+		}
+	  	return window[fctName](parameter);
+	  }
+	  return;
+}
 
 function tmplbis(str, data) {
+	str = str.replace(/<%=(.*?)\(([0-9]?)\)%>/g, function($0,$1,$2) {
+													if ($2) { var rndFac = $2; } else {var rndFac = 2; }
+													var value = addParameters2Function(data,$1,"mathFunctions");
+													if (value) {
+														return Math.round(Math.pow(10,rndFac)*value)/Math.pow(10,rndFac);
+													}
+													return 'function '+$1+' is undefined';
+												});
+
     // Figure out if we're getting a template, or if we need to
     // load the template - and be sure to cache the result.
-    var fn = !/\W/.test(str) ?
+	// first check if it's can be an id
+    var fn = /^[A-Za-z][-A-Za-z0-9_:.]*$/.test(str) ?
       cachebis[str] = cachebis[str] ||
-        tmplbis(document.getElementById(str).innerHTML) :
+		tmplbis(document.getElementById(str).innerHTML) :
+
+
+
 
       // Generate a reusable function that will serve as a template
       // generator (and which will be cached).
@@ -200,6 +237,9 @@ function tmplbis(str, data) {
 
     // Provide some basic currying to the user
     return data ? fn(data) : fn;
+
+
+
 };
 
 /**
@@ -476,7 +516,7 @@ function getMousePos(canvas, evt) {
     };
 };
 
-function doMouseMove(ctx, config, event) {
+function doMouseMove(ctx, config, event, data) {
 
     var annotateDIV = document.getElementById('divCursor');
     show = false;
@@ -589,7 +629,7 @@ function doMouseMove(ctx, config, event) {
                 graphPosX = canvas_pos.x;
                 graphPosY = canvas_pos.y;
 
-                dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY });
+                dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY, data: data });
                 annotateDIV.innerHTML = dispString;
                 show = true;
 
@@ -2515,7 +2555,6 @@ window.Chart = function (context) {
         var annotateCnt = 0;
 
 
-
         if(typeof ctx.ChartNewId == "undefined"){
           var cvdate = new Date();
           var cvmillsec = cvdate.getTime();
@@ -2894,7 +2933,7 @@ window.Chart = function (context) {
                         else lgtxt2 = "";
 
                         cumvalue[j] += 1+data.datasets[i].data[j];
-                        var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,cumvalue[j],config.fmtV4), v5 : fmtChartJS(config,totvalue[j],config.fmtV5), v6 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV6),config.roundPct),v7 : fmtChartJS(config,barOffset,config.fmtV7),v8 : fmtChartJS(config,xAxisPosY,config.fmtV8),v9 : fmtChartJS(config,barOffset + barWidth,config.fmtV9),v10 : fmtChartJS(config,xAxisPosY - calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2),config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12)});
+                        var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,cumvalue[j],config.fmtV4), v5 : fmtChartJS(config,totvalue[j],config.fmtV5), v6 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV6),config.roundPct),v7 : fmtChartJS(config,barOffset,config.fmtV7),v8 : fmtChartJS(config,xAxisPosY,config.fmtV8),v9 : fmtChartJS(config,barOffset + barWidth,config.fmtV9),v10 : fmtChartJS(config,xAxisPosY - calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2),config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12),data:data});
  
                         var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j;
                         ctx.beginPath();
@@ -5142,7 +5181,7 @@ window.Chart = function (context) {
 									dotY = xAxisPosY - animPc*(calculateOffset(config, data.datasets[i].data[j],calculatedScale,scaleHop)),
 									paddingTextX = config.inGraphDataPaddingX,
 									paddingTextY = config.inGraphDataPaddingY;
-					  var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,divprev,config.fmtV4), v5 : fmtChartJS(config,divnext,config.fmtV5), v6 : fmtChartJS(config,maxvalue[j],config.fmtV6), v7 : fmtChartJS(config,totvalue[j],config.fmtV7), v8 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV8),config.roundPct),v9 : fmtChartJS(config,yAxisPosX+ (valueHop *k),config.fmtV9),v10 : fmtChartJS(config,xAxisPosY - (calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)),config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12)});
+					  var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,divprev,config.fmtV4), v5 : fmtChartJS(config,divnext,config.fmtV5), v6 : fmtChartJS(config,maxvalue[j],config.fmtV6), v7 : fmtChartJS(config,totvalue[j],config.fmtV7), v8 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV8),config.roundPct),v9 : fmtChartJS(config,yAxisPosX+ (valueHop *k),config.fmtV9),v10 : fmtChartJS(config,xAxisPosY - (calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)),config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12),data:data});
 					  ctx.translate(xPos(j) + paddingTextX, yPos(i,j) - paddingTextY);
 					  ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
 								ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
@@ -5230,13 +5269,13 @@ window.Chart = function (context) {
               if ((config.annotateFunction.split(' ')[1]=="left" && event.which==1) ||
                   (config.annotateFunction.split(' ')[1]=="middle" && event.which==2) ||
                   (config.annotateFunction.split(' ')[1]=="right" && event.which==3) ||
-                  (typeof(config.annotateFunction.split(' ')[1])!="string")) doMouseMove(ctx, config, event) 
+                  (typeof(config.annotateFunction.split(' ')[1])!="string")) doMouseMove(ctx, config, event, data)
               });
             else ctx.canvas.addEventListener(config.annotateFunction.split(' ')[0], function (event) { 
               if ((config.annotateFunction.split(' ')[1]=="left" && event.which==1) ||
                   (config.annotateFunction.split(' ')[1]=="middle" && event.which==2) ||
                   (config.annotateFunction.split(' ')[1]=="right" && event.which==3) ||
-                  (typeof(config.annotateFunction.split(' ')[1])!="string")) doMouseMove(ctx, config, event) 
+                  (typeof(config.annotateFunction.split(' ')[1])!="string")) doMouseMove(ctx, config, event, data)
             }, false);
         }
         
@@ -5246,13 +5285,13 @@ window.Chart = function (context) {
               if ((config.savePngFunction.split(' ')[1]=="left" && event.which==1) ||
                   (config.savePngFunction.split(' ')[1]=="middle" && event.which==2) ||
                   (config.savePngFunction.split(' ')[1]=="right" && event.which==3) ||
-                  (typeof(config.savePngFunction.split(' ')[1])!="string")) saveCanvas(ctx,data,config,tpgraph); 
+                  (typeof(config.savePngFunction.split(' ')[1])!="string")) saveCanvas(ctx,data,config,tpgraph, data);
               });  
             else ctx.canvas.addEventListener(config.savePngFunction.split(' ')[0], function (event) {   
               if ((config.savePngFunction.split(' ')[1]=="left" && event.which==1) ||
                   (config.savePngFunction.split(' ')[1]=="middle" && event.which==2) ||
                   (config.savePngFunction.split(' ')[1]=="right" && event.which==3) ||
-                  (typeof(config.savePngFunction.split(' ')[1])!="string")) saveCanvas(ctx,data,config,tpgraph); 
+                  (typeof(config.savePngFunction.split(' ')[1])!="string")) saveCanvas(ctx,data,config,tpgraph,data);
               }
               ,false);
   
