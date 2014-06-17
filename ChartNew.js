@@ -2662,6 +2662,12 @@ window.Chart = function (context) {
         	drawLinesDataset(animPc,data,config,ctx,
 							 {xAxisPosY:xAxisPosY,yAxisPosX:yAxisPosX,valueHop:valueHop,scaleHop:scaleHop,
 							  zeroY:zeroY,calculatedScale:calculatedScale,annotateCnt:annotateCnt});
+          		  if (animPc >= 1) {
+          			  if (typeof drawMath == "function") {
+				              drawMath(ctx,config,data,{xAxisPosY:xAxisPosY,yAxisPosX:yAxisPosX,valueHop:valueHop,scaleHop:scaleHop,
+							                 zeroY:zeroY,calculatedScale:calculatedScale,calculateOffset:calculateOffset});
+			            }
+		            }
         } ;
 
         function drawScale() {
@@ -2776,9 +2782,16 @@ window.Chart = function (context) {
             var upperValue = Number.MIN_VALUE;
             var lowerValue = Number.MAX_VALUE;
             for (var i = 0; i < data.datasets.length; i++) {
+        				var mathFctName = data.datasets[i].drawMathDeviation;
+				        var mathValueHeight = 0;
+				        if (typeof eval(mathFctName) == "function") {
+					         var parameter = {data:data,datasetNr: i};
+					         mathValueHeight = window[mathFctName](parameter);
+			          }
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
-                    if (1*data.datasets[i].data[j] > upperValue) { upperValue = 1*data.datasets[i].data[j] };
-                    if (1*data.datasets[i].data[j] < lowerValue) { lowerValue = 1*data.datasets[i].data[j] };
+                    if (1*data.datasets[i].data[j]+mathValueHeight > upperValue) { upperValue = 1*data.datasets[i].data[j]+mathValueHeight };
+                    if (1*data.datasets[i].data[j]-mathValueHeight < lowerValue) { lowerValue = 1*data.datasets[i].data[j]-mathValueHeight };
+
                 }
             };
 
