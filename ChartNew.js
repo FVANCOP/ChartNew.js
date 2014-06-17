@@ -3513,7 +3513,6 @@ window.Chart = function (context) {
 		}
 		
         scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
-		console.log(scaleHop);
         valueHop = Math.floor(msr.availableWidth / (data.labels.length));
         if(valueHop ==0)valueHop = (msr.availableWidth / (data.labels.length - 1));
 
@@ -3606,8 +3605,8 @@ window.Chart = function (context) {
                   if (!(typeof(data.datasets[i].data[j])=='undefined')) {
                     var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
 
-                    var barHeight = animPc*calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2);
-          			roundRect( ctx, barOffset, xAxisPosY, barWidth, barHeight, config.barShowStroke, config.barBorderRadius,zeroY );
+                    var barHeight = animPc*(calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, scaleHop)-zeroY) + (config.barStrokeWidth / 2);
+          			roundRect( ctx, barOffset, xAxisPosY-zeroY, barWidth, barHeight, config.barShowStroke, config.barBorderRadius);
 
                     cumvalue[j] += 1*data.datasets[i].data[j];
                     if (animPc >= 1) {
@@ -3694,18 +3693,18 @@ window.Chart = function (context) {
             }
         } ;
 
-        function roundRect(ctx, x, y, w, h, stroke, radius,zeroY ) {
+        function roundRect(ctx, x, y, w, h, stroke, radius) {
 
   		    ctx.beginPath();
-			    ctx.moveTo(x + radius, y - zeroY);
-			    ctx.lineTo(x + w - radius, y-zeroY);
-			    ctx.quadraticCurveTo(x + w, y-zeroY, x + w, y-zeroY);
+			    ctx.moveTo(x + radius, y );
+			    ctx.lineTo(x + w - radius, y);
+			    ctx.quadraticCurveTo(x + w, y, x + w, y);
 			    ctx.lineTo(x + w, y - h + radius);
 			    ctx.quadraticCurveTo(x + w, y - h, x + w - radius, y - h);
 			    ctx.lineTo(x + radius, y - h);
 			    ctx.quadraticCurveTo(x, y - h, x, y - h + radius);
-			    ctx.lineTo(x, y -zeroY);
-			    ctx.quadraticCurveTo(x, y-zeroY, x + radius, y-zeroY);
+			    ctx.lineTo(x, y);
+			    ctx.quadraticCurveTo(x, y, x + radius, y);
 			    if(stroke)ctx.stroke();
 			    ctx.closePath();
 			    ctx.fill();
@@ -5177,7 +5176,7 @@ window.Chart = function (context) {
 				for (var k = 0; k < data.datasets[i].data.length; k++) {
 					if (!(typeof(data.datasets[i].data[k])=='undefined')) { 
 					  ctx.beginPath();
-					  ctx.arc(yAxisPosX + (valueHop * k), xAxisPosY - animPc * (calculateOffset(config, data.datasets[i].data[k], calculatedScale, scaleHop)), config.pointDotRadius, 0, Math.PI * 2, true);
+					  ctx.arc(xPos(k), yPos(i,k), config.pointDotRadius, 0, Math.PI * 2, true);
 					  ctx.fill();
 					  ctx.stroke();
 					}
@@ -5186,7 +5185,7 @@ window.Chart = function (context) {
 		};
 
 		function yPos(dataSet, iteration) {
-			return xAxisPosY - animPc * (calculateOffset(config, data.datasets[dataSet].data[iteration], calculatedScale, scaleHop));
+			return xAxisPosY - zeroY - animPc * (calculateOffset(config, data.datasets[dataSet].data[iteration], calculatedScale, scaleHop)-zeroY);
 		};
 		function xPos(iteration) {
 			return yAxisPosX + (valueHop * iteration);
