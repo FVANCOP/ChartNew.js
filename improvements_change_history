@@ -1,6 +1,7 @@
 Change history
 --------------
 
+17/06/2014 - Ole Kröger				- deviation vertical lines inside line chart (see issue #31)
 17/06/2014 - Ole Kröger				- better animation for negative values (Line&Bar)
 16/06/2014 - Ole Kröger             - multiLine support for inGraphData
 12/06/2014 - Ole Kröger 	    	- Add BarLine Chart (part of BarChart) (see issue #23)
