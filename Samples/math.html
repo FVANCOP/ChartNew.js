@@ -18,21 +18,16 @@
 			strokeColor : "rgba(129, 172, 123, 1)",
 			pointColor : "rgba(129, 172, 123, 1)",
 			pointStrokeColor : "#fff",
+			drawMathDeviation: "stddev",
+			deviationStrokeColor: "#000",
+			deviationWidth: 5,
 			data : [60,70,75,65,75,80,65],
       title : "line 1"
-		},
-		{
-			fillColor : "rgba(159, 90, 90, 0.5)",
-			strokeColor : "rgba(159, 90, 90, 1)",
-			pointColor : "rgba(159, 90, 90, 1)",
-			pointStrokeColor : "#fff",
-			data : [65,59,90,81,56,55,40],
-      title : "Line 2"
 		}
 	]
 }
 
-  var opts= {inGraphDataShow:true, inGraphDataTmpl: 'Dif\n<%=meanDif()%>', spaceRight:10};
+  var opts= {inGraphDataShow:true, inGraphDataTmpl: 'stddev\n<%=stddev()%>', spaceRight:15};
 
   window.onload = function() {
     var myBar = new Chart(document.getElementById("mycanvas").getContext("2d")).Line(LineData,opts);

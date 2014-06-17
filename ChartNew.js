@@ -252,7 +252,7 @@ function tmplbis(str, data) {
  * @param lineHeight lineHeight
  */
 CanvasRenderingContext2D.prototype.fillTextMultiLine = function(text, x, y,yLevel, lineHeight) {
-  var lines = text.split("\n");
+	var lines = text.split("\n");
   // if its one line => in the middle 
   // two lines one above the mid one below etc.	
   if (yLevel == "middle") {
@@ -2554,7 +2554,6 @@ window.Chart = function (context) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, rotateLabels = 0, msr;
         var annotateCnt = 0;
 
-
         if(typeof ctx.ChartNewId == "undefined"){
           var cvdate = new Date();
           var cvmillsec = cvdate.getTime();
@@ -2646,11 +2645,19 @@ window.Chart = function (context) {
 
 
         animationLoop(config, drawScale, drawLines, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
-        
+
+
+
         function drawLines(animPc) {
         	drawLinesDataset(animPc,data,config,ctx,
 							 {xAxisPosY:xAxisPosY,yAxisPosX:yAxisPosX,valueHop:valueHop,scaleHop:scaleHop,
 							  zeroY:zeroY,calculatedScale:calculatedScale,annotateCnt:annotateCnt});
+		  if (animPc >= 1) {
+			  if (typeof drawMath == "function") {
+				  drawMath(ctx,config,data,{xAxisPosY:xAxisPosY,yAxisPosX:yAxisPosX,valueHop:valueHop,scaleHop:scaleHop,
+							  zeroY:zeroY,calculatedScale:calculatedScale,calculateOffset:calculateOffset});
+			  }
+		  }
         } ;
 
         function drawScale() {
@@ -2764,10 +2771,18 @@ window.Chart = function (context) {
         function getValueBounds() {
             var upperValue = Number.MIN_VALUE;
             var lowerValue = Number.MAX_VALUE;
+
             for (var i = 0; i < data.datasets.length; i++) {
+				var mathFctName = data.datasets[i].drawMathDeviation;
+				var mathValueHeight = 0;
+				if (typeof eval(mathFctName) == "function") {
+					var parameter = {data:data,datasetNr: i};
+					mathValueHeight = window[mathFctName](parameter);
+				 }
+
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
-                    if (1*data.datasets[i].data[j] > upperValue) { upperValue = 1*data.datasets[i].data[j] };
-                    if (1*data.datasets[i].data[j] < lowerValue) { lowerValue = 1*data.datasets[i].data[j] };
+                    if (1*data.datasets[i].data[j]+mathValueHeight > upperValue) { upperValue = 1*data.datasets[i].data[j]+mathValueHeight };
+                    if (1*data.datasets[i].data[j]-mathValueHeight < lowerValue) { lowerValue = 1*data.datasets[i].data[j]-mathValueHeight };
                 }
             };
 
@@ -4573,7 +4588,7 @@ window.Chart = function (context) {
                 }
                 else disptxt = config.crossText[i];
 
-               	ctx.fillTextMultiLine(dispString,0,0,"bottom",config.inGraphDataFontSize);
+               	ctx.fillText(disptxt,0,0);
                 ctx.stroke();
                 ctx.restore();
             }
