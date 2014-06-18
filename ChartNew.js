@@ -5128,13 +5128,15 @@ window.Chart = function (context) {
             ctx.restore();
         }
 
+
+        }
+
         clrx = leftNotUsableSize;        
         clrwidth = availableWidth;
         clry = topNotUsableSize;
         clrheight = availableHeight;
  
-        }
- 
+
         return {
             leftNotUsableSize: leftNotUsableSize,
             rightNotUsableSize: rightNotUsableSize,
