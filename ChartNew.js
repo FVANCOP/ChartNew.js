@@ -4883,6 +4883,8 @@ window.Chart = function (context) {
 
         // ----------------------- DRAW EXTERNAL ELEMENTS -------------------------------------------------
 
+        if(ylabels.length!=1 || ylabels[0]!=""){
+        	
         // Draw Borders
 
         if (borderWidth > 0) {
@@ -5130,6 +5132,8 @@ window.Chart = function (context) {
         clrwidth = availableWidth;
         clry = topNotUsableSize;
         clrheight = availableHeight;
+ 
+        }
  
         return {
             leftNotUsableSize: leftNotUsableSize,
