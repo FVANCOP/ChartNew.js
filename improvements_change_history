@@ -1,6 +1,8 @@
 Change history
 --------------
 
+18/06/2014 - Ole Kröger    	    - draw a mean (or other math function) horizontal line (Line & Bar)
+18/06/2014 - Ole Kröger		    - deviation vertical lines inside Line & Bar (see issue #31)
 17/06/2014 - Vancoppenolle François - line break can now be defined in labels
 17/06/2014 - Ole Kröger		    - deviation vertical lines inside line chart (see issue #31)
 17/06/2014 - Ole Kröger		    - better animation for negative values (Line&Bar)
