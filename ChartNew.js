@@ -4883,7 +4883,7 @@ window.Chart = function (context) {
 
         // ----------------------- DRAW EXTERNAL ELEMENTS -------------------------------------------------
 
-        if(ylabels.length!=1 || ylabels[0]!=""){
+        if(widestYLabel > 1){
         	
         // Draw Borders
 
