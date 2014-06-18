@@ -176,7 +176,6 @@ function addParameters2Function(data,fctName,fctList) {
 		  varianz: {data:data.data, datasetNr:data.v11},
 		  stddev: {data:data.data, datasetNr:data.v11}
 	  };
-
 	  // difference to current value (v3)
 	  dif = false;
 	  if (fctName.substr(-3) == "Dif") {
@@ -187,22 +186,31 @@ function addParameters2Function(data,fctName,fctList) {
     if (typeof eval(fctName) == "function") {
 	  	var parameter = eval(fctList+"."+fctName);
 		if (dif) {
-			return window[fctName](parameter)/data.v3;
+			return window[fctName](parameter)-data.v3;
 		}
 	  	return window[fctName](parameter);
 	  }
 	  return;
 }
 
+//Is a number function
+function isNumber(n) {
+	return !isNaN(parseFloat(n)) && isFinite(n);
+} ;
+
 function tmplbis(str, data) {
- 	  str = str.replace(/<%=(.*?)\(([0-9]?)\)%>/g, function($0,$1,$2) {
-													if ($2) { var rndFac = $2; } else {var rndFac = 2; }
-													var value = addParameters2Function(data,$1,"mathFunctions");
-													if (value) {
-														return Math.round(Math.pow(10,rndFac)*value)/Math.pow(10,rndFac);
+	  var mathFunctionList = ["mean","varianz","stddev","cv"];
+	  var regexMath = new RegExp('<%=((?:(?:.*?)\\W)??)((?:'+mathFunctionList.join('|')+')(?:Dif)?)\\(([0-9]*?)\\)(.*?)%>','g');
+	  while (regexMath.test(str)) {
+ 	  str = str.replace(regexMath, function($0,$1,$2,$3,$4) {
+													if ($3) { var rndFac = $3; } else {var rndFac = 2; }
+													var value = addParameters2Function(data,$2,"mathFunctions");
+													if (isNumber(value)) {
+														return '<%='+$1+''+Math.round(Math.pow(10,rndFac)*value)/Math.pow(10,rndFac)+''+$4+'%>';
 													}
-													return 'function '+$1+' is undefined';
+													return '<%= %>';
 												});
+	  }
 
     // Figure out if we're getting a template, or if we need to
     // load the template - and be sure to cache the result.
@@ -4434,11 +4442,6 @@ window.Chart = function (context) {
             return userDeclared;
         }
     };
-
-    //Is a number function
-    function isNumber(n) {
-        return !isNaN(parseFloat(n)) && isFinite(n);
-    } ;
 
     //Apply cap a value at a high or low number
     function CapValue(valueToCap, maxValue, minValue) {
