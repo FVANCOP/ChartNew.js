@@ -4,14 +4,15 @@ function mean(params) {
 	var mean = 0;
 	var nr = 0;
 	for (var j = 0; j < data.datasets[datasetNr].data.length; j++) {
+		// string => number
+		data.datasets[datasetNr].data[j] = 1*data.datasets[datasetNr].data[j];
 		// important to check because missing values are possible
-		if (data.datasets[datasetNr].data[j]) {
+		if (isNumber(data.datasets[datasetNr].data[j])) {
 			mean += data.datasets[datasetNr].data[j];
 			nr++;
 		}
 	}
 	mean /= nr;
-
 	return mean;
 }
 
@@ -22,8 +23,10 @@ function varianz(params) {
 	var varianz = 0;
 	var nr = 0;
 	for (var j = 0; j < data.datasets[datasetNr].data.length; j++) {
+		// string => number
+		data.datasets[datasetNr].data[j] = 1*data.datasets[datasetNr].data[j];
 		// important to check because missing values are possible
-		if (data.datasets[datasetNr].data[j]) {
+		if (isNumber(data.datasets[datasetNr].data[j])) {
 			varianz += Math.pow(data.datasets[datasetNr].data[j]-meanVal,2);
 			nr++;
 		}
@@ -41,7 +44,7 @@ function cv(params) {
 
 
 
-function drawMath(ctx,config,data,vars) {
+function drawMath(ctx,config,data,msr,vars) {
 	var xAxisPosY = vars.xAxisPosY;
 	var yAxisPosX = vars.yAxisPosX;
 	var valueHop  = vars.valueHop;
@@ -49,6 +52,8 @@ function drawMath(ctx,config,data,vars) {
 	var zeroY     = vars.zeroY;
 	var calculatedScale = vars.calculatedScale;
 	var calculateOffset = vars.calculateOffset;
+	var barWidth = vars.barWidth;
+	var barBool = !(typeof barWidth == "undefined") ? true : false;
 
 	// check each dataset if a mathDraw function exists
 	for (var i = 0; i < data.datasets.length; i++) {
@@ -75,7 +80,7 @@ function drawMath(ctx,config,data,vars) {
 			var parameter = {data:data,datasetNr: i};
 			deviation = window[deviationFct](parameter);
 		 }
-		if (deviation) {
+		if (isNumber(deviation)) {
 			ctx.strokeStyle= data.datasets[i].deviationStrokeColor ? data.datasets[i].deviationStrokeColor : config.defaultStrokeColor;
 			ctx.lineWidth = config.datasetStrokeWidth;
 			ctx.beginPath();
@@ -85,14 +90,14 @@ function drawMath(ctx,config,data,vars) {
 					var deviationWidth = data.datasets[i].deviationWidth;
 					// draw the top and the bottom of the vertical line if a deviationWidth exists
 					if (deviationWidth) {
-						ctx.moveTo(xPos(j)-deviationWidth,yPos(i,j,-deviation,true));
-						ctx.lineTo(xPos(j)+deviationWidth,yPos(i,j,-deviation,true));
-						ctx.moveTo(xPos(j)-deviationWidth,yPos(i,j,deviation,true));
-						ctx.lineTo(xPos(j)+deviationWidth,yPos(i,j,deviation,true));
+						ctx.moveTo(xPos(j,i,barWidth,barBool)-deviationWidth,yPos(i,j,-deviation,true));
+						ctx.lineTo(xPos(j,i,barWidth,barBool)+deviationWidth,yPos(i,j,-deviation,true));
+						ctx.moveTo(xPos(j,i,barWidth,barBool)-deviationWidth,yPos(i,j,deviation,true));
+						ctx.lineTo(xPos(j,i,barWidth,barBool)+deviationWidth,yPos(i,j,deviation,true));
 					}
 					// draw the vertical line
-					ctx.moveTo(xPos(j),yPos(i,j,-deviation,true));
-					ctx.lineTo(xPos(j),yPos(i,j,deviation,true));
+					ctx.moveTo(xPos(j,i,barWidth,barBool),yPos(i,j,-deviation,true));
+					ctx.lineTo(xPos(j,i,barWidth,barBool),yPos(i,j,deviation,true));
 				}
 			}
 			ctx.stroke();
@@ -116,8 +121,8 @@ function drawMath(ctx,config,data,vars) {
 			ctx.strokeStyle= data.datasets[i].mathLineStrokeColor ? data.datasets[i].mathLineStrokeColor : config.defaultStrokeColor;
 			ctx.lineWidth = config.datasetStrokeWidth;
 			ctx.beginPath();
-			ctx.moveTo(xPos(0),yPos(i,0,line,false));
-			ctx.lineTo(xPos(data.datasets[i].data.length-1),yPos(i,data.datasets[i].data.length-1,line,false));
+			ctx.moveTo(yAxisPosX,yPos(i,0,line,false));
+			ctx.lineTo(yAxisPosX + msr.availableWidth,yPos(i,data.datasets[i].data.length-1,line,false));
 			ctx.stroke();
 			ctx.closePath();
 		}
@@ -135,7 +140,13 @@ function drawMath(ctx,config,data,vars) {
 		value = value ? data.datasets[dataSet].data[iteration] : 0;
 		return xAxisPosY - calculateOffset(config, value+add, calculatedScale, scaleHop);
 	};
-	function xPos(iteration) {
-		return yAxisPosX + (valueHop * iteration);
+	function xPos(iteration,dataSet,barWidth,bar) {
+		if (bar) {
+			return yAxisPosX + config.barValueSpacing + valueHop * iteration + barWidth * dataSet
+			       + config.barDatasetSpacing * dataSet + config.barStrokeWidth * dataSet+barWidth/2;
+		} else {
+		   return yAxisPosX + (valueHop * iteration);
+		}
+
 	};
 }
