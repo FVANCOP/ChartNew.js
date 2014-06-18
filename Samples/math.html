@@ -27,7 +27,7 @@
 	]
 }
 
-  var opts= {inGraphDataShow:true, inGraphDataTmpl: 'stddev\n<%=stddev()%>', spaceRight:15};
+  var opts= {inGraphDataShow:true, inGraphDataTmpl: '<%=mean(2)%>', spaceRight:15, savePng: true};
 
   window.onload = function() {
     var myBar = new Chart(document.getElementById("mycanvas").getContext("2d")).Line(LineData,opts);
