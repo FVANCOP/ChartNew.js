@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+  <meta name="generator" content="PSPad editor, www.pspad.com">
+  <title></title>
+  <!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+  </head>
+  <body>
+  <canvas id="mycanvas" height="600" width="1000"></canvas>
+  <script>
+var DoughnutData = [
+{
+    value : 30,
+    color: "#D97041",
+    title : "January"
+},
+{
+    value : 90,
+    color: "#C7604C",
+    title : "February"
+},
+{
+    value : 24,
+    color: "#21323D",
+    title : "March"
+},
+{
+    value : 58,
+    color: "#9D9B7F",
+    title : "April"
+},
+{
+    value : 82,
+    color: "#7D4F6D",
+    title : "May"
+},
+{
+    value : 8,
+    color: "#584A5E",
+    title : "June"
+}
+]
+
+var opts= {legend : true,
+   crossText : ["text\nin\ncenter"],
+   crossTextIter: ["all"],
+   crossTextOverlay :   [true],
+   crossTextFontSize : [50],
+   crossTextFontColor : ["black"],
+   crossTextRelativePosX : [2],
+   crossTextRelativePosY : [2],
+   crossTextPosX : [0],
+   crossTextPosY : [0],
+   crossTextAlign : ["center"],
+   crossTextBaseline : ["middle"],
+   canvasBorders : true,
+   graphTitle : "Issue 62"
+};
+  
+  window.onload = function() {
+    var myBar = new Chart(document.getElementById("mycanvas").getContext("2d")).Doughnut(DoughnutData,opts);
+    }
+    </script>
+
+  </body>
+</html>
