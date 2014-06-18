@@ -4,11 +4,9 @@ function mean(params) {
 	var mean = 0;
 	var nr = 0;
 	for (var j = 0; j < data.datasets[datasetNr].data.length; j++) {
-		// string => number
-		data.datasets[datasetNr].data[j] = 1*data.datasets[datasetNr].data[j];
 		// important to check because missing values are possible
-		if (isNumber(data.datasets[datasetNr].data[j])) {
-			mean += data.datasets[datasetNr].data[j];
+		if (!(typeof(data.datasets[datasetNr].data[j])=='undefined')){
+			mean += 1*data.datasets[datasetNr].data[j];
 			nr++;
 		}
 	}
@@ -23,11 +21,9 @@ function varianz(params) {
 	var varianz = 0;
 	var nr = 0;
 	for (var j = 0; j < data.datasets[datasetNr].data.length; j++) {
-		// string => number
-		data.datasets[datasetNr].data[j] = 1*data.datasets[datasetNr].data[j];
 		// important to check because missing values are possible
-		if (isNumber(data.datasets[datasetNr].data[j])) {
-			varianz += Math.pow(data.datasets[datasetNr].data[j]-meanVal,2);
+		if (!(typeof(data.datasets[datasetNr].data[j])=='undefined')) {
+			varianz += Math.pow(1*data.datasets[datasetNr].data[j]-meanVal,2);
 			nr++;
 		}
 	}
@@ -86,7 +82,7 @@ function drawMath(ctx,config,data,msr,vars) {
 			ctx.beginPath();
 			for (var j = 0; j < data.datasets[i].data.length; j++) {
 				// important to check because missing values are possible
-				if (data.datasets[i].data[j]) {
+				if (!(typeof(data.datasets[i].data[j])=='undefined')) {
 					var deviationWidth = data.datasets[i].deviationWidth;
 					// draw the top and the bottom of the vertical line if a deviationWidth exists
 					if (deviationWidth) {
@@ -117,7 +113,7 @@ function drawMath(ctx,config,data,msr,vars) {
 			var parameter = {data:data,datasetNr: i};
 			line = window[lineFct](parameter);
 		 }
-		if (isNumber(line)) {
+		if (!(typeof(line)=='undefined')) {
 			ctx.strokeStyle= data.datasets[i].mathLineStrokeColor ? data.datasets[i].mathLineStrokeColor : config.defaultStrokeColor;
 			ctx.lineWidth = config.datasetStrokeWidth;
 			ctx.beginPath();
@@ -137,7 +133,7 @@ function drawMath(ctx,config,data,msr,vars) {
 	 * @returns {float} position (px)
 	 */
 	function yPos(dataSet, iteration, add,value) {
-		value = value ? data.datasets[dataSet].data[iteration] : 0;
+		value = value ? 1*data.datasets[dataSet].data[iteration] : 0;
 		return xAxisPosY - calculateOffset(config, value+add, calculatedScale, scaleHop);
 	};
 	function xPos(iteration,dataSet,barWidth,bar) {
