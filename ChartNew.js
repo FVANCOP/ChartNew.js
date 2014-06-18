@@ -4597,7 +4597,7 @@ window.Chart = function (context) {
                 }
                 else disptxt = config.crossText[i];
 
-               	ctx.fillTextMultiLine(disptxt,0,0,ctx.textBaseline,config.inGraphDataFontSize);
+               	ctx.fillTextMultiLine(disptxt,0,0,ctx.textBaseline,config.crossTextFontSize[Min([i, config.crossTextFontSize.length - 1])]);
                 ctx.stroke();
                 ctx.restore();
             }
