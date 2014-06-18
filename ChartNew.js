@@ -4663,7 +4663,7 @@ window.Chart = function (context) {
         var widestXLabel = 1;
         var highestXLabel = 1;
 
-        var widestYLabel = 1;
+        var widestYLabel = 0;
         var highestYLabel = 1;
 
         var leftNotUsableSize = 0;
@@ -4690,9 +4690,9 @@ window.Chart = function (context) {
 
         // compute Y Label Width
 
-        widestYLabel = 1;
 
         if (drawAxis) {
+            widestYLabel = 1;
             if (ylabels != null) {
                 ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
                 for (var i = ylabels.length - 1; i >= 0; i--) {
@@ -4883,7 +4883,7 @@ window.Chart = function (context) {
 
         // ----------------------- DRAW EXTERNAL ELEMENTS -------------------------------------------------
 
-        if(widestYLabel > 1){
+        if(widestYLabel != 1){
         	
         // Draw Borders
 
