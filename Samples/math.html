@@ -25,11 +25,19 @@
 			mathLineStrokeColor: "#f00",
 			data :  ["60","70","75","65",,"80","0"],
       title : "line 1"
+		},
+		{
+			fillColor : "rgba(29, 72, 223, 0.5)",
+			strokeColor : "rgba(29, 72, 223, 1)",
+			pointColor : "rgba(29, 72, 223, 1)",
+			pointStrokeColor : "#fff",
+			data :  [10,20,30,40,50,60,70],
+      title : "line 2"
 		}
 	]
 }
 
-  var opts= {inGraphDataShow:true, inGraphDataTmpl: '<%=mean(2)%>', spaceRight:15, savePng: true};
+  var opts= {inGraphDataShow:true, inGraphDataTmpl: '<%=cv(2)%>', bezierCurve: false, savePng: true};
 
   window.onload = function() {
     var myBar = new Chart(document.getElementById("mycanvas").getContext("2d")).Line(LineData,opts);
