@@ -174,7 +174,8 @@ function addParameters2Function(data,fctName,fctList) {
 	  var mathFunctions = {
 		  mean: {data:data.data,datasetNr:data.v11},
 		  varianz: {data:data.data, datasetNr:data.v11},
-		  stddev: {data:data.data, datasetNr:data.v11}
+		  stddev: {data:data.data, datasetNr:data.v11},
+		  cv: {data:data.data, datasetNr:data.v11}
 	  };
 	  // difference to current value (v3)
 	  dif = false;
