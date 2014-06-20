@@ -1452,6 +1452,7 @@ window.Chart = function (context) {
         animationCount : 1,
         animationPauseTime : 5,
         animationBackward : false,
+		animationStartWithData: 0,
         defaultStrokeColor : "rgba(220,220,220,1)",
         defaultFillColor : "rgba(220,220,220,0.5)"
         
@@ -5287,7 +5288,11 @@ window.Chart = function (context) {
 		};
 
 		function yPos(dataSet, iteration) {
-			return xAxisPosY - zeroY - animPc * (calculateOffset(config, data.datasets[dataSet].data[iteration], calculatedScale, scaleHop)-zeroY);
+			var animVal = animPc;
+			if (iteration < config.animationStartWithData) {
+				animVal = 1;
+			}
+			return xAxisPosY - zeroY - animVal * (calculateOffset(config, data.datasets[dataSet].data[iteration], calculatedScale, scaleHop)-zeroY);
 		};
 		function xPos(iteration) {
 			return yAxisPosX + (valueHop * iteration);
