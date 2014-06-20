@@ -5096,7 +5096,10 @@ window.Chart = function (context) {
                             ctx.fill();
                         }
                         else {
-                            ctx.lineWidth = config.datasetStrokeWidth;
+                            ctx.lineWidth = config.legendStrokeWidth ? config.legendStrokeWidth : config.datasetStrokeWidth;
+							if (config.legendStrokeWidth && config.legendStrokeWidth > config.legendFontSize) {
+								ctx.lineWidth = config.legendFontSize;
+							}
                             ctx.moveTo(xpos + 2, ypos - (config.legendFontSize / 2));
                             ctx.lineTo(xpos + 2 + config.legendBlockSize, ypos - (config.legendFontSize / 2));
                         }

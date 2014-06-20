@@ -10,7 +10,7 @@
   <body>
   <canvas id="mycanvas" height="600" width="800"></canvas>
   <script>
- var LineData = {
+ var BarData = {
 	labels : ["January","February","March","April","May","June","July"],
 	datasets : [
 		{
@@ -21,26 +21,27 @@
 			drawMathDeviation: "stddev",
 			deviationStrokeColor: "#000",
 			deviationWidth: 5,
-			drawMathLine: "mean",
-			mathLineStrokeColor: "#f00",
 			data :  ["60","70","75","65",,"80","0"],
-      title : "line 1"
+      title : "bar 1"
 		},
 		{
 			fillColor : "rgba(29, 72, 223, 0.5)",
 			strokeColor : "rgba(29, 72, 223, 1)",
 			pointColor : "rgba(29, 72, 223, 1)",
 			pointStrokeColor : "#fff",
+			drawMathLine: "mean",
+			mathLineStrokeColor: "#f00",
 			data :  [10,20,30,40,50,60,70],
-      title : "line 2"
+      title : "bar 2"
 		}
 	]
 }
 
- var opts= {inGraphDataShow:true, inGraphDataTmpl: '<%=meanDif(2)%>', bezierCurve: false, savePng: true};
+ var opts= {inGraphDataShow:true, inGraphDataTmpl: '<%=meanDif(2)%>', bezierCurve: false, savePng: false, legend: true
+			};
 
   window.onload = function() {
-    var myBar = new Chart(document.getElementById("mycanvas").getContext("2d")).Line(LineData,opts);
+    var myBar = new Chart(document.getElementById("mycanvas").getContext("2d")).Bar(BarData,opts);
     }
     </script>
 
