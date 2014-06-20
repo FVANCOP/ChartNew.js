@@ -5096,8 +5096,9 @@ window.Chart = function (context) {
                             ctx.fill();
                         }
                         else {
-                            ctx.lineWidth = config.legendStrokeWidth ? config.legendStrokeWidth : config.datasetStrokeWidth;
-							if (config.legendStrokeWidth && config.legendStrokeWidth > config.legendFontSize) {
+                            ctx.lineWidth = config.legendColorIndicatorStrokeWidth ?
+								config.legendColorIndicatorStrokeWidth : config.datasetStrokeWidth;
+							if (config.legendColorIndicatorStrokeWidth && config.legendColorIndicatorStrokeWidth > config.legendFontSize) {
 								ctx.lineWidth = config.legendFontSize;
 							}
                             ctx.moveTo(xpos + 2, ypos - (config.legendFontSize / 2));
