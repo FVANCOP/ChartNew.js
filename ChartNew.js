@@ -187,7 +187,8 @@ function addParameters2Function(data,fctName,fctList) {
     if (typeof eval(fctName) == "function") {
 	  	var parameter = eval(fctList+"."+fctName);
 		if (dif) {
-			return window[fctName](parameter)-data.v3;
+			// difference between v3 (current value) and math function
+			return data.v3-window[fctName](parameter);
 		}
 	  	return window[fctName](parameter);
 	  }

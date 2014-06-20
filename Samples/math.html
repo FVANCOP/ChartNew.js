@@ -37,7 +37,7 @@
 	]
 }
 
-  var opts= {inGraphDataShow:true, inGraphDataTmpl: '<%=cv(2)%>', bezierCurve: false, savePng: true};
+ var opts= {inGraphDataShow:true, inGraphDataTmpl: '<%=meanDif(2)%>', bezierCurve: false, savePng: true};
 
   window.onload = function() {
     var myBar = new Chart(document.getElementById("mycanvas").getContext("2d")).Line(LineData,opts);
