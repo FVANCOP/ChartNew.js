@@ -11,7 +11,7 @@ For my personnal use, I had to integrate lot of changes into Chart.js (https://g
 
 So, I have re-worked Chart.js. Most of the changes, are associated to requests in "GitHub" issues of Chart.js.
 
-June 2014 - Ole Kröger is now a co-developper of the project. More ideas, more people to give support. Welcome to him. 
+June 2014 - [Ole Kröger](http://github.com/Wikunia) is now a co-developper of the project. More ideas, more people to give support. Welcome to him. 
 
 
 
