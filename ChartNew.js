@@ -5211,7 +5211,12 @@ window.Chart = function (context) {
 			ctx.lineWidth = config.datasetStrokeWidth;
 			ctx.beginPath();
 
+			var currentAnimPc;
 			for (var j = 0; j < data.datasets[i].data.length; j++) {
+				currentAnimPc = animPc;
+				if (j < config.animationStartWithData) {
+					currentAnimPc = 1;
+				}
 				if (!(typeof(data.datasets[i].data[j])=='undefined')) { 
 
 				  if (prevpt==-1){
@@ -5226,7 +5231,7 @@ window.Chart = function (context) {
 					}
 				  }
 				  prevpt=j;
-				  if (animPc >= 1) {
+				  if (currentAnimPc >= 1) {
 					if (i == 0) divprev = data.datasets[i].data[j];
 					else divprev = data.datasets[i].data[j] - data.datasets[i - 1].data[j];
 					if (i == data.datasets.length - 1) divnext = data.datasets[i].data[j];
@@ -5242,7 +5247,7 @@ window.Chart = function (context) {
 								  ctx.font = config.inGraphDataFontStyle + ' ' + config.inGraphDataFontSize + 'px ' + config.inGraphDataFontFamily;
 								  ctx.fillStyle = config.inGraphDataFontColor;
 									var dotX = yAxisPosX + (valueHop *k),
-									dotY = xAxisPosY - animPc*(calculateOffset(config, data.datasets[i].data[j],calculatedScale,scaleHop)),
+									dotY = xAxisPosY - currentAnimPc*(calculateOffset(config, data.datasets[i].data[j],calculatedScale,scaleHop)),
 									paddingTextX = config.inGraphDataPaddingX,
 									paddingTextY = config.inGraphDataPaddingY;
 					  var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,divprev,config.fmtV4), v5 : fmtChartJS(config,divnext,config.fmtV5), v6 : fmtChartJS(config,maxvalue[j],config.fmtV6), v7 : fmtChartJS(config,totvalue[j],config.fmtV7), v8 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV8),config.roundPct),v9 : fmtChartJS(config,yAxisPosX+ (valueHop *k),config.fmtV9),v10 : fmtChartJS(config,xAxisPosY - (calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)),config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12),data:data});
@@ -5260,7 +5265,7 @@ window.Chart = function (context) {
 				ctx.lineTo(xPos(frstpt), xAxisPosY - zeroY);
 				ctx.lineTo(xPos(frstpt), yPos(i, frstpt));
 				ctx.closePath();
-				if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,animPc,-1);
+				if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc,-1);
 				else if(typeof data.datasets[i].fillColor=="string")ctx.fillStyle = data.datasets[i].fillColor;
 				else ctx.fillStyle=config.defaultFillColor;
 				ctx.fill();
@@ -5278,9 +5283,13 @@ window.Chart = function (context) {
 				ctx.lineWidth = config.pointDotStrokeWidth;
 				for (var k = 0; k < data.datasets[i].data.length; k++) {
 					if (!(typeof(data.datasets[i].data[k])=='undefined')) { 
+					  currentAnimPc = animPc;
+					  if (k < config.animationStartWithData) {
+							currentAnimPc = 1;
+					  }
 					  ctx.beginPath();
 					  ctx.arc(xPos(k), yPos(i,k), config.pointDotRadius, 0, Math.PI * 2, true);
-            ctx.fill();
+            		  ctx.fill();
 					  ctx.stroke();
 					}
 				}
@@ -5288,11 +5297,7 @@ window.Chart = function (context) {
 		};
 
 		function yPos(dataSet, iteration) {
-			var animVal = animPc;
-			if (iteration < config.animationStartWithData) {
-				animVal = 1;
-			}
-			return xAxisPosY - zeroY - animVal * (calculateOffset(config, data.datasets[dataSet].data[iteration], calculatedScale, scaleHop)-zeroY);
+			return xAxisPosY - zeroY - currentAnimPc* (calculateOffset(config, data.datasets[dataSet].data[iteration], calculatedScale, scaleHop)-zeroY);
 		};
 		function xPos(iteration) {
 			return yAxisPosX + (valueHop * iteration);
