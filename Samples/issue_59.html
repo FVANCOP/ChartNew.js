@@ -31,13 +31,23 @@ var LineData = {
 }
 
 var opts = {
-    legend : true,
-    datasetFill: false,
-    legendBlockSize: 20,
-	legendColorIndicatorStrokeWidth: 7,
-	inGraphDataShow: true,
-	animationStartWithData: 2, // start with third datapoint (March)
-	animation: true
+      scaleLineColor: "gray",
+      scaleShowLabels: false,
+      scaleFontColor: "gray",
+      scaleFontSize: 10,
+      scaleGridLineColor: 'rgba(0, 0, 0, .03)',
+      bezierCurve: false,
+      pointDotStrokeWidth: 1,
+      datasetStrokeWidth: 1,
+      animation: true,
+      animationStartWithData: 4,
+      inGraphDataShow: true,
+      inGraphDataPaddingX: 6,
+      inGraphDataPaddingY: 4,
+      inGraphDataFontSize: 10,
+      inGraphDataFontColor: "gray",
+      scaleXGridLinesStep: 0,
+	  datasetFill: false
 }
 
   window.onload = function() {

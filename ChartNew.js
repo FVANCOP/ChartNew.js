@@ -5196,11 +5196,6 @@ window.Chart = function (context) {
 			var prevpt=-1;
 			var frstpt=-1;
 
-			if (animPc >= 1) {
-				if (typeof (data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
-				else lgtxt = "";
-			}
-
 			if (typeof data.datasets[i].strokeColor == "function") {
 				ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,-1,animPc,-1);
 			}
@@ -5217,6 +5212,12 @@ window.Chart = function (context) {
 				if (j < config.animationStartWithData) {
 					currentAnimPc = 1;
 				}
+
+				if (currentAnimPc >= 1) {
+					if (typeof (data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
+					else lgtxt = "";
+				}
+
 				if (!(typeof(data.datasets[i].data[j])=='undefined')) { 
 
 				  if (prevpt==-1){
