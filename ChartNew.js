@@ -1452,7 +1452,9 @@ window.Chart = function (context) {
         animationCount : 1,
         animationPauseTime : 5,
         animationBackward : false,
-		animationStartWithData: 0,
+	animationStartWithData: -1,
+	animationStartWithSubData: -1,
+        animationOrientation : "normal",
         defaultStrokeColor : "rgba(220,220,220,1)",
         defaultFillColor : "rgba(220,220,220,0.5)"
         
@@ -5207,11 +5209,21 @@ window.Chart = function (context) {
 			ctx.beginPath();
 
 			var currentAnimPc;
+      var prevAnimPc;
+      prevAnimPc=0;
+      prevnotempty=0;
 			for (var j = 0; j < data.datasets[i].data.length; j++) {
-				currentAnimPc = animPc;
-				if (j < config.animationStartWithData) {
-					currentAnimPc = 1;
-				}
+				currentAnimPc = animationCorrection(animPc,data,config,i,j);
+        if(currentAnimPc==0 && prevAnimPc>0)
+        {
+          ctx.stroke();
+          ctx.strokeStyle ="rgba(0,0,0,0)";
+          ctx.lineWidth =0.01;
+				  ctx.lineTo(xPos(prevpt), xAxisPosY - zeroY);
+//alert("OK");
+        }
+        prevAnimPc=currentAnimPc;
+        
 
 				if (currentAnimPc >= 1) {
 					if (typeof (data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
@@ -5284,10 +5296,7 @@ window.Chart = function (context) {
 				ctx.lineWidth = config.pointDotStrokeWidth;
 				for (var k = 0; k < data.datasets[i].data.length; k++) {
 					if (!(typeof(data.datasets[i].data[k])=='undefined')) { 
-					  currentAnimPc = animPc;
-					  if (k < config.animationStartWithData) {
-							currentAnimPc = 1;
-					  }
+					  currentAnimPc = animationCorrection(animPc,data,config,i,k);
 					  ctx.beginPath();
 					  ctx.arc(xPos(k), yPos(i,k), config.pointDotRadius, 0, Math.PI * 2, true);
             		  ctx.fill();
@@ -5374,3 +5383,28 @@ window.Chart = function (context) {
     };
     
 };
+function animationCorrection(animationValue,data,config,vdata,vsubdata)
+{
+//window.alert(config.animationStartWithData +" "+ vdata)
+animValue=animationValue;
+
+if(animValue<1 && (vdata <= config.animationStartWithData && config.animationStartWithData!=-1))
+{
+  animValue=0.999;
+}
+if(animValue<1 && (vsubdata <= config.animationStartWithSubData && config.animationStartWithSubData!=-1))
+{
+  animValue=0.999;
+}
+
+if(animValue<0.999 && config.animationOrientation=="RightToLeft")
+{
+  var nbstepspervalue=config.animationSteps/(data.datasets[vdata].data.length-(config.animationStartWithSubData+1));
+  if(animValue>=vsubdata*nbstepspervalue/config.animationSteps) animValue=0.999;
+  else animValue=0;
+}
+
+
+
+return(animValue);  
+} ;
