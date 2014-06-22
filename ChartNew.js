@@ -5397,7 +5397,7 @@ if(animValue<1 && (vsubdata <= config.animationStartWithSubData && config.animat
   animValue=0.999;
 }
 
-if(animValue<0.999 && config.animationOrientation=="RightToLeft")
+if(animValue<0.999 && config.animationOrientation=="LeftToRight")
 {
   var nbstepspervalue=config.animationSteps/(data.datasets[vdata].data.length-(config.animationStartWithSubData+1));
   if(animValue>=vsubdata*nbstepspervalue/config.animationSteps) animValue=0.999;
