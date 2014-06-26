@@ -2642,12 +2642,6 @@ window.Chart = function (context) {
         }
         msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
         msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
-		var inGraphDataHeight = 0;
-		if (config.inGraphDataShow) {
-			// values are at the top of the bars and must be visible padding-top:2px
-			inGraphDataHeight = (config.inGraphDataTmpl.split("\n").length)*config.inGraphDataFontSize+2;
-			msr.availableHeight -= inGraphDataHeight;
-		}
 		
         scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
         valueHop = Math.floor(msr.availableWidth / (data.labels.length - 1));
@@ -2658,7 +2652,7 @@ window.Chart = function (context) {
         msr.availableHeight = (calculatedScale.steps) * scaleHop;
 
         yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
-        xAxisPosY = msr.topNotUsableSize + msr.availableHeight + inGraphDataHeight + config.scaleTickSizeTop;
+        xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
 
         drawLabels();
         var zeroY = 0;
@@ -3577,12 +3571,6 @@ window.Chart = function (context) {
 
         msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
         msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
-		var inGraphDataHeight = 0;
-		if (config.inGraphDataShow) {
-			// values are at the top of the bars and must be visible padding-top:2px
-			inGraphDataHeight = (config.inGraphDataTmpl.split("\n").length)*config.inGraphDataFontSize+2;
-			msr.availableHeight -= inGraphDataHeight;
-		}
 		
         scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
         valueHop = Math.floor(msr.availableWidth / (data.labels.length));
@@ -3594,7 +3582,7 @@ window.Chart = function (context) {
 		
 
         yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
-        xAxisPosY = msr.topNotUsableSize + msr.availableHeight + inGraphDataHeight  + config.scaleTickSizeTop;
+        xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
 		
 		
         barWidth = (valueHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * nrOfBars - 1) - ((config.barStrokeWidth / 2) * nrOfBars - 1)) / nrOfBars;
