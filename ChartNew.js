@@ -1374,6 +1374,7 @@ window.Chart = function (context) {
         footNoteSpaceBefore : 5,
         footNoteSpaceAfter : 5,
         legend: false,
+        showSingleLegend : false,
         legendFontFamily: "'Arial'",
         legendFontSize: 12,
         legendFontStyle: "normal",
@@ -4802,7 +4803,7 @@ window.Chart = function (context) {
                     }
                 }
 
-                if (nbeltLegend > 1) {
+                if (nbeltLegend > 1 || (nbeltLegend==1 && config.showSingleLegend)) {
                     widestLegend += config.legendBlockSize + config.legendSpaceBetweenBoxAndText;
 
                     availableLegendWidth = width - config.spaceLeft - config.spaceRight - 2 * (borderWidth) - config.legendSpaceLeftText - config.legendSpaceRightText;
@@ -5012,7 +5013,7 @@ window.Chart = function (context) {
 
         // Draw Legend
 
-        if (nbeltLegend > 1) {
+        if (nbeltLegend > 1 || (nbeltLegend==1 && config.showSingleLegend)) {
             if (config.legendBorders == true) {
                 ctx.save();
                 ctx.beginPath();
