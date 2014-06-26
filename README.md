@@ -54,3 +54,12 @@ Full documentation is now available via the "wiki" entry that you will find on t
 
 
 [Link to the wiki documentation](https://github.com/FVANCOP/ChartNew.js/wiki)
+
+
+# Graph Generator
+
+Using ChartNew.js, Omar Sedki has developped a graph generator. Though a user friendly interface, you can produce a graph and save it.
+
+
+[http://charts.livegap.com/](http://charts.livegap.com/)
+
