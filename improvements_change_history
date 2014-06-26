@@ -89,6 +89,7 @@ Change history
 
 Future Improvements
 -------------------
+- add an option to force the display of the legend when there is only one line/bar 
 - topXAxis
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
 - display the legend on other places (center, bottom or top on the left/right of the graph;
