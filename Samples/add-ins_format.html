@@ -1,0 +1,85 @@
+<!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]-->
+<SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/format.js'></script>
+
+
+<SCRIPT>
+
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var datedata = {
+                    labels: [new Date(2014,0,1,12,0,0), new Date(2014,1,1,12,15,0), new Date(2014,2,1,12,30,0), new Date(2014,3,1,12,45,0)],
+                    datasets: [
+                        {
+                            fillColor: "rgba(220,0,0,0.5)",
+                            strokeColor: "rgba(220,220,220,0.5)",
+                            data: [20,10,47,35]
+                        },
+                        {
+                            fillColor: "rgba(0,220,0,0.5)",
+                            strokeColor: "rgba(220,220,220,0.5)",
+                            data: [13,43,55,33]
+                        },
+                        {
+                            fillColor: "rgba(0,0,220,0.5)",
+                            strokeColor: "rgba(220,220,220,0.5)",
+                            data:[45,37,39,41]
+                        }
+                    ]
+                }
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Sample for format.js add-in</title>
+
+	</head>
+	<body>
+  
+  <!div id="divCursor" style="position:absolute"> <!/div>
+   
+  <center>
+    <FONT SIZE=6><B>Sample for format.js add-in</B></FONT>    <BR>
+
+    <script>
+    
+
+      document.write("<canvas id=\"canvas_line1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_line2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_line3\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_line4\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_line5\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_line6\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_line7\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_line8\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_line9\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_line10\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    
+
+window.onload = function() {
+
+
+    var myLine = new Chart(document.getElementById("canvas_line1").getContext("2d")).Line(datedata,{ graphTitle : "No Date Format",animation :false});
+    var myLine = new Chart(document.getElementById("canvas_line2").getContext("2d")).Line(datedata,{fmtXLabel : "date en-US",graphTitle : "Format : date en-US",animation :false});
+    var myLine = new Chart(document.getElementById("canvas_line3").getContext("2d")).Line(datedata,{fmtXLabel : "date en-GB",graphTitle : "Format : date en-GB",animation :false});
+    var myLine = new Chart(document.getElementById("canvas_line4").getContext("2d")).Line(datedata,{fmtXLabel : "date ko-KR",graphTitle : "Format : date ko-KR",animation :false});
+    var myLine = new Chart(document.getElementById("canvas_line5").getContext("2d")).Line(datedata,{fmtXLabel : "date de-DE weekday: long, year: numeric, month: long, day: numeric",graphTitle : "Format : date de-DE weekday: long, year: numeric, month: long, day: numeric",animation :false});
+    var myLine = new Chart(document.getElementById("canvas_line6").getContext("2d")).Line(datedata,{fmtXLabel : "fmtdate mm/yyyy",graphTitle : "Format : fmtdate mm/yyyy",animation : false});
+    var myLine = new Chart(document.getElementById("canvas_line7").getContext("2d")).Line(datedata,{fmtXLabel : "fmtdate yy/mm/dd",graphTitle : "Format : fmtdate yy/mm/dd",animation :false});
+    var myLine = new Chart(document.getElementById("canvas_line8").getContext("2d")).Line(datedata,{fmtXLabel : "time",graphTitle : "Format : time",animation :false});
+    var myLine = new Chart(document.getElementById("canvas_line9").getContext("2d")).Line(datedata,{fmtXLabel : "fmttime hh:mm:ss",graphTitle : "Format : fmttime hh:mm:ss",animation : false});
+    var myLine = new Chart(document.getElementById("canvas_line10").getContext("2d")).Line(datedata,{fmtXLabel : "fmttime ss:mm:hh",graphTitle : "Format : fmttime ss:mm:hh",animation :false});
+
+}
+    </script>
+  </body>
+</html>
