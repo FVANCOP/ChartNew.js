@@ -1,6 +1,8 @@
 Change history
 --------------
 
+29/06/2014 - Vancoppenolle Francois - "format.js" add-in created
+26/06/2014 - Vancoppenolle François - option showSingleLegend added
 18/06/2014 - Ole Kröger    	    - draw a mean (or other math function) horizontal line (Line & Bar)
 18/06/2014 - Ole Kröger		    - deviation vertical lines inside Line & Bar (see issue #31)
 17/06/2014 - Vancoppenolle François - line break can now be defined in labels
@@ -89,7 +91,6 @@ Change history
 
 Future Improvements
 -------------------
-- add an option to force the display of the legend when there is only one line/bar 
 - topXAxis
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
 - display the legend on other places (center, bottom or top on the left/right of the graph;
@@ -98,13 +99,12 @@ Future Improvements
 - non evolutive animation in Pie/Doughnut (https://github.com/nnnick/Chart.js/issues/357)
 - line in Bar chart (and StackeBar) (https://github.com/FVANCOP/ChartNew.js/issues/23)
 - code reduction
-- "carriage Return" for X labels (labels displayed on multiple lines)
 - animate Canvas when mouse is over a piece of graph (like in http://zurb.com/playground/pizza-pie-charts)
-- documentation 
 - dynamicDisplay defines a canvas.id when not defined; Avoid defining a canvas.id (issue 35)
 - Different units for Y-axes on left and right (issue #41)
 - live update of the data (see : http://www.jqchart.com/jquery/chart/RealTime/LiveData)
 - responsive chart (see issue #43)
+- stat.js add-in
 
 Known Bugs
 ----------
