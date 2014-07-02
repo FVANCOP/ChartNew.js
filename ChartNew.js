@@ -1452,8 +1452,8 @@ window.Chart = function (context) {
         animationCount : 1,
         animationPauseTime : 5,
         animationBackward : false,
-	animationStartWithData: -1,
-	animationStartWithSubData: -1,
+	      animationStartWithData: -1,
+	      animationStartWithSubData: -1,
         animationOrientation : "normal",
         defaultStrokeColor : "rgba(220,220,220,1)",
         defaultFillColor : "rgba(220,220,220,0.5)"
@@ -5192,9 +5192,7 @@ window.Chart = function (context) {
 				maxvalue[j] = Max([maxvalue[j], data.datasets[i].data[j]]); 
 			} 
 		}
-
 		for (var i = 0; i < data.datasets.length; i++) {
-
 			var prevpt=-1;
 			var frstpt=-1;
 
@@ -5210,75 +5208,118 @@ window.Chart = function (context) {
 
 			var currentAnimPc;
       var prevAnimPc;
+      var prevXpos;
       prevAnimPc=0;
       prevnotempty=0;
 			for (var j = 0; j < data.datasets[i].data.length; j++) {
-				currentAnimPc = animationCorrection(animPc,data,config,i,j);
-        if(currentAnimPc==0 && prevAnimPc>0)
+				var xposj=xPos(j);
+        
+        currentAnimPc = animationCorrection(animPc,data,config,i,j);
+        if(currentAnimPc.mainVal==0 && prevAnimPc>0)
         {
           ctx.stroke();
           ctx.strokeStyle ="rgba(0,0,0,0)";
-          ctx.lineWidth =0.01;
-				  ctx.lineTo(xPos(prevpt), xAxisPosY - zeroY);
-//alert("OK");
+          ctx.lineWidth =0.01;                                                                   
+				  ctx.lineTo(prevXpos, xAxisPosY - zeroY);
+
         }
-        prevAnimPc=currentAnimPc;
+        prevAnimPc=currentAnimPc.mainVal;
         
 
-				if (currentAnimPc >= 1) {
+				if (currentAnimPc.mainVal >= 1) {
 					if (typeof (data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
 					else lgtxt = "";
 				}
 
 				if (!(typeof(data.datasets[i].data[j])=='undefined')) { 
-
+          prevXpos=xPos(j);
 				  if (prevpt==-1){
-					 ctx.moveTo(xPos(j), yPos(i, j));
+					 ctx.moveTo(xposj, yPos(i, j));
 					 frstpt=j;
 				  } else {
-					if (config.bezierCurve) {
-					  ctx.bezierCurveTo(xPos(j-(j-prevpt)/2), yPos(i, prevpt), xPos(j-(j-prevpt)/2), yPos(i, j), xPos(j), yPos(i, j));
-					}
-					else {
-					  ctx.lineTo(xPos(j), yPos(i, j));
-					}
+					   if (config.bezierCurve) {
+					       ctx.bezierCurveTo(xPos(j-(j-prevpt)/2), yPos(i, prevpt), xPos(j-(j-prevpt)/2), yPos(i, j), xPos(j), yPos(i, j));
+					   }
+					   else {
+					       ctx.lineTo(xPos(j), yPos(i, j));
+					   }
 				  }
-				  prevpt=j;
-				  if (currentAnimPc >= 1) {
-					if (i == 0) divprev = data.datasets[i].data[j];
-					else divprev = data.datasets[i].data[j] - data.datasets[i - 1].data[j];
-					if (i == data.datasets.length - 1) divnext = data.datasets[i].data[j];
-					else divnext = data.datasets[i].data[j] - data.datasets[i + 1].data[j];
+          
+          if(currentAnimPc.subVal > 0)
+          {
+                 // next not missing value
+                 nxtnotmiss=-1;
+                 for(t=j+1;t<data.datasets[i].data["length"] && nxtnotmiss==-1;t++){
+                    if (!(typeof(data.datasets[i].data[t])=='undefined')) nxtnotmiss=t; 
+                 }
+                 if(nxtnotmiss!=-1) {
+                   prevXpos=xPos(j+currentAnimPc.subVal);
+    					     if (config.bezierCurve) {
+		   			        ctx.bezierCurveTo(xPos(j+currentAnimPc.subVal/2), yPos(i, j), xPos(j+currentAnimPc.subVal/2), yPos(i, nxtnotmiss), xPos(j+currentAnimPc.subVal), yPos(i, nxtnotmiss));
+				    	     }
+					         else {
+  					         ctx.lineTo(xPos(j+currentAnimPc.subVal), yPos(i, j+1));
+					         }
+                 }
+          }
+    			prevpt=j;
+          
+				  if (animPc >= 1) {
+					     if (i == 0) divprev = data.datasets[i].data[j];
+					     else divprev = data.datasets[i].data[j] - data.datasets[i - 1].data[j];
+					     if (i == data.datasets.length - 1) divnext = data.datasets[i].data[j];
+					     else divnext = data.datasets[i].data[j] - data.datasets[i + 1].data[j];
 
-					if (typeof (data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
-					else lgtxt2 = "";
-					jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["POINT", xPos(j), yPos(i, j), lgtxt, lgtxt2, 1*data.datasets[i].data[j], divprev, divnext, maxvalue[j], totvalue[j], i, j];
-								if (config.inGraphDataShow) {
-								ctx.save();
-							  ctx.textAlign = config.inGraphDataAlign;
-					  ctx.textBaseline = config.inGraphDataVAlign;
+					     if (typeof (data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
+					     else lgtxt2 = "";
+					
+                jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["POINT", xPos(j), yPos(i, j), lgtxt, lgtxt2, 1*data.datasets[i].data[j], divprev, divnext, maxvalue[j], totvalue[j], i, j];
+								
+                if (config.inGraphDataShow) {
+								  ctx.save();
+							    ctx.textAlign = config.inGraphDataAlign;
+					        ctx.textBaseline = config.inGraphDataVAlign;
 								  ctx.font = config.inGraphDataFontStyle + ' ' + config.inGraphDataFontSize + 'px ' + config.inGraphDataFontFamily;
 								  ctx.fillStyle = config.inGraphDataFontColor;
 									var dotX = yAxisPosX + (valueHop *k),
-									dotY = xAxisPosY - currentAnimPc*(calculateOffset(config, data.datasets[i].data[j],calculatedScale,scaleHop)),
+									dotY = xAxisPosY - currentAnimPc.mainVal*(calculateOffset(config, data.datasets[i].data[j],calculatedScale,scaleHop)),
 									paddingTextX = config.inGraphDataPaddingX,
 									paddingTextY = config.inGraphDataPaddingY;
-					  var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,divprev,config.fmtV4), v5 : fmtChartJS(config,divnext,config.fmtV5), v6 : fmtChartJS(config,maxvalue[j],config.fmtV6), v7 : fmtChartJS(config,totvalue[j],config.fmtV7), v8 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV8),config.roundPct),v9 : fmtChartJS(config,yAxisPosX+ (valueHop *k),config.fmtV9),v10 : fmtChartJS(config,xAxisPosY - (calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)),config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12),data:data});
-					  ctx.translate(xPos(j) + paddingTextX, yPos(i,j) - paddingTextY);
-					  ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-								ctx.fillTextMultiLine(dispString,0,0,ctx.textBaseline,config.inGraphDataFontSize);
-					  ctx.restore();
-					}
+					        var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,divprev,config.fmtV4), v5 : fmtChartJS(config,divnext,config.fmtV5), v6 : fmtChartJS(config,maxvalue[j],config.fmtV6), v7 : fmtChartJS(config,totvalue[j],config.fmtV7), v8 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV8),config.roundPct),v9 : fmtChartJS(config,yAxisPosX+ (valueHop *k),config.fmtV9),v10 : fmtChartJS(config,xAxisPosY - (calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)),config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12),data:data});
+					        ctx.translate(xPos(j) + paddingTextX, yPos(i,j) - paddingTextY);
+					        ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
+								  ctx.fillTextMultiLine(dispString,0,0,ctx.textBaseline,config.inGraphDataFontSize);
+					        ctx.restore();
+					     }
 				  }
-				}
+				} else {
+          if(currentAnimPc.subVal > 0)
+          {
+
+                 nxtnotmiss=-1;
+                 for(t=j+1;t<data.datasets[i].data["length"] && nxtnotmiss==-1;t++){
+                    if (!(typeof(data.datasets[i].data[t])=='undefined')) nxtnotmiss=t; 
+                 }
+                 if(nxtnotmiss!=-1) {
+                   prevXpos=xPos(j+currentAnimPc.subVal);
+    					     if (config.bezierCurve) {
+		   			        ctx.bezierCurveTo(xPos(prevpt+(j+currentAnimPc.subVal-prevpt)/2), yPos(i, prevpt), xPos(prevpt+(j+currentAnimPc.subVal-prevpt)/2), yPos(i, nxtnotmiss), xPos(j+currentAnimPc.subVal), yPos(i, nxtnotmiss));
+				    	     }
+					         else {
+  					         ctx.lineTo(xPos(j+currentAnimPc.subVal), yPos(i, j+1));
+					         }
+                 }
+          }
+        }
 			}
 			ctx.stroke();
 			if (config.datasetFill) {
-				ctx.lineTo(yAxisPosX + (valueHop * (data.datasets[i].data.length - 1)), xAxisPosY - zeroY);
+//				ctx.lineTo(yAxisPosX + (valueHop * (data.datasets[i].data.length - 1)), xAxisPosY - zeroY);
+				ctx.lineTo(prevXpos, xAxisPosY - zeroY);
 				ctx.lineTo(xPos(frstpt), xAxisPosY - zeroY);
 				ctx.lineTo(xPos(frstpt), yPos(i, frstpt));
 				ctx.closePath();
-				if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc,-1);
+				if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc.mainVal,-1);
 				else if(typeof data.datasets[i].fillColor=="string")ctx.fillStyle = data.datasets[i].fillColor;
 				else ctx.fillStyle=config.defaultFillColor;
 				ctx.fill();
@@ -5297,17 +5338,19 @@ window.Chart = function (context) {
 				for (var k = 0; k < data.datasets[i].data.length; k++) {
 					if (!(typeof(data.datasets[i].data[k])=='undefined')) { 
 					  currentAnimPc = animationCorrection(animPc,data,config,i,k);
-					  ctx.beginPath();
-					  ctx.arc(xPos(k), yPos(i,k), config.pointDotRadius, 0, Math.PI * 2, true);
-            		  ctx.fill();
-					  ctx.stroke();
+					  if(currentAnimPc.mainVal>0 || config.animationOrientation!="LeftToRight") {   
+              ctx.beginPath();
+					    ctx.arc(xPos(k), yPos(i,k), config.pointDotRadius, 0, Math.PI * 2, true);
+            	ctx.fill();
+					    ctx.stroke();
+            }
 					}
 				}
 			}
 		};
 
 		function yPos(dataSet, iteration) {
-			return xAxisPosY - zeroY - currentAnimPc* (calculateOffset(config, data.datasets[dataSet].data[iteration], calculatedScale, scaleHop)-zeroY);
+			return xAxisPosY - zeroY - currentAnimPc.mainVal* (calculateOffset(config, data.datasets[dataSet].data[iteration], calculatedScale, scaleHop)-zeroY);
 		};
 		function xPos(iteration) {
 			return yAxisPosX + (valueHop * iteration);
@@ -5387,24 +5430,38 @@ function animationCorrection(animationValue,data,config,vdata,vsubdata)
 {
 //window.alert(config.animationStartWithData +" "+ vdata)
 animValue=animationValue;
+animSubValue=0;
 
-if(animValue<1 && (vdata <= config.animationStartWithData && config.animationStartWithData!=-1))
+if(animValue<1 && (vdata < config.animationStartWithData && config.animationStartWithData!=-1))
 {
   animValue=0.999;
 }
-if(animValue<1 && (vsubdata <= config.animationStartWithSubData && config.animationStartWithSubData!=-1))
+if(animValue<1 && (vsubdata < config.animationStartWithSubData && config.animationStartWithSubData!=-1))
 {
   animValue=0.999;
 }
 
 if(animValue<0.999 && config.animationOrientation=="LeftToRight")
 {
-  var nbstepspervalue=config.animationSteps/(data.datasets[vdata].data.length-(config.animationStartWithSubData+1));
-  if(animValue>=vsubdata*nbstepspervalue/config.animationSteps) animValue=0.999;
-  else animValue=0;
+  animValue=0;
+  startSub=config.animationStartWithSubData;
+  if(config.animationStartWithSubData==-1)startSub=0
+  var nbstepspervalue=config.animationSteps/(data.datasets[vdata].data.length-startSub-1);
+  if(animationValue>=(vsubdata-startSub)*nbstepspervalue/config.animationSteps ) {
+    animValue=0.999;
+    if(animationValue<=(vsubdata+1-startSub)*nbstepspervalue/config.animationSteps) {
+      animSubValue=(data.datasets[vdata].data.length-startSub-1)*(animationValue-((vsubdata-startSub)*nbstepspervalue/config.animationSteps));
+    }
+  }
 }
 
 
 
-return(animValue);  
+
+
+return{
+  mainVal : animValue,
+  subVal : animSubValue
+};  
+
 } ;
