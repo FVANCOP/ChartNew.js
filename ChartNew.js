@@ -1453,6 +1453,10 @@ window.Chart = function (context) {
         animationCount : 1,
         animationPauseTime : 5,
         animationBackward : false,
+	      animationStartWithDataset: -1,
+	      animationStartWithData: -1,
+        animationRightToLeft : false,
+        animationByDataset : false,
         defaultStrokeColor : "rgba(220,220,220,1)",
         defaultFillColor : "rgba(220,220,220,0.5)"
         
@@ -1823,16 +1827,19 @@ window.Chart = function (context) {
 
                 
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
+                  var currentAnimPc = animationCorrection(animationDecimal,data,config,i,j,1).animVal;
+                  if(currentAnimPc>1)currentAnimPc=currentAnimPc-1;
+
                   if (!(typeof(data.datasets[i].data[j])=='undefined')) {
                      if (fPt==-1)
                      {
                         ctx.beginPath();
-                        ctx.moveTo(midPosX + animationDecimal *(Math.cos(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)), midPosY - animationDecimal *(Math.sin(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)));
+                        ctx.moveTo(midPosX + currentAnimPc *(Math.cos(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)), midPosY - currentAnimPc *(Math.sin(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)));
                         fPt=j;
                      }
                      else 
                      {
-                        ctx.lineTo(midPosX + animationDecimal *(Math.cos(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)), midPosY - animationDecimal *(Math.sin(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)));
+                        ctx.lineTo(midPosX + currentAnimPc *(Math.cos(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)), midPosY - currentAnimPc *(Math.sin(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)));
                      }
                 
                      if (animationDecimal >= 1) {
@@ -1850,31 +1857,31 @@ window.Chart = function (context) {
                 ctx.closePath();
 
                 if(config.datasetFill){
-                  if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,animationDecimal,-1);
+                  if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc,-1);
                   else if(typeof data.datasets[i].fillColor=="string")ctx.fillStyle = data.datasets[i].fillColor;
                   else ctx.fillStyle=config.defaultFillColor;
                 }
                 else ctx.fillStyle="rgba(0,0,0,0)";
-                if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,-1,animationDecimal,-1);
+                if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,-1,currentAnimPc,-1);
                 else if(typeof data.datasets[i].strokeColor=="string")ctx.strokeStyle = data.datasets[i].strokeColor;
                 else ctx.strokeStyle=config.defaultStrokeColor;
                 ctx.lineWidth = config.datasetStrokeWidth;
                 ctx.fill();
                 ctx.stroke();
 
-                if (config.pointDot) {
+                if (config.pointDot && (!config.animationRightToLeft || (config.animationRightToLeft && animationDecimal>=1))) {
                     ctx.beginPath();
                     
-                    if (typeof data.datasets[i].pointColor == "function")ctx.fillStyle = data.datasets[i].pointColor("POINTCOLOR",data,config,i,-1,animationDecimal,-1);
+                    if (typeof data.datasets[i].pointColor == "function")ctx.fillStyle = data.datasets[i].pointColor("POINTCOLOR",data,config,i,-1,currentAnimPc,-1);
                     else ctx.fillStyle = data.datasets[i].pointColor;
-                    if (typeof data.datasets[i].pointStrokeColor == "function")ctx.strokeStyle = data.datasets[i].pointStrokeColor("POINTSTROKECOLOR",data,config,i,-1,animationDecimal,-1);
+                    if (typeof data.datasets[i].pointStrokeColor == "function")ctx.strokeStyle = data.datasets[i].pointStrokeColor("POINTSTROKECOLOR",data,config,i,-1,currentAnimPc,-1);
                     else ctx.strokeStyle = data.datasets[i].pointStrokeColor;
 
                     ctx.lineWidth = config.pointDotStrokeWidth;
                     for (var k = 0; k < data.datasets[i].data.length; k++) {
                       if (!(typeof(data.datasets[i].data[k])=='undefined')) {
                         ctx.beginPath();
-                        ctx.arc(midPosX + animationDecimal *(Math.cos(config.startAngle*Math.PI/180 - k * rotationDegree) * calculateOffset(config, data.datasets[i].data[k], calculatedScale, scaleHop)), midPosY - animationDecimal * (Math.sin(config.startAngle*Math.PI/180 - k * rotationDegree) * calculateOffset(config, data.datasets[i].data[k], calculatedScale, scaleHop)), config.pointDotRadius, 2 * Math.PI, false);
+                        ctx.arc(midPosX + currentAnimPc *(Math.cos(config.startAngle*Math.PI/180 - k * rotationDegree) * calculateOffset(config, data.datasets[i].data[k], calculatedScale, scaleHop)), midPosY - currentAnimPc * (Math.sin(config.startAngle*Math.PI/180 - k * rotationDegree) * calculateOffset(config, data.datasets[i].data[k], calculatedScale, scaleHop)), config.pointDotRadius, 2 * Math.PI, false);
                         ctx.fill();
                         ctx.stroke();
                       }
@@ -2906,13 +2913,16 @@ window.Chart = function (context) {
                 }
 
                  for (var j = 0; j < data.datasets[i].data.length; j++) {
+                     var currentAnimPc = animationCorrection(animPc,data,config,i,j,1).animVal;
+                     if(currentAnimPc>1)currentAnimPc=currentAnimPc-1;
+
                      ctx.fillStyle=config.defaultFillColor;
-                     if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,animPc,1*data.datasets[i].data[j]);
+                     if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
                      else if(typeof(data.datasets[i].fillColor)=="string"){ctx.fillStyle = data.datasets[i].fillColor;}
                      else if(typeof(data.datasets[i].fillColor)=="object"){if(typeof(data.datasets[i].fillColor[0])=="string"){ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length-1,j])];} }
                      
                      ctx.strokeStyle=config.defaultStrokeColor;
-                     if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,animPc,1*data.datasets[i].data[j]);
+                     if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
                      else if(typeof(data.datasets[i].strokeColor)=="string"){ctx.strokeStyle = data.datasets[i].strokeColor;}
                      else if(typeof(data.datasets[i].strokeColor)=="object"){if(typeof(data.datasets[i].strokeColor[0])=="string"){ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length-1,j])];} }
 
@@ -2921,8 +2931,8 @@ window.Chart = function (context) {
                         var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j;
                         ctx.beginPath();
                         ctx.moveTo(barOffset, xAxisPosY - yStart[j] + 1);
-                        ctx.lineTo(barOffset, xAxisPosY - animPc * calculateOffset(config, (yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j]);
-                        ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc * calculateOffset(config, (yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j]);
+                        ctx.lineTo(barOffset, xAxisPosY - currentAnimPc * calculateOffset(config, (yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j]);
+                        ctx.lineTo(barOffset + barWidth, xAxisPosY - currentAnimPc * calculateOffset(config, (yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j]);
                         ctx.lineTo(barOffset + barWidth, xAxisPosY - yStart[j] + 1);
                         if (config.barShowStroke) ctx.stroke();
                         ctx.closePath();
@@ -2933,7 +2943,7 @@ window.Chart = function (context) {
                          else lgtxt2 = "";
                          jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["RECT", barOffset, xAxisPosY - yStart[j] + 1, barOffset + barWidth, xAxisPosY - calculateOffset(config, (yFpt[j]>=0)* calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j], lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
                         }
-                        yStart[j] += animPc * calculateOffset(config, (yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) - (config.barStrokeWidth / 2);
+                        yStart[j] += currentAnimPc * calculateOffset(config, (yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) - (config.barStrokeWidth / 2);
                         if (yFpt[j]==-1)yFpt[j]=i;
                      }
                 }
@@ -2982,7 +2992,7 @@ window.Chart = function (context) {
    	    		            ctx.fillTextMultiLine(dispString,0,0,ctx.textBaseline,config.inGraphDataFontSize);
     			    	        ctx.restore();
 
-                        yStart[j] += animPc * calculateOffset(config, (yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) - (config.barStrokeWidth / 2);
+                        yStart[j] += currentAnimPc * calculateOffset(config, (yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) - (config.barStrokeWidth / 2);
                         if (yFpt[j]==-1)yFpt[j]=i;
                     }
                 }
@@ -3237,13 +3247,16 @@ window.Chart = function (context) {
                     else lgtxt = "";
                 }
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
+                      var currentAnimPc = animationCorrection(animPc,data,config,i,j,1).animVal;
+                      if(currentAnimPc>1)currentAnimPc=currentAnimPc-1;
+ 
                       ctx.fillStyle=config.defaultFillColor;
-                      if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,animPc,1*data.datasets[i].data[j]);
+                      if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
                       else if(typeof(data.datasets[i].fillColor)=="string"){ctx.fillStyle = data.datasets[i].fillColor;}
                       else if(typeof(data.datasets[i].fillColor)=="object"){if(typeof(data.datasets[i].fillColor[0])=="string"){ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length-1,j])];} }
                       
                       ctx.strokeStyle=config.defaultStrokeColor;
-                      if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,animPc,1*data.datasets[i].data[j]);
+                      if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
                       else if(typeof(data.datasets[i].strokeColor)=="string"){ctx.strokeStyle = data.datasets[i].strokeColor;}
                       else if(typeof(data.datasets[i].strokeColor)=="object"){if(typeof(data.datasets[i].strokeColor[0])=="string"){ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length-1,j])];} }
 
@@ -3253,8 +3266,8 @@ window.Chart = function (context) {
                         var barOffset = xAxisPosY + config.barValueSpacing - scaleHop * (j + 1);
                         ctx.beginPath();
                         ctx.moveTo(yAxisPosX + yStart[j] + 1, barOffset);
-                        ctx.lineTo(yAxisPosX + yStart[j] + animPc * HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset);
-                        ctx.lineTo(yAxisPosX + yStart[j] + animPc * HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset + barWidth);
+                        ctx.lineTo(yAxisPosX + yStart[j] + currentAnimPc * HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset);
+                        ctx.lineTo(yAxisPosX + yStart[j] + currentAnimPc * HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset + barWidth);
                         ctx.lineTo(yAxisPosX + yStart[j] + 1, barOffset + barWidth);
                         ctx.lineTo(yAxisPosX + yStart[j] + 1, barOffset);
 
@@ -3268,7 +3281,7 @@ window.Chart = function (context) {
                             else lgtxt2 = "";
                             jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["RECT", yAxisPosX + yStart[j] + 1, barOffset + barWidth, yAxisPosX + yStart[j] + HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset, lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
                         }
-                        yStart[j] += animPc * HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
+                        yStart[j] += currentAnimPc * HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
                         if (yFpt[j]==-1)yFpt[j]=i;
                      }
                 }
@@ -3314,7 +3327,7 @@ window.Chart = function (context) {
 					    	        ctx.restore();
 
 
-                        yStart[j] += animPc * HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
+                        yStart[j] += currentAnimPc * HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
                         if (yFpt[j]==-1)yFpt[j]=i;                  
                       }
                 }
@@ -3635,10 +3648,12 @@ window.Chart = function (context) {
                 }
 
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
-
+                  
+                  var currentAnimPc = animationCorrection(animPc,data,config,i,j,1).animVal;
+                  if(currentAnimPc>1)currentAnimPc=currentAnimPc-1;
                   ctx.fillStyle=config.defaultFillColor;
                   if (typeof data.datasets[i].fillColor == "function") { 
-					  ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,animPc,1*data.datasets[i].data[j]);
+					  ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
 				  }
                   else if(typeof(data.datasets[i].fillColor)=="string") {
 					  ctx.fillStyle = data.datasets[i].fillColor;
@@ -3651,7 +3666,7 @@ window.Chart = function (context) {
                   
                   ctx.strokeStyle=config.defaultStrokeColor;
                   if (typeof data.datasets[i].strokeColor == "function") {
-					  ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,animPc,1*data.datasets[i].data[j]);
+					  ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,CurrentAnimPc,1*data.datasets[i].data[j]);
 				  }
                   else if(typeof(data.datasets[i].strokeColor)=="string"){
 					  ctx.strokeStyle = data.datasets[i].strokeColor;
@@ -3665,7 +3680,7 @@ window.Chart = function (context) {
                   if (!(typeof(data.datasets[i].data[j])=='undefined')) {
                     var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
 
-                    var barHeight = animPc*(calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, scaleHop)-zeroY) + (config.barStrokeWidth / 2);
+                    var barHeight = currentAnimPc*(calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, scaleHop)-zeroY) + (config.barStrokeWidth / 2);
               			roundRect( ctx, barOffset, xAxisPosY-zeroY, barWidth, barHeight, config.barShowStroke, config.barBorderRadius);
 
                     cumvalue[j] += 1*data.datasets[i].data[j];
@@ -4000,20 +4015,23 @@ window.Chart = function (context) {
                     else lgtxt = "";
                 }
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
+                  var currentAnimPc = animationCorrection(animPc,data,config,i,j,1).animVal;
+                  if(currentAnimPc>1)currentAnimPc=currentAnimPc-1;
+
                   ctx.fillStyle=config.defaultFillColor;
-                  if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,animPc,1*data.datasets[i].data[j]);
+                  if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
                   else if(typeof(data.datasets[i].fillColor)=="string"){ctx.fillStyle = data.datasets[i].fillColor;}
                   else if(typeof(data.datasets[i].fillColor)=="object"){if(typeof(data.datasets[i].fillColor[0])=="string"){ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length-1,j])];} }
                   
                   ctx.strokeStyle=config.defaultStrokeColor;
-                  if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,animPc,1*data.datasets[i].data[j]);
+                  if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
                   else if(typeof(data.datasets[i].strokeColor)=="string"){ctx.strokeStyle = data.datasets[i].strokeColor;}
                   else if(typeof(data.datasets[i].strokeColor)=="object"){if(typeof(data.datasets[i].strokeColor[0])=="string"){ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length-1,j])];} }
                 
                   if (!(typeof(data.datasets[i].data[j])=='undefined')) {
                     var barOffset = xAxisPosY + config.barValueSpacing - scaleHop * (j + 1) + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
 
-                    var barHeight = animPc * calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
+                    var barHeight = currentAnimPc * calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
           					roundRect( ctx, barOffset, yAxisPosX, barWidth, barHeight, config.barShowStroke, config.barBorderRadius,zeroY );
 
 
@@ -5178,16 +5196,9 @@ window.Chart = function (context) {
 				maxvalue[j] = Max([maxvalue[j], data.datasets[i].data[j]]); 
 			} 
 		}
-
 		for (var i = 0; i < data.datasets.length; i++) {
-
 			var prevpt=-1;
 			var frstpt=-1;
-
-			if (animPc >= 1) {
-				if (typeof (data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
-				else lgtxt = "";
-			}
 
 			if (typeof data.datasets[i].strokeColor == "function") {
 				ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,-1,animPc,-1);
@@ -5199,56 +5210,120 @@ window.Chart = function (context) {
 			ctx.lineWidth = config.datasetStrokeWidth;
 			ctx.beginPath();
 
+			var currentAnimPc;
+      var prevAnimPc;
+      var prevXpos;
+      prevAnimPc=0;
+      prevnotempty=0;
 			for (var j = 0; j < data.datasets[i].data.length; j++) {
-				if (!(typeof(data.datasets[i].data[j])=='undefined')) { 
+				var xposj=xPos(j);
+        
+        var currentAnimPc = animationCorrection(animPc,data,config,i,j,0);
+        if(currentAnimPc.mainVal==0 && prevAnimPc>0)
+        {
+          ctx.stroke();
+          ctx.strokeStyle ="rgba(0,0,0,0)";
+          ctx.lineWidth =0.01;                                                                   
+				  ctx.lineTo(prevXpos, xAxisPosY - zeroY);
 
+        }
+        prevAnimPc=currentAnimPc.mainVal;
+        
+
+				if (currentAnimPc.mainVal >= 1) {
+					if (typeof (data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
+					else lgtxt = "";
+				}
+
+				if (!(typeof(data.datasets[i].data[j])=='undefined')) { 
+          prevXpos=xPos(j);
 				  if (prevpt==-1){
-					 ctx.moveTo(xPos(j), yPos(i, j));
+					 ctx.moveTo(xposj, yPos(i, j));
 					 frstpt=j;
 				  } else {
-					if (config.bezierCurve) {
-					  ctx.bezierCurveTo(xPos(j-(j-prevpt)/2), yPos(i, prevpt), xPos(j-(j-prevpt)/2), yPos(i, j), xPos(j), yPos(i, j));
-					}
-					else {
-					  ctx.lineTo(xPos(j), yPos(i, j));
-					}
+					   if (config.bezierCurve) {
+					       ctx.bezierCurveTo(xPos(j-(j-prevpt)/2), yPos(i, prevpt), xPos(j-(j-prevpt)/2), yPos(i, j), xPos(j), yPos(i, j));
+					   }
+					   else {
+					       ctx.lineTo(xPos(j), yPos(i, j));
+					   }
 				  }
-				  prevpt=j;
+          
+          if(currentAnimPc.subVal > 0)
+          {
+                 // next not missing value
+                 nxtnotmiss=-1;
+                 for(t=j+1;t<data.datasets[i].data["length"] && nxtnotmiss==-1;t++){
+                    if (!(typeof(data.datasets[i].data[t])=='undefined')) nxtnotmiss=t; 
+                 }
+                 if(nxtnotmiss!=-1) {
+                   prevXpos=xPos(j+currentAnimPc.subVal);
+    					     if (config.bezierCurve) {
+		   			        ctx.bezierCurveTo(xPos(j+currentAnimPc.subVal/2), yPos(i, j), xPos(j+currentAnimPc.subVal/2), yPos(i, nxtnotmiss), xPos(j+currentAnimPc.subVal), yPos(i, nxtnotmiss));
+				    	     }
+					         else {
+  					         ctx.lineTo(xPos(j+currentAnimPc.subVal), yPos(i, j+1));
+					         }
+                 }
+          }
+    			prevpt=j;
+          
 				  if (animPc >= 1) {
-					if (i == 0) divprev = data.datasets[i].data[j];
-					else divprev = data.datasets[i].data[j] - data.datasets[i - 1].data[j];
-					if (i == data.datasets.length - 1) divnext = data.datasets[i].data[j];
-					else divnext = data.datasets[i].data[j] - data.datasets[i + 1].data[j];
+					     if (i == 0) divprev = data.datasets[i].data[j];
+					     else divprev = data.datasets[i].data[j] - data.datasets[i - 1].data[j];
+					     if (i == data.datasets.length - 1) divnext = data.datasets[i].data[j];
+					     else divnext = data.datasets[i].data[j] - data.datasets[i + 1].data[j];
 
-					if (typeof (data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
-					else lgtxt2 = "";
-					jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["POINT", xPos(j), yPos(i, j), lgtxt, lgtxt2, 1*data.datasets[i].data[j], divprev, divnext, maxvalue[j], totvalue[j], i, j];
-								if (config.inGraphDataShow) {
-								ctx.save();
-							  ctx.textAlign = config.inGraphDataAlign;
-					  ctx.textBaseline = config.inGraphDataVAlign;
+					     if (typeof (data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
+					     else lgtxt2 = "";
+					
+                jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["POINT", xPos(j), yPos(i, j), lgtxt, lgtxt2, 1*data.datasets[i].data[j], divprev, divnext, maxvalue[j], totvalue[j], i, j];
+								
+                if (config.inGraphDataShow) {
+								  ctx.save();
+							    ctx.textAlign = config.inGraphDataAlign;
+					        ctx.textBaseline = config.inGraphDataVAlign;
 								  ctx.font = config.inGraphDataFontStyle + ' ' + config.inGraphDataFontSize + 'px ' + config.inGraphDataFontFamily;
 								  ctx.fillStyle = config.inGraphDataFontColor;
 									var dotX = yAxisPosX + (valueHop *k),
-									dotY = xAxisPosY - animPc*(calculateOffset(config, data.datasets[i].data[j],calculatedScale,scaleHop)),
+									dotY = xAxisPosY - currentAnimPc.mainVal*(calculateOffset(config, data.datasets[i].data[j],calculatedScale,scaleHop)),
 									paddingTextX = config.inGraphDataPaddingX,
 									paddingTextY = config.inGraphDataPaddingY;
-					  var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,divprev,config.fmtV4), v5 : fmtChartJS(config,divnext,config.fmtV5), v6 : fmtChartJS(config,maxvalue[j],config.fmtV6), v7 : fmtChartJS(config,totvalue[j],config.fmtV7), v8 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV8),config.roundPct),v9 : fmtChartJS(config,yAxisPosX+ (valueHop *k),config.fmtV9),v10 : fmtChartJS(config,xAxisPosY - (calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)),config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12),data:data});
-					  ctx.translate(xPos(j) + paddingTextX, yPos(i,j) - paddingTextY);
-					  ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-								ctx.fillTextMultiLine(dispString,0,0,ctx.textBaseline,config.inGraphDataFontSize);
-					  ctx.restore();
-					}
+					        var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,divprev,config.fmtV4), v5 : fmtChartJS(config,divnext,config.fmtV5), v6 : fmtChartJS(config,maxvalue[j],config.fmtV6), v7 : fmtChartJS(config,totvalue[j],config.fmtV7), v8 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV8),config.roundPct),v9 : fmtChartJS(config,yAxisPosX+ (valueHop *k),config.fmtV9),v10 : fmtChartJS(config,xAxisPosY - (calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)),config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12),data:data});
+					        ctx.translate(xPos(j) + paddingTextX, yPos(i,j) - paddingTextY);
+					        ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
+								  ctx.fillTextMultiLine(dispString,0,0,ctx.textBaseline,config.inGraphDataFontSize);
+					        ctx.restore();
+					     }
 				  }
-				}
+				} else {
+          if(currentAnimPc.subVal > 0)
+          {
+
+                 nxtnotmiss=-1;
+                 for(t=j+1;t<data.datasets[i].data["length"] && nxtnotmiss==-1;t++){
+                    if (!(typeof(data.datasets[i].data[t])=='undefined')) nxtnotmiss=t; 
+                 }
+                 if(nxtnotmiss!=-1) {
+                   prevXpos=xPos(j+currentAnimPc.subVal);
+    					     if (config.bezierCurve) {
+		   			        ctx.bezierCurveTo(xPos(prevpt+(j+currentAnimPc.subVal-prevpt)/2), yPos(i, prevpt), xPos(prevpt+(j+currentAnimPc.subVal-prevpt)/2), yPos(i, nxtnotmiss), xPos(j+currentAnimPc.subVal), yPos(i, nxtnotmiss));
+				    	     }
+					         else {
+  					         ctx.lineTo(xPos(j+currentAnimPc.subVal), yPos(i, j+1));
+					         }
+                 }
+          }
+        }
 			}
 			ctx.stroke();
 			if (config.datasetFill) {
-				ctx.lineTo(yAxisPosX + (valueHop * (data.datasets[i].data.length - 1)), xAxisPosY - zeroY);
+//				ctx.lineTo(yAxisPosX + (valueHop * (data.datasets[i].data.length - 1)), xAxisPosY - zeroY);
+				ctx.lineTo(prevXpos, xAxisPosY - zeroY);
 				ctx.lineTo(xPos(frstpt), xAxisPosY - zeroY);
 				ctx.lineTo(xPos(frstpt), yPos(i, frstpt));
 				ctx.closePath();
-				if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,animPc,-1);
+				if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc.mainVal,-1);
 				else if(typeof data.datasets[i].fillColor=="string")ctx.fillStyle = data.datasets[i].fillColor;
 				else ctx.fillStyle=config.defaultFillColor;
 				ctx.fill();
@@ -5266,17 +5341,20 @@ window.Chart = function (context) {
 				ctx.lineWidth = config.pointDotStrokeWidth;
 				for (var k = 0; k < data.datasets[i].data.length; k++) {
 					if (!(typeof(data.datasets[i].data[k])=='undefined')) { 
-					  ctx.beginPath();
-					  ctx.arc(xPos(k), yPos(i,k), config.pointDotRadius, 0, Math.PI * 2, true);
-            ctx.fill();
-					  ctx.stroke();
+					  var currentAnimPc = animationCorrection(animPc,data,config,i,k,0);
+					  if(currentAnimPc.mainVal>0 || !config.animationRightToLeft) {   
+              ctx.beginPath();
+					    ctx.arc(xPos(k), yPos(i,k), config.pointDotRadius, 0, Math.PI * 2, true);
+            	ctx.fill();
+					    ctx.stroke();
+            }
 					}
 				}
 			}
 		};
 
 		function yPos(dataSet, iteration) {
-			return xAxisPosY - zeroY - animPc * (calculateOffset(config, data.datasets[dataSet].data[iteration], calculatedScale, scaleHop)-zeroY);
+			return xAxisPosY - zeroY - currentAnimPc.mainVal* (calculateOffset(config, data.datasets[dataSet].data[iteration], calculatedScale, scaleHop)-zeroY);
 		};
 		function xPos(iteration) {
 			return yAxisPosX + (valueHop * iteration);
@@ -5352,3 +5430,65 @@ window.Chart = function (context) {
     };
     
 };
+function animationCorrection(animationValue,data,config,vdata,vsubdata,addone)
+{
+//window.alert(config.animationStartWithDataset +" "+ vdata)
+var animValue=animationValue;
+var animSubValue=0;
+
+if(animValue<1 && (vdata < config.animationStartWithDataset && config.animationStartWithDataset!=-1))
+{
+  animValue=1;
+}
+
+if(animValue<1 && (vsubdata < config.animationStartWithData && config.animationStartWithData!=-1))
+{
+  animValue=1;
+}
+
+var totreat=1;
+var newAnimationValue=animationValue;
+
+if(animValue<1 && config.animationByDataset)
+{
+  animValue=0;
+  totreat=0;
+  var startDataset=config.animationStartWithDataset;
+  if(config.animationStartWithDataset==-1)startDataset=0
+  var nbstepsperdatasets=config.animationSteps/(data.datasets.length-startDataset);
+  if(animationValue>=(vdata-startDataset+1)*nbstepsperdatasets/config.animationSteps ) animValue=1;
+  else if(animationValue>=(vdata-startDataset)*nbstepsperdatasets/config.animationSteps ) {
+    var redAnimationValue=animationValue-(vdata-startDataset)*nbstepsperdatasets/config.animationSteps;
+    if(!config.animationRightToLeft) {
+      animValue=redAnimationValue*(data.datasets.length-startDataset);
+    } else {
+      newAnimationValue=redAnimationValue*(data.datasets.length-startDataset);
+    }
+    
+    totreat=1;
+  }
+}
+if(totreat==1 && animValue<1 && config.animationRightToLeft)  {
+  animValue=0;
+  var startSub=config.animationStartWithData;
+  if(config.animationStartWithData==-1)startSub=0
+  var nbstepspervalue=config.animationSteps/(data.datasets[vdata].data.length-startSub-1+addone);
+  if(newAnimationValue>=(vsubdata-startSub)*nbstepspervalue/config.animationSteps ) {
+    animValue=1;
+    if(newAnimationValue<=(vsubdata+1-startSub)*nbstepspervalue/config.animationSteps) {
+      animSubValue=(data.datasets[vdata].data.length-startSub-1)*(newAnimationValue-((vsubdata-startSub)*nbstepspervalue/config.animationSteps));
+    }
+  }
+}
+
+
+
+
+
+return{
+  mainVal : animValue,
+  subVal : animSubValue,
+  animVal : animValue+animSubValue
+};  
+
+} ;
