@@ -1455,7 +1455,7 @@ window.Chart = function (context) {
         animationBackward : false,
 	      animationStartWithDataset: -1,
 	      animationStartWithData: -1,
-        animationRightToLeft : false,
+        animationLeftToRight : false,
         animationByDataset : false,
         defaultStrokeColor : "rgba(220,220,220,1)",
         defaultFillColor : "rgba(220,220,220,0.5)"
@@ -1869,7 +1869,7 @@ window.Chart = function (context) {
                 ctx.fill();
                 ctx.stroke();
 
-                if (config.pointDot && (!config.animationRightToLeft || (config.animationRightToLeft && animationDecimal>=1))) {
+                if (config.pointDot && (!config.animationLeftToRight || (config.animationLeftToRight && animationDecimal>=1))) {
                     ctx.beginPath();
                     
                     if (typeof data.datasets[i].pointColor == "function")ctx.fillStyle = data.datasets[i].pointColor("POINTCOLOR",data,config,i,-1,currentAnimPc,-1);
@@ -5342,7 +5342,7 @@ window.Chart = function (context) {
 				for (var k = 0; k < data.datasets[i].data.length; k++) {
 					if (!(typeof(data.datasets[i].data[k])=='undefined')) { 
 					  var currentAnimPc = animationCorrection(animPc,data,config,i,k,0);
-					  if(currentAnimPc.mainVal>0 || !config.animationRightToLeft) {   
+					  if(currentAnimPc.mainVal>0 || !config.animationLeftToRight) {   
               ctx.beginPath();
 					    ctx.arc(xPos(k), yPos(i,k), config.pointDotRadius, 0, Math.PI * 2, true);
             	ctx.fill();
@@ -5459,7 +5459,7 @@ if(animValue<1 && config.animationByDataset)
   if(animationValue>=(vdata-startDataset+1)*nbstepsperdatasets/config.animationSteps ) animValue=1;
   else if(animationValue>=(vdata-startDataset)*nbstepsperdatasets/config.animationSteps ) {
     var redAnimationValue=animationValue-(vdata-startDataset)*nbstepsperdatasets/config.animationSteps;
-    if(!config.animationRightToLeft) {
+    if(!config.animationLeftToRight) {
       animValue=redAnimationValue*(data.datasets.length-startDataset);
     } else {
       newAnimationValue=redAnimationValue*(data.datasets.length-startDataset);
@@ -5468,7 +5468,7 @@ if(animValue<1 && config.animationByDataset)
     totreat=1;
   }
 }
-if(totreat==1 && animValue<1 && config.animationRightToLeft)  {
+if(totreat==1 && animValue<1 && config.animationLeftToRight)  {
   animValue=0;
   var startSub=config.animationStartWithData;
   if(config.animationStartWithData==-1)startSub=0
