@@ -1,0 +1,148 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=600;
+defCanvasHeight=300;
+
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June","July"],
+//	labels : ["January"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointstrokeColor : "yellow",
+			data : [95,53,99,,73,27,82],
+//			data : [40],
+
+      title : "2014"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "green",
+			pointstrokeColor : "yellow",
+			data : [35,43,59,,31,50,66],
+//			data : [35],
+      title : "2013"
+		}
+	]
+}               
+
+var startWithDataset =-1;
+var startWithData =-1;
+
+var opt1 = {
+      animationStartWithDataset : startWithDataset,
+      animationStartWithData : startWithData,
+      animationSteps : 200,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "default animation",
+      legend : true,
+      inGraphDataShow : true,
+      annotateDisplay : true,
+      graphTitleFontSize: 18
+
+}
+
+var opt2 = {
+      animationStartWithDataset : startWithDataset,
+      animationStartWithData : startWithData,
+      animationRightToLeft : true,
+      animationSteps : 200,
+      animationEasing: "linear",
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "animationRightToLeft=true",
+      legend : true,
+      inGraphDataShow : true,
+      annotateDisplay : true,
+      graphTitleFontSize: 18
+
+}
+
+var opt3 = {
+      animationStartWithDataset : startWithDataset,
+      animationStartWithData : startWithData,
+      animationByDataset : true,
+      animationSteps : 200,
+      animationEasing: "linear",
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "animationByDataset=true",
+      
+      legend : true,
+      inGraphDataShow : true,
+      annotateDisplay : true,
+      graphTitleFontSize: 18
+}
+
+var opt4 = {
+      animationStartWithDataset : startWithDataset,
+      animationStartWithData : startWithData,
+      animationRightToLeft : true,
+      animationByDataset : true,
+      animationSteps : 200,
+      animationEasing: "linear",
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "animationByDataset=true & animationRightToLeft=true ",
+      legend : true,
+      inGraphDataShow : true,
+      annotateDisplay : true,
+      graphTitleFontSize: 18
+}
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_HorizontalStackedBar1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_HorizontalStackedBar2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_HorizontalStackedBar3\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_HorizontalStackedBar4\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+
+
+    var myHorizontalStackedBar = new Chart(document.getElementById("canvas_HorizontalStackedBar1").getContext("2d")).HorizontalStackedBar(mydata1,opt1);
+    var myHorizontalStackedBar = new Chart(document.getElementById("canvas_HorizontalStackedBar2").getContext("2d")).HorizontalStackedBar(mydata1,opt2);
+    var myHorizontalStackedBar = new Chart(document.getElementById("canvas_HorizontalStackedBar3").getContext("2d")).HorizontalStackedBar(mydata1,opt3);
+    var myHorizontalStackedBar = new Chart(document.getElementById("canvas_HorizontalStackedBar4").getContext("2d")).HorizontalStackedBar(mydata1,opt4);
+
+}
+
+    </script>
+  </body>
+</html>
