@@ -1,6 +1,12 @@
 Change history
 --------------
 
+04/07/2014 - Ole Kröger & Vancoppenolle Francçois - new possibilities for the animation with the introduction of four 
+                                      new options.
+                                          animationStartWithDataset
+                                          animationStartWithData
+                                          animationLeftToRight
+                                          animationByDataset
 29/06/2014 - Vancoppenolle Francois - "format.js" add-in created
 26/06/2014 - Vancoppenolle François - option showSingleLegend added
 18/06/2014 - Ole Kröger    	    - draw a mean (or other math function) horizontal line (Line & Bar)
@@ -95,9 +101,7 @@ Future Improvements
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
 - display the legend on other places (center, bottom or top on the left/right of the graph;
   center, right, left over/under the graph). 
-- display standard deviation (see issue #31)
 - non evolutive animation in Pie/Doughnut (https://github.com/nnnick/Chart.js/issues/357)
-- line in Bar chart (and StackeBar) (https://github.com/FVANCOP/ChartNew.js/issues/23)
 - code reduction
 - animate Canvas when mouse is over a piece of graph (like in http://zurb.com/playground/pizza-pie-charts)
 - dynamicDisplay defines a canvas.id when not defined; Avoid defining a canvas.id (issue 35)
