@@ -900,6 +900,7 @@ window.Chart = function (context) {
             inGraphDataFontStyle: "normal",
             inGraphDataFontColor: "#666",
             inGraphDataRadiusPosition : 3,
+            scaleWidth : "none",
             scaleOverlay: false,
             scaleOverride: false,
             scaleSteps: null,
@@ -1453,8 +1454,8 @@ window.Chart = function (context) {
         animationCount : 1,
         animationPauseTime : 5,
         animationBackward : false,
-	      animationStartWithDataset: -1,
-	      animationStartWithData: -1,
+	      animationStartWithDataset: 1,
+	      animationStartWithData: 1,
         animationLeftToRight : false,
         animationByDataset : false,
         defaultStrokeColor : "rgba(220,220,220,1)",
@@ -1463,6 +1464,7 @@ window.Chart = function (context) {
     };
 
     chart.defaults.xyAxisCommonOptions = {
+            scaleWidth : "none",
             yAxisLeft: true,
             yAxisRight: false,
             xAxisBottom: true,
@@ -4375,7 +4377,6 @@ window.Chart = function (context) {
     })();
 
     function calculateScale(config, maxSteps, minSteps, maxValue, minValue, labelTemplateString) {
-
         var graphMin, graphMax, graphRange, stepValue, numberOfSteps, valueRange, rangeOrderOfMagnitude, decimalNum;
 
         if (!config.logarithmic) { // no logarithmic scale
@@ -4383,6 +4384,11 @@ window.Chart = function (context) {
             rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
             graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
             graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
+            if(typeof config.scaleWidth=="number")
+            {
+              graphMin=graphMin-(graphMin%config.scaleWidth);
+              if(graphMax%config.scaleWidth > 0.0000001 && graphMax%config.scaleWidth<config.scaleWidth-0.0000001) { graphMax=roundScale(config,(1+Math.floor(graphMax/config.scaleWidth))*config.scaleWidth); }
+            }
         }
         else { // logarithmic scale
             graphMin = Math.pow(10, calculateOrderOfMagnitude(minValue));
@@ -4394,28 +4400,45 @@ window.Chart = function (context) {
         stepValue = Math.pow(10, rangeOrderOfMagnitude);
         numberOfSteps = Math.round(graphRange / stepValue);
 
-
-
         if (!config.logarithmic) { // no logarithmic scale
-
-            //Compare number of steps to the max and min for that size graph, and add in half steps if need be.	        
-            while (numberOfSteps < minSteps || numberOfSteps > maxSteps) {
+            //Compare number of steps to the max and min for that size graph, and add in half steps if need be.
+            var stopLoop=false;
+            while (!stopLoop && (numberOfSteps < minSteps || numberOfSteps > maxSteps)) {
                 if (numberOfSteps < minSteps) {
-                    stepValue /= 2;
-                    numberOfSteps = Math.round(graphRange / stepValue);
+                    if(typeof config.scaleWidth=="number") {
+                      if(stepValue/2<config.scaleWidth)stopLoop=true;
+                    }
+                    if(!stopLoop) {
+                      stepValue /= 2;
+                      numberOfSteps = Math.round(graphRange / stepValue);
+                    }
                 }
                 else {
                     stepValue *= 2;
                     numberOfSteps = Math.round(graphRange / stepValue);
                 }
             }
+            if(typeof config.scaleWidth=="number") {
+              if(stepValue<config.scaleWidth) {
+                 stepValue=config.scaleWidth;
+                 numberOfSteps = Math.round(graphRange / stepValue);
+              }
+              if(stepValue%config.scaleWidth>0.0000001 && stepValue%config.scaleWidth<config.scaleWidth-0.0000001) {
+              if((2*stepValue)%config.scaleWidth<0.0000001 || (2*stepValue)%config.scaleWidth>config.scaleWidth-0.0000001) {
+                 stepValue=2*stepValue;
+                 numberOfSteps = Math.round(graphRange / stepValue);
+              } else {
+                 stepValue=roundScale(config,(1+Math.floor(stepValue/config.scaleWidth))*config.scaleWidth);
+                 numberOfSteps = Math.round(graphRange / stepValue);
+              }
+              }
+           }
         } else { // logarithmic scale
-            numberOfSteps = rangeOrderOfMagnitude; // so scale is  10,100,1000,...
+            numberOfSteps = rangeOrderOfMagnitude; // so scale is 10,100,1000,...
         }
 
         var labels = [];
         populateLabels(config, labelTemplateString, labels, numberOfSteps, graphMin, graphMax, stepValue);
-
 
         return {
             steps: numberOfSteps,
@@ -4425,6 +4448,13 @@ window.Chart = function (context) {
             maxValue: maxValue
         }
     } ;
+
+    function roundScale(config,value) {
+      var scldec=0;
+      var sscl=""+config.scaleWidth;
+      if(sscl.indexOf(".")>0) { scldec=sscl.substr(sscl.indexOf(".")).length; }
+      return(Math.round(value*Math.pow(10, scldec))/Math.pow(10, scldec));
+    }    
 
     function calculateOrderOfMagnitude(val) {
         return Math.floor(Math.log(val) / Math.LN10);
@@ -5432,16 +5462,16 @@ window.Chart = function (context) {
 };
 function animationCorrection(animationValue,data,config,vdata,vsubdata,addone)
 {
-//window.alert(config.animationStartWithDataset +" "+ vdata)
+//window.alert((config.animationStartWithDataset-1) +" "+ vdata)
 var animValue=animationValue;
 var animSubValue=0;
 
-if(animValue<1 && (vdata < config.animationStartWithDataset && config.animationStartWithDataset!=-1))
+if(animValue<1 && (vdata < (config.animationStartWithDataset-1) && (config.animationStartWithDataset-1)!=-1))
 {
   animValue=1;
 }
 
-if(animValue<1 && (vsubdata < config.animationStartWithData && config.animationStartWithData!=-1))
+if(animValue<1 && (vsubdata < (config.animationStartWithData-1) && (config.animationStartWithData-1)!=-1))
 {
   animValue=1;
 }
@@ -5453,8 +5483,8 @@ if(animValue<1 && config.animationByDataset)
 {
   animValue=0;
   totreat=0;
-  var startDataset=config.animationStartWithDataset;
-  if(config.animationStartWithDataset==-1)startDataset=0
+  var startDataset=(config.animationStartWithDataset-1);
+  if((config.animationStartWithDataset-1)==-1)startDataset=0
   var nbstepsperdatasets=config.animationSteps/(data.datasets.length-startDataset);
   if(animationValue>=(vdata-startDataset+1)*nbstepsperdatasets/config.animationSteps ) animValue=1;
   else if(animationValue>=(vdata-startDataset)*nbstepsperdatasets/config.animationSteps ) {
@@ -5470,8 +5500,8 @@ if(animValue<1 && config.animationByDataset)
 }
 if(totreat==1 && animValue<1 && config.animationLeftToRight)  {
   animValue=0;
-  var startSub=config.animationStartWithData;
-  if(config.animationStartWithData==-1)startSub=0
+  var startSub=(config.animationStartWithData-1);
+  if((config.animationStartWithData-1)==-1)startSub=0
   var nbstepspervalue=config.animationSteps/(data.datasets[vdata].data.length-startSub-1+addone);
   if(newAnimationValue>=(vsubdata-startSub)*nbstepspervalue/config.animationSteps ) {
     animValue=1;
