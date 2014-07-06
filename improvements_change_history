@@ -1,6 +1,7 @@
 Change history
 --------------
 
+06/07/2014 - Vancoppenolle François - yAxisMinimumInterval option added (issue 76)
 04/07/2014 - Ole Kröger & Vancoppenolle François - new possibilities for the animation with the introduction of four 
                                       new options.
                                           animationStartWithDataset
@@ -97,6 +98,8 @@ Change history
 
 Future Improvements
 -------------------
+- add option animationStartWithData for Pie/Doughnut/PolarArea.
+- add option crossImages (similar to crossText, but for images - issue #79)
 - topXAxis
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
 - display the legend on other places (center, bottom or top on the left/right of the graph;
