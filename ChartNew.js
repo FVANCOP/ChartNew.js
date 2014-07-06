@@ -900,7 +900,7 @@ window.Chart = function (context) {
             inGraphDataFontStyle: "normal",
             inGraphDataFontColor: "#666",
             inGraphDataRadiusPosition : 3,
-            scaleWidth : "none",
+            yAxisMinimumInterval : "none",
             scaleOverlay: false,
             scaleOverride: false,
             scaleSteps: null,
@@ -1464,7 +1464,7 @@ window.Chart = function (context) {
     };
 
     chart.defaults.xyAxisCommonOptions = {
-            scaleWidth : "none",
+            yAxisMinimumInterval : "none",
             yAxisLeft: true,
             yAxisRight: false,
             xAxisBottom: true,
@@ -4384,10 +4384,10 @@ window.Chart = function (context) {
             rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
             graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
             graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
-            if(typeof config.scaleWidth=="number")
+            if(typeof config.yAxisMinimumInterval=="number")
             {
-              graphMin=graphMin-(graphMin%config.scaleWidth);
-              if(graphMax%config.scaleWidth > 0.0000001 && graphMax%config.scaleWidth<config.scaleWidth-0.0000001) { graphMax=roundScale(config,(1+Math.floor(graphMax/config.scaleWidth))*config.scaleWidth); }
+              graphMin=graphMin-(graphMin%config.yAxisMinimumInterval);
+              if(graphMax%config.yAxisMinimumInterval > 0.0000001 && graphMax%config.yAxisMinimumInterval<config.yAxisMinimumInterval-0.0000001) { graphMax=roundScale(config,(1+Math.floor(graphMax/config.yAxisMinimumInterval))*config.yAxisMinimumInterval); }
             }
         }
         else { // logarithmic scale
@@ -4405,8 +4405,8 @@ window.Chart = function (context) {
             var stopLoop=false;
             while (!stopLoop && (numberOfSteps < minSteps || numberOfSteps > maxSteps)) {
                 if (numberOfSteps < minSteps) {
-                    if(typeof config.scaleWidth=="number") {
-                      if(stepValue/2<config.scaleWidth)stopLoop=true;
+                    if(typeof config.yAxisMinimumInterval=="number") {
+                      if(stepValue/2<config.yAxisMinimumInterval)stopLoop=true;
                     }
                     if(!stopLoop) {
                       stepValue /= 2;
@@ -4418,17 +4418,17 @@ window.Chart = function (context) {
                     numberOfSteps = Math.round(graphRange / stepValue);
                 }
             }
-            if(typeof config.scaleWidth=="number") {
-              if(stepValue<config.scaleWidth) {
-                 stepValue=config.scaleWidth;
+            if(typeof config.yAxisMinimumInterval=="number") {
+              if(stepValue<config.yAxisMinimumInterval) {
+                 stepValue=config.yAxisMinimumInterval;
                  numberOfSteps = Math.round(graphRange / stepValue);
               }
-              if(stepValue%config.scaleWidth>0.0000001 && stepValue%config.scaleWidth<config.scaleWidth-0.0000001) {
-              if((2*stepValue)%config.scaleWidth<0.0000001 || (2*stepValue)%config.scaleWidth>config.scaleWidth-0.0000001) {
+              if(stepValue%config.yAxisMinimumInterval>0.0000001 && stepValue%config.yAxisMinimumInterval<config.yAxisMinimumInterval-0.0000001) {
+              if((2*stepValue)%config.yAxisMinimumInterval<0.0000001 || (2*stepValue)%config.yAxisMinimumInterval>config.yAxisMinimumInterval-0.0000001) {
                  stepValue=2*stepValue;
                  numberOfSteps = Math.round(graphRange / stepValue);
               } else {
-                 stepValue=roundScale(config,(1+Math.floor(stepValue/config.scaleWidth))*config.scaleWidth);
+                 stepValue=roundScale(config,(1+Math.floor(stepValue/config.yAxisMinimumInterval))*config.yAxisMinimumInterval);
                  numberOfSteps = Math.round(graphRange / stepValue);
               }
               }
@@ -4451,7 +4451,7 @@ window.Chart = function (context) {
 
     function roundScale(config,value) {
       var scldec=0;
-      var sscl=""+config.scaleWidth;
+      var sscl=""+config.yAxisMinimumInterval;
       if(sscl.indexOf(".")>0) { scldec=sscl.substr(sscl.indexOf(".")).length; }
       return(Math.round(value*Math.pow(10, scldec))/Math.pow(10, scldec));
     }    
