@@ -1,6 +1,7 @@
 Change history
 --------------
 
+07/07/2014 - Vancoppenolle François - animationStartWithData option activated for Pie/Doughnut/Polararea
 06/07/2014 - Vancoppenolle François - yAxisMinimumInterval option added (issue 76)
 04/07/2014 - Ole Kröger & Vancoppenolle François - new possibilities for the animation with the introduction of four 
                                       new options.
@@ -98,7 +99,6 @@ Change history
 
 Future Improvements
 -------------------
-- add option animationStartWithData for Pie/Doughnut/PolarArea.
 - add option crossImages (similar to crossText, but for images - issue #79)
 - topXAxis
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
