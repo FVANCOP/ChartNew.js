@@ -1597,9 +1597,11 @@ window.Chart = function (context) {
             }
 
             for (var i = 0; i < data.length; i++) {
+              correctedRotateAnimation=animationCorrection(rotateAnimation,data,config,i,-1,0).mainVal;
               if (!(typeof(data[i].value)=='undefined')){
+                
                 ctx.beginPath();
-                ctx.arc(midPosX, midPosY, scaleAnimation * calculateOffset(config, 1*data[i].value, calculatedScale, scaleHop), startAngle, startAngle + rotateAnimation * angleStep, false);
+                ctx.arc(midPosX, midPosY, scaleAnimation * calculateOffset(config, 1*data[i].value, calculatedScale, scaleHop), startAngle, startAngle + correctedRotateAnimation * angleStep, false);
                 ctx.lineTo(midPosX, midPosY);
                 ctx.closePath();
                 if (typeof data[i].color == "function")ctx.fillStyle = data[i].color("COLOR",data,config,i,-1,animationDecimal,data[i].value);
@@ -2191,11 +2193,7 @@ window.Chart = function (context) {
 
         animationLoop(config, null, drawPieSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPieX, midPieY, midPieX - pieRadius, midPieY + pieRadius, data);
 
-
-
         function drawPieSegments(animationDecimal) {
-
-
 
             var cumulativeAngle = -config.startAngle * (Math.PI / 180)+2*Math.PI ,
                cumvalue = 0,
@@ -2224,13 +2222,16 @@ window.Chart = function (context) {
             }
 
             for (var i = 0; i < data.length; i++) {
+
+              correctedRotateAnimation=animationCorrection(rotateAnimation,data,config,i,-1,0).mainVal;
+
               if (!(typeof(data[i].value)=='undefined')){                
-                var segmentAngle = rotateAnimation * ((1*data[i].value / segmentTotal) * (Math.PI * 2));
+                var segmentAngle = correctedRotateAnimation * ((1*data[i].value / segmentTotal) * (Math.PI * 2));
                 if(segmentAngle >= Math.PI*2)segmentAngle=Math.PI*2-0.001;  // bug on Android when segmentAngle is >= 2*PI;
                 ctx.beginPath();
                 ctx.arc(midPieX, midPieY, scaleAnimation * pieRadius, cumulativeAngle, cumulativeAngle+segmentAngle );
 
-                ctx.lineTo(midPieX, midPieY);
+                ctx.lineTo(midPieX, midPieY);                                    
                 ctx.closePath();
                 if (typeof data[i].color == "function")ctx.fillStyle = data[i].color("COLOR",data,config,i,-1,animationDecimal,data[i].value);
                 else ctx.fillStyle = data[i].color;
@@ -2437,8 +2438,9 @@ window.Chart = function (context) {
             }
 
             for (var i = 0; i < data.length; i++) {
+              correctedRotateAnimation=animationCorrection(rotateAnimation,data,config,i,-1,0).mainVal;
               if (!(typeof(data[i].value)=='undefined')){    
-                var segmentAngle = rotateAnimation * ((1*data[i].value / segmentTotal) * (Math.PI * 2));
+                var segmentAngle = correctedRotateAnimation * ((1*data[i].value / segmentTotal) * (Math.PI * 2));
                 if(segmentAngle >= Math.PI*2)segmentAngle=Math.PI*2-0.001;  // but on Android when segmentAngle is >= 2*PI;
                 ctx.beginPath();
                 ctx.arc(midPieX, midPieY, scaleAnimation * doughnutRadius, cumulativeAngle, cumulativeAngle + segmentAngle, false);
@@ -5466,6 +5468,9 @@ function animationCorrection(animationValue,data,config,vdata,vsubdata,addone)
 var animValue=animationValue;
 var animSubValue=0;
 
+if(vsubdata !=-1)
+{
+
 if(animValue<1 && (vdata < (config.animationStartWithDataset-1) && (config.animationStartWithDataset-1)!=-1))
 {
   animValue=1;
@@ -5511,7 +5516,12 @@ if(totreat==1 && animValue<1 && config.animationLeftToRight)  {
   }
 }
 
+} else {
+if(animValue<1 && (vdata < (config.animationStartWithData-1) )){
+  animValue=1;
+} 
 
+}
 
 
 
