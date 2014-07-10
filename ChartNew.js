@@ -1043,6 +1043,7 @@ window.Chart = function (context) {
             inGraphDataFontSize: 12,
             inGraphDataFontStyle: "normal",
             inGraphDataFontColor: "#666",
+			drawXScaleLine: ["bottom"],
             scaleOverlay: false,
             scaleOverride: false,
             scaleSteps: null,
@@ -2582,7 +2583,7 @@ window.Chart = function (context) {
     var Line = function (data, config, ctx) {
    
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, rotateLabels = 0, msr;
-        var annotateCnt = 0;
+        var annotateCnt = 0, zeroY = 0;
 
 
 
@@ -2664,9 +2665,9 @@ window.Chart = function (context) {
         xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
 
         drawLabels();
-        var zeroY = 0;
+
         if (valueBounds.minValue < 0) {
-            var zeroY = calculateOffset(config, 0, calculatedScale, scaleHop);
+           zeroY = calculateOffset(config, 0, calculatedScale, scaleHop);
         }
 
 
@@ -2686,32 +2687,47 @@ window.Chart = function (context) {
 
         function drawScale() {
 
-            //X axis line                                                          
+            //X axis line
+			if (config.drawXScaleLine !== false) {
+				ctx.lineWidth = config.scaleLineWidth;
+				ctx.strokeStyle = config.scaleLineColor;
+				ctx.beginPath();
 
-            ctx.lineWidth = config.scaleLineWidth;
-            ctx.strokeStyle = config.scaleLineColor;
-            ctx.beginPath();
-            ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY);
-            ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, xAxisPosY);
+				for (var s = 0; s  < config.drawXScaleLine.length; s++) {
+					var yPosXScale;
+					switch (config.drawXScaleLine[s]) {
+						case "bottom": yPosXScale = xAxisPosY; break;
+						case "top": yPosXScale = xAxisPosY - msr.availableHeight - config.scaleTickSizeTop; break;
+						case "0": case 0:
+							// check if zero exists
+							if (zeroY != 0) {
+								yPosXScale = xAxisPosY-zeroY;
+							}
+							break;
+					}
+					ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, yPosXScale);
+					ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, yPosXScale);
+				}
+				ctx.stroke();
 
-            ctx.stroke();
+			}
 
-            for (var i = 0; i < data.labels.length; i++) {
-                ctx.beginPath();
-                ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY + config.scaleTickSizeBottom);
-                ctx.lineWidth = config.scaleGridLineWidth;
-                ctx.strokeStyle = config.scaleGridLineColor;
+			for (var i = 0; i < data.labels.length; i++) {
+				ctx.beginPath();
+				ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY + config.scaleTickSizeBottom);
+				ctx.lineWidth = config.scaleGridLineWidth;
+				ctx.strokeStyle = config.scaleGridLineColor;
 
-                //Check i isnt 0, so we dont go over the Y axis twice.
+				//Check i isnt 0, so we dont go over the Y axis twice.
 
-                if (config.scaleShowGridLines && i > 0 && i % config.scaleXGridLinesStep==0 ) {
-                    ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - config.scaleTickSizeTop);
-                }
-                else {
-                    ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY);
-                }
-                ctx.stroke();
-            }
+				if (config.scaleShowGridLines && i > 0 && i % config.scaleXGridLinesStep==0 ) {
+					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - config.scaleTickSizeTop);
+				}
+				else {
+					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY);
+				}
+				ctx.stroke();
+			}
 
             //Y axis
 
