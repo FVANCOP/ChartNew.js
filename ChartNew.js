@@ -1043,7 +1043,7 @@ window.Chart = function (context) {
             inGraphDataFontSize: 12,
             inGraphDataFontStyle: "normal",
             inGraphDataFontColor: "#666",
-			drawXScaleLine: ["bottom"],
+			drawXScaleLine: [{position:"bottom"}],
             scaleOverlay: false,
             scaleOverride: false,
             scaleSteps: null,
@@ -2688,14 +2688,16 @@ window.Chart = function (context) {
         function drawScale() {
 
             //X axis line
+			// if the xScale should be drawn
 			if (config.drawXScaleLine !== false) {
-				ctx.lineWidth = config.scaleLineWidth;
-				ctx.strokeStyle = config.scaleLineColor;
-				ctx.beginPath();
-
 				for (var s = 0; s  < config.drawXScaleLine.length; s++) {
+					// get special lineWidth and lineColor for this xScaleLine
+					ctx.lineWidth = config.drawXScaleLine[s].lineWidth ? config.drawXScaleLine[s].lineWidth : config.scaleLineWidth;
+					ctx.strokeStyle = config.drawXScaleLine[s].lineColor ? config.drawXScaleLine[s].lineColor : config.scaleLineColor;
+					ctx.beginPath();
+
 					var yPosXScale;
-					switch (config.drawXScaleLine[s]) {
+					switch (config.drawXScaleLine[s].position) {
 						case "bottom": yPosXScale = xAxisPosY; break;
 						case "top": yPosXScale = xAxisPosY - msr.availableHeight - config.scaleTickSizeTop; break;
 						case "0": case 0:
@@ -2705,10 +2707,12 @@ window.Chart = function (context) {
 							}
 							break;
 					}
+					// draw the scale line
 					ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, yPosXScale);
 					ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, yPosXScale);
+					ctx.stroke();
 				}
-				ctx.stroke();
+
 
 			}
 
