@@ -1426,6 +1426,16 @@ window.Chart = function (context) {
         crossTextPosY: [0],
         crossTextAngle: [0],
         crossTextFunction: null,
+        crossImage: [undefined],
+        crossImageIter: ["all"],
+        crossImageOverlay: [true],
+        crossImageRelativePosX: [2],
+        crossImageRelativePosY: [2],
+        crossImageBaseline: ["middle"],
+        crossImageAlign: ["center"],
+        crossImagePosX: [0],
+        crossImagePosY: [0],
+        crossImageAngle: [0],
         spaceTop: 0,
         spaceBottom: 0,
         spaceRight: 0,
@@ -4326,8 +4336,9 @@ window.Chart = function (context) {
             if(1*cntiter>=1*CapValue(config.animationSteps, Number.MAX_VALUE, 1) || config.animation==false)easeAdjustedAnimationPercent=1;
             else if(easeAdjustedAnimationPercent>=1)easeAdjustedAnimationPercent=0.9999;
 
-            if (!(isIE() < 9 && isIE() != false) && config.clearRect) ctx.clearRect(clrx, clry, clrwidth, clrheight);
+            if (config.animation && !(isIE() < 9 && isIE() != false) && config.clearRect) ctx.clearRect(clrx, clry, clrwidth, clrheight);
 
+            dispCrossImage(ctx, config, midPosX, midPosY, borderX, borderY, false, data, easeAdjustedAnimationPercent,cntiter);
             dispCrossText(ctx, config, midPosX, midPosY, borderX, borderY, false, data, easeAdjustedAnimationPercent,cntiter);
 
             if (config.scaleOverlay) {
@@ -4337,6 +4348,7 @@ window.Chart = function (context) {
                 drawScale();
                 drawData(easeAdjustedAnimationPercent);
             }
+            dispCrossImage(ctx, config, midPosX, midPosY, borderX, borderY, true, data, easeAdjustedAnimationPercent,cntiter);
             dispCrossText(ctx, config, midPosX, midPosY, borderX, borderY, true, data, easeAdjustedAnimationPercent,cntiter);
         };
         function animLoop() {
@@ -4587,7 +4599,7 @@ window.Chart = function (context) {
 
     function dispCrossText(ctx, config, posX, posY, borderX, borderY, overlay, data, animPC,cntiter) {
 
-        var i, disptxt, txtposx, txtposy, txtAlign, txtBaseline;
+        var i, disptxt, txtposx, txtposy, textAlign, textBaseline;
 
         for (i = 0; i < config.crossText.length; i++) {
  
@@ -4669,7 +4681,7 @@ window.Chart = function (context) {
 
                 ctx.translate(1 * txtposx, 1 * txtposy);
 
-                ctx.rotate(config.crossTextAngle[Min([i, config.crossTextAngle.length - 1])]);
+                ctx.rotate(Math.PI*config.crossTextAngle[Min([i, config.crossTextAngle.length - 1])]/180);
 
                 if (config.crossText[i].substring(0, 1) == "%") {
                     if (typeof config.crossTextFunction == "function") disptxt = config.crossTextFunction(i, config.crossText[i], ctx, config, posX, posY, borderX, borderY, overlay, data, animPC);
@@ -4678,6 +4690,123 @@ window.Chart = function (context) {
 
                	ctx.fillTextMultiLine(disptxt,0,0,ctx.textBaseline,config.crossTextFontSize[Min([i, config.crossTextFontSize.length - 1])]);
                 ctx.stroke();
+                ctx.restore();
+            }
+        }
+    };
+
+    function dispCrossImage(ctx, config, posX, posY, borderX, borderY, overlay, data, animPC,cntiter) {
+
+        var i, disptxt, imageposx, imageposy, imageAlign, imageBaseline;
+
+        for (i = 0; i < config.crossImage.length; i++) {
+ 
+            if (typeof config.crossImage[i] != "undefined" && config.crossImageOverlay[Min([i, config.crossImageOverlay.length - 1])] == overlay  && ((cntiter==-1 && config.crossImageIter[Min([i, config.crossImageIter.length - 1])]=="background") || (cntiter==1 && config.crossImageIter[Min([i, config.crossImageIter.length - 1])]=="first") || config.crossImageIter[Min([i, config.crossImageIter.length - 1])]==cntiter || config.crossImageIter[Min([i, config.crossImageIter.length - 1])]=="all" || (animPC==1 && config.crossImageIter[Min([i, config.crossImageIter.length - 1])]=="last")) ) {
+                ctx.save();
+                ctx.beginPath();
+
+                imageAlign = config.crossImageAlign[Min([i, config.crossImageAlign.length - 1])];
+                imageBaseline = config.crossImageBaseline[Min([i, config.crossImageBaseline.length - 1])];
+
+                imageposx = 1 * config.crossImagePosX[Min([i, config.crossImagePosX.length - 1])];
+                imageposy = 1 * config.crossImagePosY[Min([i, config.crossImagePosY.length - 1])];
+
+                switch (1 * config.crossImageRelativePosX[Min([i, config.crossImageRelativePosX.length - 1])]) {
+                    case 0:
+                        if (imageAlign == "default") imageAlign = "left";
+                        break;
+                    case 1:
+                        imageposx += borderX;
+                        if (imageAlign == "default") imageAlign = "right";
+                        break;
+                    case 2:
+                        imageposx += posX;
+                        if (imageAlign == "default") imageAlign = "center";
+                        break;
+                    case -2:
+                        imageposx += context.canvas.width / 2;
+                        if (imageAlign == "default") imageAlign = "center";
+                        break;
+                    case 3:
+                        imageposx += imageposx + 2 * posX - borderX;
+                        if (imageAlign == "default") imageAlign = "left";
+                        break;
+                    case 4:
+                        // posX=width;
+                        imageposx += context.canvas.width;
+                        if (imageAlign == "default") imageAlign = "right";
+                        break;
+                    default:
+                        imageposx += posX;
+                        if (imageAlign == "default") imageAlign = "center";
+                        break;
+                }
+
+                switch (1 * config.crossImageRelativePosY[Min([i, config.crossImageRelativePosY.length - 1])]) {
+                    case 0:
+                        if (imageBaseline == "default") imageBaseline = "top";
+                        break;
+                    case 3:
+                        imageposy += borderY;
+                        if (imageBaseline == "default") imageBaseline = "top";
+                        break;
+                    case 2:
+                        imageposy += posY;
+                        if (imageBaseline == "default") imageBaseline = "middle";
+                        break;
+                    case -2:
+                        imageposy += context.canvas.height / 2;
+                        if (imageBaseline == "default") imageBaseline = "middle";
+                        break;
+                    case 1:
+                        imageposy += imageposy + 2 * posY - borderY;
+                        if (imageBaseline == "default") imageBaseline = "bottom";
+                        break;
+                    case 4:
+                        imageposy += context.canvas.height;
+                        if (imageBaseline == "default") imageBaseline = "bottom";
+                        break;
+                    default:
+                        imageposy += posY;
+                        if (imageBaseline == "default") imageBaseline = "middle";
+                        break;
+                }
+
+                var imageWidth=config.crossImage[i].width;
+                switch (imageAlign) {
+                    case "left":
+                      break;
+                    case "right":
+                      imageposx-=imageWidth;
+                      break;
+                    case "center":
+                      imageposx-=(imageWidth/2);
+                      break;
+                    default:
+                      break;  
+                }
+
+                var imageHeight=config.crossImage[i].height;
+
+                switch (imageBaseline) {
+                    case "top":
+                      break;
+                    case "bottom":
+                      imageposy-=imageHeight;
+                      break;
+                    case "middle":
+                      imageposy-=(imageHeight/2);
+                      break;
+                    default:
+                      break;  
+                }
+
+                ctx.translate(1 * imageposx, 1 * imageposy);
+
+                ctx.rotate(Math.PI*config.crossImageAngle[Min([i, config.crossImageAngle.length - 1])]/180);
+               	ctx.drawImage(config.crossImage[i],0,0);
+
+//                ctx.stroke();
                 ctx.restore();
             }
         }
@@ -4943,6 +5072,8 @@ window.Chart = function (context) {
         }
 
         // ----------------------- DRAW EXTERNAL ELEMENTS -------------------------------------------------
+
+        dispCrossImage(ctx, config, width/2, height/2, width/2, height/2, false, data, -1,-1);
 
         if(widestYLabel != 1){
         	
