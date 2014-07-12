@@ -1,6 +1,8 @@
 Change history
 --------------
 
+12/07/2014 - Vancoppenolle Francois - you can now draw more than one graph on a single canvas.
+11/07/2014 - Vancoppenolle François - crossImage options have been added
 07/07/2014 - Vancoppenolle François - animationStartWithData option activated for Pie/Doughnut/Polararea
 06/07/2014 - Vancoppenolle François - yAxisMinimumInterval option added (issue 76)
 04/07/2014 - Ole Kröger & Vancoppenolle François - new possibilities for the animation with the introduction of four 
@@ -99,7 +101,6 @@ Change history
 
 Future Improvements
 -------------------
-- add option crossImages (similar to crossText, but for images - issue #79)
 - topXAxis
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
 - display the legend on other places (center, bottom or top on the left/right of the graph;
