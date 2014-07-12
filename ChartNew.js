@@ -1,4 +1,4 @@
-
+                                                         
 
 
 /*
@@ -1346,6 +1346,7 @@ window.Chart = function (context) {
 
     chart.defaults = {};
     chart.defaults.commonOptions = {
+        multiGraph : false,
         clearRect : true,       // do not change clearRect options; for internal use only
         dynamicDisplay : false,
         graphSpaceBefore : 5,
@@ -1537,8 +1538,7 @@ window.Chart = function (context) {
 
         config.logarithmic = false;
 
-        var annotateCnt = 0;
-        jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"PolarArea");
         
@@ -1638,7 +1638,7 @@ window.Chart = function (context) {
  
                     if (typeof (data[i].title) == "string") lgtxt = data[i].title.trim();
                     else lgtxt = "";
-                    jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["ARC", midPosX, midPosY, 0, calculateOffset(config, 1*data[i].value, calculatedScale, scaleHop), startAngle - angleStep, startAngle, lgtxt, 1*data[i].value, cumvalue, totvalue, angleStep, i];
+                    jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", midPosX, midPosY, 0, calculateOffset(config, 1*data[i].value, calculatedScale, scaleHop), startAngle - angleStep, startAngle, lgtxt, 1*data[i].value, cumvalue, totvalue, angleStep, i];
 
                     if (config.inGraphDataShow) {
                     
@@ -1779,8 +1779,7 @@ window.Chart = function (context) {
         
         config.logarithmic = false;
 
-        var annotateCnt = 0;
-        jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"Radar");
 
@@ -1864,7 +1863,7 @@ window.Chart = function (context) {
                         else divnext = data.datasets[i + 1].data[j] - data.datasets[i].data[j];
                         if (typeof (data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
                         else lgtxt2 = "";
-                        jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["POINT", midPosX + Math.cos(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop), midPosY - Math.sin(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop), lgtxt, lgtxt2, 1*data.datasets[i].data[j], divprev, divnext, maxvalue[j], totvalue[j], i, j];
+                        jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["POINT", midPosX + Math.cos(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop), midPosY - Math.sin(config.startAngle*Math.PI/180 - j * rotationDegree) * calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop), lgtxt, lgtxt2, 1*data.datasets[i].data[j], divprev, divnext, maxvalue[j], totvalue[j], i, j];
                      }
                    }
                 }
@@ -2181,8 +2180,7 @@ window.Chart = function (context) {
 
         config.logarithmic = false;
 
-        var annotateCnt = 0;
-        jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"Pie");
 
@@ -2260,7 +2258,7 @@ window.Chart = function (context) {
                 if (animationDecimal >= 1) {
                     if (typeof (data[i].title) == "string") lgtxt = data[i].title.trim();
                     else lgtxt = "";
-                    jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["ARC", midPieX, midPieY, 0, pieRadius, cumulativeAngle - segmentAngle, cumulativeAngle, lgtxt, 1*data[i].value, cumvalue, totvalue, segmentAngle, i];
+                    jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", midPieX, midPieY, 0, pieRadius, cumulativeAngle - segmentAngle, cumulativeAngle, lgtxt, 1*data[i].value, cumvalue, totvalue, segmentAngle, i];
 
 
                     if (config.inGraphDataShow) {
@@ -2406,8 +2404,7 @@ window.Chart = function (context) {
         config.logarithmic = false;
 
 
-        var annotateCnt = 0;
-        jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"Doughnut");
 
@@ -2474,13 +2471,13 @@ window.Chart = function (context) {
                     if (typeof (data[i].title) == "string") lgtxt = data[i].title.trim();
                     else lgtxt = "";
 
-                    jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["ARC", midPieX, midPieY, cutoutRadius, doughnutRadius, cumulativeAngle - segmentAngle, cumulativeAngle, lgtxt, 1*data[i].value, cumvalue, totvalue, segmentAngle, i];
+                    jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", midPieX, midPieY, cutoutRadius, doughnutRadius, cumulativeAngle - segmentAngle, cumulativeAngle, lgtxt, 1*data[i].value, cumvalue, totvalue, segmentAngle, i];
                     if (config.inGraphDataShow) {
                     
                          if(config.inGraphDataAnglePosition==1)posAngle=realCumulativeAngle+config.inGraphDataPaddingAngle*(Math.PI/180);
                          else if(config.inGraphDataAnglePosition==2)posAngle=realCumulativeAngle-segmentAngle/2+config.inGraphDataPaddingAngle*(Math.PI/180);
                          else if(config.inGraphDataAnglePosition==3)posAngle=realCumulativeAngle-segmentAngle+config.inGraphDataPaddingAngle*(Math.PI/180);
-
+                                                                         
                          if(config.inGraphDataRadiusPosition==1)labelRadius=cutoutRadius+config.inGraphDataPaddingRadius;
                          else if(config.inGraphDataRadiusPosition==2)labelRadius=cutoutRadius+(doughnutRadius-cutoutRadius)/2+config.inGraphDataPaddingRadius;
                          else if(config.inGraphDataRadiusPosition==3)labelRadius=doughnutRadius+config.inGraphDataPaddingRadius;
@@ -2595,7 +2592,7 @@ window.Chart = function (context) {
     var Line = function (data, config, ctx) {
    
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, rotateLabels = 0, msr;
-        var annotateCnt = 0, zeroY = 0;
+        var zeroY = 0;
 
 
 
@@ -2621,7 +2618,7 @@ window.Chart = function (context) {
 
         if (!dynamicFunction(data,config,ctx,"Line"))return;
 
-        jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"Line");
 
@@ -2688,7 +2685,7 @@ window.Chart = function (context) {
         function drawLines(animPc) {
         	drawLinesDataset(animPc,data,config,ctx,
 							 {xAxisPosY:xAxisPosY,yAxisPosX:yAxisPosX,valueHop:valueHop,scaleHop:scaleHop,
-							  zeroY:zeroY,calculatedScale:calculatedScale,annotateCnt:annotateCnt});
+							  zeroY:zeroY,calculatedScale:calculatedScale});
           		  if (animPc >= 1) {
           			  if (typeof drawMath == "function") {
 				              drawMath(ctx,config,data,msr,{xAxisPosY:xAxisPosY,yAxisPosX:yAxisPosX,valueHop:valueHop,scaleHop:scaleHop,
@@ -2879,8 +2876,7 @@ window.Chart = function (context) {
 
         config.logarithmic = false;
 
-        var annotateCnt = 0;
-        jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"StackedBar");
 
@@ -2975,7 +2971,7 @@ window.Chart = function (context) {
                         if (animPc >= 1) {
                          if (typeof (data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
                          else lgtxt2 = "";
-                         jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["RECT", barOffset, xAxisPosY - yStart[j] + 1, barOffset + barWidth, xAxisPosY - calculateOffset(config, (yFpt[j]>=0)* calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j], lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+                         jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", barOffset, xAxisPosY - yStart[j] + 1, barOffset + barWidth, xAxisPosY - calculateOffset(config, (yFpt[j]>=0)* calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j], lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
                         }
                         yStart[j] += currentAnimPc * calculateOffset(config, (yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) - (config.barStrokeWidth / 2);
                         if (yFpt[j]==-1)yFpt[j]=i;
@@ -3205,8 +3201,7 @@ window.Chart = function (context) {
 
         config.logarithmic = false;
 
-        var annotateCnt = 0;
-        jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"HorizontalStackedBar");
 
@@ -3313,7 +3308,7 @@ window.Chart = function (context) {
                         if (animPc >= 1) {
                             if (typeof (data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
                             else lgtxt2 = "";
-                            jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["RECT", yAxisPosX + yStart[j] + 1, barOffset + barWidth, yAxisPosX + yStart[j] + HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset, lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+                            jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", yAxisPosX + yStart[j] + 1, barOffset + barWidth, yAxisPosX + yStart[j] + HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset, lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
                         }
                         yStart[j] += currentAnimPc * HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
                         if (yFpt[j]==-1)yFpt[j]=i;
@@ -3529,7 +3524,6 @@ window.Chart = function (context) {
 
     var Bar = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
-        var annotateCnt = 0;
 
         if(typeof ctx.ChartNewId == "undefined"){
           var cvdate = new Date();
@@ -3573,7 +3567,7 @@ window.Chart = function (context) {
 		
         if (!dynamicFunction(data,config,ctx,"Bar"))return;
         
-        jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"Bar");
 
@@ -3672,7 +3666,7 @@ window.Chart = function (context) {
 									  yAxisPosX:yAxisPosX + config.barValueSpacing+ 
 									  (barWidth + config.barDatasetSpacing/2 + config.barStrokeWidth)*nrOfBars/2,
 									  valueHop:valueHop,scaleHop:scaleHop,
-									  zeroY:zeroY,calculatedScale:calculatedScale,annotateCnt:annotateCnt});
+									  zeroY:zeroY,calculatedScale:calculatedScale});
 					continue; // next dataset
 				}
       
@@ -3724,7 +3718,7 @@ window.Chart = function (context) {
                         t1 = xAxisPosY - zeroY;
                         t2 = xAxisPosY - calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2);
                         if (t1 < t2) { t3 = t1; t1 = t2; t2 = t3 }
-                        jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["RECT", barOffset, t1, barOffset + barWidth, t2, lgtxt, lgtxt2,
+                        jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", barOffset, t1, barOffset + barWidth, t2, lgtxt, lgtxt2,
 																		  1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
                     }
                   }
@@ -3984,8 +3978,7 @@ window.Chart = function (context) {
 
         if (!dynamicFunction(data,config,ctx,"HorizontalBar"))return;
 
-        var annotateCnt = 0;
-        jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
 
         defMouse(ctx,data,config,"HorizontalBar");
 
@@ -4077,7 +4070,7 @@ window.Chart = function (context) {
                         t2 = yAxisPosX + calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2)
                         if (t1 > t2) { t3 = t1; t1 = t2; t2 = t3 }
 
-                        jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["RECT", t1, barOffset + barWidth, t2, barOffset, lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+                        jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", t1, barOffset + barWidth, t2, barOffset, lgtxt, lgtxt2, 1*data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
                     }
                   }
                 }
@@ -5362,7 +5355,6 @@ window.Chart = function (context) {
 		var scaleHop = vars.scaleHop;
 		var zeroY = vars.zeroY;
 		var calculatedScale = vars.calculatedScale;
-		var annotateCnt = vars.annotateCnt;
 		
 	 	var totvalue = new Array();
 		var maxvalue = new Array();
@@ -5460,7 +5452,7 @@ window.Chart = function (context) {
 					     if (typeof (data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
 					     else lgtxt2 = "";
 					
-                jsGraphAnnotate[ctx.ChartNewId][annotateCnt++] = ["POINT", xPos(j), yPos(i, j), lgtxt, lgtxt2, 1*data.datasets[i].data[j], divprev, divnext, maxvalue[j], totvalue[j], i, j];
+                jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["POINT", xPos(j), yPos(i, j), lgtxt, lgtxt2, 1*data.datasets[i].data[j], divprev, divnext, maxvalue[j], totvalue[j], i, j];
 								
                 if (config.inGraphDataShow) {
 								  ctx.save();
@@ -5554,8 +5546,11 @@ window.Chart = function (context) {
     function setRect(ctx,config)
     {
         if(config.clearRect){
-          clear(ctx);
-          ctx.clearRect(0, 0, width, height);
+          if(!config.multiGraph)
+          {
+            clear(ctx);
+            ctx.clearRect(0, 0, width, height);
+          }
         } else {
           clear(ctx);
           ctx.clearRect(0, 0, width, height);
