@@ -39,9 +39,7 @@ New Items in graph compared to Graph.js :
 * graphMin / graphMax
     
 
-A quick sample can be found on http://www.favomo.be/graphjs
-
-Another sample : http://www.favomo.be/graphjs/demo.html
+A quick sample can be found on http://fvancop.github.io/ChartNew.js/
 
 
 This version is down-compatible (on PC) with the version of Chart.js available on 13 January 2014.
