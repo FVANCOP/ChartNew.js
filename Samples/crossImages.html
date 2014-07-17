@@ -1,0 +1,126 @@
+  <!doctype html>
+
+
+
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+
+<SCRIPT>
+
+defCanvasWidth=800;
+defCanvasHeight=600;
+
+
+var mydata2 = [
+	{
+		value : 30,
+		color: "#D97041",
+    title : "data1"
+	},
+	{
+		value : 90,
+		color: "#C7604C",
+    title : "data2"
+	},
+	{
+		value : 24,
+		color: "#21323D",
+    title : "data3"
+	},
+	{
+		value : 58,
+		color: "#9D9B7F",
+    title : "data4"
+	},
+	{
+		value : 82,
+		color: "#7D4F6D",
+    title : "data5"
+	},
+	{
+		value : 8,
+		color: "#584A5E",
+    title : "data6"
+	}
+]
+
+var smyley_1=new Image();
+smyley_1.src="smiley_150x150.jpg";
+var smyley_2=new Image();
+smyley_2.src="smiley_75x75.jpg";
+
+
+var crossImage1 = {
+      inGraphDataShow : true,
+      graphTitle : "Graph Title",
+      graphSubTitle : "Graph Sub Title",
+      footNote : "Footnote for the graph",
+      legend : true,
+      crossImage : [smyley_1,smyley_2,smyley_2,smyley_2,smyley_2],
+      crossImageRelativePosX : [2,0,0,4,4],
+      crossImageRelativePosY : [2,0,4,0,4],
+      crossImageAlign : ["center","left","left","right","right"],
+      crossImageBaseline : ["middle","top","bottom","top","bottom"],
+      
+      
+      crossImageIter : ["all"],
+      crossImageOverlay : [false]
+}
+
+var background_img=new Image();
+background_img.src="background_800x600.jpg";
+
+var crossImage2 = {
+      inGraphDataShow : true,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "Graph Title",
+      graphSubTitle : "Graph Sub Title",
+      footNote : "Footnote for the graph",
+      legend : true,
+      animation : false,
+      crossImage : [background_img],
+      crossImageIter : ["background"],
+      crossImageOverlay : [false]
+}
+
+                     
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+
+	</head>
+	<body>
+  
+  <!div id="divCursor" style="position:absolute"> <!/div>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+    
+
+      document.write("<canvas id=\"canvas_doughnut1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_doughnut2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    
+
+window.onload = function() {
+
+
+    var myLine = new Chart(document.getElementById("canvas_doughnut1").getContext("2d")).Doughnut(mydata2,crossImage1);
+    var myLine = new Chart(document.getElementById("canvas_doughnut2").getContext("2d")).Doughnut(mydata2,crossImage2);
+
+}
+
+    </script>
+  </body>
+</html>
