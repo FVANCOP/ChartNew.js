@@ -4694,7 +4694,7 @@ window.Chart = function (context) {
 
         for (i = 0; i < config.crossImage.length; i++) {
  
-            if (typeof config.crossImage[i] != "undefined" && config.crossImageOverlay[Min([i, config.crossImageOverlay.length - 1])] == overlay  && ((cntiter==-1 && config.crossImageIter[Min([i, config.crossImageIter.length - 1])]=="background") || (cntiter==1 && config.crossImageIter[Min([i, config.crossImageIter.length - 1])]=="first") || config.crossImageIter[Min([i, config.crossImageIter.length - 1])]==cntiter || config.crossImageIter[Min([i, config.crossImageIter.length - 1])]=="all" || (animPC==1 && config.crossImageIter[Min([i, config.crossImageIter.length - 1])]=="last")) ) {
+            if (typeof config.crossImage[i] != "undefined" && config.crossImageOverlay[Min([i, config.crossImageOverlay.length - 1])] == overlay  && ((cntiter==-1 && config.crossImageIter[Min([i, config.crossImageIter.length - 1])]=="background") || (cntiter==1 && config.crossImageIter[Min([i, config.crossImageIter.length - 1])]=="first") || config.crossImageIter[Min([i, config.crossImageIter.length - 1])]==cntiter || (cntiter!=-1 && config.crossImageIter[Min([i, config.crossImageIter.length - 1])]=="all") || (animPC==1 && config.crossImageIter[Min([i, config.crossImageIter.length - 1])]=="last")) ) {
                 ctx.save();
                 ctx.beginPath();
 
