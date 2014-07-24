@@ -68,7 +68,7 @@ function roundToWithThousands(config, num, place) {
       else {
         var roundVal=place;
         var divval= "1e+"+roundVal;
-        value= +(Math.round(newval/divval))*divval;
+        newval= +(Math.round(newval/divval))*divval;
       }
     }
     newval= fmtChartJS(config,newval,"none");
