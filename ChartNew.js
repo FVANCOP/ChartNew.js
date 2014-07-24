@@ -5398,7 +5398,7 @@ window.Chart = function (context) {
         {
           ctx.stroke();
           ctx.strokeStyle ="rgba(0,0,0,0)";
-          ctx.lineWidth =0.01;                                                                   
+//          ctx.lineWidth =0.01;                                                                   
 				  ctx.lineTo(prevXpos, xAxisPosY - zeroY);
 
         }
