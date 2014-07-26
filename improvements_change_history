@@ -105,6 +105,7 @@ Change history
 Future Improvements
 -------------------
 - topXAxis
+- gradient color (see issue #102)
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
 - display the legend on other places (center, bottom or top on the left/right of the graph;
   center, right, left over/under the graph). 
