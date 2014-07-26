@@ -528,6 +528,11 @@ function scrollFunction(){
 
 var jsGraphAnnotate = new Array();
 
+
+function clearAnnotate(ctxid) {
+    jsGraphAnnotate[ctxid]=[];    
+};
+
 function getMousePos(canvas, evt) {
     var rect = canvas.getBoundingClientRect();
     return {
@@ -1539,6 +1544,7 @@ window.Chart = function (context) {
         config.logarithmic = false;
 
         if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        else if(!config.multiGraph)clearAnnotate(ctx.ChartNewId);
 
         defMouse(ctx,data,config,"PolarArea");
         
@@ -1780,6 +1786,7 @@ window.Chart = function (context) {
         config.logarithmic = false;
 
         if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        else if(!config.multiGraph)clearAnnotate(ctx.ChartNewId);
 
         defMouse(ctx,data,config,"Radar");
 
@@ -2181,6 +2188,7 @@ window.Chart = function (context) {
         config.logarithmic = false;
 
         if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        else if(!config.multiGraph)clearAnnotate(ctx.ChartNewId);
 
         defMouse(ctx,data,config,"Pie");
 
@@ -2405,6 +2413,7 @@ window.Chart = function (context) {
 
 
         if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        else if(!config.multiGraph)clearAnnotate(ctx.ChartNewId);
 
         defMouse(ctx,data,config,"Doughnut");
 
@@ -2619,6 +2628,7 @@ window.Chart = function (context) {
         if (!dynamicFunction(data,config,ctx,"Line"))return;
 
         if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        else if(!config.multiGraph)clearAnnotate(ctx.ChartNewId);
 
         defMouse(ctx,data,config,"Line");
 
@@ -2877,6 +2887,7 @@ window.Chart = function (context) {
         config.logarithmic = false;
 
         if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        else if(!config.multiGraph)clearAnnotate(ctx.ChartNewId);
 
         defMouse(ctx,data,config,"StackedBar");
 
@@ -3202,6 +3213,7 @@ window.Chart = function (context) {
         config.logarithmic = false;
 
         if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        else if(!config.multiGraph)clearAnnotate(ctx.ChartNewId);
 
         defMouse(ctx,data,config,"HorizontalStackedBar");
 
@@ -3568,6 +3580,7 @@ window.Chart = function (context) {
         if (!dynamicFunction(data,config,ctx,"Bar"))return;
         
         if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        else if(!config.multiGraph)clearAnnotate(ctx.ChartNewId);
 
         defMouse(ctx,data,config,"Bar");
 
@@ -3979,6 +3992,7 @@ window.Chart = function (context) {
         if (!dynamicFunction(data,config,ctx,"HorizontalBar"))return;
 
         if(typeof jsGraphAnnotate[ctx.ChartNewId]=="undefined")jsGraphAnnotate[ctx.ChartNewId] = new Array();
+        else if(!config.multiGraph)clearAnnotate(ctx.ChartNewId);
 
         defMouse(ctx,data,config,"HorizontalBar");
 
