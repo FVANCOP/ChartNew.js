@@ -1,0 +1,127 @@
+<!doctype html>
+
+<SCRIPT src='..\ChartNew.js'></script>
+<SCRIPT src='..\Add-ins\stats.js'></script>
+
+<SCRIPT>
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [7,10,15,15,13,8],
+      title : "Europe"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			data : [10,13,12,15,8,15],
+      title : "North-America"
+		},
+		{
+			fillColor : "rgba(187,151,205,0.5)",
+			strokeColor : "rgba(187,151,205,1)",
+			pointColor : "rgba(187,151,205,1)",
+			pointStrokeColor : "#fff",
+			data : [11,14,13,12,15,18],
+      title : "South-America"
+		},
+		{
+			fillColor : "rgba(151,187,151,0.5)",
+			strokeColor : "rgba(151,187,151,1)",
+			pointColor : "rgba(151,187,151,1)",
+			pointStrokeColor : "#fff",
+			data : [12,16,10,5,7,11],
+      title : "Asia"
+		},
+		{
+      type : "Line",
+			fillColor : "rgba(0,220,0,0.5)",
+			strokeColor : "rgba(0,220,0,1)",
+			pointColor : "rgba(0,220,0,1)",
+			pointStrokeColor : "#fff",
+			data : ["#data_mean#","#data_mean#","#data_mean#","#data_mean#","#data_mean#","#data_mean#"],
+      title : "Mean Value of the month"
+		},
+		{
+      type : "Line",
+			fillColor : "rgba(0,0,220,0.5)",
+			strokeColor : "rgba(0,0,220,1)",
+			pointColor : "rgba(0,0,220,1)",
+			pointStrokeColor : "#fff",
+			data : ["#mean#","#mean#","#mean#","#mean#","#mean#","#mean#"],
+      title : "Mean Value (<%=roundToNumber(#mean#,-2)%>)"
+		}
+	]
+}
+
+var statOptions = {
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      scaleXGridLinesStep : 9999,
+      graphTitle : "Stats sample usage",
+			graphTitleFontFamily : "'Arial'",
+			graphTitleFontSize : 24,
+			graphTitleFontStyle : "bold",
+			graphTitleFontColor : "#666",
+      yAxisMinimumInterval : 1,
+      annotateDisplay : true,
+      annotateLabel: "<%= v1 + ' : ' + v3%>",
+      legend : true,
+      barValueSpacing : 30,
+      footNoteFontSize : 15,
+      animationLeftToRight : true,
+      animationEasing : "linear",
+      animationSteps : 200,
+      footNote : "1st Quarter Mean : <%=roundToNumber((#DATA_MEAN(0)#+#DATA_MEAN(1)#+#DATA_MEAN(2)#)/3,-2)%> - 2nd Quarter Mean : <%=roundToNumber((#DATA_MEAN(3)#+#DATA_MEAN(4)#+#DATA_MEAN(5)#)/3,-2)  %>"             
+}
+
+function roundToNumber(num, place) {
+    var newval=1*num;
+
+    if(typeof(newval)=="number"){
+      if(place<=0){
+        var roundVal=-place;
+        newval= +(Math.round(newval + "e+" + roundVal) + "e-" + roundVal);
+      }
+      else {
+        var roundVal=place;
+        var divval= "1e+"+roundVal;
+        newval= +(Math.round(newval/divval))*divval;
+      }
+    }
+    return(newval);
+} ;
+
+</SCRIPT>
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+
+	</head>
+	<body>
+
+<script>
+
+stats(mydata1,statOptions);
+
+document.write("<canvas id=\"canvas_bar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+
+window.onload = function() {
+    var myBar = new Chart(document.getElementById("canvas_bar").getContext("2d")).Bar(mydata1,statOptions);
+}      
+</script>
+  </body>
+</html>
