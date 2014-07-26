@@ -1,0 +1,124 @@
+    <!doctype html>
+  
+  <SCRIPT src='..\ChartNew.js'></script>
+  <SCRIPT src='..\Add-ins\stats.js'></script>
+  
+  <SCRIPT>
+  
+  defCanvasWidth=1200;
+  defCanvasHeight=600;
+  
+  var mydata1 = [
+    {
+  		value : 30,
+  		color: "#D97041",
+      title : "data1"
+  	},
+  	{
+  		value : 90,
+  		color: "#C7604C",
+      title : "data2"
+  	},
+  	{
+  		value : 24,
+  		color: "#21323D",
+      title : "data3"
+  	},
+  	{
+  		value : 58,
+  		color: "#9D9B7F",
+      title : "data4"
+  	},
+  	{
+  		value : 82,
+  		color: "#7D4F6D",
+      title : "data5"
+  	},
+  	{
+  		value : 8,
+  		color: "#584A5E",
+      title : "data6"
+  	}
+  ];
+  
+  
+  var varcrosstxt = {
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      crossText : ["Total:\n#sum#"],
+      crossTextIter: ["all"],
+      crossTextOverlay :   [true],
+      crossTextFontSize : [50],
+      crossTextFontColor : ["black"],
+      crossTextRelativePosX : [2],
+      crossTextRelativePosY : [2],
+      crossTextAlign : ["center"],
+      crossTextBaseline : ["middle"],
+      inGraphDataShow : true,
+      legend : true,
+      canvasBorders : true,
+      graphTitle : "Sample - Sum of the data in the middle",
+    	graphTitleFontFamily : "'Arial'",
+  		graphTitleFontSize : 24,
+  	  graphTitleFontStyle : "bold",
+  		graphTitleFontColor : "#666",
+      footNoteFontSize : 15,
+      footNote : "Mean Value : <%=roundToNumber(#MEAN#,-2)%> - Standard Deviation : <%=roundToNumber(#standard_deviation#,-2)%>"             
+  }
+  
+  function roundToNumber(num, place) {
+      var newval=1*num;
+  
+      if(typeof(newval)=="number"){
+        if(place<=0){
+          var roundVal=-place;
+          newval= +(Math.round(newval + "e+" + roundVal) + "e-" + roundVal);
+        }
+        else {
+          var roundVal=place;
+          var divval= "1e+"+roundVal;
+          newval= +(Math.round(newval/divval))*divval;
+        }
+      }
+      return(newval);
+  } ;
+  
+  function roundToNumber(num, place) {
+      var newval=1*num;
+  
+      if(typeof(newval)=="number"){
+        if(place<=0){
+          var roundVal=-place;
+          newval= +(Math.round(newval + "e+" + roundVal) + "e-" + roundVal);
+        }
+        else {
+          var roundVal=place;
+          var divval= "1e+"+roundVal;
+          newval= +(Math.round(newval/divval))*divval;
+        }
+      }
+      return(newval);
+  } ;
+  
+  </SCRIPT>
+  
+  <html>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  	<head>
+  		<title>Demo ChartNew.js</title>
+  
+  	</head>
+  	<body>
+  
+  <script>
+  
+  stats(mydata1,varcrosstxt);
+  
+  document.write("<canvas id=\"canvas_pie\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+  
+  window.onload = function() {
+      var myBar = new Chart(document.getElementById("canvas_pie").getContext("2d")).Doughnut(mydata1,varcrosstxt);
+  }      
+  </script>
+    </body>
+  </html>
