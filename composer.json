@@ -2,9 +2,23 @@
   "name": "ChartNew.js",
   "version": "0.3.0",
   "description": "Simple HTML5 Charts using the canvas element",
-  "keywords": ["charts"],
+  "keywords": ["charts","javascript","canvas"],
   "homepage": "https://github.com/FVANCOP/ChartNew.js",
-  "author": "FVANCOP",
+  "license": "MIT",
+  "authors": [
+        {
+            "name": "Vancoppenolle Francois",
+            "email": "francois.vancoppenolle@favomo.be",
+            "homepage": "https://github.com/FVANCOP/ChartNew.js",
+            "role": "Developer"
+        },
+        {
+            "name": "Kroger Ole",
+            "email": "o.kroeger@wikunia.de",
+            "homepage": "http://github.wikunia.de",
+            "role": "Developer"
+        }
+    ],
   "main": ["ChartNew.js"],
   "dependencies": {
   }
