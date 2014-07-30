@@ -6,6 +6,7 @@ function stats(data,config) {
     PSbasic(data);
   } else { // line structure;
     LSbasic(data);
+    Linear_Regression(data);
   }
   replace_stats(data,config);
   return;
@@ -17,6 +18,83 @@ function stats(data,config) {
   }
   return false;
 };
+
+function Linear_Regression(data) {
+  // compute Means - source of algorithm : http://fr.wikipedia.org/wiki/R%C3%A9gression_lin%C3%A9aire
+  
+  data.stats.linear_regression_count_xPos=0;
+  data.stats.linear_regression_sum_xPos=0;
+  data.stats.linear_regression_sum_data=0;
+  
+  for(var i=0;i<data.datasets.length;i++) {
+    if(!(typeof data.datasets[i].xPos == "undefined")) {
+      data.datasets[i].stats.linear_regression_sum_xPos=0;
+      data.datasets[i].stats.linear_regression_sum_data=0;
+      data.datasets[i].stats.linear_regression_count_xPos=0;
+      data.datasets[i].stats.count_data=0;
+      for(var j=0;j<data.datasets[i].data.length;j++) {
+        if(!(typeof data.datasets[i].data[j]=="undefined" ) && !(typeof data.datasets[i].xPos[j] =="undefined")) {
+          data.stats.linear_regression_count_xPos++;
+          data.stats.linear_regression_sum_xPos+=data.datasets[i].xPos[j];
+          data.stats.linear_regression_sum_data+=data.datasets[i].data[j];
+          data.datasets[i].stats.linear_regression_count_xPos++;
+          data.datasets[i].stats.linear_regression_sum_xPos+=data.datasets[i].xPos[j];
+          data.datasets[i].stats.linear_regression_sum_data+=data.datasets[i].data[j];
+        }
+      }
+      if(data.datasets[i].stats.linear_regression_count_xPos>0) {
+        data.datasets[i].stats.linear_regression_mean_xPos=data.datasets[i].stats.linear_regression_sum_xPos/data.datasets[i].stats.linear_regression_count_xPos;
+        data.datasets[i].stats.linear_regression_mean_data=data.datasets[i].stats.linear_regression_sum_data/data.datasets[i].stats.linear_regression_count_xPos;
+      }
+    }
+  }
+  // mean;
+  
+  if(data.stats.linear_regression_count_xPos>0) {
+    data.stats.linear_regression_mean_xPos=data.stats.linear_regression_sum_xPos/data.stats.linear_regression_count_xPos;
+    data.stats.linear_regression_mean_data=data.stats.linear_regression_sum_data/data.stats.linear_regression_count_xPos;
+  }
+  
+ 
+  // Covariance - variance;
+
+  data.stats.linear_regression_covariance=0;
+  data.stats.linear_regression_variance=0;
+  
+  for(var i=0;i<data.datasets.length;i++) {
+    if(!(typeof data.datasets[i].xPos == "undefined")) {
+      data.datasets[i].stats.linear_regression_covariance=0;
+      data.datasets[i].stats.linear_regression_variance=0;
+      for(var j=0;j<data.datasets[i].data.length;j++) {
+        if(!(typeof data.datasets[i].data[j]=="undefined" ) && !(typeof data.datasets[i].xPos[j] =="undefined")) {
+          data.stats.linear_regression_covariance+=(data.datasets[i].xPos[j]-data.stats.linear_regression_mean_xPos)*(data.datasets[i].data[j]-data.stats.linear_regression_mean_data);
+          data.stats.linear_regression_variance+=(data.datasets[i].xPos[j]-data.stats.linear_regression_mean_xPos)*(data.datasets[i].xPos[j]-data.stats.linear_regression_mean_xPos);
+          data.datasets[i].stats.linear_regression_covariance+=(data.datasets[i].xPos[j]-data.datasets[i].stats.linear_regression_mean_xPos)*(data.datasets[i].data[j]-data.datasets[i].stats.linear_regression_mean_data);
+          data.datasets[i].stats.linear_regression_variance+=(data.datasets[i].xPos[j]-data.datasets[i].stats.linear_regression_mean_xPos)*(data.datasets[i].xPos[j]-data.datasets[i].stats.linear_regression_mean_xPos);
+        }
+      }
+      if(data.datasets[i].stats.linear_regression_count_xPos>0) {
+          data.datasets[i].stats.linear_regression_covariance/=data.datasets[i].stats.linear_regression_count_xPos;
+          data.datasets[i].stats.linear_regression_variance/=data.datasets[i].stats.linear_regression_count_xPos;
+          data.datasets[i].stats.linear_regression_b1=data.datasets[i].stats.linear_regression_covariance/data.datasets[i].stats.linear_regression_variance; 
+          data.datasets[i].stats.linear_regression_b0=data.datasets[i].stats.linear_regression_mean_data-data.datasets[i].stats.linear_regression_b1*data.datasets[i].stats.linear_regression_mean_xPos;
+      }
+    }
+  }
+
+
+
+  // b1 - b0;
+
+  if(data.stats.linear_regression_count_xPos>0) {
+    data.stats.linear_regression_covariance/=data.stats.linear_regression_count_xPos;
+    data.stats.linear_regression_variance/=data.stats.linear_regression_count_xPos;
+    data.stats.linear_regression_b1=data.stats.linear_regression_covariance/data.stats.linear_regression_variance; 
+    data.stats.linear_regression_b0=data.stats.linear_regression_mean_data-data.stats.linear_regression_b1*data.stats.linear_regression_mean_xPos;
+  }
+
+    
+}
 
 function PSbasic(data) {
 
@@ -624,7 +702,7 @@ function tmplStat(str, data) {
 
 
 function isTemplate(strvar) {
-  if(typeof strvar=="string") { if(strvar.indexOf("<%")>0) { if(strvar.indexOf(">",strvar.indexOf("%>"))>0) { return true; } } }  
+  if(typeof strvar=="string") { if(strvar.indexOf("<%")>=0) { if(strvar.indexOf(">",strvar.indexOf("%>"))>0) { return true; } } }  
   return false;
 };
 
