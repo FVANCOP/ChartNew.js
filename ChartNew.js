@@ -4565,6 +4565,7 @@ window.Chart = function (context) {
                 var value = graphMin;
         for (var i = 0; i < numberOfSteps + 1; i++) {
                 labels.push(tmpl(labelTemplateString, { value: fmtChartJS(config,1*value.toFixed(getDecimalPlaces(value)),config.fmtYLabel) }));                    value *= 10;
+                value *= 10; 
                 }
             }
         }
