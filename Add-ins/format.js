@@ -64,13 +64,16 @@ function fmtChartJSPerso(config,value,fmt){
         switch(spltdt[i].toUpperCase())
         {
           case "HH" :
-            return_value=return_value+value.getHours(); 
+            if(value.getHours()<10)return_value=return_value+'0'+value.getHours();
+            else return_value=return_value+value.getHours(); 
             break;
           case "MM" :
-            return_value=return_value+value.getMinutes(); 
+            if(value.getMinutes()<10)return_value=return_value+'0'+value.getMinutes();
+            else return_value=return_value+value.getMinutes(); 
             break;
           case "SS" :
-            return_value=return_value+value.getSeconds(); 
+            if(value.getSeconds()<10)return_value=return_value+'0'+value.getSeconds();
+            else return_value=return_value+value.getSeconds(); 
             break;
           default : 
             break;
