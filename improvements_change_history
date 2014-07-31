@@ -1,7 +1,8 @@
 Change history
 --------------
 
-
+31/07/2014 - Vancoppenolle François - x values not associated to labels on axis (issue 110)
+31/07/2014 - Ole Kroger             - Bug with logarithm axis corrected (issue 107)
 26/07/2014 - Vancoppenolle François - Bug with annotates corrected (see issue #103) - bug reported by jeppebemad
 26/07/2014 - Vancoppenolle François - "stats.js" add-in created
 12/07/2014 - Vancoppenolle Francois - you can now draw more than one graph on a single canvas.
@@ -106,6 +107,7 @@ Future Improvements
 -------------------
 - topXAxis
 - gradient color (see issue #102)
+- merge Pie/Doughnut code (can be the same code : A pie = Dougnut with a hole having a radiant of 0...)
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
 - display the legend on other places (center, bottom or top on the left/right of the graph;
   center, right, left over/under the graph). 
@@ -120,6 +122,7 @@ Future Improvements
 
 Known Bugs
 ----------
+- problem with inGraphData on Pie/Doughnut
 - dynamicDisplay not working on IOS 5
 - Pie not working on some devices
 - If the first label is long, it can be truncated
