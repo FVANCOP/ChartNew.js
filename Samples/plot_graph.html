@@ -1,0 +1,94 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/format.js'></script>
+<SCRIPT src='../Add-ins/stats.js'></script>
+
+<SCRIPT>
+
+var charJSPersonalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = {
+	labels : [0,5,10,15,20,25,30],
+  datasets : [
+		{
+			pointColor : "black",
+			strokeColor : "rgba(0,0,0,0)",
+			pointStrokeColor : "black",
+			data : [12.1,25.3,7.9,9.1,31.3,28.1,24.5,19.8,27.1,25.6,18.9,16.8,23.2,10.1,13,15.5],
+      xPos : [12.2,14.5,13.1,4.2,25.7,28.6,27.3,20.5,23.1,26.9,15.2,17.1,19.4,7.6,8.5,11.3],
+      title : "points"
+		},
+		{
+			pointColor : "rgba(0,0,0,0)",
+			strokeColor : "red",
+			pointStrokeColor : "rgba(0,0,0,0)",
+			data : ["<%=#linear_regression_b0#%>",,,,,,"<%=#linear_regression_b0#+30*#linear_regression_b1#%>"],
+      title : "regression line"
+		}
+	]
+}               
+
+
+var opt1 = {
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      datasetFill : false,
+      graphTitle : "Regression line:  <%=roundToNumber(#linear_regression_b0#,-2)%>+<%=roundToNumber(#linear_regression_b1#,-2)%>*X",
+      graphTitleFontSize: 18,
+      graphMin : 0,
+      yAxisMinimumInterval : 5,
+      bezierCurve: false,
+      inGraphDataShow : true,
+      inGraphDataTmpl : "<%=(v1 == 'regression line' ? '' : '('+v2 + ';' + v3 + ')')%>",
+
+}
+
+function roundToNumber(num, place) {
+    var newval=1*num;
+
+    if(typeof(newval)=="number"){
+      if(place<=0){
+        var roundVal=-place;
+        newval= +(Math.round(newval + "e+" + roundVal) + "e-" + roundVal);
+      }
+      else {
+        var roundVal=place;
+        var divval= "1e+"+roundVal;
+        newval= +(Math.round(newval/divval))*divval;
+      }
+    }
+    return(newval);
+} ;
+
+stats(mydata1,opt1);
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+
+
+    var myLine = new Chart(document.getElementById("canvas_Line1").getContext("2d")).Line(mydata1,opt1);
+}
+    </script>
+  </body>
+</html>
