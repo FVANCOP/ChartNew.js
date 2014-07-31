@@ -1,0 +1,84 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/format.js'></script>
+
+<SCRIPT>
+
+var charJSPersonalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none" };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = {
+  labels : ["-2PI","-3PI/2","-PI","-PI/2","0","PI/2","PI","3PI/2","2PI"],
+  xBegin : -4*Math.PI/2,
+  xEnd :  4*Math.PI/2,   
+	datasets : [
+		{
+			strokeColor : "rgba(220,220,220,1)",
+      data : [],
+      xPos : [],
+      title : "Sinus"
+		},
+		{
+			strokeColor : "rgba(151,187,205,1)",
+      data : [],
+      xPos : [],
+      title : "Cosinus"
+		}
+	]
+}               
+var nbiter=400;
+for(var i=0;i<nbiter;i++)
+{
+  mydata1.datasets[0].xPos[i]=mydata1.xBegin+i*(mydata1.xEnd-mydata1.xBegin)/nbiter;
+  mydata1.datasets[0].data[i]=Math.sin(mydata1.datasets[0].xPos[i]);
+  mydata1.datasets[1].xPos[i]=mydata1.xBegin+i*(mydata1.xEnd-mydata1.xBegin)/nbiter;
+  mydata1.datasets[1].data[i]=Math.cos(mydata1.datasets[1].xPos[i]);
+}
+
+
+var opt1 = {
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "Sinus - Cosinus",
+      datasetFill : false,
+      legend : true,
+      annotateDisplay : true,
+      pointDot :false,
+      animationLeftToRight : true,
+      animationEasing: "linear",
+    	drawXScaleLine: [{position:"0",lineWidth:1 }],
+      yAxisMinimumInterval : 0.1,
+      graphTitleFontSize: 18
+
+}
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+
+
+    var myLine = new Chart(document.getElementById("canvas_Line1").getContext("2d")).Line(mydata1,opt1);
+}
+    </script>
+  </body>
+</html>
