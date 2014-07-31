@@ -1,0 +1,88 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+
+<SCRIPT>
+
+defCanvasWidth=1200;
+defCanvasHeight=1800;
+
+
+var mydata1 = {
+  labels : ["-10","0","10"],
+  xBegin : -10,
+  xEnd :  10,   
+	datasets : [
+		{
+			strokeColor : "rgba(220,220,220,1)",
+			pointstrokeColor : "yellow",
+      data : [],
+      xPos : [],
+//			data : [40],
+      title : "Function"
+		},
+    {
+			strokeColor : "rgba(220,220,220,1)",
+      datasetFill : false,
+			pointstrokeColor : "yellow",
+      data : [],
+      xPos : [],
+//			data : [40],
+      title : "Function"
+		}
+	]
+}               
+var nbiter=200;
+for(var i=0;i<nbiter;i++)
+{
+  mydata1.datasets[0].xPos[i]=-mydata1.xEnd-i*(0-mydata1.xEnd)/nbiter;
+  if(Math.abs(mydata1.datasets[0].xPos[i])>0.01)mydata1.datasets[0].data[i]=1/mydata1.datasets[0].xPos[i];
+  mydata1.datasets[1].xPos[i]=+i*(mydata1.xEnd-0)/nbiter;
+  if(Math.abs(mydata1.datasets[1].xPos[i])>0.01)mydata1.datasets[1].data[i]=1/mydata1.datasets[1].xPos[i];
+}
+
+
+var opt1 = {
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      datasetFill : false,
+      graphTitle : "1/X",
+      annotateDisplay : true,
+      pointDot :false,
+      graphTitleFontSize: 18,
+      animationLeftToRight : true,
+      animationEasing: "linear",
+      animationByDataset : true,
+    	drawXScaleLine: [{position:"0",lineWidth:1 }],
+      yAxisMinimumInterval : 1
+
+
+}
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+
+
+    var myLine = new Chart(document.getElementById("canvas_Line1").getContext("2d")).Line(mydata1,opt1);
+}
+    </script>
+  </body>
+</html>
