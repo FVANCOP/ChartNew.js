@@ -4432,9 +4432,11 @@ window.Chart = function (context) {
             }
         }
         else { // logarithmic scale
-            graphMin = Math.pow(10, calculateOrderOfMagnitude(minValue));
-            graphMax = Math.pow(10, calculateOrderOfMagnitude(maxValue) + 1);
-            rangeOrderOfMagnitude = calculateOrderOfMagnitude(graphMax) - calculateOrderOfMagnitude(graphMin);
+			var minMag = calculateOrderOfMagnitude(minValue);
+			var maxMag = calculateOrderOfMagnitude(maxValue)+1;
+            graphMin = Math.pow(10, minMag);
+            graphMax = Math.pow(10, maxMag);
+            rangeOrderOfMagnitude = maxMag - minMag;
         }
 
         graphRange = graphMax - graphMin;
@@ -4511,8 +4513,8 @@ window.Chart = function (context) {
                 }
             } else { // logarithmic scale 10,100,1000,...
                 var value = graphMin;
-                while (value < graphMax) {
-                    labels.push(tmpl(labelTemplateString, { value: fmtChartJS(config,1*value.toFixed(getDecimalPlaces(stepValue)),config.fmtYLabel) }));
+                for (var i = 0; i < numberOfSteps + 1; i++) {
+                    labels.push(tmpl(labelTemplateString, { value: fmtChartJS(config,1*value.toFixed(getDecimalPlaces(value)),config.fmtYLabel) }));
                     value *= 10;
                 }
             }
