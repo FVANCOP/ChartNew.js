@@ -28,29 +28,8 @@ function fmtChartJSPerso(config,value,fmt){
       return_value=value.toLocaleDateString(fmt.split(" ")[1],options);
       break;  
     case "FMTDATE" :
-      spltdt=fmt.split(/[\s,]+/)[1].split("/");
-      return_value="";
-      for(var i=0;i<spltdt.length;i++)
-      {
-        if(i>0)return_value=return_value+"/";
-        switch(spltdt[i].toUpperCase())
-        {
-          case "DD" :
-            return_value=return_value+value.getDate(); 
-            break;
-          case "MM" :
-            return_value=return_value+(1+value.getMonth()); 
-            break;
-          case "YYYY" :
-            return_value=return_value+value.getFullYear(); 
-            break;
-          case "YY" :
-            return_value=return_value+(value.getYear()%100); 
-            break;
-          default : 
-            break;
-        }
-      }
+      spltdt=fmt.split(/[\s,]+/)[1];
+	  return_value = spltdt.replaceArray(["DD","MM","YYYY","YY"],[value.getDate(),1+value.getMonth(),value.getFullYear(),value.getYear()%100]);
       break;    
     case "TIME" : 
       return_value=value.toLocaleTimeString();
@@ -86,5 +65,15 @@ function fmtChartJSPerso(config,value,fmt){
   }
   return(return_value);
 }
+
+String.prototype.replaceArray = function(find, replace) {
+  var replaceString = this;
+  var regex;
+  for (var i = 0; i < find.length; i++) {
+    regex = new RegExp(find[i], "g");
+    replaceString = replaceString.replace(regex, replace[i]);
+  }
+  return replaceString;
+};
 
 
