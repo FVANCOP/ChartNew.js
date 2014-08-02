@@ -1,0 +1,74 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/format.js'></script>
+
+<SCRIPT>
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = {
+  labels : ["-3",-2,-1,"0",1,2,"3"],
+  xBegin : -3,
+  xEnd :  3,   
+	datasets : [
+		{
+			strokeColor : "rgba(220,220,220,1)",
+      data : [],
+      xPos : [],
+      title : "Sinus"
+		}
+	]
+}   
+var gauss_var=1;
+var gauss_mean=0;
+            
+var nbiter=400;
+for(var i=0;i<nbiter;i++)
+{
+  mydata1.datasets[0].xPos[i]=mydata1.xBegin+i*(mydata1.xEnd-mydata1.xBegin)/nbiter;
+  mydata1.datasets[0].data[i]=(1/(gauss_var*Math.sqrt(2*Math.PI))) * Math.exp(-((mydata1.datasets[0].xPos[i]-gauss_mean)*(mydata1.datasets[0].xPos[i]-gauss_mean))/(2*gauss_var));
+}  
+
+
+var opt1 = {
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "Gauss Function - (0,1)",
+      legend : true,
+      datasetFill : false,
+      annotateDisplay : true,
+      pointDot :false,
+      animationLeftToRight : true,
+      animationEasing: "linear",
+      yAxisMinimumInterval : 0.02,
+      graphTitleFontSize: 18
+
+}
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine = new Chart(document.getElementById("canvas_Line1").getContext("2d")).Line(mydata1,opt1);
+}
+    </script>
+  </body>
+</html>
