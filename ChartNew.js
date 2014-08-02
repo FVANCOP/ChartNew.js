@@ -5547,6 +5547,7 @@ window.Chart = function (context) {
 					        ctx.restore();
 					     }
 				  }
+	  }
 				} else {
 	if(false  == config.extrapolateMissingData)
                     {
