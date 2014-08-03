@@ -1130,6 +1130,7 @@ window.Chart = function (context) {
             animation: true,
             animationSteps: 60,
             animationEasing: "easeOutQuart",
+            extrapolateMissingData : true,
             onAnimationComplete: null,
             annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3%>"
             
@@ -5491,6 +5492,8 @@ window.Chart = function (context) {
 					   }
 				  }
           
+          if((typeof(data.datasets[i].data[j+1]) !== 'undefined') || (true  == config.extrapolateMissingData))
+	  {
           if(currentAnimPc.subVal > 0)
           {
                  // next not missing value
@@ -5544,7 +5547,29 @@ window.Chart = function (context) {
 					        ctx.restore();
 					     }
 				  }
+	  }
 				} else {
+	if(false  == config.extrapolateMissingData)
+                    {
+                         ctx.stroke();
+                         if (config.datasetFill) {
+                             ctx.lineTo(prevXpos, xAxisPosY - zeroY);
+                             ctx.lineTo(xPos(i,frstpt,data), xAxisPosY - zeroY);
+                             ctx.lineTo(xPos(i,frstpt,data), yPos(i, frstpt));
+                             ctx.closePath();
+                             if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc.mainVal,-1);
+                             else if(typeof data.datasets[i].fillColor=="string")ctx.fillStyle = data.datasets[i].fillColor;
+                             else ctx.fillStyle=config.defaultFillColor;
+                             ctx.fill();
+                         }
+
+                         ctx.beginPath();
+                         prevpt=-1;
+                         frstpt=-1;
+                         prevAnimPc=0;
+                         prevnotempty=0;
+                     }
+	else {
           if(currentAnimPc.subVal > 0)
           {
 
@@ -5552,6 +5577,8 @@ window.Chart = function (context) {
                  for(t=j+1;t<data.datasets[i].data["length"] && nxtnotmiss==-1;t++){
                     if (!(typeof(data.datasets[i].data[t])=='undefined')) nxtnotmiss=t; 
                  }
+                 if((typeof(data.datasets[i].data[j]) !== 'undefined') || (true  == config.extrapolateMissingData))
+              	 {
                  if(nxtnotmiss!=-1) {
                    prevXpos=xPos(i,j+currentAnimPc.subVal,data);
     					     if (config.bezierCurve) {
@@ -5561,6 +5588,8 @@ window.Chart = function (context) {
   					         ctx.lineTo(xPos(i,j+currentAnimPc.subVal,data), yPos(i, j+1));
 					         }
                  }
+              	 }
+          }
           }
         }
 			}
