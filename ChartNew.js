@@ -2954,9 +2954,9 @@ window.Chart = function (context) {
                 graphMin: config.scaleStartValue,
                 labels: []
             }
-            for (var i = 0; i < calculatedScale.steps; i++) {
+            for (var i = 0; i <= calculatedScale.steps; i++) {
                 if (labelTemplateString) {
-                    calculatedScale.labels.push(tmpl(labelTemplateString, { value: fmtChartJS(config,1 * ((config.scaleStartValue + (config.scaleStepWidth * (i + 1))).toFixed(getDecimalPlaces(config.scaleStepWidth))),config.fmtYLabel) }));
+                    calculatedScale.labels.push(tmpl(labelTemplateString, { value: fmtChartJS(config,1 * ((config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces(config.scaleStepWidth))),config.fmtYLabel) }));
                 }
             }
             msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, true, false, true, true,true);
