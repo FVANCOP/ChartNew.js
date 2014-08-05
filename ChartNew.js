@@ -1530,6 +1530,7 @@ window.Chart = function (context) {
     chart.defaults.xyAxisCommonOptions = {
             yAxisMinimumInterval : "none",
             yScaleLabelsMinimumWidth : 0,
+            xScaleLabelsMinimumWidth : 0,
             yAxisLeft: true,
             yAxisRight: false,
             xAxisBottom: true,
@@ -4937,6 +4938,7 @@ window.Chart = function (context) {
                 widestXLabel = (textMsr.textWidth > widestXLabel) ? textMsr.textWidth : widestXLabel;
                 highestXLabel= (textMsr.textHeight > highestXLabel) ? textMsr.textHeight : highestXLabel;
             }
+            if(widestXLabel< config.xScaleLabelsMinimumWidth){widestXLabel=config.xScaleLabelsMinimumWidth;}
         }
 
         // compute Y Label Width
