@@ -106,6 +106,10 @@ function PSbasic(data) {
   data.stats.sum_square_diff_mean=0;
   data.stats.standard_deviation=undefined;
   data.stats.standard_deviation_estimation=undefined;
+  data.stats.student_t_test=undefined;
+  
+  data.stats.coefficient_variation=undefined;
+  
   data.stats.data_with_stats=false;
 
 
@@ -130,11 +134,17 @@ function PSbasic(data) {
   }
   
   // sum of (val-mean)2;
+  // sum of (val-mean)3;
   data.stats.sum_square_diff_mean=0;
+  data.stats.sum_pow3_diff_mean=0;
+  data.stats.sum_pow4_diff_mean=0;
+  
   for(var i=0;i<data["length"];i++)
   {
     if(typeof data[i].value!="undefined" && !isStat(data[i].value)) {   
        data.stats.sum_square_diff_mean+=Math.pow(data[i].value-data.stats.mean,2);
+       data.stats.sum_pow3_diff_mean+=Math.pow(data[i].value-data.stats.mean,3);
+       data.stats.sum_pow4_diff_mean+=Math.pow(data[i].value-data.stats.mean,4);
     }
   }
 
@@ -145,10 +155,32 @@ function PSbasic(data) {
     data.stats.standard_deviation=Math.sqrt(data.stats.sum_square_diff_mean/data.stats.count_not_missing);
     data.stats.standard_error_mean=Math.sqrt(data.stats.sum_square_diff_mean)/data.stats.count_not_missing;
   }
+  
     
   // standard deviation estimation;
   
-  if(data.stats.count_not_missing > 1){data.stats.standard_deviation_estimation=Math.sqrt(data.stats.sum_square_diff_mean/(data.stats.count_not_missing-1));}
+  if(data.stats.count_not_missing > 1){
+    data.stats.standard_deviation_estimation=Math.sqrt(data.stats.sum_square_diff_mean/(data.stats.count_not_missing-1));
+    if(data.stats.mean>0)data.stats.coefficient_variation=100*data.stats.standard_deviation_estimation/data.stats.mean;
+    if(data.stats.standard_deviation_estimation>0) data.stats.student_t_test=data.stats.mean/(data.stats.standard_deviation_estimation/Math.sqrt(data.stats.count_not_missing));
+console.log(data.stats.mean);
+console.log(data.stats.standard_deviation_estimation);
+console.log(data.stats.count_not_missing);
+  }
+
+  // skewness;
+  if(data.stats.count_not_missing > 2){
+    data.stats.skewness= (data.stats.count_not_missing*data.stats.sum_pow3_diff_mean)/(Math.pow(data.stats.standard_deviation_estimation,3)*(data.stats.count_not_missing-1)*(data.stats.count_not_missing-2));   
+  } else {
+    data.stats.skewness=undefined;
+  }
+  
+  // kutosis;
+  if(data.stats.count_not_missing > 3){
+    data.stats.kurtosis= (data.stats.count_not_missing*(data.stats.count_not_missing+1)*data.stats.sum_pow4_diff_mean)/(Math.pow(data.stats.standard_deviation_estimation,4)*(data.stats.count_not_missing-1)*(data.stats.count_not_missing-2)*(data.stats.count_not_missing-3))-3*(data.stats.count_not_missing-1)*(data.stats.count_not_missing-1)/((data.stats.count_not_missing-2)*(data.stats.count_not_missing-3));   
+  } else {
+    data.stats.kurtosis=undefined;
+  }
 
   
   // ordering stats;
@@ -195,8 +227,14 @@ function LSbasic(data) {
   data.stats.count_not_missing=0;
   data.stats.mean=undefined;
   data.stats.sum_square_diff_mean=0;
+  data.stats.sum_pow3_diff_mean=0;
+  data.stats.sum_pow4_diff_mean=0;
+
   data.stats.standard_deviation=undefined;
   data.stats.standard_deviation_estimation=undefined;
+  data.stats.student_t_test=undefined;
+  data.stats.coefficient_variation=undefined;
+
   data.stats.data_with_stats=false;
 
   data.stats.data_minimum={};
@@ -219,10 +257,16 @@ function LSbasic(data) {
   data.stats.data_count_not_missing={};
   data.stats.data_mean={};
   data.stats.data_sum_square_diff_mean={};
+  data.stats.data_sum_pow3_diff_mean={};
+  data.stats.data_sum_pow4_diff_mean={};
   data.stats.data_variance={};
   data.stats.data_standard_deviation={};
   data.stats.data_standard_error_mean={};
   data.stats.data_standard_deviation_estimation={};
+  data.stats.data_student_t_test={};
+  data.stats.data_coefficient_variation={};
+  data.stats.data_skewness={};
+  data.stats.data_kurtosis={};
   data.stats.data_interquartile_range={};
 
   data.stats.max_number_data=0;
@@ -237,6 +281,10 @@ function LSbasic(data) {
     data.datasets[i].stats.count_not_missing=0;
     data.datasets[i].stats.mean=undefined;
     data.datasets[i].stats.sum_square_diff_mean=0;
+    data.datasets[i].stats.sum_pow3_diff_mean=0;
+    data.datasets[i].stats.sum_pow4_diff_mean=0;
+
+
     data.datasets[i].stats.standard_deviation=undefined;
     
     if(data.datasets[i].data["length"]>data.stats.max_number_data)
@@ -248,9 +296,12 @@ function LSbasic(data) {
         data.stats.data_count_not_missing[k]=0;
         data.stats.data_mean[k]=undefined;
         data.stats.data_sum_square_diff_mean[k]=0;
+        data.stats.data_sum_pow3_diff_mean[k]=0;
+        data.stats.data_sum_pow4_diff_mean[k]=0;
         data.stats.data_standard_deviation[k]=undefined;
         data.stats.data_standard_deviation_estimation[k]=undefined;
-
+        data.stats.data_student_t_test[k]=undefined;
+        data.stats.data_coefficient_variation[k]=undefined;
       }
       data.stats.max_number_data=data.datasets[i].data["length"];
       data.stats.min_number_data=Math.min(data.stats.min_number_data,data.datasets[i].data["length"]);
@@ -304,14 +355,26 @@ function LSbasic(data) {
 
   // sum of (val-mean)2;
   data.stats.sum_square_diff_mean=0;
+  data.stats.sum_pow3_diff_mean=0;
+  data.stats.sum_pow4_diff_mean=0;
+  
   for(var i=0;i<data.datasets["length"];i++)
   {
     data.datasets[i].stats.sum_square_diff_mean=0;
+    data.datasets[i].stats.sum_pow3_diff_mean=0;
+    data.datasets[i].stats.sum_pow4_diff_mean=0;
+
     for(var j=0;j<data.datasets[i].data["length"];j++) {
       if(typeof data.datasets[i].data[j]!="undefined" && !isStat(data.datasets[i].data[j].value)) {
         data.stats.sum_square_diff_mean+=Math.pow(data.datasets[i].data[j]-data.stats.mean,2);
+        data.stats.sum_pow3_diff_mean+=  Math.pow(data.datasets[i].data[j]-data.stats.mean,3);
+        data.stats.sum_pow4_diff_mean+=  Math.pow(data.datasets[i].data[j]-data.stats.mean,4);
         data.stats.data_sum_square_diff_mean[j]+=Math.pow(data.datasets[i].data[j]-data.stats.data_mean[j],2);
+        data.stats.data_sum_pow3_diff_mean[j]+=  Math.pow(data.datasets[i].data[j]-data.stats.data_mean[j],3);
+        data.stats.data_sum_pow4_diff_mean[j]+=  Math.pow(data.datasets[i].data[j]-data.stats.data_mean[j],4);
         data.datasets[i].stats.sum_square_diff_mean+=Math.pow(data.datasets[i].data[j]-data.datasets[i].stats.mean,2);
+        data.datasets[i].stats.sum_pow3_diff_mean+=  Math.pow(data.datasets[i].data[j]-data.datasets[i].stats.mean,3);
+        data.datasets[i].stats.sum_pow4_diff_mean+=  Math.pow(data.datasets[i].data[j]-data.datasets[i].stats.mean,4);
       } 
     }
   }
@@ -343,16 +406,74 @@ function LSbasic(data) {
 
   // standard deviation estimation;
   
-  if(data.stats.count_not_missing > 1){data.stats.standard_deviation_estimation=Math.sqrt(data.stats.sum_square_diff_mean/(data.stats.count_not_missing-1));}
+  if(data.stats.count_not_missing > 1){
+    data.stats.standard_deviation_estimation=Math.sqrt(data.stats.sum_square_diff_mean/(data.stats.count_not_missing-1));
+    if(data.stats.mean>0)data.stats.coefficient_variation=100*data.stats.standard_deviation_estimation/data.stats.mean;
+    if(data.stats.standard_deviation_estimation>0) data.stats.student_t_test=data.stats.mean/(data.stats.standard_deviation_estimation/Math.sqrt(data.stats.count_not_missing));
+  }
     
   for(i=0;i<data.datasets["length"];i++)
   {
-    if(data.datasets[i].stats.count_not_missing>1){data.datasets[i].stats.standard_deviation_estimation=Math.sqrt(data.datasets[i].stats.sum_square_diff_mean/(data.datasets[i].stats.count_not_missing-1));}
+    if(data.datasets[i].stats.count_not_missing>1){
+      data.datasets[i].stats.standard_deviation_estimation=Math.sqrt(data.datasets[i].stats.sum_square_diff_mean/(data.datasets[i].stats.count_not_missing-1));
+      if(data.datasets[i].stats.mean>0)data.datasets[i].stats.coefficient_variation=100*data.datasets[i].stats.standard_deviation_estimation/data.datasets[i].stats.mean;
+      if(data.datasets[i].stats.standard_deviation_estimation>0) data.datasets[i].stats.student_t_test=data.datasets[i].stats.mean/(data.datasets[i].stats.standard_deviation_estimation/Math.sqrt(data.datasets[i].stats.count_not_missing));
+    }
   }
 
   for(j=0;j<data.stats.max_number_data;j++) {
-    if(data.stats.data_count_not_missing[j]>1){data.stats.data_standard_deviation_estimation[j]=Math.sqrt(data.stats.data_sum_square_diff_mean[j]/(data.stats.data_count_not_missing[j]-1));}
+    if(data.stats.data_count_not_missing[j]>1){
+      data.stats.data_standard_deviation_estimation[j]=Math.sqrt(data.stats.data_sum_square_diff_mean[j]/(data.stats.data_count_not_missing[j]-1));
+      if(data.stats.data_mean[j]>0)data.stats.data_coefficient_variation[j]=100*data.stats.data_standard_deviation_estimation[j]/data.stats.data_mean[j];
+      if(data.stats.data_standard_deviation_estimation[j]>0) data.stats.data_student_t_test[j]=data.stats.data_mean[j]/(data.stats.data_standard_deviation_estimation[j]/Math.sqrt(data.stats.data_count_not_missing[j]));
+    }
   }
+
+  // skewness;
+  if(data.stats.count_not_missing >= 2){
+    data.stats.skewness= (data.stats.count_not_missing*data.stats.sum_pow3_diff_mean)/(Math.pow(data.stats.standard_deviation_estimation,3)*(data.stats.count_not_missing-1)*(data.stats.count_not_missing-2));   
+  } else {
+    data.stats.skewness= undefined;
+  }
+
+  // kurtosis;
+  if(data.stats.count_not_missing >= 3){
+    data.stats.kurtosis= (data.stats.count_not_missing*(data.stats.count_not_missing+1)*data.stats.sum_pow4_diff_mean)/(Math.pow(data.stats.standard_deviation_estimation,4)*(data.stats.count_not_missing-1)*(data.stats.count_not_missing-2)*(data.stats.count_not_missing-3))-3*(data.stats.count_not_missing-1)*(data.stats.count_not_missing-1)/((data.stats.count_not_missing-2)*(data.stats.count_not_missing-3));   
+  } else {
+    data.stats.kurtosis= undefined;
+  }
+
+    
+  for(i=0;i<data.datasets["length"];i++)
+  {
+    if(data.datasets[i].stats.count_not_missing>=2){
+      data.datasets[i].stats.skewness= (data.datasets[i].stats.count_not_missing*data.datasets[i].stats.sum_pow3_diff_mean)/(Math.pow(data.datasets[i].stats.standard_deviation_estimation,3)*(data.datasets[i].stats.count_not_missing-1)*(data.datasets[i].stats.count_not_missing-2));   
+    } else {
+      data.datasets[i].stats.skewness=undefined;
+    }
+
+    if(data.datasets[i].stats.count_not_missing>=3){
+      data.datasets[i].stats.kurtosis= (data.datasets[i].stats.count_not_missing*(data.datasets[i].stats.count_not_missing+1)*data.datasets[i].stats.sum_pow4_diff_mean)/(Math.pow(data.datasets[i].stats.standard_deviation_estimation,4)*(data.datasets[i].stats.count_not_missing-1)*(data.datasets[i].stats.count_not_missing-2)*(data.datasets[i].stats.count_not_missing-3))-3*(data.datasets[i].stats.count_not_missing-1)*(data.datasets[i].stats.count_not_missing-1)/((data.datasets[i].stats.count_not_missing-2)*(data.datasets[i].stats.count_not_missing-3));   
+    } else {
+      data.datasets[i].stats.kurtosis=undefined;
+    }
+  }
+
+
+  for(j=0;j<data.stats.max_number_data;j++) {
+    if(data.stats.data_count_not_missing[j]>=2){
+      data.stats.data_skewness[j]= (data.stats.data_count_not_missing[j]*data.stats.data_sum_pow3_diff_mean[j])/(Math.pow(data.stats.data_standard_deviation_estimation[j],3)*(data.stats.data_count_not_missing[j]-1)*(data.stats.data_count_not_missing[j]-2));   
+    } else {
+      data.stats.data_skewness[j]=undefined;
+    }
+    if(data.stats.data_count_not_missing[j]>=3){
+      data.stats.data_kurtosis[j]= (data.stats.data_count_not_missing[j]*(data.stats.data_count_not_missing[j]+1)*data.stats.data_sum_pow4_diff_mean[j])/(Math.pow(data.stats.data_standard_deviation_estimation[j],4)*(data.stats.data_count_not_missing[j]-1)*(data.stats.data_count_not_missing[j]-2)*(data.stats.data_count_not_missing[j]-3))-3*(data.stats.data_count_not_missing[j]-1)*(data.stats.data_count_not_missing[j]-1)/((data.stats.data_count_not_missing[j]-2)*(data.stats.data_count_not_missing[j]-3));   
+    } else {
+      data.stats.data_kurtosis[j]=undefined;
+    }
+  }
+
+
   
   // ordering stats;
   
@@ -510,6 +631,10 @@ document.write("data.stats.variance="+data.stats.variance+"<BR>");
 document.write("data.stats.standard _deviation="+data.stats.standard_deviation+"<BR>");
 document.write("data.stats.standard_error_mean="+data.stats.standard_error_mean+"<BR>");
 document.write("data.stats.standard_deviation_estimation="+data.stats.standard_deviation_estimation+"<BR>");
+document.write("data.stats.coefficient_variation="+data.stats.coefficient_variation+"<BR>");
+document.write("data.stats.skewness="+data.stats.skewness+"<BR>");
+document.write("data.stats.kurtosis="+data.stats.kurtosis+"<BR>");
+document.write("data.stats.student_t_test="+data.stats.student_t_test+"<BR>");
 document.write("data.stats.Q0"+data.stats.Q0+"<BR>");
 document.write("data.stats.Q1="+data.stats.Q1+"<BR>");
 document.write("data.stats.Q5="+data.stats.Q5+"<BR>");
@@ -544,6 +669,10 @@ for(i=0;i<data.datasets.length;i++)
   document.write("data.datasets["+i+"].stats.standard_deviation="+data.datasets[i].stats.standard_deviation+"<BR>");
   document.write("data.datasets["+i+"].stats.standard_error_mean="+data.datasets[i].stats.standard_error_mean+"<BR>");
   document.write("data.datasets["+i+"].stats.standard_deviation_estimation="+data.datasets[i].stats.standard_deviation_estimation+"<BR>");
+  document.write("data.datasets["+i+"].stats.student_t_test="+data.datasets[i].stats.student_t_test+"<BR>");
+  document.write("data.datasets["+i+"].stats.coefficient_variation="+data.datasets[i].stats.coefficient_variation+"<BR>");
+  document.write("data.datasets["+i+"]stats.skewness="+data.datasets[i].stats.skewness+"<BR>");
+  document.write("data.datasets["+i+"]stats.kurtosis="+data.datasets[i].stats.kurtosis+"<BR>");
   document.write("data.datasets["+i+"].stats.Q0="+data.datasets[i].stats.Q0+"<BR>");
   document.write("data.datasets["+i+"].stats.Q1="+data.datasets[i].stats.Q1+"<BR>");
   document.write("data.datasets["+i+"].stats.Q5="+data.datasets[i].stats.Q5+"<BR>");
@@ -577,6 +706,10 @@ for(i=0;i<data.stats.max_number_data;i++)
   document.write("data.stats.data_standard_deviation["+i+"]="+data.stats.data_standard_deviation[i]+"<BR>");
   document.write("data.stats.data_standard_error_mean["+i+"]="+data.stats.data_standard_error_mean[i]+"<BR>");
   document.write("data.stats.data_standard_deviation_estimation["+i+"]="+data.stats.data_standard_deviation_estimation[i]+"<BR>");
+  document.write("data.stats.data_student_t_test["+i+"]="+data.stats.data_student_t_test[i]+"<BR>");
+  document.write("data.stats.data_coefficient_variation["+i+"]="+data.stats.data_coefficient_variation[i]+"<BR>");
+  document.write("data.stats.data_skewness["+i+"]="+data.stats.data_skewness[i]+"<BR>");
+  document.write("data.stats.data_kurtosis["+i+"]="+data.stats.data_kurtosis[i]+"<BR>");
   document.write("data.stats.data_Q0["+i+"]="+data.stats.data_Q0[i]+"<BR>");
   document.write("data.stats.data_Q1["+i+"]="+data.stats.data_Q1[i]+"<BR>");
   document.write("data.stats.data_Q5["+i+"]="+data.stats.data_Q5[i]+"<BR>");
