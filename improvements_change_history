@@ -1,6 +1,9 @@
 Change history
 --------------
 
+07/08/2014 - Vancoppenolle Francois - new statistical values computes in stats.js add-ins : skewness, kurtosis, coefficient variance, student t test
+05/08/2014 - Vancoppenolle Francois - new options xScaleLabelsMinimumWidth and yScaleLabelsMinimumWidth
+03/08/2014 - Jan Mortiz Lindemann   - new option extrapolateMissingData
 31/07/2014 - Vancoppenolle François - x values not associated to labels on axis (issue 110)
 31/07/2014 - Ole Kroger             - Bug with logarithm axis corrected (issue 107)
 26/07/2014 - Vancoppenolle François - Bug with annotates corrected (see issue #103) - bug reported by jeppebemad
