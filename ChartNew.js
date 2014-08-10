@@ -1537,6 +1537,7 @@ window.Chart = function (context) {
             xAxisBottom: true,
             xAxisTop: false,
             xAxisSpaceBetweenLabels : 5,
+            fullWidthGraph : false,
             yAxisLabel: "",
             yAxisFontFamily: "'Arial'",
             yAxisFontSize: 16,
@@ -2724,7 +2725,7 @@ window.Chart = function (context) {
 		
         scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
         valueHop = Math.floor(msr.availableWidth / (data.labels.length - 1));
-        if(valueHop ==0)valueHop = (msr.availableWidth / (data.labels.length - 1));
+        if(valueHop ==0 || config.fullWidthGraph)valueHop = (msr.availableWidth / (data.labels.length - 1));
 
         msr.clrwidth=msr.clrwidth-(msr.availableWidth-(data.labels.length - 1) * valueHop);
         msr.availableWidth = (data.labels.length - 1) * valueHop;
@@ -2976,7 +2977,7 @@ window.Chart = function (context) {
 
         scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
         valueHop = Math.floor(msr.availableWidth / (data.labels.length));
-        if(valueHop ==0)valueHop = (msr.availableWidth / (data.labels.length - 1));
+        if(valueHop ==0 || config.fullWidthGraph)valueHop = (msr.availableWidth / data.labels.length);
 
         msr.clrwidth=msr.clrwidth - (msr.availableWidth - ((data.labels.length) * valueHop));
         msr.availableWidth = (data.labels.length) * valueHop;
@@ -3302,7 +3303,7 @@ window.Chart = function (context) {
 
         scaleHop = Math.floor(msr.availableHeight / data.labels.length);
         valueHop = Math.floor(msr.availableWidth / (calculatedScale.steps));
-        if(valueHop ==0)valueHop = (msr.availableWidth / (data.labels.length - 1));
+        if(valueHop ==0 || config.fullWidthGraph)valueHop = (msr.availableWidth / (calculatedScale.steps));
 
         msr.clrwidth=msr.clrwidth - (msr.availableWidth - (calculatedScale.steps * valueHop));
         msr.availableWidth = (calculatedScale.steps) * valueHop;
@@ -3684,7 +3685,7 @@ window.Chart = function (context) {
 		
         scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
         valueHop = Math.floor(msr.availableWidth / (data.labels.length));
-        if(valueHop ==0)valueHop = (msr.availableWidth / (data.labels.length - 1));
+        if(valueHop ==0 || config.fullWidthGraph)valueHop = (msr.availableWidth / data.labels.length);
 
         msr.clrwidth=msr.clrwidth - (msr.availableWidth - ((data.labels.length) * valueHop));
         msr.availableWidth = (data.labels.length) * valueHop;
@@ -4086,7 +4087,7 @@ window.Chart = function (context) {
 
         scaleHop = Math.floor(msr.availableHeight / data.labels.length);
         valueHop = Math.floor(msr.availableWidth / (calculatedScale.steps));
-        if(valueHop ==0)valueHop = (msr.availableWidth / (data.labels.length - 1));
+        if(valueHop ==0 || config.fullWidthGraph)valueHop = (msr.availableWidth / calculatedScale.steps);
 
         msr.clrwidth=msr.clrwidth - (msr.availableWidth - (calculatedScale.steps * valueHop));
         msr.availableWidth = (calculatedScale.steps) * valueHop;
