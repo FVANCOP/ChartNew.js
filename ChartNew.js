@@ -221,7 +221,8 @@ function addParameters2Function(data,fctName,fctList) {
 		  mean: {data:data.data,datasetNr:data.v11},
 		  varianz: {data:data.data, datasetNr:data.v11},
 		  stddev: {data:data.data, datasetNr:data.v11},
-		  cv: {data:data.data, datasetNr:data.v11}
+		  cv: {data:data.data, datasetNr:data.v11},
+      median: {data:data.data, datasetNr:data.v11}
 	  };
 	  // difference to current value (v3)
 	  dif = false;
@@ -247,7 +248,7 @@ function isNumber(n) {
 } ;
 
 function tmplbis(str, data) {
-	  var mathFunctionList = ["mean","varianz","stddev","cv"];
+	  var mathFunctionList = ["mean","varianz","stddev","cv","median"];
 	  var regexMath = new RegExp('<%=((?:(?:.*?)\\W)??)((?:'+mathFunctionList.join('|')+')(?:Dif)?)\\(([0-9]*?)\\)(.*?)%>','g');
 	  while (regexMath.test(str)) {
  	  str = str.replace(regexMath, function($0,$1,$2,$3,$4) {
@@ -2651,6 +2652,7 @@ window.Chart = function (context) {
    
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, rotateLabels = 0, msr;
         var zeroY = 0;
+        var offsets=[];
 
 
 
@@ -2736,12 +2738,17 @@ window.Chart = function (context) {
         if (valueBounds.minValue < 0) {
            zeroY = calculateOffset(config, 0, calculatedScale, scaleHop);
         }
-
+        for (var i = 0; i < data.datasets.length; i++) {
+          offsets[i] = [];
+          for (var j = 0; j < data.datasets[i].data.length; j++) {
+            offsets[i][j] = (calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)-zeroY);
+          }
+        }
 
         animationLoop(config, drawScale, drawLines, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
         
         function drawLines(animPc) {
-        	drawLinesDataset(animPc,data,config,ctx,
+        	drawLinesDataset(animPc,data,config,ctx,offsets,
 							 {xAxisPosY:xAxisPosY,yAxisPosX:yAxisPosX,valueHop:valueHop,nbValueHop :data.labels.length-1,scaleHop:scaleHop,
 							  zeroY:zeroY,calculatedScale:calculatedScale});
           		  if (animPc >= 1) {
@@ -3584,6 +3591,7 @@ window.Chart = function (context) {
 
     var Bar = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
+        var offsets=[];
 
         if(typeof ctx.ChartNewId == "undefined"){
           var cvdate = new Date();
@@ -3694,6 +3702,13 @@ window.Chart = function (context) {
             var zeroY = calculateOffset(config, 0, calculatedScale, scaleHop);
         }
 
+        for (var i = 0; i < data.datasets.length; i++) {
+          offsets[i] = [];
+          for (var j = 0; j < data.datasets[i].data.length; j++) {
+            offsets[i][j] = (calculateOffset(config, data.datasets[i].data[j], calculatedScale, scaleHop)-zeroY);
+          }
+        }
+
         drawLabels();
         animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
 
@@ -3722,7 +3737,7 @@ window.Chart = function (context) {
 					var lineData = {datasets:[],labels:data.labels};
 					lineData.datasets.push(data.datasets[i]);
 					lineConfig = mergeChartConfig(config, {datasetFill: data.datasets[i].fill})
-				   	drawLinesDataset(animPc,lineData,lineConfig,ctx,
+				   	drawLinesDataset(animPc,lineData,lineConfig,ctx,offsets,
 									 {xAxisPosY:xAxisPosY,
 									  yAxisPosX:yAxisPosX + config.barValueSpacing+ 
 									  (barWidth + config.barDatasetSpacing/2 + config.barStrokeWidth)*nrOfBars/2,
@@ -5419,7 +5434,7 @@ window.Chart = function (context) {
     } ;
 
 	// Function for additionalLine (BarLine|Line)
-	function drawLinesDataset(animPc,data,config,ctx,vars) {
+	function drawLinesDataset(animPc,data,config,ctx,offsets,vars) {
 		var xAxisPosY = vars.xAxisPosY;
 		var yAxisPosX = vars.yAxisPosX;
 		var valueHop = vars.valueHop;
