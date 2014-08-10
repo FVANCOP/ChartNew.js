@@ -3754,11 +3754,17 @@ window.Chart = function (context) {
 
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
                   
+
                   var currentAnimPc = animationCorrection(animPc,data,config,i,j,1).animVal;
                   if(currentAnimPc>1)currentAnimPc=currentAnimPc-1;
                   ctx.fillStyle=config.defaultFillColor;
+
+				  var barHeight = currentAnimPc*(calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, scaleHop)-zeroY) + (config.barStrokeWidth / 2);
+				  var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
+
                   if (typeof data.datasets[i].fillColor == "function") { 
-					  ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
+					  ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j],
+																 ctx,barOffset,xAxisPosY-zeroY-barHeight,barOffset,xAxisPosY-zeroY);
 				  }
                   else if(typeof(data.datasets[i].fillColor)=="string") {
 					  ctx.fillStyle = data.datasets[i].fillColor;
@@ -3783,10 +3789,11 @@ window.Chart = function (context) {
 				  }
 
                   if (!(typeof(data.datasets[i].data[j])=='undefined')) {
-                    var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
 
-                    var barHeight = currentAnimPc*(calculateOffset(config, 1*data.datasets[i].data[j], calculatedScale, scaleHop)-zeroY) + (config.barStrokeWidth / 2);
-              			roundRect( ctx, barOffset, xAxisPosY-zeroY, barWidth, barHeight, config.barShowStroke, config.barBorderRadius);
+
+					  roundRect( ctx, barOffset, xAxisPosY-zeroY, barWidth, barHeight, config.barShowStroke, config.barBorderRadius);
+
+
 
                     cumvalue[j] += 1*data.datasets[i].data[j];
                     if (animPc >= 1) {
@@ -3895,7 +3902,7 @@ window.Chart = function (context) {
 			    ctx.quadraticCurveTo(x, y, x + radius, y);
 			    if(stroke)ctx.stroke();
 			    ctx.closePath();
-			    ctx.fill();
+			  ctx.fill();
         } ;
 
         function drawScale() {
