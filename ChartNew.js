@@ -1928,8 +1928,12 @@ window.Chart = function (context) {
                 ctx.closePath();
 
                 if(config.datasetFill){
-                  if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc,-1);
-                  else if(typeof data.datasets[i].fillColor=="string")ctx.fillStyle = data.datasets[i].fillColor;
+                  if (typeof data.datasets[i].fillColor == "function") {
+					  ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc,-1);
+				  }
+                  else if(typeof data.datasets[i].fillColor=="string") {
+					 ctx.fillStyle = data.datasets[i].fillColor;
+				  }
                   else ctx.fillStyle=config.defaultFillColor;
                 }
                 else ctx.fillStyle="rgba(0,0,0,0)";
@@ -5365,7 +5369,7 @@ window.Chart = function (context) {
                             ctx.lineTo(xpos , ypos);
                             ctx.closePath();
                             if (drawLegendOnData) {
-                              if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,1,-1);
+                              if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,1,-1,ctx,xpos,ypos-config.legendFontSize,xpos,ypos);
                               else if(typeof data.datasets[orderi].fillColor=="string")ctx.fillStyle = data.datasets[orderi].fillColor;
                               else ctx.fillStyle=config.defaultFillColor;}
                             else {if(typeof data[orderi].color == "string")ctx.fillStyle = data[orderi].color;else ctx.fillStyle=config.defaultFillColor;}
