@@ -1,6 +1,7 @@
 Change history
 --------------
 
+10/08/2014 - Ole Kroger             - median computation
 07/08/2014 - Vancoppenolle Francois - new statistical values computes in stats.js add-ins : skewness, kurtosis, coefficient variance, student t test
 05/08/2014 - Vancoppenolle Francois - new options xScaleLabelsMinimumWidth and yScaleLabelsMinimumWidth
 03/08/2014 - Jan Mortiz Lindemann   - new option extrapolateMissingData
