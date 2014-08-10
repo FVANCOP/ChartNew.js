@@ -38,7 +38,29 @@ function cv(params) {
 	return stddev(params)/mean(params);
 }
 
-
+function median(params) {
+	function numSort (a, b) {
+	  return a - b;
+	}
+	// slice => copy array
+	var dataArray = params.data.datasets[params.datasetNr].data.slice();
+	dataArray.sort(numSort);
+	// missing values are at the end
+	var dataArrayLength = dataArray.length;
+	j = dataArrayLength-1;
+	while (typeof(dataArray[j]) == "undefined" && j >= 0) {
+		j--;
+	}
+	dataArrayLength = j+1;
+	// odd
+	if (dataArrayLength % 2) {
+		return dataArray[Math.floor(dataArrayLength/2)];
+	} else { // even
+		var lowerMiddle = dataArray[dataArrayLength/2-1];
+		var higherMiddle = dataArray[dataArrayLength/2];
+		return (higherMiddle+lowerMiddle)/2;
+	}
+}
 
 function drawMath(ctx,config,data,msr,vars) {
 	var xAxisPosY = vars.xAxisPosY;
