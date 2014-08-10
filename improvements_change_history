@@ -1,12 +1,13 @@
 Change history
 --------------
 
-10/08/2014 - Ole Kroger             - median computation
+10/08/2014 - Ole Kröger             - fmtdatetime and improvements for fmtdate,fmttime
+10/08/2014 - Ole Kröger             - median computation
 07/08/2014 - Vancoppenolle Francois - new statistical values computes in stats.js add-ins : skewness, kurtosis, coefficient variance, student t test
 05/08/2014 - Vancoppenolle Francois - new options xScaleLabelsMinimumWidth and yScaleLabelsMinimumWidth
 03/08/2014 - Jan Mortiz Lindemann   - new option extrapolateMissingData
 31/07/2014 - Vancoppenolle François - x values not associated to labels on axis (issue 110)
-31/07/2014 - Ole Kroger             - Bug with logarithm axis corrected (issue 107)
+31/07/2014 - Ole Kröger             - Bug with logarithm axis corrected (issue 107)
 26/07/2014 - Vancoppenolle François - Bug with annotates corrected (see issue #103) - bug reported by jeppebemad
 26/07/2014 - Vancoppenolle François - "stats.js" add-in created
 12/07/2014 - Vancoppenolle Francois - you can now draw more than one graph on a single canvas.
