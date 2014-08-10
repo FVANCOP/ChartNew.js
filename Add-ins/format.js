@@ -28,37 +28,29 @@ function fmtChartJSPerso(config,value,fmt){
       return_value=value.toLocaleDateString(fmt.split(" ")[1],options);
       break;  
     case "FMTDATE" :
-      spltdt=fmt.split(/[\s,]+/)[1];
+      spltdt=fmt.split(/[\s,]+/)[1].toUpperCase();
 	  return_value = spltdt.replaceArray(["DD","MM","YYYY","YY"],[value.getDate(),1+value.getMonth(),value.getFullYear(),value.getYear()%100]);
       break;    
     case "TIME" : 
       return_value=value.toLocaleTimeString();
       break; 
     case "FMTTIME" :
-      spltdt=fmt.split(/[\s,]+/)[1].split(":");
-      return_value="";
-      for(var i=0;i<spltdt.length;i++)
-      {
-        if(i>0)return_value=return_value+":";
-        switch(spltdt[i].toUpperCase())
-        {
-          case "HH" :
-            if(value.getHours()<10)return_value=return_value+'0'+value.getHours();
-            else return_value=return_value+value.getHours(); 
-            break;
-          case "MM" :
-            if(value.getMinutes()<10)return_value=return_value+'0'+value.getMinutes();
-            else return_value=return_value+value.getMinutes(); 
-            break;
-          case "SS" :
-            if(value.getSeconds()<10)return_value=return_value+'0'+value.getSeconds();
-            else return_value=return_value+value.getSeconds(); 
-            break;
-          default : 
-            break;
-        }
-      }
+	  spltdt=fmt.split(/[\s,]+/)[1].toUpperCase();
+	  return_value = spltdt.replaceArray(["HH","MM","SS"],[
+		  value.getHours() < 10 ? '0'+value.getHours() : value.getHours(),
+		  value.getMinutes() < 10 ? '0'+value.getMinutes() : value.getMinutes(),
+	     value.getSeconds() < 10 ? '0'+value.getSeconds() : value.getSeconds()
+	  ]);
       break;    
+	case "FMTDATETIME" :
+	  spltdt=fmt.splitLimit(/[\s,]+/,2)[1];
+	  return_value = spltdt.replaceArray(["DD","MM","YYYY","YY","HH","mm","ss"],[
+		  value.getDate(),1+value.getMonth(),value.getFullYear(),value.getYear()%100,
+		  value.getHours() < 10 ? '0'+value.getHours() : value.getHours(),
+		  value.getMinutes() < 10 ? '0'+value.getMinutes() : value.getMinutes(),
+	     value.getSeconds() < 10 ? '0'+value.getSeconds() : value.getSeconds()
+	  ]);
+      break;
     default :
       return_value=value;
       break;
@@ -75,5 +67,15 @@ String.prototype.replaceArray = function(find, replace) {
   }
   return replaceString;
 };
+
+String.prototype.splitLimit = function(separator,limit) {
+	var splitString = this;
+	var result = [];
+	var pos = splitString.search(separator);
+	if (pos < 0) return false;
+	result.push(splitString.substring(0,pos));
+	result.push(splitString.substring(pos+1));
+	return result;
+}
 
 
