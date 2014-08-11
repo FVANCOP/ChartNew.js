@@ -2894,11 +2894,17 @@ window.Chart = function (context) {
             for (var i = 0; i < data.datasets.length; i++) {
         				var mathFctName = data.datasets[i].drawMathDeviation;
 				        var mathValueHeight = 0;
-				        if (typeof eval(mathFctName) == "function") {
+						var eachDev = false;
+						if (mathFuncName in data.datasets[i]) {
+							eachDev = true; // each value has his own deviation value
+						} else if (typeof eval(mathFctName) == "function") {
 					         var parameter = {data:data,datasetNr: i};
 					         mathValueHeight = window[mathFctName](parameter);
-			          }
+			            }
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
+					if (eachDev) {
+						mathValueHeight = data.datasets[i][mathFctName][j];
+					}
                     if (1*data.datasets[i].data[j]+mathValueHeight > upperValue) { upperValue = 1*data.datasets[i].data[j]+mathValueHeight };
                     if (1*data.datasets[i].data[j]-mathValueHeight < lowerValue) { lowerValue = 1*data.datasets[i].data[j]-mathValueHeight };
 
@@ -4009,11 +4015,17 @@ window.Chart = function (context) {
             for (var i = 0; i < data.datasets.length; i++) {
         				var mathFctName = data.datasets[i].drawMathDeviation;
 				        var mathValueHeight = 0;
-				        if (typeof eval(mathFctName) == "function") {
+						var eachDev = false;
+						if (mathFctName in data.datasets[i]) {
+							eachDev = true; // each value has his own deviation value
+						} else if (typeof eval(mathFctName) == "function") {
 					         var parameter = {data:data,datasetNr: i};
 					         mathValueHeight = window[mathFctName](parameter);
-			          }
+			            }
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
+					if (eachDev) {
+						mathValueHeight = data.datasets[i][mathFctName][j];
+					}
                     if (1*data.datasets[i].data[j]+mathValueHeight > upperValue) { upperValue = 1*data.datasets[i].data[j]+mathValueHeight };
                     if (1*data.datasets[i].data[j]-mathValueHeight < lowerValue) { lowerValue = 1*data.datasets[i].data[j]-mathValueHeight };
 

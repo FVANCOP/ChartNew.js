@@ -93,8 +93,13 @@ function drawMath(ctx,config,data,msr,vars) {
 	 */
 	function drawMathDeviation(i,deviationFct) {
 		var deviation = 0;
-		// check if the math function exists
-		if (typeof eval(deviationFct) == "function") {
+		var eachDev = false;
+		// check if each value has his own deviation value
+		if (deviationFct in data.datasets[i]) {
+			eachDev = true;
+			deviation = 0;
+		} else // check if the math function exists
+			if (typeof eval(deviationFct) == "function") {
 			var parameter = {data:data,datasetNr: i};
 			deviation = window[deviationFct](parameter);
 		 }
@@ -103,6 +108,9 @@ function drawMath(ctx,config,data,msr,vars) {
 			ctx.lineWidth = config.datasetStrokeWidth;
 			ctx.beginPath();
 			for (var j = 0; j < data.datasets[i].data.length; j++) {
+				if (eachDev) {
+					deviation = data.datasets[i][deviationFct][j];
+				}
 				// important to check because missing values are possible
 				if (!(typeof(data.datasets[i].data[j])=='undefined')) {
 					var deviationWidth = data.datasets[i].deviationWidth;
