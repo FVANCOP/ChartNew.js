@@ -37,6 +37,9 @@ New Items in graph compared to Graph.js :
 * Footnote
 * [crossText](../../wiki/100_040_CrossText) (you can put a text over the graph at the place of your choice)
 * graphMin / graphMax
+* [colorFunctions](../../wiki/130_color_functions)
+* [mathFunctions](../../wiki/170_Math_functions)
+* [etc](https://github.com/FVANCOP/ChartNew.js/wiki)
     
 
 A quick sample can be found on http://fvancop.github.io/ChartNew.js/
