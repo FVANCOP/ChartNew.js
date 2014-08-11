@@ -1929,7 +1929,7 @@ window.Chart = function (context) {
 
                 if(config.datasetFill){
                   if (typeof data.datasets[i].fillColor == "function") {
-					  ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc,-1);
+					  ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",{data:data,config:config,i:i,j:-1,currentAnimPc:currentAnimPc,value:-1});
 				  }
                   else if(typeof data.datasets[i].fillColor=="string") {
 					 ctx.fillStyle = data.datasets[i].fillColor;
@@ -3017,7 +3017,11 @@ window.Chart = function (context) {
                      if(currentAnimPc>1)currentAnimPc=currentAnimPc-1;
 
                      ctx.fillStyle=config.defaultFillColor;
-                     if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
+                     if (typeof data.datasets[i].fillColor == "function") {
+						 ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",
+																	{data:data,config:config,i:i,j:j,
+																	 currentAnimPc:currentAnimPc,value:1*data.datasets[i].data[j]});
+					 }
                      else if(typeof(data.datasets[i].fillColor)=="string"){ctx.fillStyle = data.datasets[i].fillColor;}
                      else if(typeof(data.datasets[i].fillColor)=="object"){if(typeof(data.datasets[i].fillColor[0])=="string"){ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length-1,j])];} }
                      
@@ -3351,7 +3355,11 @@ window.Chart = function (context) {
                       if(currentAnimPc>1)currentAnimPc=currentAnimPc-1;
  
                       ctx.fillStyle=config.defaultFillColor;
-                      if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
+                      if (typeof data.datasets[i].fillColor == "function") {
+						  ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",
+																	 {data:data,config:config,i:i,j:j,
+																	  currentAnimPc:currentAnimPc,value:1*data.datasets[i].data[j]});
+					  }
                       else if(typeof(data.datasets[i].fillColor)=="string"){ctx.fillStyle = data.datasets[i].fillColor;}
                       else if(typeof(data.datasets[i].fillColor)=="object"){if(typeof(data.datasets[i].fillColor[0])=="string"){ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length-1,j])];} }
                       
@@ -3767,8 +3775,9 @@ window.Chart = function (context) {
 				  var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
 
                   if (typeof data.datasets[i].fillColor == "function") { 
-					  ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j],
-																 ctx,barOffset,xAxisPosY-zeroY-barHeight,barOffset,xAxisPosY-zeroY);
+					  ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",{data:data,config:config,i:i,j:j,
+																			  currentAnimPc:currentAnimPc,value:1*data.datasets[i].data[j],
+																 ctx:ctx,x0:barOffset,y0:xAxisPosY-zeroY-barHeight,x1:barOffset,y1:xAxisPosY-zeroY});
 				  }
                   else if(typeof(data.datasets[i].fillColor)=="string") {
 					  ctx.fillStyle = data.datasets[i].fillColor;
@@ -4135,7 +4144,11 @@ window.Chart = function (context) {
                   if(currentAnimPc>1)currentAnimPc=currentAnimPc-1;
 
                   ctx.fillStyle=config.defaultFillColor;
-                  if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
+                  if (typeof data.datasets[i].fillColor == "function") {
+					  ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",
+																 {data:data,config:config,i:i,j:j,
+																  currentAnimPc:currentAnimPc,value:1*data.datasets[i].data[j]});
+				  }
                   else if(typeof(data.datasets[i].fillColor)=="string"){ctx.fillStyle = data.datasets[i].fillColor;}
                   else if(typeof(data.datasets[i].fillColor)=="object"){if(typeof(data.datasets[i].fillColor[0])=="string"){ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length-1,j])];} }
                   
@@ -5369,7 +5382,11 @@ window.Chart = function (context) {
                             ctx.lineTo(xpos , ypos);
                             ctx.closePath();
                             if (drawLegendOnData) {
-                              if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,1,-1,ctx,xpos,ypos-config.legendFontSize,xpos,ypos);
+                              if (typeof data.datasets[i].fillColor == "function") {
+								  ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",
+																			 {data:data,config:config,i:i,j:-1,currentAnimPc:1,value:-1,
+																			  ctx:ctx,x0:xpos,y0:ypos-config.legendFontSize,x1:xpos,y1:ypos});
+							  }
                               else if(typeof data.datasets[orderi].fillColor=="string")ctx.fillStyle = data.datasets[orderi].fillColor;
                               else ctx.fillStyle=config.defaultFillColor;}
                             else {if(typeof data[orderi].color == "string")ctx.fillStyle = data[orderi].color;else ctx.fillStyle=config.defaultFillColor;}
@@ -5587,7 +5604,11 @@ window.Chart = function (context) {
                              ctx.lineTo(xPos(i,frstpt,data), xAxisPosY - zeroY);
                              ctx.lineTo(xPos(i,frstpt,data), yPos(i, frstpt));
                              ctx.closePath();
-                             if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc.mainVal,-1);
+                             if (typeof data.datasets[i].fillColor == "function") {
+								 ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",
+																			{data:data,config:config,i:i,j:-1,
+																			 currentAnimPc:currentAnimPc.mainVal,value:-1});
+							 }
                              else if(typeof data.datasets[i].fillColor=="string")ctx.fillStyle = data.datasets[i].fillColor;
                              else ctx.fillStyle=config.defaultFillColor;
                              ctx.fill();
@@ -5630,7 +5651,11 @@ window.Chart = function (context) {
 				ctx.lineTo(xPos(i,frstpt,data), xAxisPosY - zeroY);
 				ctx.lineTo(xPos(i,frstpt,data), yPos(i, frstpt));
 				ctx.closePath();
-				if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc.mainVal,-1);
+				if (typeof data.datasets[i].fillColor == "function") {
+					ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",
+															   {data:data,config:config,i:i,j:-1,
+																currentAnimPc:currentAnimPc.mainVal,value:-1});
+				}
 				else if(typeof data.datasets[i].fillColor=="string")ctx.fillStyle = data.datasets[i].fillColor;
 				else ctx.fillStyle=config.defaultFillColor;
 				ctx.fill();
