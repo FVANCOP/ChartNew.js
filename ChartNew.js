@@ -1259,7 +1259,8 @@ window.Chart = function (context) {
             animationSteps: 60,
             animationEasing: "easeOutQuart",
             onAnimationComplete: null,
-            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + v6 + ' %)'%>"
+            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + v6 + ' %)'%>",
+			reverseOrder: false
          };   
             
 
@@ -1383,8 +1384,8 @@ window.Chart = function (context) {
             animationSteps: 60,
             animationEasing: "easeOutQuart",
             onAnimationComplete: null,
-            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + v6 + ' %)'%>"
-            
+            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + v6 + ' %)'%>",
+			reverseOrder: false
         };
 
         // merge annotate defaults
@@ -3255,8 +3256,31 @@ window.Chart = function (context) {
         } ;
     } ;
 
+	/**
+	 * Reverse the data structure for horizontal charts
+	 * - reverse labels and every array inside datasets
+	 * @param {object} data datasets and labels for the chart
+	 * @return return the reversed data
+	 */
+	function reverseData(data) {
+		data.labels = data.labels.reverse();
+		for(var i = 0; i < data.datasets.length; i++) {
+			for (var key in data.datasets[i]){
+				console.log(data.datasets[i][key]);
+				if (Array.isArray(data.datasets[i][key])) {
+					 data.datasets[i][key] = data.datasets[i][key].reverse();
+				}
+			}
+		}
+		return data;
+	}
+
     var HorizontalStackedBar = function (data, config, ctx) {
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
+
+		if (config.reverseOrder) {
+			data = reverseData(data);
+		}
 
         if(typeof ctx.ChartNewId == "undefined"){
           var cvdate = new Date();
@@ -4045,8 +4069,11 @@ window.Chart = function (context) {
     } ;
 
     var HorizontalBar = function (data, config, ctx) {
-
         var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0, msr;
+
+		if (config.reverseOrder) {
+			data = reverseData(data);
+		}
 
         if(typeof ctx.ChartNewId == "undefined"){
           var cvdate = new Date();
@@ -5812,8 +5839,6 @@ if(animValue<1 && (vdata < (config.animationStartWithData-1) )){
 } 
 
 }
-
-
 
 return{
   mainVal : animValue,

@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+  <meta name="generator" content="PSPad editor, www.pspad.com">
+  <title></title>
+
+  <!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+  </head>
+  <body>
+  <canvas id="mycanvas" height="450" width="800"></canvas>
+  <script>
+	  var _labels = ['East Coast','Gauteng','General','Inland'];
+	  var _data = [64.29,73.67,3.59,89.9];
+
+	   var data = {
+            labels: _labels,
+            datasets: [
+              {
+                  fillColor: "rgba(220,220,220,0.5)",
+                  strokeColor: "rgba(220,220,220,1)",
+                  pointColor: "rgba(220,220,220,1)",
+                  pointStrokeColor: "#fff",
+                  data: _data
+              }
+            ]
+        };
+        var options =  {
+            inGraphDataShow: true,
+            footNote: "% Completed",
+            footNoteFontSize: 10,
+            graphMax: 100,
+            barBorderRadius: 3,
+            inGraphDataPaddingX: 3,
+            annotateDisplay: true,
+            spaceRight: 20,
+            annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ': ' : '') + v3 + '%' %>",
+			reverseOrder: true
+          }
+
+
+  window.onload = function() {
+    var myBar = new Chart(document.getElementById("mycanvas").getContext("2d")).HorizontalBar(data,options);
+    }
+    </script>
+
+  </body>
+</html>
