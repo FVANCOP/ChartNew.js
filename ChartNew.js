@@ -3266,7 +3266,6 @@ window.Chart = function (context) {
 		data.labels = data.labels.reverse();
 		for(var i = 0; i < data.datasets.length; i++) {
 			for (var key in data.datasets[i]){
-				console.log(data.datasets[i][key]);
 				if (Array.isArray(data.datasets[i][key])) {
 					 data.datasets[i][key] = data.datasets[i][key].reverse();
 				}
