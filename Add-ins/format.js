@@ -68,6 +68,13 @@ String.prototype.replaceArray = function(find, replace) {
   return replaceString;
 };
 
+/**
+ * split a string into an array with limit entries
+ * The last entry contains the last part of the string, which can contain the separator)
+ * @param separator {string} string separator
+ * @param limit {integer} number of entries in the array
+ * @return array of separated strings
+ */
 String.prototype.splitLimit = function(separator,limit) {
 	var splitString = this;
 	var result = [];
@@ -77,5 +84,4 @@ String.prototype.splitLimit = function(separator,limit) {
 	result.push(splitString.substring(pos+1));
 	return result;
 }
-
 
