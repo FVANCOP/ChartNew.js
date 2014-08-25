@@ -6,8 +6,12 @@ function gradient(area,params) {
 		var steps = gradientColors.length;
 		var currentStepValue = 0;
 		for (var i = 0; i < steps; i++) {
-			grd.addColorStop(currentStepValue,gradientColors[i]);
-			currentStepValue += 1/steps;
+userStepValue=gradientColors[i].match(/\d+% ?/g); 
+if(userStepValue){userStepValue=parseFloat(userStepValue) / 100.0;}
+if(!userStepValue){userStepValue=currentStepValue;}
+GradientcolorsWithoutStep=gradientColors[i].replace(/\d+% ?/g, "");
+			grd.addColorStop(userStepValue,GradientcolorsWithoutStep);
+			currentStepValue += 1/(steps-1);
 		}
 		return grd;
 	}
