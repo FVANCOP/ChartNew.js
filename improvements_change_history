@@ -123,6 +123,7 @@ Future Improvements
 - Different units for Y-axes on left and right (issue #41)
 - live update of the data (see : http://www.jqchart.com/jquery/chart/RealTime/LiveData)
 - responsive chart (see issue #43)
+- see issue #128
 
 Known Bugs
 ----------
