@@ -596,7 +596,7 @@ function P2stats(deb,fin,orderStat)
     Q95   : Quantile(95,deb,fin,orderStat),
     Q99   : Quantile(99,deb,fin,orderStat),
     Q100  : orderStat[fin].val,
-    median: Quantile(50,deb,fin,orderStat),
+    median: Quantile(50,deb,fin,orderStat)
     
   }
 };
