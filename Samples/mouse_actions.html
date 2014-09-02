@@ -1,0 +1,122 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+<SCRIPT>
+
+var charJSPersonalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = {
+	labels : [0,5,10,15,20],
+  datasets : [
+		{
+			pointColor : "black",
+			strokeColor : "black",
+			pointStrokeColor : "black",
+			data : [12.1,25.3,7.9,9.1,31.3],
+      title : "line1"
+		},
+		{
+			pointColor : "red",
+			strokeColor : "red",
+			pointStrokeColor : "red",
+			data : [10,21.3,12.5,5.7,22.3],
+      title : "line2"
+		}
+	]
+}               
+
+function fctMouseDownMiddle(event,ctx,config,data,other)
+{
+  if(other != null) window.alert("Click on midlle button");
+  else window.alert("You click the middle button but not on a data");
+}
+
+function fctMouseDownLeft(event,ctx,config,data,other)
+{
+  
+  if(other != null) window.alert("["+data.labels[other.v12]+","+data.datasets[other.v11].data[other.v12]+"]");
+  else window.alert("You click Left but not on a data");
+}
+function fctMouseDownRight(event,ctx,config,data,other)
+{
+  if(other != null) window.alert("All other variables : \nv1="+other.v1+"\nv2="+other.v2+"\nv3="+other.v3+"\nv4="+other.v4+"\nv5="+other.v5+"\nv6="+other.v6+"\nv7="+other.v7+"\nv8="+other.v8+"\nv9="+other.v9+"\nv10="+other.v10+"\nv11="+other.v11+"\nv12="+other.v12);
+  else window.alert("You click Right but not on a data");
+}
+
+function fctMouseMove(event,ctx,config,data,other)
+{
+  var canvas_pos = getMousePos(ctx.canvas, event);
+  document.getElementById('divmousepos').innerHTML = "Mouse Position : ["+canvas_pos.x+","+canvas_pos.y+"]";
+}
+
+function fctMouseOut(event,ctx,config,data,other)
+{
+  var canvas_pos = getMousePos(ctx.canvas, event);
+  document.getElementById('divmousepos').innerHTML = "Mouse not in canvas";
+}
+
+var opt1 = {
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      datasetFill : false,
+      graphTitle : "mouse action sample",
+      graphTitleFontSize: 18,
+      graphMin : 0,
+      yAxisMinimumInterval : 5,
+      bezierCurve: false,
+      annotateDisplay : true, 
+      inGraphDataShow : true,
+      mouseDownLeft : fctMouseDownLeft,
+      mouseDownRight : fctMouseDownRight,
+      mouseDownMiddle : fctMouseDownMiddle,
+      mouseMove : fctMouseMove,
+      mouseOut : fctMouseOut
+      
+
+}
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      var element = document.createElement('divmousepos');
+      element.id = "divmousepos";
+      document.body.appendChild(element);        
+      var mouseDiv = document.getElementById('divmousepos');
+      mouseDiv.style.zIndex='3';
+      mouseDiv.style.color='rgb(255,255,0)';
+      mouseDiv.style.background='rgb(0,102,153)';
+      mouseDiv.style.width='700px';
+      mouseDiv.style.height='200px';
+      mouseDiv.style.left='500px';
+      mouseDiv.style.top='90px';
+      mouseDiv.innerHTML = "Mouse not in canvas";
+
+window.onload = function() {
+
+
+    var myLine = new Chart(document.getElementById("canvas_Line1").getContext("2d")).Line(mydata1,opt1);
+}
+    </script>
+  </body>
+</html>

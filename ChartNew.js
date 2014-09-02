@@ -588,20 +588,23 @@ function getMousePos(canvas, evt) {
     };
 };
 
-function doMouseMove(ctx, config, event,data) {
+function doMouseAction(config,ctx,event,data,action,funct) {
 
-    var annotateDIV = document.getElementById('divCursor');
-    show = false;
+    if(action=="annotate") {  
+      var annotateDIV = document.getElementById('divCursor');
+      show = false;
+      onData = false;
 
-    annotateDIV.className = (config.annotateClassName) ? config.annotateClassName : '';
-    annotateDIV.style.border = (config.annotateClassName) ? '' : config.annotateBorder;
-    annotateDIV.style.padding = (config.annotateClassName) ? '' : config.annotatePadding;
-    annotateDIV.style.borderRadius = (config.annotateClassName) ? '' : config.annotateBorderRadius;
-    annotateDIV.style.backgroundColor = (config.annotateClassName) ? '' : config.annotateBackgroundColor;
-    annotateDIV.style.color = (config.annotateClassName) ? '' : config.annotateFontColor;
-    annotateDIV.style.fontFamily = (config.annotateClassName) ? '' : config.annotateFontFamily;
-    annotateDIV.style.fontSize = (config.annotateClassName) ? '' : config.annotateFontSize+"pt";
-    annotateDIV.style.fontStyle = (config.annotateClassName) ? '' : config.annotateFontStyle;
+      annotateDIV.className = (config.annotateClassName) ? config.annotateClassName : '';
+      annotateDIV.style.border = (config.annotateClassName) ? '' : config.annotateBorder;
+      annotateDIV.style.padding = (config.annotateClassName) ? '' : config.annotatePadding;
+      annotateDIV.style.borderRadius = (config.annotateClassName) ? '' : config.annotateBorderRadius;
+      annotateDIV.style.backgroundColor = (config.annotateClassName) ? '' : config.annotateBackgroundColor;
+      annotateDIV.style.color = (config.annotateClassName) ? '' : config.annotateFontColor;
+      annotateDIV.style.fontFamily = (config.annotateClassName) ? '' : config.annotateFontFamily;
+      annotateDIV.style.fontSize = (config.annotateClassName) ? '' : config.annotateFontSize+"pt";
+      annotateDIV.style.fontStyle = (config.annotateClassName) ? '' : config.annotateFontStyle;
+    }
 
     canvas_pos = getMousePos(ctx.canvas, event);
     for (i = 0; i < jsGraphAnnotate[ctx.ChartNewId]["length"]; i++) {
@@ -639,16 +642,21 @@ function doMouseMove(ctx, config, event,data) {
                     graphPosX = canvas_pos.x;
                     graphPosY = canvas_pos.y;
 
-                    // create label text
-                    dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, v13: v13, graphPosX: graphPosX, graphPosY: graphPosY} );
-                    annotateDIV.innerHTML = dispString;
-                    show = true;
-
-
-                    x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
-                    y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
-                    if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
-                    oCursor.moveIt(x + fromLeft, y + fromTop);
+                    onData = true;
+                    
+                    if(action=="annotate") {  
+                       dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, v13: v13, graphPosX: graphPosX, graphPosY: graphPosY} );
+                       annotateDIV.innerHTML = dispString;
+                       show = true;
+                    } else {
+                       funct(event,ctx,config,data, { v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, v13: v13, graphPosX: graphPosX, graphPosY: graphPosY} );
+                    }
+                    if(action=="annotate") {  
+                       x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
+                       y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
+                       if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
+                       oCursor.moveIt(x + fromLeft, y + fromTop);
+                    }
                 }
             }
         } else if (jsGraphAnnotate[ctx.ChartNewId][i][0] == "RECT") {
@@ -669,15 +677,20 @@ function doMouseMove(ctx, config, event,data) {
                 v12 = fmtChartJS(config,jsGraphAnnotate[ctx.ChartNewId][i][11],config.fmtV12); // v12=position in Dataset[v11].Data;
                 graphPosX = canvas_pos.x;
                 graphPosY = canvas_pos.y;
-
-                dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY, data:data });
-                annotateDIV.innerHTML = dispString;
-                show = true;
-
-                x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
-                y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
-                if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
-                oCursor.moveIt(x + fromLeft, y + fromTop);
+                onData = true;
+                if(action=="annotate") {  
+                   dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY, data:data });
+                   annotateDIV.innerHTML = dispString;
+                   show = true;
+                } else {
+                   funct(event,ctx,config,data, { v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY });
+                }
+                if(action=="annotate") {  
+                   x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
+                   y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
+                   if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
+                   oCursor.moveIt(x + fromLeft, y + fromTop);
+                }
             }
 
         } else if (jsGraphAnnotate[ctx.ChartNewId][i][0] == "POINT") {
@@ -700,20 +713,28 @@ function doMouseMove(ctx, config, event,data) {
 
                 graphPosX = canvas_pos.x;
                 graphPosY = canvas_pos.y;
-
-                dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY, data: data });
-                annotateDIV.innerHTML = dispString;
-                show = true;
-
-                x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
-                y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
-                if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
-                oCursor.moveIt(x + fromLeft, y + fromTop);
+                onData = true;
+                if(action=="annotate") {  
+                   dispString = tmplbis(config.annotateLabel, { config:config, v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY, data: data });
+                   annotateDIV.innerHTML = dispString;
+                   show = true;
+                } else {
+                   funct(event,ctx,config,data, {v1: v1, v2: v2, v3: v3, v4: v4, v5: v5, v6: v6, v7: v7, v8: v8, v9: v9, v10: v10, v11: v11, v12: v12, graphPosX: graphPosX, graphPosY: graphPosY });
+                }
+                if(action=="annotate") {  
+                   x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
+                   y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
+                   if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
+                   oCursor.moveIt(x + fromLeft, y + fromTop);
+                }
 
             }
         }
-
-annotateDIV.style.display = show ? '' : 'none';
+        if(action=="annotate") {  annotateDIV.style.display = show ? '' : 'none'; }
+    }
+    if(onData==false && action != "annotate")
+    {
+        funct(event,ctx,config,data, null);
     }
 
 } ;
@@ -1525,8 +1546,12 @@ window.Chart = function (context) {
         animationLeftToRight : false,
         animationByDataset : false,
         defaultStrokeColor : "rgba(220,220,220,1)",
-        defaultFillColor : "rgba(220,220,220,0.5)"
-        
+        defaultFillColor : "rgba(220,220,220,0.5)",
+        mouseDownRight : null,
+        mouseDownLeft : null,
+        mouseDownMiddle : null,
+        mouseMove : null,
+        mouseOut : null
     };
 
     chart.defaults.xyAxisCommonOptions = {
@@ -5479,13 +5504,14 @@ window.Chart = function (context) {
 				maxvalue[j] = -999999999; 
 			}
 		}
-		for (var i = 0; i < data.datasets.length; i++) {
-			for (var j = 0; j < data.datasets[i].data.length; j++) {
-				totvalue[j] += data.datasets[i].data[j];
-				maxvalue[j] = Max([maxvalue[j], data.datasets[i].data[j]]); 
-			} 
+    for (var i = 0; i < data.datasets.length; i++) {
+       for (var j = 0; j < data.datasets[i].data.length; j++) {
+	        totvalue[j] += data.datasets[i].data[j];
+		      maxvalue[j] = Max([maxvalue[j], data.datasets[i].data[j]]); 
+		    } 
 		}
-		for (var i = 0; i < data.datasets.length; i++) {
+ 
+ 		for (var i = 0; i < data.datasets.length; i++) {
 			var prevpt=-1;
 			var frstpt=-1;
 
@@ -5737,8 +5763,8 @@ window.Chart = function (context) {
 
         }
     } ;
+  
 
-    
     function defMouse(ctx,data,config,tpgraph) {
 
         if (config.annotateDisplay == true) {
@@ -5747,13 +5773,13 @@ window.Chart = function (context) {
               if ((config.annotateFunction.split(' ')[1]=="left" && event.which==1) ||
                   (config.annotateFunction.split(' ')[1]=="middle" && event.which==2) ||
                   (config.annotateFunction.split(' ')[1]=="right" && event.which==3) ||
-                  (typeof(config.annotateFunction.split(' ')[1])!="string")) doMouseMove(ctx, config, event,data) 
+                  (typeof(config.annotateFunction.split(' ')[1])!="string")) doMouseAction(config,ctx,event,data,"annotate",config.mouseDownRight) 
               });
             else ctx.canvas.addEventListener(config.annotateFunction.split(' ')[0], function (event) { 
               if ((config.annotateFunction.split(' ')[1]=="left" && event.which==1) ||
                   (config.annotateFunction.split(' ')[1]=="middle" && event.which==2) ||
                   (config.annotateFunction.split(' ')[1]=="right" && event.which==3) ||
-                  (typeof(config.annotateFunction.split(' ')[1])!="string")) doMouseMove(ctx, config, event,data) 
+                  (typeof(config.annotateFunction.split(' ')[1])!="string")) doMouseAction(config,ctx,event,data,"annotate",config.mouseDownRight) 
             }, false);
         }
         
@@ -5775,9 +5801,62 @@ window.Chart = function (context) {
   
         }
 
+        if(typeof config.mouseDownLeft == 'function') {
+            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("onmousedown", function(event) { 
+              if (event.which==1) doMouseAction(config,ctx,event,data,"mouseaction",config.mouseDownLeft); 
+              });  
+            else ctx.canvas.addEventListener("mousedown", function (event) {   
+              if (event.which==1) doMouseAction(config,ctx,event,data,"mouseaction",config.mouseDownLeft);  
+              }
+              ,false);
+        }
+
+        if(typeof config.mouseDownMiddle == 'function') {
+            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("onmousedown", function(event) { 
+              if (event.which==2) doMouseAction(config,ctx,event,data,"mouseaction",config.mouseDownMiddle); 
+              });  
+            else ctx.canvas.addEventListener("mousedown", function (event) {   
+              if (event.which==2) doMouseAction(config,ctx,event,data,"mouseaction",config.mouseDownMiddle);  
+              }
+              ,false);
+        }
+
+        if(typeof config.mouseDownRight == 'function') {
+            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("onmousedown", function(event) { 
+              if (event.which==3) doMouseAction(config,ctx,event,data,"mouseaction",config.mouseDownRight); 
+              });  
+            else ctx.canvas.addEventListener("mousedown", function (event) {   
+              if (event.which==3) doMouseAction(config,ctx,event,data,"mouseaction",config.mouseDownRight);  
+              }
+              ,false);
+        }
+
+        if(typeof config.mouseMove == 'function') {
+            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("onmousemove", function(event) { 
+              doMouseAction(config,ctx,event,data,"mouseaction",config.mouseMove); 
+              });  
+            else ctx.canvas.addEventListener("mousemove", function (event) {   
+              doMouseAction(config,ctx,event,data,"mouseaction",config.mouseMove);  
+              }
+              ,false);
+        }
+
+        if(typeof config.mouseOut == 'function') {
+            if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("onmouseout", function(event) { 
+              config.mouseOut(event,ctx,config,data,null); 
+              });  
+            else ctx.canvas.addEventListener("mouseout", function (event) {   
+              config.mouseOut(event,ctx,config,data,null); 
+              }
+              ,false);
+        }
+
+        
     };
     
 };
+
+
 function animationCorrection(animationValue,data,config,vdata,vsubdata,addone)
 {
 //window.alert((config.animationStartWithDataset-1) +" "+ vdata)
