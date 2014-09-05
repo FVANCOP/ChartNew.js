@@ -156,7 +156,7 @@ function drawMath(ctx,config,data,msr,vars) {
 	 */
 	function yPos(dataSet, iteration, add,value) {
 		value = value ? 1*data.datasets[dataSet].data[iteration] : 0;
-		return xAxisPosY - calculateOffset(config, value+add, calculatedScale, scaleHop);
+		return xAxisPosY - calculateOffset(config.logarithmic, value+add, calculatedScale, scaleHop);
 	};
 	function xPos(iteration,dataSet,barWidth,bar) {
 		if (bar) {
