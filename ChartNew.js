@@ -5216,6 +5216,8 @@ window.Chart = function (context) {
 
         var widestYLabel = 0;
         var highestYLabel = 1;
+        var widestYLabel2 = 0;
+        var highestYLabel2 = 1;
 
         var leftNotUsableSize = 0;
         var rightNotUsableSize = 0;
@@ -5259,6 +5261,23 @@ window.Chart = function (context) {
                 }
             }
             if(widestYLabel< config.yScaleLabelsMinimumWidth){widestYLabel=config.yScaleLabelsMinimumWidth;}
+
+            widestYLabel2 = 1;
+            if (ylabels2 != null && config.yAxisRight) {
+                ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
+                for (var i = ylabels2.length - 1; i >= 0; i--) {
+                    if (typeof (ylabels2[i]) == "string") {
+                        if (ylabels2[i].trim() != "") {
+                            var textMsr = ctx.measureTextMultiLine(fmtChartJS(config,ylabels2[i],config.fmtYLabel2),config.scaleFontSize);
+                            //If the text length is longer - make that equal to longest text!
+                            widestYLabel2 = (textMsr.textWidth > widestYLabel2) ? textMsr.textWidth : widestYLabel2;
+                            highestYLabel2= (textMsr.textHeight > highestYLabel2) ? textMsr.textHeight : highestYLabel2;
+                        }
+                    }
+                }
+            } else { widestYLabel2=widestYLabel;}
+            
+            if(widestYLabel2< config.yScaleLabelsMinimumWidth){widestYLabel2=config.yScaleLabelsMinimumWidth;}
         }
 
         // yAxisLabel
@@ -5280,7 +5299,7 @@ window.Chart = function (context) {
             }
 
             if (config.yAxisRight) {
-                if (reverseAxis == false) rightNotUsableSize = borderWidth + config.spaceRight + yAxisLabelWidth + widestYLabel  + config.yAxisSpaceLeft + config.yAxisSpaceRight;
+                if (reverseAxis == false) rightNotUsableSize = borderWidth + config.spaceRight + yAxisLabelWidth + widestYLabel2  + config.yAxisSpaceLeft + config.yAxisSpaceRight;
                 else rightNotUsableSize = borderWidth + config.spaceRight + yAxisLabelWidth + widestXLabel + config.yAxisSpaceLeft + config.yAxisSpaceRight;
             }
         }
@@ -5707,6 +5726,7 @@ window.Chart = function (context) {
             widestXLabel: widestXLabel,
             highestXLabel: highestXLabel,
             widestYLabel: widestYLabel,
+            widestYLabel2: widestYLabel2,
             highestYLabel: highestYLabel,
             rotateLabels: rotateLabels,
             xLabelPos: xLabelPos,
