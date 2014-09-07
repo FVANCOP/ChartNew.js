@@ -1603,6 +1603,7 @@ window.Chart = function (context) {
             xAxisSpaceBetweenLabels : 5,
             fullWidthGraph : false,
             yAxisLabel: "",
+            yAxisLabel2: "",
             yAxisFontFamily: "'Arial'",
             yAxisFontSize: 16,
             yAxisFontStyle: "normal",
@@ -1621,6 +1622,7 @@ window.Chart = function (context) {
             xAxisSpaceBefore : 5,
             xAxisSpaceAfter : 5,
             yAxisUnit: "",
+            yAxisUnit2: "",
             yAxisUnitFontFamily: "'Arial'",
             yAxisUnitFontSize: 8,
             yAxisUnitFontStyle: "normal",
@@ -5323,16 +5325,13 @@ window.Chart = function (context) {
         // yAxisUnit
 
         if (drawAxis) {
-            if (typeof (config.yAxisUnit) != "undefined") {
-                if (config.yAxisUnit.trim() != "") {
-                    yAxisUnitHeight = (config.yAxisUnitFontSize + config.yAxisUnitSpaceBefore + config.yAxisUnitSpaceAfter);
-                    yAxisUnitPosY = borderWidth + config.spaceTop + graphTitleHeight + graphSubTitleHeight + yAxisUnitHeight - config.yAxisUnitSpaceAfter;
-                }
-            }
+          if (config.yAxisUnit.trim() != "") {
+              yAxisUnitHeight = (config.yAxisUnitFontSize + config.yAxisUnitSpaceBefore + config.yAxisUnitSpaceAfter);
+              yAxisUnitPosY = borderWidth + config.spaceTop + graphTitleHeight + graphSubTitleHeight + yAxisUnitHeight - config.yAxisUnitSpaceAfter;
+          }
         }
 
         topNotUsableSize = borderWidth + config.spaceTop + graphTitleHeight + graphSubTitleHeight + yAxisUnitHeight + config.graphSpaceBefore;
-		
 		
         // footNote
 
@@ -5521,6 +5520,7 @@ window.Chart = function (context) {
                 ctx.restore();
             }
             if (config.yAxisRight) {
+                if(config.yAxisUnit2=='')config.yAxisUnit2=config.yAxisUnit;
                 ctx.save();
                 ctx.beginPath();
                 ctx.font = config.yAxisUnitFontStyle + " " + config.yAxisUnitFontSize + "px " + config.yAxisUnitFontFamily;
@@ -5528,7 +5528,7 @@ window.Chart = function (context) {
                 ctx.textAlign = "center";
                 ctx.textBaseline = "bottom";
                 ctx.translate(width - rightNotUsableSize, yAxisUnitPosY);
-                ctx.fillText(config.yAxisUnit, 0, 0);
+                ctx.fillText(config.yAxisUnit2, 0, 0);
                 ctx.stroke();
                 ctx.restore();
             }
@@ -5551,6 +5551,7 @@ window.Chart = function (context) {
                 ctx.restore();
             }
             if (config.yAxisRight) {
+                if(config.yAxisLabel2=='')config.yAxisLabel2=config.yAxisLabel;
                 ctx.save();
                 ctx.beginPath();
                 ctx.font = config.yAxisFontStyle + " " + config.yAxisFontSize + "px " + config.yAxisFontFamily;
@@ -5559,7 +5560,7 @@ window.Chart = function (context) {
                 ctx.textBaseline = "bottom";
                 ctx.translate(yAxisLabelPosRight, topNotUsableSize + (availableHeight / 2));
                 ctx.rotate(+(90 * (Math.PI / 180)));
-                ctx.fillText(config.yAxisLabel, 0, 0);
+                ctx.fillText(config.yAxisLabel2, 0, 0);
                 ctx.stroke();
                 ctx.restore();
             }
