@@ -1594,6 +1594,7 @@ window.Chart = function (context) {
 
     chart.defaults.xyAxisCommonOptions = {
             yAxisMinimumInterval : "none",
+            yAxisMinimumInterval2 : "none",
             yScaleLabelsMinimumWidth : 0,
             xScaleLabelsMinimumWidth : 0,
             yAxisLeft: true,
