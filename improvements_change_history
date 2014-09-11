@@ -1,6 +1,7 @@
 Change history
 --------------
 
+11/09/2014 - Ole Kröger             - savePngName option added (issue #97)
 05/09/2014 - Ole Kröger & Vancoppenolle Francois - double Y Axis
 02/09/2014 - Vancoppenolle Francois - Mouse actions (issue #125)
 10/08/2014 - Ole Kröger             - fmtdatetime and improvements for fmtdate,fmttime
