@@ -113,7 +113,7 @@ Change history
 
 Future Improvements
 -------------------
-- topXAxis
+- negative values in StackedBar (issue #143)
 - gradient color (see issue #102)
 - merge Pie/Doughnut code (can be the same code : A pie = Dougnut with a hole having a radiant of 0...)
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
