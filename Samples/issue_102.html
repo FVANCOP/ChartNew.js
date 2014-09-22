@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+  <meta name="generator" content="PSPad editor, www.pspad.com">
+  <title></title>
+  <!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+  <SCRIPT src='../Add-ins/gradientcolor.js'></script>
+
+  </head>
+  <body>
+  <canvas id="mycanvas_bar" height="600" width="800"></canvas>
+  <canvas id="mycanvas_stackedbar" height="600" width="800"></canvas>
+  <canvas id="mycanvas_horizontalbar" height="600" width="800"></canvas>
+  <canvas id="mycanvas_horizontalstackedbar" height="600" width="800"></canvas>
+  <canvas id="mycanvas_pie" height="600" width="800"></canvas>
+  <canvas id="mycanvas_doughnut" height="600" width="800"></canvas>
+  <canvas id="mycanvas_polararea" height="600" width="800"></canvas>
+  <canvas id="mycanvas_line" height="600" width="800"></canvas>
+  <canvas id="mycanvas_radar" height="600" width="800"></canvas>
+  <script>
+ var BarLineData = {
+	labels : ["January","February","March","April","May","June","July"],
+//	labels : ["January"],
+	datasets : [
+		{
+			fillColor : gradientColor,
+			gradientColors : ["#00FFFF 50%","green","yellow"],
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [0.7,0.6,0.30,0.4,0.5,0.2,0.15],
+//			data : [0.7],
+      title : "Bar 1"
+		},
+		{
+			fillColor : gradientColor,
+			gradientColors: ["red","yellow","blue"],
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			data : [0,0.5,0.1,0.7,1,0.8,1],
+//			data : [1],
+      title : "Bar 2"
+		},
+	]
+}
+
+var HorizontalBarLineData = {
+	labels : ["January","February","March","April","May","June","July"],
+	datasets : [
+		{
+			fillColor : gradientColor,
+			gradientColors : ["#00FFFF 50%","green","yellow"],
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [0.7,0.6,0.30,0.4,0.5,0.2,0.15],
+      title : "Bar 1"
+		},
+		{
+			fillColor : gradientColor,
+			gradientColors: ["red","yellow","blue"],
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			data : [1,1,1,1,1,1,0.3],
+      title : "Bar 2"
+		},
+	]
+}
+
+  var pieData = [
+    {
+  		value : 30,
+  		color: gradientColor,
+			gradientColors: ["#00FFFF 50%","green","yellow"],
+      title : "data1"
+  	},
+  	{
+  		value : 90,
+  		color: gradientColor,
+			gradientColors : ["red","yellow","blue"],
+      title : "data2"
+  	},
+  	{                                                       
+  		value : 24,
+  		color: gradientColor,
+			gradientColors : ["#DC2424","#4A569D"],
+      title : "data3"
+  	},
+  	{
+  		value : 58,
+  		color: gradientColor,
+			gradientColors : ["#24C6DC","#514A9D"],
+      title : "data4"
+  	},
+  	{
+  		value : 82,
+  		color: gradientColor,
+			gradientColors : ["#085078","#85D8CE"],
+      title : "data5"
+  	},
+  	{
+  		value : 8,
+  		color: gradientColor,
+			gradientColors : ["#3D7EAA","#FFE47A"],
+      title : "data6"
+  	}
+  ];
+
+
+  var opts= {
+		animation:false,
+    legendBlockSize : 40,
+//    legendFontSize : 40,
+		legend: true  
+		};
+
+  window.onload = function() {
+      var myBar = new Chart(document.getElementById("mycanvas_bar").getContext("2d")).Bar(BarLineData,opts);
+      var myStackedBar = new Chart(document.getElementById("mycanvas_stackedbar").getContext("2d")).StackedBar(BarLineData,opts);
+      var myHorizontalBar = new Chart(document.getElementById("mycanvas_horizontalbar").getContext("2d")).HorizontalBar(HorizontalBarLineData,opts);
+      var myHorizontalStackedBar = new Chart(document.getElementById("mycanvas_horizontalstackedbar").getContext("2d")).HorizontalStackedBar(HorizontalBarLineData,opts);
+      var myPie = new Chart(document.getElementById("mycanvas_pie").getContext("2d")).Pie(pieData,opts);
+      var myDoughnut = new Chart(document.getElementById("mycanvas_doughnut").getContext("2d")).Doughnut(pieData,opts);
+      var mypolararea = new Chart(document.getElementById("mycanvas_polararea").getContext("2d")).PolarArea(pieData,opts);
+      var myline = new Chart(document.getElementById("mycanvas_line").getContext("2d")).Line(BarLineData,opts);
+      var myradar = new Chart(document.getElementById("mycanvas_radar").getContext("2d")).Radar(BarLineData,opts);
+    }
+    </script>
+
+  </body>
+</html>
