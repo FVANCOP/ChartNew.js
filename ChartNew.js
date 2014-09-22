@@ -1683,7 +1683,7 @@ window.Chart = function (context) {
 
         if (!config.scaleOverride) {
             calculatedScale = calculateScale(1,config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
-            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, false, false,true);
+            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, false, false,true,"PolarArea");
         }
         else {
             calculatedScale = {
@@ -1694,7 +1694,7 @@ window.Chart = function (context) {
                 labels: []
             }
             populateLabels(1,config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
-            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, false, false,true);
+            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, false, false,true,"PolarArea");
         }
 
 
@@ -1748,7 +1748,7 @@ window.Chart = function (context) {
                 ctx.arc(midPosX, midPosY, scaleAnimation * calculateOffset(config.logarithmic, 1*data[i].value, calculatedScale, scaleHop), startAngle, startAngle + correctedRotateAnimation * angleStep, false);
                 ctx.lineTo(midPosX, midPosY);
                 ctx.closePath();
-                if (typeof data[i].color == "function")ctx.fillStyle = data[i].color("COLOR",data,config,i,-1,animationDecimal,data[i].value);
+                if (typeof data[i].color == "function")ctx.fillStyle = data[i].color("COLOR",data,config,i,-1,animationDecimal,data[i].value,"PolarArea",ctx,midPosX,midPosY,0,scaleAnimation * calculateOffset(config.logarithmic, 1*data[i].value, calculatedScale, scaleHop));
                 else ctx.fillStyle = data[i].color;
                 ctx.fill();
 
@@ -1930,7 +1930,7 @@ window.Chart = function (context) {
         if (!config.scaleOverride) {
 
             calculatedScale = calculateScale(1,config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
-            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, false, true,config.datasetFill);
+            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, false, true,config.datasetFill,"Radar");
         }
         else {
             calculatedScale = {
@@ -1941,7 +1941,7 @@ window.Chart = function (context) {
                 labels: []
             }
             populateLabels(1,config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
-            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, false, true,config.datasetFill);
+            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, false, true,config.datasetFill,"Radar");
         }
 
         calculateDrawingSizes();
@@ -1957,9 +1957,10 @@ window.Chart = function (context) {
 
             var totvalue = new Array();
             var maxvalue = new Array();
+            var lmaxvalue = new Array();
 
-            for (var i = 0; i < data.datasets.length; i++) { for (var j = 0; j < data.datasets[i].data.length; j++) { totvalue[j] = 0; maxvalue[j] = -999999999; } }
-            for (var i = 0; i < data.datasets.length; i++) { for (var j = 0; j < data.datasets[i].data.length; j++) { if (!(typeof(data.datasets[i].data[j])=='undefined')){totvalue[j] += 1*data.datasets[i].data[j]; maxvalue[j] = Max([maxvalue[j], 1*data.datasets[i].data[j]]); } } }
+            for (var i = 0; i < data.datasets.length; i++) { lmaxvalue[i] = -999999999; for (var j = 0; j < data.datasets[i].data.length; j++) { totvalue[j] = 0; maxvalue[j] = -999999999; } }
+            for (var i = 0; i < data.datasets.length; i++) { for (var j = 0; j < data.datasets[i].data.length; j++) { if (!(typeof(data.datasets[i].data[j])=='undefined')){totvalue[j] += 1*data.datasets[i].data[j]; maxvalue[j] = Max([maxvalue[j], 1*data.datasets[i].data[j]]); lmaxvalue[i] = Max([lmaxvalue[i], 1*data.datasets[i].data[j]]); } } }
 
             var rotationDegree = (2 * Math.PI) / data.datasets[0].data.length;
 
@@ -2006,12 +2007,12 @@ window.Chart = function (context) {
                 ctx.closePath();
 
                 if(config.datasetFill){
-                  if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc,-1);
+                  if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc,-1,"Radar",ctx,midPosX,midPosY,0,currentAnimPc *(calculateOffset(config.logarithmic, lmaxvalue[i], calculatedScale, scaleHop)));
                   else if(typeof data.datasets[i].fillColor=="string")ctx.fillStyle = data.datasets[i].fillColor;
                   else ctx.fillStyle=config.defaultFillColor;
                 }
                 else ctx.fillStyle="rgba(0,0,0,0)";
-                if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,-1,currentAnimPc,-1);
+                if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,-1,currentAnimPc,-1,"Radar",ctx,midPosX,midPosY,0,currentAnimPc *(calculateOffset(config.logarithmic, lmaxvalue[i], calculatedScale, scaleHop)));
                 else if(typeof data.datasets[i].strokeColor=="string")ctx.strokeStyle = data.datasets[i].strokeColor;
                 else ctx.strokeStyle=config.defaultStrokeColor;
                 ctx.lineWidth = config.datasetStrokeWidth;
@@ -2021,9 +2022,9 @@ window.Chart = function (context) {
                 if (config.pointDot && (!config.animationLeftToRight || (config.animationLeftToRight && animationDecimal>=1))) {
                     ctx.beginPath();
                     
-                    if (typeof data.datasets[i].pointColor == "function")ctx.fillStyle = data.datasets[i].pointColor("POINTCOLOR",data,config,i,-1,currentAnimPc,-1);
+                    if (typeof data.datasets[i].pointColor == "function")ctx.fillStyle = data.datasets[i].pointColor("POINTCOLOR",data,config,i,-1,currentAnimPc,-1,"Radar",ctx,midPosX,midPosY,0,currentAnimPc *(calculateOffset(config.logarithmic, lmaxvalue[i], calculatedScale, scaleHop)));
                     else ctx.fillStyle = data.datasets[i].pointColor;
-                    if (typeof data.datasets[i].pointStrokeColor == "function")ctx.strokeStyle = data.datasets[i].pointStrokeColor("POINTSTROKECOLOR",data,config,i,-1,currentAnimPc,-1);
+                    if (typeof data.datasets[i].pointStrokeColor == "function")ctx.strokeStyle = data.datasets[i].pointStrokeColor("POINTSTROKECOLOR",data,config,i,-1,currentAnimPc,-1,"Radar",ctx,midPosX,midPosY,0,currentAnimPc *(calculateOffset(config.logarithmic, lmaxvalue[i], calculatedScale, scaleHop)));
                     else ctx.strokeStyle = data.datasets[i].pointStrokeColor;
 
                     ctx.lineWidth = config.pointDotStrokeWidth;
@@ -2325,7 +2326,7 @@ window.Chart = function (context) {
 
         setRect(ctx,config);
 
-        msr = setMeasures(data, config, ctx, height, width, null, null, true, false, false, false,true);
+        msr = setMeasures(data, config, ctx, height, width, null, null, true, false, false, false,true,"Pie");
 
 //        midPieX = msr.leftNotUsableSize + (msr.availableWidth / 2);
 //        midPieY = msr.topNotUsableSize + (msr.availableHeight / 2);
@@ -2379,7 +2380,7 @@ window.Chart = function (context) {
 
                 ctx.lineTo(midPieX, midPieY);                                    
                 ctx.closePath();
-                if (typeof data[i].color == "function")ctx.fillStyle = data[i].color("COLOR",data,config,i,-1,animationDecimal,data[i].value);
+                if (typeof data[i].color == "function")ctx.fillStyle = data[i].color("COLOR",data,config,i,-1,animationDecimal,data[i].value,"Pie",ctx,midPieX,midPieY,0,scaleAnimation *pieRadius);
                 else ctx.fillStyle = data[i].color;
                 ctx.fill();
                 cumulativeAngle += segmentAngle;
@@ -2548,7 +2549,7 @@ window.Chart = function (context) {
         defMouse(ctx,data,config,"Doughnut");
 
         setRect(ctx,config);
-        msr = setMeasures(data, config, ctx, height, width, null, null, true, false, false, false,true);
+        msr = setMeasures(data, config, ctx, height, width, null, null, true, false, false, false,true,"Doughnut");
 
         calculateDrawingSize();
 
@@ -2593,7 +2594,8 @@ window.Chart = function (context) {
                 ctx.arc(midPieX, midPieY, scaleAnimation * doughnutRadius, cumulativeAngle, cumulativeAngle + segmentAngle, false);
                 ctx.arc(midPieX, midPieY, scaleAnimation * cutoutRadius, cumulativeAngle + segmentAngle, cumulativeAngle, true);
                 ctx.closePath();
-                if (typeof data[i].color == "function")ctx.fillStyle = data[i].color("COLOR",data,config,i,-1,animationDecimal,data[i].value);
+
+                if (typeof data[i].color == "function")ctx.fillStyle = data[i].color("COLOR",data,config,i,-1,animationDecimal,data[i].value,"Doughnut",ctx,midPieX,midPieY,scaleAnimation * cutoutRadius,scaleAnimation *doughnutRadius);
                 else ctx.fillStyle = data[i].color;
                 ctx.fill();
 
@@ -2767,7 +2769,7 @@ window.Chart = function (context) {
 
         setRect(ctx,config);
         
-        msr = setMeasures(data, config, ctx, height, width, [""], [""], false, false, true, true,config.datasetFill);
+        msr = setMeasures(data, config, ctx, height, width, [""], [""], false, false, true, true,config.datasetFill,"Line");
 
         valueBounds = getValueBounds();
 
@@ -2836,7 +2838,7 @@ window.Chart = function (context) {
                 labels: null
             }
         }
-        msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, calculatedScale2.labels, false, false, true, true,config.datasetFill);
+        msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, calculatedScale2.labels, false, false, true, true,config.datasetFill,"Line");
 
         msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
         msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
@@ -2856,8 +2858,6 @@ window.Chart = function (context) {
         xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
 
         drawLabels();
-
-        // ARRIVE ICI;
 
         if (valueBounds.minValue < 0) {
            zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, scaleHop);
@@ -3121,13 +3121,13 @@ window.Chart = function (context) {
 
         setRect(ctx,config);
 
-        msr = setMeasures(data, config, ctx, height, width, [""], [""], true, false, true, true,true);
+        msr = setMeasures(data, config, ctx, height, width, [""], [""], true, false, true, true,true,"StackedBar");
         valueBounds = getValueBounds();
         //Check and set the scale
         labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
         if (!config.scaleOverride) {
             calculatedScale = calculateScale(1,config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
-            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true,true);
+            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true,true,"StackedBar");
         }
         else {
             calculatedScale = {
@@ -3141,7 +3141,7 @@ window.Chart = function (context) {
                     calculatedScale.labels.push(tmpl(labelTemplateString, { value: fmtChartJS(config,1 * ((config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces(config.scaleStepWidth))),config.fmtYLabel) }));
                 }
             }
-            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true,true);
+            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true,true,"StackedBar");
         }
 
         msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
@@ -3185,19 +3185,20 @@ window.Chart = function (context) {
                      var currentAnimPc = animationCorrection(animPc,data,config,i,j,1).animVal;
                      if(currentAnimPc>1)currentAnimPc=currentAnimPc-1;
 
+                     if(i==0) {yStart[j]=0;yFpt[j]=-1;}
+                     var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j;
+
                      ctx.fillStyle=config.defaultFillColor;
-                     if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
+                     if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j],"StackedBar",ctx,barOffset,xAxisPosY - currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j],barOffset + barWidth,xAxisPosY - yStart[j] + 1);
                      else if(typeof(data.datasets[i].fillColor)=="string"){ctx.fillStyle = data.datasets[i].fillColor;}
                      else if(typeof(data.datasets[i].fillColor)=="object"){if(typeof(data.datasets[i].fillColor[0])=="string"){ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length-1,j])];} }
                      
                      ctx.strokeStyle=config.defaultStrokeColor;
-                     if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
+                     if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j],"StackedBar",ctx,barOffset,xAxisPosY - currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j],barOffset + barWidth,xAxisPosY - yStart[j] + 1);
                      else if(typeof(data.datasets[i].strokeColor)=="string"){ctx.strokeStyle = data.datasets[i].strokeColor;}
                      else if(typeof(data.datasets[i].strokeColor)=="object"){if(typeof(data.datasets[i].strokeColor[0])=="string"){ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length-1,j])];} }
 
-                     if(i==0) {yStart[j]=0;yFpt[j]=-1;}
                      if (!(typeof(data.datasets[i].data[j])=='undefined')) {
-                        var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j;
                         ctx.beginPath();
                         ctx.moveTo(barOffset, xAxisPosY - yStart[j] + 1);
                         ctx.lineTo(barOffset, xAxisPosY - currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j]);
@@ -3474,7 +3475,7 @@ window.Chart = function (context) {
 
         if (!config.scaleOverride) {
             calculatedScale = calculateScale(1,config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
-            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true,true);
+            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true,true,"HorizontalStackedBar");
         }
         else {
             calculatedScale = {
@@ -3489,7 +3490,7 @@ window.Chart = function (context) {
                     calculatedScale.labels.push(tmpl(labelTemplateString, { value: fmtChartJS(config,1 * ((config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces(config.scaleStepWidth))),config.fmtYLabel) }));
                 }
             }
-            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true,true);
+            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true,true,"HorizontalStackedBar");
         }
 
         msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
@@ -3540,21 +3541,22 @@ window.Chart = function (context) {
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
                       var currentAnimPc = animationCorrection(animPc,data,config,i,j,1).animVal;
                       if(currentAnimPc>1)currentAnimPc=currentAnimPc-1;
- 
+
+                      if(i==0) {yStart[j]=0;yFpt[j]=-1;}
+                      var barOffset = xAxisPosY + config.barValueSpacing - scaleHop * (j + 1);
+
                       ctx.fillStyle=config.defaultFillColor;
-                      if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
+                      if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j],"HorizontalStackedBar",ctx,yAxisPosX + yStart[j] + 1,barOffset,yAxisPosX + yStart[j] + currentAnimPc * HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2),barOffset+barWidth);
                       else if(typeof(data.datasets[i].fillColor)=="string"){ctx.fillStyle = data.datasets[i].fillColor;}
                       else if(typeof(data.datasets[i].fillColor)=="object"){if(typeof(data.datasets[i].fillColor[0])=="string"){ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length-1,j])];} }
                       
                       ctx.strokeStyle=config.defaultStrokeColor;
-                      if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
+                      if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j],ctx,"HorizontalStackedBar",ctx,yAxisPosX + yStart[j] + 1,barOffset,yAxisPosX + yStart[j] + currentAnimPc * HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2),barOffset+barWidth);
                       else if(typeof(data.datasets[i].strokeColor)=="string"){ctx.strokeStyle = data.datasets[i].strokeColor;}
                       else if(typeof(data.datasets[i].strokeColor)=="object"){if(typeof(data.datasets[i].strokeColor[0])=="string"){ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length-1,j])];} }
 
-                      if(i==0) {yStart[j]=0;yFpt[j]=-1;}
                       if (!(typeof(data.datasets[i].data[j])=='undefined')) {
 
-                        var barOffset = xAxisPosY + config.barValueSpacing - scaleHop * (j + 1);
                         ctx.beginPath();
                         ctx.moveTo(yAxisPosX + yStart[j] + 1, barOffset);
                         ctx.lineTo(yAxisPosX + yStart[j] + currentAnimPc * HorizontalCalculateOffset((yFpt[j]>=0)*calculatedScale.graphMin + 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset);
@@ -3838,7 +3840,7 @@ window.Chart = function (context) {
         setRect(ctx,config);
         
         
-        msr = setMeasures(data, config, ctx, height, width, [""], [""], true, false, true, true,true);
+        msr = setMeasures(data, config, ctx, height, width, [""], [""], true, false, true, true,true,"Bar");
         valueBounds = getValueBounds();
 		
 
@@ -3860,7 +3862,7 @@ window.Chart = function (context) {
 
         if (!config.scaleOverride) {
             calculatedScale = calculateScale(1,config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
-            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true,true);
+            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true,true,"Bar");
         }
         else {
             calculatedScale = {
@@ -3871,7 +3873,7 @@ window.Chart = function (context) {
                 labels: []
             }
             populateLabels(1,config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
-            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true,true);
+            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true,true,"Bar");
         }
 
         msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
@@ -3948,13 +3950,17 @@ window.Chart = function (context) {
                 }
 
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
-                  
+
                   var currentAnimPc = animationCorrection(animPc,data,config,i,j,1).animVal;
                   if(currentAnimPc>1)currentAnimPc=currentAnimPc-1;
+                  
+                  var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
+
+                  var barHeight = currentAnimPc*(calculateOffset(config.logarithmic, 1*data.datasets[i].data[j], calculatedScale, scaleHop)-zeroY) + (config.barStrokeWidth / 2);
                   ctx.fillStyle=config.defaultFillColor;
                   if (typeof data.datasets[i].fillColor == "function") { 
-					  ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
-				  }
+        					  ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j],"Bar",ctx,barOffset,xAxisPosY-zeroY-barHeight,barOffset+barWidth,xAxisPosY-zeroY);
+                  }                                                                                                                              
                   else if(typeof(data.datasets[i].fillColor)=="string") {
 					  ctx.fillStyle = data.datasets[i].fillColor;
 				  }
@@ -3966,7 +3972,7 @@ window.Chart = function (context) {
                   
                   ctx.strokeStyle=config.defaultStrokeColor;
                   if (typeof data.datasets[i].strokeColor == "function") {
-					  ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,CurrentAnimPc,1*data.datasets[i].data[j]);
+					  ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,CurrentAnimPc,1*data.datasets[i].data[j],"Bar",ctx,barOffset,xAxisPosY-zeroY-barHeight,barOffset+barWidth,xAxisPosY-zeroY);
 				  }
                   else if(typeof(data.datasets[i].strokeColor)=="string"){
 					  ctx.strokeStyle = data.datasets[i].strokeColor;
@@ -3978,9 +3984,7 @@ window.Chart = function (context) {
 				  }
 
                   if (!(typeof(data.datasets[i].data[j])=='undefined')) {
-                    var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
 
-                    var barHeight = currentAnimPc*(calculateOffset(config.logarithmic, 1*data.datasets[i].data[j], calculatedScale, scaleHop)-zeroY) + (config.barStrokeWidth / 2);
               			roundRect( ctx, barOffset, xAxisPosY-zeroY, barWidth, barHeight, config.barShowStroke, config.barBorderRadius);
 
                     cumvalue[j] += 1*data.datasets[i].data[j];
@@ -4265,7 +4269,7 @@ window.Chart = function (context) {
 
         if (!config.scaleOverride) {
             calculatedScale = calculateScale(1,config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
-            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true,true);
+            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true,true,"HorizontalBar");
         }
         else {
             calculatedScale = {
@@ -4276,7 +4280,7 @@ window.Chart = function (context) {
                 labels: []
             }
             populateLabels(1,config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
-            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true,true);
+            msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true,true,"HorizontalBar");
         }
 
         msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
@@ -4311,8 +4315,6 @@ window.Chart = function (context) {
 
             ctx.lineWidth = config.barStrokeWidth;
             for (var i = 0; i < data.datasets.length; i++) {
-//                ctx.fillStyle = data.datasets[i].fillColor;
-//                ctx.strokeStyle = data.datasets[i].strokeColor;
                 if (animPc >= 1) {
                     if (typeof (data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
                     else lgtxt = "";
@@ -4321,20 +4323,20 @@ window.Chart = function (context) {
                   var currentAnimPc = animationCorrection(animPc,data,config,i,j,1).animVal;
                   if(currentAnimPc>1)currentAnimPc=currentAnimPc-1;
 
+                  var barOffset = xAxisPosY + config.barValueSpacing - scaleHop * (j + 1) + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
+                  var barHeight = currentAnimPc * calculateOffset(config.logarithmic, 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
+
                   ctx.fillStyle=config.defaultFillColor;
-                  if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
+                  if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j],"HorizontalBar",ctx,yAxisPosX,barOffset,yAxisPosX+barHeight,barOffset+barWidth);
                   else if(typeof(data.datasets[i].fillColor)=="string"){ctx.fillStyle = data.datasets[i].fillColor;}
                   else if(typeof(data.datasets[i].fillColor)=="object"){if(typeof(data.datasets[i].fillColor[0])=="string"){ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length-1,j])];} }
                   
                   ctx.strokeStyle=config.defaultStrokeColor;
-                  if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j]);
+                  if (typeof data.datasets[i].strokeColor == "function")ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,j,currentAnimPc,1*data.datasets[i].data[j],"HorizontalBar",ctx,yAxisPosX,barOffset,yAxisPosX+barHeight,barOffset+barWidth);
                   else if(typeof(data.datasets[i].strokeColor)=="string"){ctx.strokeStyle = data.datasets[i].strokeColor;}
                   else if(typeof(data.datasets[i].strokeColor)=="object"){if(typeof(data.datasets[i].strokeColor[0])=="string"){ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length-1,j])];} }
                 
-                  if (!(typeof(data.datasets[i].data[j])=='undefined')) {
-                    var barOffset = xAxisPosY + config.barValueSpacing - scaleHop * (j + 1) + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
-
-                    var barHeight = currentAnimPc * calculateOffset(config.logarithmic, 1*data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
+                  if (!(typeof(data.datasets[i].data[j])=='undefined')) {                                                                                                                                                                       
           					roundRect( ctx, barOffset, yAxisPosX, barWidth, barHeight, config.barShowStroke, config.barBorderRadius,zeroY );
 
 
@@ -5185,7 +5187,7 @@ window.Chart = function (context) {
     };
 
     //****************************************************************************************
-    function setMeasures(data, config, ctx, height, width, ylabels, ylabels2, reverseLegend, reverseAxis, drawAxis, drawLegendOnData,legendBox) {
+    function setMeasures(data, config, ctx, height, width, ylabels, ylabels2, reverseLegend, reverseAxis, drawAxis, drawLegendOnData,legendBox,typegraph) {
    
         if(config.canvasBackgroundColor != "none") ctx.canvas.style.background =config.canvasBackgroundColor;
 
@@ -5650,12 +5652,12 @@ window.Chart = function (context) {
                         ctx.beginPath();
 
                         if (drawLegendOnData) {
-                          if (typeof data.datasets[orderi].strokeColor == "function")ctx.strokeStyle = data.datasets[orderi].strokeColor("STROKECOLOR",data,config,orderi,-1,1,-1);
+                          if (typeof data.datasets[orderi].strokeColor == "function")ctx.strokeStyle = data.datasets[orderi].strokeColor("STROKECOLOR",data,config,orderi,-1,1,-1,typegraph,ctx,-1,-1,-1,-1);
                           else if(typeof data.datasets[orderi].strokeColor=="string")ctx.strokeStyle = data.datasets[orderi].strokeColor;
                           else ctx.strokeStyle=config.defaultStrokeColor;
                         }
                         else { 
-                          if (typeof data[orderi].color == "function")ctx.fillStyle = data[orderi].color("COLOR",data,config,orderi,-1,1,data[orderi].value);
+                          if (typeof data[orderi].color == "function")ctx.strokeStyle = data[orderi].color("COLOR",data,config,orderi,-1,1,data[orderi].value,typegraph,ctx,1,1,1,1);
                           else if(typeof data[orderi].color == "string")ctx.strokeStyle = data[orderi].color;
                           else ctx.strokeStyle=config.defaultStrokeColor; 
                         }
@@ -5671,10 +5673,15 @@ window.Chart = function (context) {
                             ctx.lineTo(xpos , ypos);
                             ctx.closePath();
                             if (drawLegendOnData) {
-                              if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,1,-1);
+                              if (typeof data.datasets[orderi].fillColor == "function")ctx.fillStyle = data.datasets[orderi].fillColor("LEGENDFILLCOLOR",data,config,orderi,-1,1,-1,typegraph,ctx,xpos,ypos-config.legendFontSize,xpos+config.legendBlockSize,ypos);
                               else if(typeof data.datasets[orderi].fillColor=="string")ctx.fillStyle = data.datasets[orderi].fillColor;
-                              else ctx.fillStyle=config.defaultFillColor;}
-                            else {if(typeof data[orderi].color == "string")ctx.fillStyle = data[orderi].color;else ctx.fillStyle=config.defaultFillColor;}
+                              else ctx.fillStyle=config.defaultFillColor;
+                            }
+                            else {
+                                if (typeof data[orderi].color == "function")ctx.fillStyle = data[orderi].color("LEGENDFILLCOLOR",data,config,orderi,-1,1,-1,typegraph,ctx,xpos,ypos-config.legendFontSize,xpos+config.legendBlockSize,ypos);
+                                else if(typeof data[orderi].color == "string")ctx.fillStyle = data[orderi].color;
+                                else ctx.fillStyle=config.defaultFillColor;
+                            }
                             ctx.fill();
                         }
                         else {
@@ -5757,11 +5764,16 @@ window.Chart = function (context) {
 		var zeroY = vars.zeroY;
 		var calculatedScale = vars.calculatedScale;
     var logarithmic = vars.logarithmic;
-		
+  	var currentAnimPc=animationCorrection(animPc,data,config,0,0,0);
 	 	var totvalue = new Array();
 		var maxvalue = new Array();
+		var lmaxvalue = new Array();
+		var lminvalue = new Array();
+    
 
 		for (var i = 0; i < data.datasets.length; i++) {
+      lmaxvalue[i]=-999999999;
+      lminvalue[i]= 999999999;
       if((axis==2 && data.datasets[i].axis==2) || (axis!=2 && data.datasets[i].axis!=2)) {
 			   for (var j = 0; j < data.datasets[i].data.length; j++) {
 				    totvalue[j] = 0;
@@ -5769,11 +5781,14 @@ window.Chart = function (context) {
          }
 			}
 		}
+    currentAnimPc.mainVal=1;		
     for (var i = 0; i < data.datasets.length; i++) {
       if((axis==2 && data.datasets[i].axis==2) || (axis!=2 && data.datasets[i].axis!=2)) {
          for (var j = 0; j < data.datasets[i].data.length; j++) {
 	          totvalue[j] += data.datasets[i].data[j];
 		        maxvalue[j] = Max([maxvalue[j], data.datasets[i].data[j]]); 
+            lmaxvalue[i]=Max([lmaxvalue[i], yPos(i, j)]);
+            lminvalue[i]=Min([lminvalue[i], yPos(i, j)]);
 		     }
       } 
 		}
@@ -5785,7 +5800,7 @@ window.Chart = function (context) {
 			var frstpt=-1;
 
 			if (typeof data.datasets[i].strokeColor == "function") {
-				ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,-1,animPc,-1);
+				ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR",data,config,i,-1,animPc,-1,"Line",ctx,yAxisPosX,lmaxvalue[i],yAxisPosX + valueHop*(data.datasets[i].data.length-1),lmaxvalue[i]-currentAnimPc.mainVal*(lmaxvalue[i]-lminvalue[i]));
 			}
 			else if(typeof data.datasets[i].strokeColor=="string") {
 				ctx.strokeStyle = data.datasets[i].strokeColor;
@@ -5794,7 +5809,6 @@ window.Chart = function (context) {
 			ctx.lineWidth = config.datasetStrokeWidth;
 			ctx.beginPath();
 
-			var currentAnimPc;
       var prevAnimPc;
       var prevXpos;
       prevAnimPc=0;
@@ -5802,7 +5816,7 @@ window.Chart = function (context) {
 			for (var j = 0; j < data.datasets[i].data.length; j++) {
 				var xposj=xPos(i,j,data);
         
-        var currentAnimPc = animationCorrection(animPc,data,config,i,j,0);
+        currentAnimPc = animationCorrection(animPc,data,config,i,j,0);
         if(currentAnimPc.mainVal==0 && prevAnimPc>0)
         {
           ctx.stroke();
@@ -5878,7 +5892,7 @@ window.Chart = function (context) {
 								  ctx.font = config.inGraphDataFontStyle + ' ' + config.inGraphDataFontSize + 'px ' + config.inGraphDataFontFamily;
 								  ctx.fillStyle = config.inGraphDataFontColor;
 									var dotX = yAxisPosX + (valueHop *k),
-									dotY = xAxisPosY - currentAnimPc.mainVal*(calculateOffset(logarithmic, data.datasets[i].data[j],calculatedScale,scaleHop)),
+  								dotY = xAxisPosY - currentAnimPc.mainVal*(calculateOffset(logarithmic, data.datasets[i].data[j],calculatedScale,scaleHop)),
 									paddingTextX = config.inGraphDataPaddingX,
 									paddingTextY = config.inGraphDataPaddingY;
 					        var dispString = tmplbis(config.inGraphDataTmpl, { config:config, v1 : fmtChartJS(config,lgtxt,config.fmtV1), v2 : fmtChartJS(config,lgtxt2,config.fmtV2), v3 : fmtChartJS(config,1*data.datasets[i].data[j],config.fmtV3), v4 : fmtChartJS(config,divprev,config.fmtV4), v5 : fmtChartJS(config,divnext,config.fmtV5), v6 : fmtChartJS(config,maxvalue[j],config.fmtV6), v7 : fmtChartJS(config,totvalue[j],config.fmtV7), v8 : roundToWithThousands(config,fmtChartJS(config,100 * data.datasets[i].data[j] / totvalue[j],config.fmtV8),config.roundPct),v9 : fmtChartJS(config,yAxisPosX+ (valueHop *k),config.fmtV9),v10 : fmtChartJS(config,xAxisPosY - (calculateOffset(logarithmic, data.datasets[i].data[j], calculatedScale, scaleHop)),config.fmtV10),v11 : fmtChartJS(config,i,config.fmtV11), v12 : fmtChartJS(config,j,config.fmtV12),data:data});
@@ -5898,7 +5912,7 @@ window.Chart = function (context) {
                              ctx.lineTo(xPos(i,frstpt,data), xAxisPosY - zeroY);
                              ctx.lineTo(xPos(i,frstpt,data), yPos(i, frstpt));
                              ctx.closePath();
-                             if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc.mainVal,-1);
+                             if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc.mainVal,-1,"Line",ctx,yAxisPosX,lmaxvalue[i],yAxisPosX + valueHop*(data.datasets[i].data.length-1),lmaxvalue[i]-currentAnimPc.mainVal*(lmaxvalue[i]-lminvalue[i]));
                              else if(typeof data.datasets[i].fillColor=="string")ctx.fillStyle = data.datasets[i].fillColor;
                              else ctx.fillStyle=config.defaultFillColor;
                              ctx.fill();
@@ -5941,7 +5955,7 @@ window.Chart = function (context) {
 				ctx.lineTo(xPos(i,frstpt,data), xAxisPosY - zeroY);
 				ctx.lineTo(xPos(i,frstpt,data), yPos(i, frstpt));
 				ctx.closePath();
-				if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc.mainVal,-1);
+				if (typeof data.datasets[i].fillColor == "function")ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR",data,config,i,-1,currentAnimPc.mainVal,-1,"Line",ctx,yAxisPosX,lmaxvalue[i],yAxisPosX + valueHop*(data.datasets[i].data.length-1),lmaxvalue[i]-currentAnimPc.mainVal*(lmaxvalue[i]-lminvalue[i]));
 				else if(typeof data.datasets[i].fillColor=="string")ctx.fillStyle = data.datasets[i].fillColor;
 				else ctx.fillStyle=config.defaultFillColor;
 				ctx.fill();
@@ -5951,9 +5965,9 @@ window.Chart = function (context) {
 				ctx.closePath();
 			}
 			if (config.pointDot) {
-				if (typeof data.datasets[i].pointColor == "function")ctx.fillStyle = data.datasets[i].pointColor("POINTCOLOR",data,config,i,-1,animPc,-1);
+				if (typeof data.datasets[i].pointColor == "function")ctx.fillStyle = data.datasets[i].pointColor("POINTCOLOR",data,config,i,-1,animPc,-1,"Line",ctx,yAxisPosX,lmaxvalue[i],yAxisPosX + valueHop*(data.datasets[i].data.length-1),lmaxvalue[i]-currentAnimPc.mainVal*(lmaxvalue[i]-lminvalue[i]));
 				else ctx.fillStyle = data.datasets[i].pointColor;
-				if (typeof data.datasets[i].pointStrokeColor == "function")ctx.strokeStyle = data.datasets[i].pointStrokeColor("POINTSTROKECOLOR",data,config,i,-1,animPc,-1);
+				if (typeof data.datasets[i].pointStrokeColor == "function")ctx.strokeStyle = data.datasets[i].pointStrokeColor("POINTSTROKECOLOR",data,config,i,-1,animPc,-1,"Line",ctx,yAxisPosX,lmaxvalue[i],yAxisPosX + valueHop*(data.datasets[i].data.length-1),lmaxvalue[i]-currentAnimPc.mainVal*(lmaxvalue[i]-lminvalue[i]));
 				else ctx.strokeStyle = data.datasets[i].pointStrokeColor;
 
 				ctx.lineWidth = config.pointDotStrokeWidth;
