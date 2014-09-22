@@ -1,6 +1,7 @@
 Change history
 --------------
 
+22/09/2014 - Ole Kröger, Omar Sedki, Vancoppenolle Francois - gradient color (see issue #102)
 11/09/2014 - Ole Kröger             - savePngName option added (issue #97)
 05/09/2014 - Ole Kröger & Vancoppenolle Francois - double Y Axis
 02/09/2014 - Vancoppenolle Francois - Mouse actions (issue #125)
@@ -114,7 +115,6 @@ Change history
 Future Improvements
 -------------------
 - negative values in StackedBar (issue #143)
-- gradient color (see issue #102)
 - merge Pie/Doughnut code (can be the same code : A pie = Dougnut with a hole having a radiant of 0...)
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
 - display the legend on other places (center, bottom or top on the left/right of the graph;
