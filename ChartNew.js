@@ -1951,7 +1951,7 @@ window.Chart = function(context) {
 				}
 				ctx.closePath();
 				if (config.datasetFill) {
-					if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, -1, currentAnimPc, -1, "Radar", ctx, midPosX, midPosY, 0, currentAnimPc * (calculateOffset(config.logarithmic, lmaxvalue[i], calculatedScale, scaleHop)));
+					if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, -1, currentAnimPc, -1, "Radar", ctx, midPosX, midPosY, 0, (config.animationLeftToRight ? 1 : currentAnimPc) * (calculateOffset(config.logarithmic, lmaxvalue[i], calculatedScale, scaleHop)));
 					else if (typeof data.datasets[i].fillColor == "string") ctx.fillStyle = data.datasets[i].fillColor;
 					else ctx.fillStyle = config.defaultFillColor;
 				} else ctx.fillStyle = "rgba(0,0,0,0)";
@@ -5602,7 +5602,7 @@ window.Chart = function(context) {
 					ctx.lineTo(xPos(i, frstpt, data), xAxisPosY - zeroY);
 					ctx.lineTo(xPos(i, frstpt, data), yPos(i, frstpt));
 					ctx.closePath();
-					if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, -1, currentAnimPc.mainVal, -1, "Line", ctx, yAxisPosX, lmaxvalue[i], yAxisPosX + valueHop * (data.datasets[i].data.length - 1), lmaxvalue[i] - currentAnimPc.mainVal * (lmaxvalue[i] - lminvalue[i]));
+					if (typeof data.datasets[i].fillColor == "function") { ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, -1, currentAnimPc.mainVal, -1, "Line", ctx, yAxisPosX, lmaxvalue[i], yAxisPosX + valueHop * (data.datasets[i].data.length - 1), lmaxvalue[i] - ((config.animationLeftToRight) ? 1 : 1*currentAnimPc.mainVal) * (lmaxvalue[i] - lminvalue[i])); }
 					else if (typeof data.datasets[i].fillColor == "string") ctx.fillStyle = data.datasets[i].fillColor;
 					else ctx.fillStyle = config.defaultFillColor;
 					ctx.fill();
@@ -5612,7 +5612,7 @@ window.Chart = function(context) {
 				if (config.pointDot) {
 					if (typeof data.datasets[i].pointColor == "function") ctx.fillStyle = data.datasets[i].pointColor("POINTCOLOR", data, config, i, -1, animPc, -1, "Line", ctx, yAxisPosX, lmaxvalue[i], yAxisPosX + valueHop * (data.datasets[i].data.length - 1), lmaxvalue[i] - currentAnimPc.mainVal * (lmaxvalue[i] - lminvalue[i]));
 					else ctx.fillStyle = data.datasets[i].pointColor;
-					if (typeof data.datasets[i].pointStrokeColor == "function") ctx.strokeStyle = data.datasets[i].pointStrokeColor("POINTSTROKECOLOR", data, config, i, -1, animPc, -1, "Line", ctx, yAxisPosX, lmaxvalue[i], yAxisPosX + valueHop * (data.datasets[i].data.length - 1), lmaxvalue[i] - currentAnimPc.mainVal * (lmaxvalue[i] - lminvalue[i]));
+					if (typeof data.datasets[i].pointStrokeColor == "function") ctx.strokeStyle = data.datasets[i].pointStrokeColor("POINTSTROKECOLOR", data, config, i, -1, animPc, -1, "Line", ctx, yAxisPosX, lmaxvalue[i], yAxisPosX + valueHop * (data.datasets[i].data.length - 1), lmaxvalue[i] - animPC * (lmaxvalue[i] - lminvalue[i]));
 					else ctx.strokeStyle = data.datasets[i].pointStrokeColor;
 					ctx.lineWidth = config.pointDotStrokeWidth;
 					for (var k = 0; k < data.datasets[i].data.length; k++) {
