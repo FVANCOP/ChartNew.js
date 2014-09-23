@@ -5619,7 +5619,7 @@ window.Chart = function(context) {
 						if (!(typeof(data.datasets[i].data[k]) == 'undefined')) {
 							var currentAnimPc = animationCorrection(animPc, data, config, i, k, 0);
 							if (currentAnimPc.mainVal > 0 || !config.animationLeftToRight) {
-								ctx.	beginPath();
+								ctx.beginPath();
 								ctx.arc(xPos(i, k, data), yPos(i, k), config.pointDotRadius, 0, Math.PI * 2, true);
 								ctx.fill();
 								ctx.stroke();
