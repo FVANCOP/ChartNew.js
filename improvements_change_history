@@ -1,6 +1,7 @@
 Change history
 --------------
 
+24/09/2014 - Naudhr                 - fix bug:recursive call to mouse functions in case of graph update - Pull request #149
 22/09/2014 - Ole Kröger, Omar Sedki, Vancoppenolle Francois - gradient color (see issue #102)
 11/09/2014 - Ole Kröger             - savePngName option added (issue #97)
 05/09/2014 - Ole Kröger & Vancoppenolle Francois - double Y Axis
