@@ -1037,6 +1037,7 @@ window.Chart = function(context) {
 			pointLabelFontColor: "#666",
 			pointDot: true,
 			pointDotRadius: 3,
+			pointDotMarker:"circle",
 			pointDotStrokeWidth: 1,
 			datasetFill: true,
 			datasetStrokeWidth: 2,
@@ -1177,6 +1178,7 @@ window.Chart = function(context) {
 			bezierCurve: true,
 			pointDot: true,
 			pointDotRadius: 4,
+            pointDotMarker:"circle",
 			pointDotStrokeWidth: 2,
 			datasetStrokeWidth: 2,
 			datasetFill: true,
@@ -5620,7 +5622,43 @@ window.Chart = function(context) {
 							var currentAnimPc = animationCorrection(animPc, data, config, i, k, 0);
 							if (currentAnimPc.mainVal > 0 || !config.animationLeftToRight) {
 								ctx.beginPath();
-								ctx.arc(xPos(i, k, data), yPos(i, k), config.pointDotRadius, 0, Math.PI * 2, true);
+
+//circle
+if(config.pointDotMarker=="circle"){ctx.arc(xPos(i, k, data), yPos(i, k), config.pointDotRadius, 0, 2*Math.PI * 1, true);}
+
+if(config.pointDotMarker=="square"){ctx.rect(xPos(i, k, data)-config.pointDotRadius,yPos(i, k)-config.pointDotRadius,2*config.pointDotRadius,2*config.pointDotRadius);}
+
+if(config.pointDotMarker=="triangle"){
+pointA_x=0;
+pointA_y=2/3*config.pointDotRadius;
+ctx.moveTo(xPos(i, k, data),yPos(i, k)-pointA_y);
+ctx.lineTo(xPos(i, k, data)+pointA_y*Math.sin(4/3),yPos(i, k)+pointA_y*Math.cos(4/3));
+ctx.lineTo(xPos(i, k, data)-pointA_y*Math.sin(4/3),yPos(i, k)+pointA_y*Math.cos(4/3));
+ctx.lineTo(xPos(i, k, data),yPos(i, k)-pointA_y);
+}
+
+if(config.pointDotMarker=="diamond"){
+ctx.moveTo(xPos(i, k, data), yPos(i, k)+config.pointDotRadius);
+     ctx.lineTo(xPos(i, k, data)+config.pointDotRadius, yPos(i, k));
+ctx.lineTo(xPos(i, k, data), yPos(i, k)-config.pointDotRadius);
+ctx.lineTo(xPos(i, k, data)-config.pointDotRadius, yPos(i, k));
+ctx.lineTo(xPos(i, k, data), yPos(i, k)+config.pointDotRadius);
+}
+
+if(config.pointDotMarker=="plus"){
+ctx.moveTo(xPos(i, k, data), yPos(i, k)-config.pointDotRadius);
+ctx.lineTo(xPos(i, k, data), yPos(i, k)+config.pointDotRadius);
+ctx.moveTo(xPos(i, k, data)-config.pointDotRadius, yPos(i, k));
+ctx.lineTo(xPos(i, k, data)+config.pointDotRadius, yPos(i, k));
+}  
+                            
+if(config.pointDotMarker=="cross"){
+ctx.moveTo(xPos(i, k, data)-config.pointDotRadius, yPos(i, k)-config.pointDotRadius);
+ctx.lineTo(xPos(i, k, data)+config.pointDotRadius, yPos(i, k)+config.pointDotRadius);
+ctx.moveTo(xPos(i, k, data)-config.pointDotRadius, yPos(i, k)+config.pointDotRadius);
+ctx.lineTo(xPos(i, k, data)+config.pointDotRadius, yPos(i, k)-config.pointDotRadius);
+}
+
 								ctx.fill();
 								ctx.stroke();
 							}
