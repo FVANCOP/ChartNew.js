@@ -5715,18 +5715,18 @@ window.Chart = function(context) {
 
         function add_event_listener(type, func, chk)
         {
-            if(typeof config.mouseDownLeft != 'function')
+            if(typeof func != 'function')
                 return;
 
-            function do_mouseDownLeft(event) {
+            function do_func(event) {
                 if (chk == null || chk(event)) doMouseAction(config,ctx,event,data,"mouseaction",func);
             }
 
             if(ctx.canvas.addEventListener) {
-                ctx.canvas.removeEventListener(type, func);
-                ctx.canvas.addEventListener(type, func, false);
+                ctx.canvas.removeEventListener(type, do_func);
+                ctx.canvas.addEventListener(type, do_func, false);
             } else if(ctx.canvas.attachEvent) {
-                ctx.canvas.attachEvent("on"+type, func);
+                ctx.canvas.attachEvent("on"+type, do_func);
             }
         }
 
