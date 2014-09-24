@@ -5712,46 +5712,29 @@ window.Chart = function(context) {
 					(typeof(config.savePngFunction.split(' ')[1]) != "string")) saveCanvas(ctx, data, config, tpgraph);
 			}, false);
 		}
-		if (typeof config.mouseDownLeft == 'function') {
-			if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("onmousedown", function(event) {
-				if (event.which == 1) doMouseAction(config, ctx, event, data, "mouseaction", config.mouseDownLeft);
-			});
-			else ctx.canvas.addEventListener("mousedown", function(event) {
-				if (event.which == 1) doMouseAction(config, ctx, event, data, "mouseaction", config.mouseDownLeft);
-			}, false);
-		}
-		if (typeof config.mouseDownMiddle == 'function') {
-			if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("onmousedown", function(event) {
-				if (event.which == 2) doMouseAction(config, ctx, event, data, "mouseaction", config.mouseDownMiddle);
-			});
-			else ctx.canvas.addEventListener("mousedown", function(event) {
-				if (event.which == 2) doMouseAction(config, ctx, event, data, "mouseaction", config.mouseDownMiddle);
-			}, false);
-		}
-		if (typeof config.mouseDownRight == 'function') {
-			if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("onmousedown", function(event) {
-				if (event.which == 3) doMouseAction(config, ctx, event, data, "mouseaction", config.mouseDownRight);
-			});
-			else ctx.canvas.addEventListener("mousedown", function(event) {
-				if (event.which == 3) doMouseAction(config, ctx, event, data, "mouseaction", config.mouseDownRight);
-			}, false);
-		}
-		if (typeof config.mouseMove == 'function') {
-			if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("onmousemove", function(event) {
-				doMouseAction(config, ctx, event, data, "mouseaction", config.mouseMove);
-			});
-			else ctx.canvas.addEventListener("mousemove", function(event) {
-				doMouseAction(config, ctx, event, data, "mouseaction", config.mouseMove);
-			}, false);
-		}
-		if (typeof config.mouseOut == 'function') {
-			if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("onmouseout", function(event) {
-				config.mouseOut(event, ctx, config, data, null);
-			});
-			else ctx.canvas.addEventListener("mouseout", function(event) {
-				config.mouseOut(event, ctx, config, data, null);
-			}, false);
-		}
+
+        function add_event_listener(type, func, chk)
+        {
+            if(typeof config.mouseDownLeft != 'function')
+                return;
+
+            function do_mouseDownLeft(event) {
+                if (chk == null || chk(event)) doMouseAction(config,ctx,event,data,"mouseaction",func);
+            }
+
+            if(ctx.canvas.addEventListener) {
+                ctx.canvas.removeEventListener(type, func);
+                ctx.canvas.addEventListener(type, func, false);
+            } else if(ctx.canvas.attachEvent) {
+                ctx.canvas.attachEvent("on"+type, func);
+            }
+        }
+
+        add_event_listener("mousedown", config.mouseDownLeft, function(e) { return e.which == 1; });
+        add_event_listener("mousedown", config.mouseDownMiddle, function(e) { return e.which == 2; });
+        add_event_listener("mousedown", config.mouseDownRight, function(e) { return e.which == 3; });
+        add_event_listener("mousemove", config.mouseMove);
+        add_event_listener("mouseout", config.mouseOut);
 	};
 };
 
