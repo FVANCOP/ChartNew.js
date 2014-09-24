@@ -3010,8 +3010,8 @@ window.Chart = function(context) {
 
 		function drawBars(animPc) {
 			ctx.lineWidth = config.barStrokeWidth;
-			var yStart = new Array(data.datasets.length);
-			var yFpt = new Array(data.datasets.length);
+			var tempp = new Array(data.datasets.length);
+			var tempn = new Array(data.datasets.length);
 			var cumvalue = new Array();
 			var totvalue = new Array();
 			for (var i = 0; i < data.datasets.length; i++) {
@@ -3027,8 +3027,6 @@ window.Chart = function(context) {
 					}
 			}
 			for (var i = 0; i < data.datasets.length; i++) {
-				//                ctx.fillStyle = data.datasets[i].fillColor;
-				//                ctx.strokeStyle = data.datasets[i].strokeColor;
 				if (animPc >= 1) {
 					if (typeof(data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
 					else lgtxt = "";
@@ -3037,8 +3035,9 @@ window.Chart = function(context) {
 					var currentAnimPc = animationCorrection(animPc, data, config, i, j, 1).animVal;
 					if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
 					if (i == 0) {
-						yStart[j] = 0;
-						yFpt[j] = -1;
+						tempp[j]=0;
+						tempn[j]=0;
+						zeroY=  calculateOffset(config.logarithmic, 0 , calculatedScale, scaleHop);
 					}
 					var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j;
 					ctx.fillStyle = config.defaultFillColor;
@@ -3059,28 +3058,49 @@ window.Chart = function(context) {
 							ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length - 1, j])];
 						}
 					}
-					if (!(typeof(data.datasets[i].data[j]) == 'undefined') && xAxisPosY - yStart[j] + 1 > msr.topNotUsableSize) {
-					        var barheight=xAxisPosY - currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j];
-						barheight=Max([barheight,msr.topNotUsableSize]);
-						ctx.beginPath();
-						ctx.moveTo(barOffset, xAxisPosY - yStart[j] + 1);
-//						ctx.lineTo(barOffset, xAxisPosY - currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j]);
-						ctx.lineTo(barOffset, barheight);
-//						ctx.lineTo(barOffset + barWidth, xAxisPosY - currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j]);
-						ctx.lineTo(barOffset + barWidth, barheight);
-						ctx.lineTo(barOffset + barWidth, xAxisPosY - yStart[j] + 1);
-						if (config.barShowStroke) ctx.stroke();
-						ctx.closePath();
-						ctx.fill();
-						cumvalue[j] += 1 * data.datasets[i].data[j];
-						if (animPc >= 1) {
-							if (typeof(data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
-							else lgtxt2 = "";
-//							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", barOffset, xAxisPosY - yStart[j] + 1, barOffset + barWidth, xAxisPosY - calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j], lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
-							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", barOffset, xAxisPosY - yStart[j] + 1, barOffset + barWidth, barheight , lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+					if (!(typeof(data.datasets[i].data[j]) == 'undefined') && 1*data.datasets[i].data[j] != 0 ) {
+						if (1*data.datasets[i].data[j]<0) {
+							var botval=tempp[j];
+							var topval=tempp[j]+1*data.datasets[i].data[j] ;
+						} else {
+							var botval=tempn[j];
+							var topval=tempn[j]+1*data.datasets[i].data[j] ;
 						}
-						yStart[j] += currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) - (config.barStrokeWidth / 2);
-						if (yFpt[j] == -1) yFpt[j] = i;
+						if(config.animationByDataset) {
+							var botBar=xAxisPosY - calculateOffset(config.logarithmic, botval , calculatedScale, scaleHop);
+							var topBar=xAxisPosY  - calculateOffset(config.logarithmic, topval , calculatedScale, scaleHop);
+							topBar=botBar+currentAnimPc*(topBar-botBar);
+						} else {
+							var botBar=xAxisPosY  - calculateOffset(config.logarithmic, currentAnimPc* botval , calculatedScale, scaleHop);
+							var topBar=xAxisPosY  - calculateOffset(config.logarithmic, currentAnimPc*topval , calculatedScale, scaleHop);
+							
+						}
+						if(currentAnimPc !=0) {
+							ctx.beginPath();
+							ctx.moveTo(barOffset, botBar);
+							ctx.lineTo(barOffset, topBar);
+							ctx.lineTo(barOffset + barWidth, topBar);
+							ctx.lineTo(barOffset + barWidth, botBar);
+							if (config.barShowStroke) ctx.stroke();
+							ctx.closePath();
+							ctx.fill();
+							cumvalue[j] += 1 * data.datasets[i].data[j];
+							if (animPc >= 1) {
+								if (typeof(data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
+								else lgtxt2 = "";
+//								jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", barOffset, xAxisPosY - yStart[j] + 1, barOffset + barWidth, barheight , lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+								if (1*data.datasets[i].data[j]<0) {
+									jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", barOffset, topBar, barOffset + barWidth, botBar , lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+								} else {
+									jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", barOffset, botBar, barOffset + barWidth, topBar , lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+								}
+							}
+						}
+						if (1*data.datasets[i].data[j]<0) {
+							tempp[j]=tempp[j]+1*data.datasets[i].data[j] ;
+						} else {
+							tempn[j]=tempn[j]+1*data.datasets[i].data[j] ;
+						}
 					}
 				}
 			}
@@ -3097,10 +3117,20 @@ window.Chart = function(context) {
 					else lgtxt = "";
 					for (var j = 0; j < data.datasets[i].data.length; j++) {
 						if (i == 0) {
-							yStart[j] = 0;
-							yFpt[j] = -1;
+							tempp[j]=0;
+							tempn[j]=0;
+							zeroY=  calculateOffset(config.logarithmic, 0 , calculatedScale, scaleHop);
 						}
 						if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
+							if (1*data.datasets[i].data[j]<0) {
+								var botval=tempp[j];
+								var topval=tempp[j]+1*data.datasets[i].data[j] ;
+							} else {
+								var botval=tempn[j];
+								var topval=tempn[j]+1*data.datasets[i].data[j] ;
+							}
+							var botBar=xAxisPosY - calculateOffset(config.logarithmic, botval , calculatedScale, scaleHop);
+							var topBar=xAxisPosY  - calculateOffset(config.logarithmic, topval , calculatedScale, scaleHop);
 							ctx.save();
 							ctx.textAlign = config.inGraphDataAlign;
 							ctx.textBaseline = config.inGraphDataVAlign;
@@ -3138,11 +3168,11 @@ window.Chart = function(context) {
 								xPos = barOffset + barWidth + config.inGraphDataPaddingX;
 							}
 							if (config.inGraphDataYPosition == 1) {
-								yPos = xAxisPosY - yStart[j] - config.inGraphDataPaddingY;
+								yPos = botBar - config.inGraphDataPaddingY;
 							} else if (config.inGraphDataYPosition == 2) {
-								yPos = xAxisPosY - (calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2)) / 2 - yStart[j] - config.inGraphDataPaddingY;
+								yPos = topBar - (botbar-topbar)/2 - config.inGraphDataPaddingY;
 							} else if (config.inGraphDataYPosition == 3) {
-								yPos = xAxisPosY - calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j] - config.inGraphDataPaddingY;
+								yPos = topBar - config.inGraphDataPaddingY;
 							}
 							if(yPos>msr.topNotUsableSize) {
 								ctx.translate(xPos, yPos);
@@ -3150,8 +3180,11 @@ window.Chart = function(context) {
 								ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, config.inGraphDataFontSize);
 							}
 							ctx.restore();
-							yStart[j] += currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) - (config.barStrokeWidth / 2);
-							if (yFpt[j] == -1) yFpt[j] = i;
+							if (1*data.datasets[i].data[j]<0) {
+								tempp[j]=tempp[j]+1*data.datasets[i].data[j] ;
+							} else {
+								tempn[j]=tempn[j]+1*data.datasets[i].data[j] ;
+							}
 						}
 					}
 				}
@@ -3254,31 +3287,53 @@ window.Chart = function(context) {
 			for (var i = 0; i < data.datasets.length; i++) {
 				for (var j = 0; j < data.datasets[i].data.length; j++) {
 					var k = i;
-					var temp = 0;
+					var tempp = 0;
+					var tempn = 0;
 					if (!(typeof(data.datasets[0].data[j]) == 'undefined')) {
-						temp += 1 * data.datasets[0].data[j];
-						if (temp > upperValue) {
-							upperValue = temp;
-						};
-						if (temp < lowerValue) {
-							lowerValue = temp;
-						};
+						if(1 * data.datasets[0].data[j] > 0) {
+							tempp += 1 * data.datasets[0].data[j];
+							if (tempp > upperValue) {
+								upperValue = tempp;
+							};
+							if (tempp < lowerValue) {
+								lowerValue = tempp;
+							};
+						} else {
+							tempn += 1 * data.datasets[0].data[j];
+							if (tempn > upperValue) {
+								upperValue = tempn;
+							};
+							if (tempn < lowerValue) {
+								lowerValue = tempn;
+							};
+						}
 					}
 					while (k > 0) { //get max of stacked data
 						if (!(typeof(data.datasets[k].data[j]) == 'undefined')) {
-							temp += 1 * data.datasets[k].data[j];
-							if (temp > upperValue) {
-								upperValue = temp;
-							};
-							if (temp < lowerValue) {
-								lowerValue = temp;
-							};
+							if(1 * data.datasets[k].data[j] > 0) {
+								tempp += 1 * data.datasets[k].data[j];
+								if (tempp > upperValue) {
+									upperValue = tempp;
+								};
+								if (tempp < lowerValue) {
+									lowerValue = tempp;
+								};
+							} else {
+								tempn += 1 * data.datasets[k].data[j];
+								if (tempn > upperValue) {
+									upperValue = tempn;
+								};
+								if (tempn < lowerValue) {
+									lowerValue = tempn;
+								};
+							}
 						}
 						k--;
 					}
 				}
 			};
 			// AJOUT CHANGEMENT
+
 			if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
 			if (!isNaN(config.graphMax)) upperValue = config.graphMax;
 			if (Math.abs(upperValue - lowerValue) < 0.00000001) {
@@ -3376,8 +3431,8 @@ window.Chart = function(context) {
 
 		function drawBars(animPc) {
 			ctx.lineWidth = config.barStrokeWidth;
-			var yStart = new Array(data.datasets.length);
-			var yFpt = new Array(data.datasets.length);
+			var tempp = new Array(data.datasets.length);
+			var tempn = new Array(data.datasets.length);
 			var cumvalue = new Array();
 			var totvalue = new Array();
 			for (var i = 0; i < data.datasets.length; i++) {
@@ -3393,8 +3448,6 @@ window.Chart = function(context) {
 					}
 			}
 			for (var i = 0; i < data.datasets.length; i++) {
-				//                ctx.fillStyle = data.datasets[i].fillColor;
-				//                ctx.strokeStyle = data.datasets[i].strokeColor;
 				if (animPc >= 1) {
 					if (typeof(data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
 					else lgtxt = "";
@@ -3403,8 +3456,9 @@ window.Chart = function(context) {
 					var currentAnimPc = animationCorrection(animPc, data, config, i, j, 1).animVal;
 					if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
 					if (i == 0) {
-						yStart[j] = 0;
-						yFpt[j] = -1;
+						tempp[j]=0;
+						tempn[j]=0;
+						zeroY=  HorizontalCalculateOffset(0 , calculatedScale, scaleHop);
 					}
 					var barOffset = xAxisPosY + config.barValueSpacing - scaleHop * (j + 1);
 					ctx.fillStyle = config.defaultFillColor;
@@ -3425,29 +3479,49 @@ window.Chart = function(context) {
 							ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length - 1, j])];
 						}
 					}
-					if (!(typeof(data.datasets[i].data[j]) == 'undefined') && yAxisPosX + yStart[j] + 1 <= msr.availableWidth+msr.leftNotUsableSize) {
-						ctx.beginPath();
-						var barTop=yAxisPosX + yStart[j] + currentAnimPc * HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
-						var barTop=Min([barTop,msr.availableWidth+msr.leftNotUsableSize]);
-						ctx.moveTo(yAxisPosX + yStart[j] + 1, barOffset);
-//						ctx.lineTo(yAxisPosX + yStart[j] + currentAnimPc * HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset);
-						ctx.lineTo(barTop, barOffset);
-//						ctx.lineTo(yAxisPosX + yStart[j] + currentAnimPc * HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset + barWidth);
-						ctx.lineTo(barTop, barOffset + barWidth);
-						ctx.lineTo(yAxisPosX + yStart[j] + 1, barOffset + barWidth);
-						ctx.lineTo(yAxisPosX + yStart[j] + 1, barOffset);
-						if (config.barShowStroke) ctx.stroke();
-						ctx.closePath();
-						ctx.fill();
-						cumvalue[j] += 1 * data.datasets[i].data[j];
-						if (animPc >= 1) {
-							if (typeof(data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
-							else lgtxt2 = "";
-//							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", yAxisPosX + yStart[j] + 1, barOffset + barWidth, yAxisPosX + yStart[j] + HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset, lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
-							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", yAxisPosX + yStart[j] + 1, barOffset + barWidth, barTop, barOffset, lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+					if (!(typeof(data.datasets[i].data[j]) == 'undefined') && 1*data.datasets[i].data[j] != 0 ) {
+						if (1*data.datasets[i].data[j]<0) {
+							var botval=tempp[j];
+							var topval=tempp[j]+1*data.datasets[i].data[j] ;
+						} else {
+							var botval=tempn[j];
+							var topval=tempn[j]+1*data.datasets[i].data[j] ;
 						}
-						yStart[j] += currentAnimPc * HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
-						if (yFpt[j] == -1) yFpt[j] = i;
+						if(config.animationByDataset) {
+							var botBar=yAxisPosX + HorizontalCalculateOffset(botval , calculatedScale, valueHop);
+							var topBar=yAxisPosX + HorizontalCalculateOffset(topval , calculatedScale, valueHop);
+							topBar=botBar+currentAnimPc*(topBar-botBar);
+						} else {
+							var botBar=yAxisPosX + HorizontalCalculateOffset( currentAnimPc* botval , calculatedScale, valueHop);
+							var topBar=yAxisPosX + HorizontalCalculateOffset( currentAnimPc*topval , calculatedScale, valueHop);
+							
+						}
+						if(currentAnimPc !=0) {
+							ctx.beginPath();
+							ctx.moveTo(botBar, barOffset);
+							ctx.lineTo(topBar, barOffset);
+							ctx.lineTo(topBar, barOffset + barWidth);
+							ctx.lineTo(botBar, barOffset + barWidth);
+							ctx.lineTo(botBar, barOffset);
+							if (config.barShowStroke) ctx.stroke();
+							ctx.closePath();
+							ctx.fill();
+							cumvalue[j] += 1 * data.datasets[i].data[j];
+							if (animPc >= 1) {
+								if (typeof(data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
+								else lgtxt2 = "";
+								if (1*data.datasets[i].data[j]<0) {
+									jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", topBar, barOffset + barWidth, botBar, barOffset, lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+								} else {
+									jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", botBar, barOffset + barWidth, topBar, barOffset, lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+								}
+							}
+						}
+						if (1*data.datasets[i].data[j]<0) {
+							tempp[j]=tempp[j]+1*data.datasets[i].data[j] ;
+						} else {
+							tempn[j]=tempn[j]+1*data.datasets[i].data[j] ;
+						}
 					}
 				}
 			}
@@ -3464,10 +3538,20 @@ window.Chart = function(context) {
 					else lgtxt = "";
 					for (var j = 0; j < data.datasets[i].data.length; j++) {
 						if (i == 0) {
-							yStart[j] = 0;
-							yFpt[j] = -1;
+							tempp[j]=0;
+							tempn[j]=0;
+							zeroY=  HorizontalCalculateOffset(0 , calculatedScale, scaleHop);
 						}
 						if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
+							if (1*data.datasets[i].data[j]<0) {
+								var botval=tempp[j];
+								var topval=tempp[j]+1*data.datasets[i].data[j] ;
+							} else {
+								var botval=tempn[j];
+								var topval=tempn[j]+1*data.datasets[i].data[j] ;
+							}
+							var botBar=yAxisPosX + HorizontalCalculateOffset(botval , calculatedScale, valueHop);
+							var topBar=yAxisPosX + HorizontalCalculateOffset(topval , calculatedScale, valueHop);
 							ctx.save();
 							ctx.textAlign = config.inGraphDataAlign;
 							ctx.textBaseline = config.inGraphDataVAlign;
@@ -3497,11 +3581,11 @@ window.Chart = function(context) {
 							yPos = 0;
 							xPos = 0;
 							if (config.inGraphDataXPosition == 1) {
-								xPos = yAxisPosX + yStart[j] + 1 + config.inGraphDataPaddingX;
+								xPos = botBar + config.inGraphDataPaddingX;
 							} else if (config.inGraphDataXPosition == 2) {
-								xPos = yAxisPosX + yStart[j] + (HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2)) / 2 + config.inGraphDataPaddingX;
+								xPos = botBar + (topBar-botBar)/2 + config.inGraphDataPaddingX;
 							} else if (config.inGraphDataXPosition == 3) {
-								xPos = yAxisPosX + yStart[j] + HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2) + config.inGraphDataPaddingX;
+								xPos = topBar + config.inGraphDataPaddingX;
 							}
 							if (config.inGraphDataYPosition == 1) {
 								yPos = barOffset + barWidth - config.inGraphDataPaddingY;
@@ -3516,8 +3600,11 @@ window.Chart = function(context) {
 								ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, config.inGraphDataFontSize);
 								ctx.restore();
 							}
-							yStart[j] += currentAnimPc * HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
-							if (yFpt[j] == -1) yFpt[j] = i;
+							if (1*data.datasets[i].data[j]<0) {
+								tempp[j]=tempp[j]+1*data.datasets[i].data[j] ;
+							} else {
+								tempn[j]=tempn[j]+1*data.datasets[i].data[j] ;
+							}
 						}
 					}
 				}
@@ -3622,31 +3709,53 @@ window.Chart = function(context) {
 			for (var i = 0; i < data.datasets.length; i++) {
 				for (var j = 0; j < data.datasets[i].data.length; j++) {
 					var k = i;
-					var temp = 0;
+					var tempp = 0;
+					var tempn = 0;
 					if (!(typeof(data.datasets[0].data[j]) == 'undefined')) {
-						temp += 1 * data.datasets[0].data[j];
-						if (temp > upperValue) {
-							upperValue = temp;
-						};
-						if (temp < lowerValue) {
-							lowerValue = temp;
-						};
+						if(1 * data.datasets[0].data[j] > 0) {
+							tempp += 1 * data.datasets[0].data[j];
+							if (tempp > upperValue) {
+								upperValue = tempp;
+							};
+							if (tempp < lowerValue) {
+								lowerValue = tempp;
+							};
+						} else {
+							tempn += 1 * data.datasets[0].data[j];
+							if (tempn > upperValue) {
+								upperValue = tempn;
+							};
+							if (tempn < lowerValue) {
+								lowerValue = tempn;
+							};
+						}
 					}
 					while (k > 0) { //get max of stacked data
 						if (!(typeof(data.datasets[k].data[j]) == 'undefined')) {
-							temp += 1 * data.datasets[k].data[j];
-							if (temp > upperValue) {
-								upperValue = temp;
-							};
-							if (temp < lowerValue) {
-								lowerValue = temp;
-							};
+							if(1 * data.datasets[k].data[j] > 0) {
+								tempp += 1 * data.datasets[k].data[j];
+								if (tempp > upperValue) {
+									upperValue = tempp;
+								};
+								if (tempp < lowerValue) {
+									lowerValue = tempp;
+								};
+							} else {
+								tempn += 1 * data.datasets[k].data[j];
+								if (tempn > upperValue) {
+									upperValue = tempn;
+								};
+								if (tempn < lowerValue) {
+									lowerValue = tempn;
+								};
+							}
 						}
 						k--;
 					}
 				}
 			};
 			// AJOUT CHANGEMENT
+
 			if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
 			if (!isNaN(config.graphMax)) upperValue = config.graphMax;
 			if (Math.abs(upperValue - lowerValue) < 0.00000001) {
@@ -3661,6 +3770,8 @@ window.Chart = function(context) {
 				maxSteps: maxSteps,
 				minSteps: minSteps
 			};
+
+
 		};
 	};
 	var Bar = function(data, config, ctx) {
@@ -4149,7 +4260,7 @@ window.Chart = function(context) {
 					var currentAnimPc = animationCorrection(animPc, data, config, i, j, 1).animVal;
 					if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
 					var barOffset = xAxisPosY + config.barValueSpacing - scaleHop * (j + 1) + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
-					var barHeight = currentAnimPc * calculateOffset(config.logarithmic, 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
+					var barHeight = currentAnimPc * (calculateOffset(config.logarithmic, 1 * data.datasets[i].data[j], calculatedScale, valueHop) - zeroY) + (config.barStrokeWidth / 2);
 					ctx.fillStyle = config.defaultFillColor;
 					if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "HorizontalBar", ctx, yAxisPosX, barOffset, yAxisPosX + barHeight, barOffset + barWidth);
 					else if (typeof(data.datasets[i].fillColor) == "string") {
@@ -4169,7 +4280,7 @@ window.Chart = function(context) {
 						}
 					}
 					if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
-						roundRect(ctx, barOffset, yAxisPosX, barWidth, barHeight, config.barShowStroke, config.barBorderRadius, zeroY);
+						roundRect(ctx, barOffset, yAxisPosX+zeroY, barWidth, barHeight, config.barShowStroke, config.barBorderRadius, 0);
 						cumvalue[j] += 1 * data.datasets[i].data[j];
 						if (animPc >= 1) {
 							if (typeof(data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
