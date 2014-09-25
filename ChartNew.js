@@ -552,6 +552,10 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 		annotateDIV.style.fontSize = (config.annotateClassName) ? '' : config.annotateFontSize + "pt";
 		annotateDIV.style.fontStyle = (config.annotateClassName) ? '' : config.annotateFontStyle;
 	}
+	if (action=="annotate") {
+		show=false;
+		annotateDIV.style.display = show ? '' : 'none';
+	}
 	canvas_pos = getMousePos(ctx.canvas, event);
 	for (i = 0; i < jsGraphAnnotate[ctx.ChartNewId]["length"]; i++) {
 		if (jsGraphAnnotate[ctx.ChartNewId][i][0] == "ARC") {
@@ -1585,6 +1589,7 @@ window.Chart = function(context) {
 		mouseDownMiddle: null,
 		mouseMove: null,
 		mouseOut: null,
+		mouseWheel : null,
 		savePngName: "canvas"
 	};
 	chart.defaults.xyAxisCommonOptions = {
@@ -5839,6 +5844,15 @@ window.Chart = function(context) {
 			}, false);
 		}
 
+		if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("onmousewheel", function(event) {
+			if (cursorDivCreated) document.getElementById('divCursor').style.display = 'none';
+		});
+		else ctx.canvas.addEventListener("DOMMouseScroll", function(event) {
+			if (cursorDivCreated) document.getElementById('divCursor').style.display = 'none';
+		}, false);
+
+
+
 		function add_event_listener(type, func, chk)
 		{
 			if(typeof func != 'function')
@@ -5848,6 +5862,7 @@ window.Chart = function(context) {
 			};
 
 			if(ctx.canvas.addEventListener) {
+				if(type=="mousewheel") type="DOMMouseScroll";
 				ctx.canvas.removeEventListener(type, do_func);
 				ctx.canvas.addEventListener(type, do_func, false);
 			} else if(ctx.canvas.attachEvent) {
@@ -5859,6 +5874,7 @@ window.Chart = function(context) {
 		add_event_listener("mousedown", config.mouseDownRight, function(e) { return e.which == 3; });
 		add_event_listener("mousemove", config.mouseMove);
 		add_event_listener("mouseout", config.mouseOut);
+		add_event_listener("mousewheel", config.mouseWheel);
 	};
 };
 
