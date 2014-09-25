@@ -5713,28 +5713,26 @@ window.Chart = function(context) {
 			}, false);
 		}
 
-        function add_event_listener(type, func, chk)
-        {
-            if(typeof func != 'function')
-                return;
+		function add_event_listener(type, func, chk)
+		{
+			if(typeof func != 'function')
+			return;
+			function do_func(event) {
+				if (chk == null || chk(event)) doMouseAction(config,ctx,event,data,"mouseaction",func);
+			};
 
-            function do_func(event) {
-                if (chk == null || chk(event)) doMouseAction(config,ctx,event,data,"mouseaction",func);
-            }
-
-            if(ctx.canvas.addEventListener) {
-                ctx.canvas.removeEventListener(type, do_func);
-                ctx.canvas.addEventListener(type, do_func, false);
-            } else if(ctx.canvas.attachEvent) {
-                ctx.canvas.attachEvent("on"+type, do_func);
-            }
-        }
-
-        add_event_listener("mousedown", config.mouseDownLeft, function(e) { return e.which == 1; });
-        add_event_listener("mousedown", config.mouseDownMiddle, function(e) { return e.which == 2; });
-        add_event_listener("mousedown", config.mouseDownRight, function(e) { return e.which == 3; });
-        add_event_listener("mousemove", config.mouseMove);
-        add_event_listener("mouseout", config.mouseOut);
+			if(ctx.canvas.addEventListener) {
+				ctx.canvas.removeEventListener(type, do_func);
+				ctx.canvas.addEventListener(type, do_func, false);
+			} else if(ctx.canvas.attachEvent) {
+				ctx.canvas.attachEvent("on"+type, do_func);
+			}
+		};
+		add_event_listener("mousedown", config.mouseDownLeft, function(e) { return e.which == 1; });
+		add_event_listener("mousedown", config.mouseDownMiddle, function(e) { return e.which == 2; });
+		add_event_listener("mousedown", config.mouseDownRight, function(e) { return e.which == 3; });
+		add_event_listener("mousemove", config.mouseMove);
+		add_event_listener("mouseout", config.mouseOut);
 	};
 };
 
