@@ -3040,24 +3040,6 @@ window.Chart = function(context) {
 						zeroY=  calculateOffset(config.logarithmic, 0 , calculatedScale, scaleHop);
 					}
 					var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j;
-					ctx.fillStyle = config.defaultFillColor;
-					if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "StackedBar", ctx, barOffset, xAxisPosY - currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j], barOffset + barWidth, xAxisPosY - yStart[j] + 1);
-					else if (typeof(data.datasets[i].fillColor) == "string") {
-						ctx.fillStyle = data.datasets[i].fillColor;
-					} else if (typeof(data.datasets[i].fillColor) == "object") {
-						if (typeof(data.datasets[i].fillColor[0]) == "string") {
-							ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length - 1, j])];
-						}
-					}
-					ctx.strokeStyle = config.defaultStrokeColor;
-					if (typeof data.datasets[i].strokeColor == "function") ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "StackedBar", ctx, barOffset, xAxisPosY - currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j], barOffset + barWidth, xAxisPosY - yStart[j] + 1);
-					else if (typeof(data.datasets[i].strokeColor) == "string") {
-						ctx.strokeStyle = data.datasets[i].strokeColor;
-					} else if (typeof(data.datasets[i].strokeColor) == "object") {
-						if (typeof(data.datasets[i].strokeColor[0]) == "string") {
-							ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length - 1, j])];
-						}
-					}
 					if (!(typeof(data.datasets[i].data[j]) == 'undefined') && 1*data.datasets[i].data[j] != 0 ) {
 						if (1*data.datasets[i].data[j]<0) {
 							var botval=tempp[j];
@@ -3075,6 +3057,25 @@ window.Chart = function(context) {
 							var topBar=xAxisPosY  - calculateOffset(config.logarithmic, currentAnimPc*topval , calculatedScale, scaleHop);
 							
 						}
+						ctx.fillStyle = config.defaultFillColor;
+						if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "StackedBar", ctx, barOffset, botBar , barOffset + barWidth, topBar);
+						else if (typeof(data.datasets[i].fillColor) == "string") {
+							ctx.fillStyle = data.datasets[i].fillColor;
+						} else if (typeof(data.datasets[i].fillColor) == "object") {
+							if (typeof(data.datasets[i].fillColor[0]) == "string") {
+								ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length - 1, j])];
+							}
+						}
+						ctx.strokeStyle = config.defaultStrokeColor;
+						if (typeof data.datasets[i].strokeColor == "function") ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "StackedBar", ctx, barOffset, botBar, barOffset + barwidth, topBar);
+						else if (typeof(data.datasets[i].strokeColor) == "string") {
+							ctx.strokeStyle = data.datasets[i].strokeColor;
+						} else if (typeof(data.datasets[i].strokeColor) == "object") {
+							if (typeof(data.datasets[i].strokeColor[0]) == "string") {
+								ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length - 1, j])];
+							}
+						}
+
 						if(currentAnimPc !=0) {
 							ctx.beginPath();
 							ctx.moveTo(barOffset, botBar);
@@ -3461,24 +3462,6 @@ window.Chart = function(context) {
 						zeroY=  HorizontalCalculateOffset(0 , calculatedScale, scaleHop);
 					}
 					var barOffset = xAxisPosY + config.barValueSpacing - scaleHop * (j + 1);
-					ctx.fillStyle = config.defaultFillColor;
-					if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "HorizontalStackedBar", ctx, yAxisPosX + yStart[j] + 1, barOffset, yAxisPosX + yStart[j] + currentAnimPc * HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset + barWidth);
-					else if (typeof(data.datasets[i].fillColor) == "string") {
-						ctx.fillStyle = data.datasets[i].fillColor;
-					} else if (typeof(data.datasets[i].fillColor) == "object") {
-						if (typeof(data.datasets[i].fillColor[0]) == "string") {
-							ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length - 1, j])];
-						}
-					}
-					ctx.strokeStyle = config.defaultStrokeColor;
-					if (typeof data.datasets[i].strokeColor == "function") ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], ctx, "HorizontalStackedBar", ctx, yAxisPosX + yStart[j] + 1, barOffset, yAxisPosX + yStart[j] + currentAnimPc * HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset + barWidth);
-					else if (typeof(data.datasets[i].strokeColor) == "string") {
-						ctx.strokeStyle = data.datasets[i].strokeColor;
-					} else if (typeof(data.datasets[i].strokeColor) == "object") {
-						if (typeof(data.datasets[i].strokeColor[0]) == "string") {
-							ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length - 1, j])];
-						}
-					}
 					if (!(typeof(data.datasets[i].data[j]) == 'undefined') && 1*data.datasets[i].data[j] != 0 ) {
 						if (1*data.datasets[i].data[j]<0) {
 							var botval=tempp[j];
@@ -3495,6 +3478,24 @@ window.Chart = function(context) {
 							var botBar=yAxisPosX + HorizontalCalculateOffset( currentAnimPc* botval , calculatedScale, valueHop);
 							var topBar=yAxisPosX + HorizontalCalculateOffset( currentAnimPc*topval , calculatedScale, valueHop);
 							
+						}
+						ctx.fillStyle = config.defaultFillColor;
+						if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "HorizontalStackedBar", ctx, botBar, barOffset, topBar, barOffset + barWidth);
+						else if (typeof(data.datasets[i].fillColor) == "string") {
+							ctx.fillStyle = data.datasets[i].fillColor;
+						} else if (typeof(data.datasets[i].fillColor) == "object") {
+							if (typeof(data.datasets[i].fillColor[0]) == "string") {
+								ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length - 1, j])];
+							}
+						}
+						ctx.strokeStyle = config.defaultStrokeColor;
+						if (typeof data.datasets[i].strokeColor == "function") ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], ctx, "HorizontalStackedBar", ctx,  botBar, barOffset, topBar, barOffset + barWidth);
+						else if (typeof(data.datasets[i].strokeColor) == "string") {
+							ctx.strokeStyle = data.datasets[i].strokeColor;
+						} else if (typeof(data.datasets[i].strokeColor) == "object") {
+							if (typeof(data.datasets[i].strokeColor[0]) == "string") {
+								ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length - 1, j])];
+							}
 						}
 						if(currentAnimPc !=0) {
 							ctx.beginPath();
@@ -3919,7 +3920,7 @@ window.Chart = function(context) {
 					var barHeight = currentAnimPc * (calculateOffset(config.logarithmic, 1 * data.datasets[i].data[j], calculatedScale, scaleHop) - zeroY) + (config.barStrokeWidth / 2);
 					ctx.fillStyle = config.defaultFillColor;
 					if (typeof data.datasets[i].fillColor == "function") {
-						ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "Bar", ctx, barOffset, xAxisPosY - zeroY - barHeight, barOffset + barWidth, xAxisPosY - zeroY);
+						ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "Bar", ctx, barOffset, xAxisPosY - zeroY , barOffset + barWidth, xAxisPosY - zeroY - barHeight);
 					} else if (typeof(data.datasets[i].fillColor) == "string") {
 						ctx.fillStyle = data.datasets[i].fillColor;
 					} else if (typeof(data.datasets[i].fillColor) == "object") {
@@ -4262,7 +4263,7 @@ window.Chart = function(context) {
 					var barOffset = xAxisPosY + config.barValueSpacing - scaleHop * (j + 1) + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
 					var barHeight = currentAnimPc * (calculateOffset(config.logarithmic, 1 * data.datasets[i].data[j], calculatedScale, valueHop) - zeroY) + (config.barStrokeWidth / 2);
 					ctx.fillStyle = config.defaultFillColor;
-					if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "HorizontalBar", ctx, yAxisPosX, barOffset, yAxisPosX + barHeight, barOffset + barWidth);
+					if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "HorizontalBar", ctx, yAxisPosX+zeroY, barOffset, yAxisPosX + zeroY + barHeight, barOffset + barWidth);
 					else if (typeof(data.datasets[i].fillColor) == "string") {
 						ctx.fillStyle = data.datasets[i].fillColor;
 					} else if (typeof(data.datasets[i].fillColor) == "object") {
@@ -5471,7 +5472,7 @@ window.Chart = function(context) {
 								ctx.lineTo(xpos, ypos);
 								ctx.closePath();
 								if (drawLegendOnData) {
-									if (typeof data.datasets[orderi].fillColor == "function") ctx.fillStyle = data.datasets[orderi].fillColor("LEGENDFILLCOLOR", data, config, orderi, -1, 1, -1, typegraph, ctx, xpos, ypos - config.legendFontSize, xpos + config.legendBlockSize, ypos);
+									if (typeof data.datasets[orderi].fillColor == "function") ctx.fillStyle = data.datasets[orderi].fillColor("LEGENDFILLCOLOR", data, config, orderi, -1, 1, -1, typegraph, ctx, xpos, ypos, xpos + config.legendBlockSize, ypos - config.legendFontSize);
 									else if (typeof data.datasets[orderi].fillColor == "string") ctx.fillStyle = data.datasets[orderi].fillColor;
 									else ctx.fillStyle = config.defaultFillColor;
 								} else {
