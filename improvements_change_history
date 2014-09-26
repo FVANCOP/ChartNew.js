@@ -1,6 +1,15 @@
 Change history
 --------------
 
+25/09/2014 - Vancoppenolle François - Enhancements :
+                                                StackedBar and HorizontalStackedBar can now have negative values;
+                                                mouseWheel option added
+                                      Bugs fixed
+                                                Hover info remains on graph (issue #19)
+                                                legend not correct (inverted) for gradient Colors in Bar/Lines chart
+                                                gradient Color not displayed correctly on HorizontalBar when negative values in the data;
+                                                animation on HorizontalBar was not correct in some cases;
+                                                when max value was greater than graphMax, the (Horizontal)StackedBar graph was not correct;
 24/09/2014 - Naudhr                 - fix bug:recursive call to mouse functions in case of graph update - Pull request #149
 22/09/2014 - Ole Kröger, Omar Sedki, Vancoppenolle Francois - gradient color (see issue #102)
 11/09/2014 - Ole Kröger             - savePngName option added (issue #97)

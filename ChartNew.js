@@ -552,6 +552,10 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 		annotateDIV.style.fontSize = (config.annotateClassName) ? '' : config.annotateFontSize + "pt";
 		annotateDIV.style.fontStyle = (config.annotateClassName) ? '' : config.annotateFontStyle;
 	}
+	if (action=="annotate") {
+		show=false;
+		annotateDIV.style.display = show ? '' : 'none';
+	}
 	canvas_pos = getMousePos(ctx.canvas, event);
 	for (i = 0; i < jsGraphAnnotate[ctx.ChartNewId]["length"]; i++) {
 		if (jsGraphAnnotate[ctx.ChartNewId][i][0] == "ARC") {
@@ -1585,6 +1589,7 @@ window.Chart = function(context) {
 		mouseDownMiddle: null,
 		mouseMove: null,
 		mouseOut: null,
+		mouseWheel : null,
 		savePngName: "canvas"
 	};
 	chart.defaults.xyAxisCommonOptions = {
@@ -3010,8 +3015,8 @@ window.Chart = function(context) {
 
 		function drawBars(animPc) {
 			ctx.lineWidth = config.barStrokeWidth;
-			var yStart = new Array(data.datasets.length);
-			var yFpt = new Array(data.datasets.length);
+			var tempp = new Array(data.datasets.length);
+			var tempn = new Array(data.datasets.length);
 			var cumvalue = new Array();
 			var totvalue = new Array();
 			for (var i = 0; i < data.datasets.length; i++) {
@@ -3027,8 +3032,6 @@ window.Chart = function(context) {
 					}
 			}
 			for (var i = 0; i < data.datasets.length; i++) {
-				//                ctx.fillStyle = data.datasets[i].fillColor;
-				//                ctx.strokeStyle = data.datasets[i].strokeColor;
 				if (animPc >= 1) {
 					if (typeof(data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
 					else lgtxt = "";
@@ -3037,45 +3040,73 @@ window.Chart = function(context) {
 					var currentAnimPc = animationCorrection(animPc, data, config, i, j, 1).animVal;
 					if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
 					if (i == 0) {
-						yStart[j] = 0;
-						yFpt[j] = -1;
+						tempp[j]=0;
+						tempn[j]=0;
+						zeroY=  calculateOffset(config.logarithmic, 0 , calculatedScale, scaleHop);
 					}
 					var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j;
-					ctx.fillStyle = config.defaultFillColor;
-					if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "StackedBar", ctx, barOffset, xAxisPosY - currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j], barOffset + barWidth, xAxisPosY - yStart[j] + 1);
-					else if (typeof(data.datasets[i].fillColor) == "string") {
-						ctx.fillStyle = data.datasets[i].fillColor;
-					} else if (typeof(data.datasets[i].fillColor) == "object") {
-						if (typeof(data.datasets[i].fillColor[0]) == "string") {
-							ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length - 1, j])];
+					if (!(typeof(data.datasets[i].data[j]) == 'undefined') && 1*data.datasets[i].data[j] != 0 ) {
+						if (1*data.datasets[i].data[j]<0) {
+							var botval=tempp[j];
+							var topval=tempp[j]+1*data.datasets[i].data[j] ;
+						} else {
+							var botval=tempn[j];
+							var topval=tempn[j]+1*data.datasets[i].data[j] ;
 						}
-					}
-					ctx.strokeStyle = config.defaultStrokeColor;
-					if (typeof data.datasets[i].strokeColor == "function") ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "StackedBar", ctx, barOffset, xAxisPosY - currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j], barOffset + barWidth, xAxisPosY - yStart[j] + 1);
-					else if (typeof(data.datasets[i].strokeColor) == "string") {
-						ctx.strokeStyle = data.datasets[i].strokeColor;
-					} else if (typeof(data.datasets[i].strokeColor) == "object") {
-						if (typeof(data.datasets[i].strokeColor[0]) == "string") {
-							ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length - 1, j])];
+						if(config.animationByDataset) {
+							var botBar=xAxisPosY - calculateOffset(config.logarithmic, botval , calculatedScale, scaleHop);
+							var topBar=xAxisPosY  - calculateOffset(config.logarithmic, topval , calculatedScale, scaleHop);
+							topBar=botBar+currentAnimPc*(topBar-botBar);
+						} else {
+							var botBar=xAxisPosY  - calculateOffset(config.logarithmic, currentAnimPc* botval , calculatedScale, scaleHop);
+							var topBar=xAxisPosY  - calculateOffset(config.logarithmic, currentAnimPc*topval , calculatedScale, scaleHop);
+							
 						}
-					}
-					if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
-						ctx.beginPath();
-						ctx.moveTo(barOffset, xAxisPosY - yStart[j] + 1);
-						ctx.lineTo(barOffset, xAxisPosY - currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j]);
-						ctx.lineTo(barOffset + barWidth, xAxisPosY - currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j]);
-						ctx.lineTo(barOffset + barWidth, xAxisPosY - yStart[j] + 1);
-						if (config.barShowStroke) ctx.stroke();
-						ctx.closePath();
-						ctx.fill();
-						cumvalue[j] += 1 * data.datasets[i].data[j];
-						if (animPc >= 1) {
-							if (typeof(data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
-							else lgtxt2 = "";
-							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", barOffset, xAxisPosY - yStart[j] + 1, barOffset + barWidth, xAxisPosY - calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j], lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+						ctx.fillStyle = config.defaultFillColor;
+						if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "StackedBar", ctx, barOffset, botBar , barOffset + barWidth, topBar);
+						else if (typeof(data.datasets[i].fillColor) == "string") {
+							ctx.fillStyle = data.datasets[i].fillColor;
+						} else if (typeof(data.datasets[i].fillColor) == "object") {
+							if (typeof(data.datasets[i].fillColor[0]) == "string") {
+								ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length - 1, j])];
+							}
 						}
-						yStart[j] += currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) - (config.barStrokeWidth / 2);
-						if (yFpt[j] == -1) yFpt[j] = i;
+						ctx.strokeStyle = config.defaultStrokeColor;
+						if (typeof data.datasets[i].strokeColor == "function") ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "StackedBar", ctx, barOffset, botBar, barOffset + barwidth, topBar);
+						else if (typeof(data.datasets[i].strokeColor) == "string") {
+							ctx.strokeStyle = data.datasets[i].strokeColor;
+						} else if (typeof(data.datasets[i].strokeColor) == "object") {
+							if (typeof(data.datasets[i].strokeColor[0]) == "string") {
+								ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length - 1, j])];
+							}
+						}
+
+						if(currentAnimPc !=0) {
+							ctx.beginPath();
+							ctx.moveTo(barOffset, botBar);
+							ctx.lineTo(barOffset, topBar);
+							ctx.lineTo(barOffset + barWidth, topBar);
+							ctx.lineTo(barOffset + barWidth, botBar);
+							if (config.barShowStroke) ctx.stroke();
+							ctx.closePath();
+							ctx.fill();
+							cumvalue[j] += 1 * data.datasets[i].data[j];
+							if (animPc >= 1) {
+								if (typeof(data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
+								else lgtxt2 = "";
+//								jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", barOffset, xAxisPosY - yStart[j] + 1, barOffset + barWidth, barheight , lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+								if (1*data.datasets[i].data[j]<0) {
+									jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", barOffset, topBar, barOffset + barWidth, botBar , lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+								} else {
+									jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", barOffset, botBar, barOffset + barWidth, topBar , lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+								}
+							}
+						}
+						if (1*data.datasets[i].data[j]<0) {
+							tempp[j]=tempp[j]+1*data.datasets[i].data[j] ;
+						} else {
+							tempn[j]=tempn[j]+1*data.datasets[i].data[j] ;
+						}
 					}
 				}
 			}
@@ -3092,10 +3123,20 @@ window.Chart = function(context) {
 					else lgtxt = "";
 					for (var j = 0; j < data.datasets[i].data.length; j++) {
 						if (i == 0) {
-							yStart[j] = 0;
-							yFpt[j] = -1;
+							tempp[j]=0;
+							tempn[j]=0;
+							zeroY=  calculateOffset(config.logarithmic, 0 , calculatedScale, scaleHop);
 						}
 						if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
+							if (1*data.datasets[i].data[j]<0) {
+								var botval=tempp[j];
+								var topval=tempp[j]+1*data.datasets[i].data[j] ;
+							} else {
+								var botval=tempn[j];
+								var topval=tempn[j]+1*data.datasets[i].data[j] ;
+							}
+							var botBar=xAxisPosY - calculateOffset(config.logarithmic, botval , calculatedScale, scaleHop);
+							var topBar=xAxisPosY  - calculateOffset(config.logarithmic, topval , calculatedScale, scaleHop);
 							ctx.save();
 							ctx.textAlign = config.inGraphDataAlign;
 							ctx.textBaseline = config.inGraphDataVAlign;
@@ -3133,18 +3174,23 @@ window.Chart = function(context) {
 								xPos = barOffset + barWidth + config.inGraphDataPaddingX;
 							}
 							if (config.inGraphDataYPosition == 1) {
-								yPos = xAxisPosY - yStart[j] - config.inGraphDataPaddingY;
+								yPos = botBar - config.inGraphDataPaddingY;
 							} else if (config.inGraphDataYPosition == 2) {
-								yPos = xAxisPosY - (calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2)) / 2 - yStart[j] - config.inGraphDataPaddingY;
+								yPos = topBar - (botbar-topbar)/2 - config.inGraphDataPaddingY;
 							} else if (config.inGraphDataYPosition == 3) {
-								yPos = xAxisPosY - calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - yStart[j] - config.inGraphDataPaddingY;
+								yPos = topBar - config.inGraphDataPaddingY;
 							}
-							ctx.translate(xPos, yPos);
-							ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-							ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, config.inGraphDataFontSize);
+							if(yPos>msr.topNotUsableSize) {
+								ctx.translate(xPos, yPos);
+								ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
+								ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, config.inGraphDataFontSize);
+							}
 							ctx.restore();
-							yStart[j] += currentAnimPc * calculateOffset(config.logarithmic, (yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, scaleHop) - (config.barStrokeWidth / 2);
-							if (yFpt[j] == -1) yFpt[j] = i;
+							if (1*data.datasets[i].data[j]<0) {
+								tempp[j]=tempp[j]+1*data.datasets[i].data[j] ;
+							} else {
+								tempn[j]=tempn[j]+1*data.datasets[i].data[j] ;
+							}
 						}
 					}
 				}
@@ -3247,31 +3293,53 @@ window.Chart = function(context) {
 			for (var i = 0; i < data.datasets.length; i++) {
 				for (var j = 0; j < data.datasets[i].data.length; j++) {
 					var k = i;
-					var temp = 0;
+					var tempp = 0;
+					var tempn = 0;
 					if (!(typeof(data.datasets[0].data[j]) == 'undefined')) {
-						temp += 1 * data.datasets[0].data[j];
-						if (temp > upperValue) {
-							upperValue = temp;
-						};
-						if (temp < lowerValue) {
-							lowerValue = temp;
-						};
+						if(1 * data.datasets[0].data[j] > 0) {
+							tempp += 1 * data.datasets[0].data[j];
+							if (tempp > upperValue) {
+								upperValue = tempp;
+							};
+							if (tempp < lowerValue) {
+								lowerValue = tempp;
+							};
+						} else {
+							tempn += 1 * data.datasets[0].data[j];
+							if (tempn > upperValue) {
+								upperValue = tempn;
+							};
+							if (tempn < lowerValue) {
+								lowerValue = tempn;
+							};
+						}
 					}
 					while (k > 0) { //get max of stacked data
 						if (!(typeof(data.datasets[k].data[j]) == 'undefined')) {
-							temp += 1 * data.datasets[k].data[j];
-							if (temp > upperValue) {
-								upperValue = temp;
-							};
-							if (temp < lowerValue) {
-								lowerValue = temp;
-							};
+							if(1 * data.datasets[k].data[j] > 0) {
+								tempp += 1 * data.datasets[k].data[j];
+								if (tempp > upperValue) {
+									upperValue = tempp;
+								};
+								if (tempp < lowerValue) {
+									lowerValue = tempp;
+								};
+							} else {
+								tempn += 1 * data.datasets[k].data[j];
+								if (tempn > upperValue) {
+									upperValue = tempn;
+								};
+								if (tempn < lowerValue) {
+									lowerValue = tempn;
+								};
+							}
 						}
 						k--;
 					}
 				}
 			};
 			// AJOUT CHANGEMENT
+
 			if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
 			if (!isNaN(config.graphMax)) upperValue = config.graphMax;
 			if (Math.abs(upperValue - lowerValue) < 0.00000001) {
@@ -3369,8 +3437,8 @@ window.Chart = function(context) {
 
 		function drawBars(animPc) {
 			ctx.lineWidth = config.barStrokeWidth;
-			var yStart = new Array(data.datasets.length);
-			var yFpt = new Array(data.datasets.length);
+			var tempp = new Array(data.datasets.length);
+			var tempn = new Array(data.datasets.length);
 			var cumvalue = new Array();
 			var totvalue = new Array();
 			for (var i = 0; i < data.datasets.length; i++) {
@@ -3386,8 +3454,6 @@ window.Chart = function(context) {
 					}
 			}
 			for (var i = 0; i < data.datasets.length; i++) {
-				//                ctx.fillStyle = data.datasets[i].fillColor;
-				//                ctx.strokeStyle = data.datasets[i].strokeColor;
 				if (animPc >= 1) {
 					if (typeof(data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
 					else lgtxt = "";
@@ -3396,46 +3462,72 @@ window.Chart = function(context) {
 					var currentAnimPc = animationCorrection(animPc, data, config, i, j, 1).animVal;
 					if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
 					if (i == 0) {
-						yStart[j] = 0;
-						yFpt[j] = -1;
+						tempp[j]=0;
+						tempn[j]=0;
+						zeroY=  HorizontalCalculateOffset(0 , calculatedScale, scaleHop);
 					}
 					var barOffset = xAxisPosY + config.barValueSpacing - scaleHop * (j + 1);
-					ctx.fillStyle = config.defaultFillColor;
-					if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "HorizontalStackedBar", ctx, yAxisPosX + yStart[j] + 1, barOffset, yAxisPosX + yStart[j] + currentAnimPc * HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset + barWidth);
-					else if (typeof(data.datasets[i].fillColor) == "string") {
-						ctx.fillStyle = data.datasets[i].fillColor;
-					} else if (typeof(data.datasets[i].fillColor) == "object") {
-						if (typeof(data.datasets[i].fillColor[0]) == "string") {
-							ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length - 1, j])];
+					if (!(typeof(data.datasets[i].data[j]) == 'undefined') && 1*data.datasets[i].data[j] != 0 ) {
+						if (1*data.datasets[i].data[j]<0) {
+							var botval=tempp[j];
+							var topval=tempp[j]+1*data.datasets[i].data[j] ;
+						} else {
+							var botval=tempn[j];
+							var topval=tempn[j]+1*data.datasets[i].data[j] ;
 						}
-					}
-					ctx.strokeStyle = config.defaultStrokeColor;
-					if (typeof data.datasets[i].strokeColor == "function") ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], ctx, "HorizontalStackedBar", ctx, yAxisPosX + yStart[j] + 1, barOffset, yAxisPosX + yStart[j] + currentAnimPc * HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset + barWidth);
-					else if (typeof(data.datasets[i].strokeColor) == "string") {
-						ctx.strokeStyle = data.datasets[i].strokeColor;
-					} else if (typeof(data.datasets[i].strokeColor) == "object") {
-						if (typeof(data.datasets[i].strokeColor[0]) == "string") {
-							ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length - 1, j])];
+						if(config.animationByDataset) {
+							var botBar=yAxisPosX + HorizontalCalculateOffset(botval , calculatedScale, valueHop);
+							var topBar=yAxisPosX + HorizontalCalculateOffset(topval , calculatedScale, valueHop);
+							topBar=botBar+currentAnimPc*(topBar-botBar);
+						} else {
+							var botBar=yAxisPosX + HorizontalCalculateOffset( currentAnimPc* botval , calculatedScale, valueHop);
+							var topBar=yAxisPosX + HorizontalCalculateOffset( currentAnimPc*topval , calculatedScale, valueHop);
+							
 						}
-					}
-					if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
-						ctx.beginPath();
-						ctx.moveTo(yAxisPosX + yStart[j] + 1, barOffset);
-						ctx.lineTo(yAxisPosX + yStart[j] + currentAnimPc * HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset);
-						ctx.lineTo(yAxisPosX + yStart[j] + currentAnimPc * HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset + barWidth);
-						ctx.lineTo(yAxisPosX + yStart[j] + 1, barOffset + barWidth);
-						ctx.lineTo(yAxisPosX + yStart[j] + 1, barOffset);
-						if (config.barShowStroke) ctx.stroke();
-						ctx.closePath();
-						ctx.fill();
-						cumvalue[j] += 1 * data.datasets[i].data[j];
-						if (animPc >= 1) {
-							if (typeof(data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
-							else lgtxt2 = "";
-							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", yAxisPosX + yStart[j] + 1, barOffset + barWidth, yAxisPosX + yStart[j] + HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2), barOffset, lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+						ctx.fillStyle = config.defaultFillColor;
+						if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "HorizontalStackedBar", ctx, botBar, barOffset, topBar, barOffset + barWidth);
+						else if (typeof(data.datasets[i].fillColor) == "string") {
+							ctx.fillStyle = data.datasets[i].fillColor;
+						} else if (typeof(data.datasets[i].fillColor) == "object") {
+							if (typeof(data.datasets[i].fillColor[0]) == "string") {
+								ctx.fillStyle = data.datasets[i].fillColor[Min([data.datasets[i].fillColor.length - 1, j])];
+							}
 						}
-						yStart[j] += currentAnimPc * HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
-						if (yFpt[j] == -1) yFpt[j] = i;
+						ctx.strokeStyle = config.defaultStrokeColor;
+						if (typeof data.datasets[i].strokeColor == "function") ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], ctx, "HorizontalStackedBar", ctx,  botBar, barOffset, topBar, barOffset + barWidth);
+						else if (typeof(data.datasets[i].strokeColor) == "string") {
+							ctx.strokeStyle = data.datasets[i].strokeColor;
+						} else if (typeof(data.datasets[i].strokeColor) == "object") {
+							if (typeof(data.datasets[i].strokeColor[0]) == "string") {
+								ctx.strokeStyle = data.datasets[i].strokeColor[Min([data.datasets[i].strokeColor.length - 1, j])];
+							}
+						}
+						if(currentAnimPc !=0) {
+							ctx.beginPath();
+							ctx.moveTo(botBar, barOffset);
+							ctx.lineTo(topBar, barOffset);
+							ctx.lineTo(topBar, barOffset + barWidth);
+							ctx.lineTo(botBar, barOffset + barWidth);
+							ctx.lineTo(botBar, barOffset);
+							if (config.barShowStroke) ctx.stroke();
+							ctx.closePath();
+							ctx.fill();
+							cumvalue[j] += 1 * data.datasets[i].data[j];
+							if (animPc >= 1) {
+								if (typeof(data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
+								else lgtxt2 = "";
+								if (1*data.datasets[i].data[j]<0) {
+									jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", topBar, barOffset + barWidth, botBar, barOffset, lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+								} else {
+									jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", botBar, barOffset + barWidth, topBar, barOffset, lgtxt, lgtxt2, 1 * data.datasets[i].data[j], cumvalue[j], totvalue[j], i, j];
+								}
+							}
+						}
+						if (1*data.datasets[i].data[j]<0) {
+							tempp[j]=tempp[j]+1*data.datasets[i].data[j] ;
+						} else {
+							tempn[j]=tempn[j]+1*data.datasets[i].data[j] ;
+						}
 					}
 				}
 			}
@@ -3452,10 +3544,20 @@ window.Chart = function(context) {
 					else lgtxt = "";
 					for (var j = 0; j < data.datasets[i].data.length; j++) {
 						if (i == 0) {
-							yStart[j] = 0;
-							yFpt[j] = -1;
+							tempp[j]=0;
+							tempn[j]=0;
+							zeroY=  HorizontalCalculateOffset(0 , calculatedScale, scaleHop);
 						}
 						if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
+							if (1*data.datasets[i].data[j]<0) {
+								var botval=tempp[j];
+								var topval=tempp[j]+1*data.datasets[i].data[j] ;
+							} else {
+								var botval=tempn[j];
+								var topval=tempn[j]+1*data.datasets[i].data[j] ;
+							}
+							var botBar=yAxisPosX + HorizontalCalculateOffset(botval , calculatedScale, valueHop);
+							var topBar=yAxisPosX + HorizontalCalculateOffset(topval , calculatedScale, valueHop);
 							ctx.save();
 							ctx.textAlign = config.inGraphDataAlign;
 							ctx.textBaseline = config.inGraphDataVAlign;
@@ -3485,11 +3587,11 @@ window.Chart = function(context) {
 							yPos = 0;
 							xPos = 0;
 							if (config.inGraphDataXPosition == 1) {
-								xPos = yAxisPosX + yStart[j] + 1 + config.inGraphDataPaddingX;
+								xPos = botBar + config.inGraphDataPaddingX;
 							} else if (config.inGraphDataXPosition == 2) {
-								xPos = yAxisPosX + yStart[j] + (HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2)) / 2 + config.inGraphDataPaddingX;
+								xPos = botBar + (topBar-botBar)/2 + config.inGraphDataPaddingX;
 							} else if (config.inGraphDataXPosition == 3) {
-								xPos = yAxisPosX + yStart[j] + HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2) + config.inGraphDataPaddingX;
+								xPos = topBar + config.inGraphDataPaddingX;
 							}
 							if (config.inGraphDataYPosition == 1) {
 								yPos = barOffset + barWidth - config.inGraphDataPaddingY;
@@ -3498,12 +3600,17 @@ window.Chart = function(context) {
 							} else if (config.inGraphDataYPosition == 3) {
 								yPos = barOffset - config.inGraphDataPaddingY;
 							}
-							ctx.translate(xPos, yPos);
-							ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
-							ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, config.inGraphDataFontSize);
-							ctx.restore();
-							yStart[j] += currentAnimPc * HorizontalCalculateOffset((yFpt[j] >= 0) * calculatedScale.graphMin + 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
-							if (yFpt[j] == -1) yFpt[j] = i;
+							if(xPos<=msr.availableWidth+msr.leftNotUsableSize) {
+								ctx.translate(xPos, yPos);
+								ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
+								ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, config.inGraphDataFontSize);
+								ctx.restore();
+							}
+							if (1*data.datasets[i].data[j]<0) {
+								tempp[j]=tempp[j]+1*data.datasets[i].data[j] ;
+							} else {
+								tempn[j]=tempn[j]+1*data.datasets[i].data[j] ;
+							}
 						}
 					}
 				}
@@ -3608,31 +3715,53 @@ window.Chart = function(context) {
 			for (var i = 0; i < data.datasets.length; i++) {
 				for (var j = 0; j < data.datasets[i].data.length; j++) {
 					var k = i;
-					var temp = 0;
+					var tempp = 0;
+					var tempn = 0;
 					if (!(typeof(data.datasets[0].data[j]) == 'undefined')) {
-						temp += 1 * data.datasets[0].data[j];
-						if (temp > upperValue) {
-							upperValue = temp;
-						};
-						if (temp < lowerValue) {
-							lowerValue = temp;
-						};
+						if(1 * data.datasets[0].data[j] > 0) {
+							tempp += 1 * data.datasets[0].data[j];
+							if (tempp > upperValue) {
+								upperValue = tempp;
+							};
+							if (tempp < lowerValue) {
+								lowerValue = tempp;
+							};
+						} else {
+							tempn += 1 * data.datasets[0].data[j];
+							if (tempn > upperValue) {
+								upperValue = tempn;
+							};
+							if (tempn < lowerValue) {
+								lowerValue = tempn;
+							};
+						}
 					}
 					while (k > 0) { //get max of stacked data
 						if (!(typeof(data.datasets[k].data[j]) == 'undefined')) {
-							temp += 1 * data.datasets[k].data[j];
-							if (temp > upperValue) {
-								upperValue = temp;
-							};
-							if (temp < lowerValue) {
-								lowerValue = temp;
-							};
+							if(1 * data.datasets[k].data[j] > 0) {
+								tempp += 1 * data.datasets[k].data[j];
+								if (tempp > upperValue) {
+									upperValue = tempp;
+								};
+								if (tempp < lowerValue) {
+									lowerValue = tempp;
+								};
+							} else {
+								tempn += 1 * data.datasets[k].data[j];
+								if (tempn > upperValue) {
+									upperValue = tempn;
+								};
+								if (tempn < lowerValue) {
+									lowerValue = tempn;
+								};
+							}
 						}
 						k--;
 					}
 				}
 			};
 			// AJOUT CHANGEMENT
+
 			if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
 			if (!isNaN(config.graphMax)) upperValue = config.graphMax;
 			if (Math.abs(upperValue - lowerValue) < 0.00000001) {
@@ -3647,6 +3776,8 @@ window.Chart = function(context) {
 				maxSteps: maxSteps,
 				minSteps: minSteps
 			};
+
+
 		};
 	};
 	var Bar = function(data, config, ctx) {
@@ -3794,7 +3925,7 @@ window.Chart = function(context) {
 					var barHeight = currentAnimPc * (calculateOffset(config.logarithmic, 1 * data.datasets[i].data[j], calculatedScale, scaleHop) - zeroY) + (config.barStrokeWidth / 2);
 					ctx.fillStyle = config.defaultFillColor;
 					if (typeof data.datasets[i].fillColor == "function") {
-						ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "Bar", ctx, barOffset, xAxisPosY - zeroY - barHeight, barOffset + barWidth, xAxisPosY - zeroY);
+						ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "Bar", ctx, barOffset, xAxisPosY - zeroY , barOffset + barWidth, xAxisPosY - zeroY - barHeight);
 					} else if (typeof(data.datasets[i].fillColor) == "string") {
 						ctx.fillStyle = data.datasets[i].fillColor;
 					} else if (typeof(data.datasets[i].fillColor) == "object") {
@@ -4135,9 +4266,9 @@ window.Chart = function(context) {
 					var currentAnimPc = animationCorrection(animPc, data, config, i, j, 1).animVal;
 					if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
 					var barOffset = xAxisPosY + config.barValueSpacing - scaleHop * (j + 1) + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
-					var barHeight = currentAnimPc * calculateOffset(config.logarithmic, 1 * data.datasets[i].data[j], calculatedScale, valueHop) + (config.barStrokeWidth / 2);
+					var barHeight = currentAnimPc * (calculateOffset(config.logarithmic, 1 * data.datasets[i].data[j], calculatedScale, valueHop) - zeroY) + (config.barStrokeWidth / 2);
 					ctx.fillStyle = config.defaultFillColor;
-					if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "HorizontalBar", ctx, yAxisPosX, barOffset, yAxisPosX + barHeight, barOffset + barWidth);
+					if (typeof data.datasets[i].fillColor == "function") ctx.fillStyle = data.datasets[i].fillColor("FILLCOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "HorizontalBar", ctx, yAxisPosX+zeroY, barOffset, yAxisPosX + zeroY + barHeight, barOffset + barWidth);
 					else if (typeof(data.datasets[i].fillColor) == "string") {
 						ctx.fillStyle = data.datasets[i].fillColor;
 					} else if (typeof(data.datasets[i].fillColor) == "object") {
@@ -4155,7 +4286,7 @@ window.Chart = function(context) {
 						}
 					}
 					if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
-						roundRect(ctx, barOffset, yAxisPosX, barWidth, barHeight, config.barShowStroke, config.barBorderRadius, zeroY);
+						roundRect(ctx, barOffset, yAxisPosX+zeroY, barWidth, barHeight, config.barShowStroke, config.barBorderRadius, 0);
 						cumvalue[j] += 1 * data.datasets[i].data[j];
 						if (animPc >= 1) {
 							if (typeof(data.labels[j]) == "string") lgtxt2 = data.labels[j].trim();
@@ -5346,7 +5477,7 @@ window.Chart = function(context) {
 								ctx.lineTo(xpos, ypos);
 								ctx.closePath();
 								if (drawLegendOnData) {
-									if (typeof data.datasets[orderi].fillColor == "function") ctx.fillStyle = data.datasets[orderi].fillColor("LEGENDFILLCOLOR", data, config, orderi, -1, 1, -1, typegraph, ctx, xpos, ypos - config.legendFontSize, xpos + config.legendBlockSize, ypos);
+									if (typeof data.datasets[orderi].fillColor == "function") ctx.fillStyle = data.datasets[orderi].fillColor("LEGENDFILLCOLOR", data, config, orderi, -1, 1, -1, typegraph, ctx, xpos, ypos, xpos + config.legendBlockSize, ypos - config.legendFontSize);
 									else if (typeof data.datasets[orderi].fillColor == "string") ctx.fillStyle = data.datasets[orderi].fillColor;
 									else ctx.fillStyle = config.defaultFillColor;
 								} else {
@@ -5713,6 +5844,15 @@ window.Chart = function(context) {
 			}, false);
 		}
 
+		if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("onmousewheel", function(event) {
+			if (cursorDivCreated) document.getElementById('divCursor').style.display = 'none';
+		});
+		else ctx.canvas.addEventListener("DOMMouseScroll", function(event) {
+			if (cursorDivCreated) document.getElementById('divCursor').style.display = 'none';
+		}, false);
+
+
+
 		function add_event_listener(type, func, chk)
 		{
 			if(typeof func != 'function')
@@ -5722,6 +5862,7 @@ window.Chart = function(context) {
 			};
 
 			if(ctx.canvas.addEventListener) {
+				if(type=="mousewheel") type="DOMMouseScroll";
 				ctx.canvas.removeEventListener(type, do_func);
 				ctx.canvas.addEventListener(type, do_func, false);
 			} else if(ctx.canvas.attachEvent) {
@@ -5733,6 +5874,7 @@ window.Chart = function(context) {
 		add_event_listener("mousedown", config.mouseDownRight, function(e) { return e.which == 3; });
 		add_event_listener("mousemove", config.mouseMove);
 		add_event_listener("mouseout", config.mouseOut);
+		add_event_listener("mousewheel", config.mouseWheel);
 	};
 };
 
