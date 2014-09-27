@@ -1634,13 +1634,19 @@ window.Chart = function(context) {
 	var clear = function(c) {
 		c.clearRect(0, 0, width, height);
 	};
-	var PolarArea = function(data, config, ctx) {
-		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
-		if (typeof ctx.ChartNewId == undefined) {
+
+	function setting_new_chart_vars(ctx, type_str) {
+		if (typeof ctx.ChartNewId === typeof undefined) {
 			var cvdate = new Date();
 			var cvmillsec = cvdate.getTime();
-			ctx.ChartNewId = "PolarArea_" + cvmillsec;
+			ctx.ChartNewId = type_str + '_' + cvmillsec;
+			ctx._eventListeners = {};
 		}
+	}
+
+	var PolarArea = function(data, config, ctx) {
+		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
+		setting_new_chart_vars(ctx, "PolarArea");
 		if (!dynamicFunction(data, config, ctx, "PolarArea")) return;
 		var realStartAngle = config.startAngle * (Math.PI / 180) + 2 * Math.PI;
 		while (config.startAngle < 0) {
@@ -1860,11 +1866,7 @@ window.Chart = function(context) {
 	};
 	var Radar = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
-		if (typeof ctx.ChartNewId == "undefined") {
-			var cvdate = new Date();
-			var cvmillsec = cvdate.getTime();
-			ctx.ChartNewId = "Radar_" + cvmillsec;
-		}
+		setting_new_chart_vars(ctx, "Radar");
 		if (!dynamicFunction(data, config, ctx, "Radar")) return;
 		while (config.startAngle < 0) {
 			config.startAngle += 360;
@@ -2211,11 +2213,7 @@ window.Chart = function(context) {
 	var Pie = function(data, config, ctx) {
 		var segmentTotal = 0;
 		var msr, midPieX, midPieY, pieRadius;
-		if (typeof ctx.ChartNewId == "undefined") {
-			var cvdate = new Date();
-			var cvmillsec = cvdate.getTime();
-			ctx.ChartNewId = "Pie_" + cvmillsec;
-		}
+		setting_new_chart_vars(ctx, "Pie");
 		if (!dynamicFunction(data, config, ctx, "Pie")) return;
 		while (config.startAngle < 0) {
 			config.startAngle += 360;
@@ -2419,11 +2417,7 @@ window.Chart = function(context) {
 	var Doughnut = function(data, config, ctx) {
 		var segmentTotal = 0;
 		var msr, midPieX, midPieY, doughnutRadius;
-		if (typeof ctx.ChartNewId == "undefined") {
-			var cvdate = new Date();
-			var cvmillsec = cvdate.getTime();
-			ctx.ChartNewId = "Doughnut_" + cvmillsec;
-		}
+		setting_new_chart_vars(ctx, "Doughnut");
 		if (!dynamicFunction(data, config, ctx, "Doughnut")) return;
 		var realCumulativeAngle = config.startAngle * (Math.PI / 180) + 2 * Math.PI;
 		while (config.startAngle < 0) {
@@ -2627,11 +2621,7 @@ window.Chart = function(context) {
 		var zeroY = 0;
 		var zeroY2 = 0;
 		var offsets = [];
-		if (typeof ctx.ChartNewId == "undefined") {
-			var cvdate = new Date();
-			var cvmillsec = cvdate.getTime();
-			ctx.ChartNewId = "Line_" + cvmillsec;
-		}
+		setting_new_chart_vars(ctx, "Line");
 		// adapt data when length is 1;
 		var mxlgt = 0;
 		for (var i = 0; i < data.datasets.length; i++) mxlgt = Max([mxlgt, data.datasets[i].data.length]);
@@ -2965,11 +2955,7 @@ window.Chart = function(context) {
 	var StackedBar = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
-		if (typeof ctx.ChartNewId == "undefined") {
-			var cvdate = new Date();
-			var cvmillsec = cvdate.getTime();
-			ctx.ChartNewId = "StackedBar_" + cvmillsec;
-		}
+		setting_new_chart_vars(ctx, "StackedBar");
 		if (!dynamicFunction(data, config, ctx, "StackedBar")) return;
 		config.logarithmic = false;
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
@@ -3381,11 +3367,7 @@ window.Chart = function(context) {
 		if (config.reverseOrder) {
 			data = reverseData(data);
 		}
-		if (typeof ctx.ChartNewId == "undefined") {
-			var cvdate = new Date();
-			var cvmillsec = cvdate.getTime();
-			ctx.ChartNewId = "HorizontalStackedBar_" + cvmillsec;
-		}
+		setting_new_chart_vars(ctx, "HorizontalStackedBar");
 		if (!dynamicFunction(data, config, ctx, "HorizontalStackedBar")) return;
 		config.logarithmic = false;
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
@@ -3784,11 +3766,7 @@ window.Chart = function(context) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
 		var offsets = [];
-		if (typeof ctx.ChartNewId == "undefined") {
-			var cvdate = new Date();
-			var cvmillsec = cvdate.getTime();
-			ctx.ChartNewId = "Bar_" + cvmillsec;
-		}
+		setting_new_chart_vars(ctx, "Bar");
 		// for BarLineCharts
 		var nrOfBars = data.datasets.length;
 		var nrOfLines = 0;
@@ -4198,11 +4176,7 @@ window.Chart = function(context) {
 		if (config.reverseOrder) {
 			data = reverseData(data);
 		}
-		if (typeof ctx.ChartNewId == "undefined") {
-			var cvdate = new Date();
-			var cvmillsec = cvdate.getTime();
-			ctx.ChartNewId = "HorizontalBar_" + cvmillsec;
-		}
+		setting_new_chart_vars(ctx, "HorizontalBar");
 		if (!dynamicFunction(data, config, ctx, "HorizontalBar")) return;
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
@@ -5856,19 +5830,30 @@ window.Chart = function(context) {
 		function add_event_listener(type, func, chk)
 		{
 			if(typeof func != 'function')
-			return;
+				return;
+
 			function do_func(event) {
 				if (chk == null || chk(event)) doMouseAction(config,ctx,event,data,"mouseaction",func);
 			};
 
+			var hash = type+' '+func.name;
+			if(hash in ctx._eventListeners) {
+				if(ctx.canvas.removeEventListener)
+					ctx.canvas.removeEventListener(type, ctx._eventListeners[hash]);
+				else if(ctx.canvas.detachEvent)
+					ctx.canvas.detachEvent(type, ctx._eventListeners[hash]);
+			}
+
+			ctx._eventListeners[hash] = do_func;
+
 			if(ctx.canvas.addEventListener) {
 				if(type=="mousewheel") type="DOMMouseScroll";
-				ctx.canvas.removeEventListener(type, do_func);
 				ctx.canvas.addEventListener(type, do_func, false);
 			} else if(ctx.canvas.attachEvent) {
 				ctx.canvas.attachEvent("on"+type, do_func);
 			}
 		};
+
 		add_event_listener("mousedown", config.mouseDownLeft, function(e) { return e.which == 1; });
 		add_event_listener("mousedown", config.mouseDownMiddle, function(e) { return e.which == 2; });
 		add_event_listener("mousedown", config.mouseDownRight, function(e) { return e.which == 3; });
