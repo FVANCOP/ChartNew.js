@@ -1074,7 +1074,7 @@ window.Chart = function(context) {
 			inGraphDataFontColor: "#666",
 			inGraphDataRadiusPosition: 3,
 			inGraphDataAnglePosition: 2,
-			inGraphDataMinimumSlice : 0,
+			inGraphDataMinimumAngle : 0,
 			segmentShowStroke: true,
 			segmentStrokeColor: "#fff",
 			segmentStrokeWidth: 2,
@@ -1110,7 +1110,7 @@ window.Chart = function(context) {
 			inGraphDataFontColor: "#666",
 			inGraphDataRadiusPosition: 3,
 			inGraphDataAnglePosition: 2,
-		        inGraphDataMinimumSlice : 0,
+		        inGraphDataMinimumAngle : 0,
 			segmentShowStroke: true,
 			segmentStrokeColor: "#fff",
 			segmentStrokeWidth: 2,
@@ -2303,7 +2303,7 @@ window.Chart = function(context) {
 						if (typeof(data[i].title) == "string") lgtxt = data[i].title.trim();
 						else lgtxt = "";
 						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", midPieX, midPieY, 0, pieRadius, cumulativeAngle - segmentAngle, cumulativeAngle, lgtxt, 1 * data[i].value, cumvalue, totvalue, segmentAngle, i];
-					        if (config.inGraphDataShow && segmentAngle >= (Math.PI/180) * config.inGraphDataMinimumSlice) {
+					        if (config.inGraphDataShow && segmentAngle >= (Math.PI/180) * config.inGraphDataMinimumAngle) {
 							if (config.inGraphDataAnglePosition == 1) posAngle = realCumulativeAngle + config.inGraphDataPaddingAngle * (Math.PI / 180);
 							else if (config.inGraphDataAnglePosition == 2) posAngle = realCumulativeAngle - segmentAngle / 2 + config.inGraphDataPaddingAngle * (Math.PI / 180);
 							else if (config.inGraphDataAnglePosition == 3) posAngle = realCumulativeAngle - segmentAngle + config.inGraphDataPaddingAngle * (Math.PI / 180);
@@ -2514,7 +2514,7 @@ window.Chart = function(context) {
 						if (typeof(data[i].title) == "string") lgtxt = data[i].title.trim();
 						else lgtxt = "";
 						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", midPieX, midPieY, cutoutRadius, doughnutRadius, cumulativeAngle - segmentAngle, cumulativeAngle, lgtxt, 1 * data[i].value, cumvalue, totvalue, segmentAngle, i];
-					        if (config.inGraphDataShow && segmentAngle >= (Math.PI/180) * config.inGraphDataMinimumSlice) {
+					        if (config.inGraphDataShow && segmentAngle >= (Math.PI/180) * config.inGraphDataMinimumAngle) {
 							if (config.inGraphDataAnglePosition == 1) posAngle = realCumulativeAngle + config.inGraphDataPaddingAngle * (Math.PI / 180);
 							else if (config.inGraphDataAnglePosition == 2) posAngle = realCumulativeAngle - segmentAngle / 2 + config.inGraphDataPaddingAngle * (Math.PI / 180);
 							else if (config.inGraphDataAnglePosition == 3) posAngle = realCumulativeAngle - segmentAngle + config.inGraphDataPaddingAngle * (Math.PI / 180);
