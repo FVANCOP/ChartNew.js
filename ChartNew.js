@@ -1074,6 +1074,7 @@ window.Chart = function(context) {
 			inGraphDataFontColor: "#666",
 			inGraphDataRadiusPosition: 3,
 			inGraphDataAnglePosition: 2,
+			inGraphDataMinimumSlice : 0,
 			segmentShowStroke: true,
 			segmentStrokeColor: "#fff",
 			segmentStrokeWidth: 2,
@@ -1109,6 +1110,7 @@ window.Chart = function(context) {
 			inGraphDataFontColor: "#666",
 			inGraphDataRadiusPosition: 3,
 			inGraphDataAnglePosition: 2,
+		        inGraphDataMinimumSlice : 0,
 			segmentShowStroke: true,
 			segmentStrokeColor: "#fff",
 			segmentStrokeWidth: 2,
@@ -1746,7 +1748,7 @@ window.Chart = function(context) {
 						if (typeof(data[i].title) == "string") lgtxt = data[i].title.trim();
 						else lgtxt = "";
 						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", midPosX, midPosY, 0, calculateOffset(config.logarithmic, 1 * data[i].value, calculatedScale, scaleHop), startAngle - angleStep, startAngle, lgtxt, 1 * data[i].value, cumvalue, totvalue, angleStep, i];
-						if (config.inGraphDataShow) {
+					        if (config.inGraphDataShow) {
 							if (config.inGraphDataAnglePosition == 1) posAngle = realStartAngle + config.inGraphDataPaddingAngle * (Math.PI / 180);
 							else if (config.inGraphDataAnglePosition == 2) posAngle = realStartAngle - angleStep / 2 + config.inGraphDataPaddingAngle * (Math.PI / 180);
 							else if (config.inGraphDataAnglePosition == 3) posAngle = realStartAngle - angleStep + config.inGraphDataPaddingAngle * (Math.PI / 180);
@@ -1796,8 +1798,8 @@ window.Chart = function(context) {
 							} else ctx.rotate(config.inGraphDataRotate * (Math.PI / 180));
 							ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, config.inGraphDataFontSize);
 							ctx.restore();
-							realStartAngle -= angleStep;
 						}
+						realStartAngle -= angleStep;
 					}
 				}
 			}
@@ -2288,18 +2290,26 @@ window.Chart = function(context) {
 						ctx.strokeStyle = config.segmentStrokeColor;
 						ctx.stroke();
 					}
-					if (animationDecimal >= 1) {
+				}
+			}
+			if (animationDecimal >= 1) {
+				for (var i = 0; i < data.length; i++) {
+					correctedRotateAnimation = animationCorrection(rotateAnimation, data, config, i, -1, 0).mainVal;
+					if (!(typeof(data[i].value) == 'undefined')) {
+						var segmentAngle = correctedRotateAnimation * ((1 * data[i].value / segmentTotal) * (Math.PI * 2));
+						if (segmentAngle >= Math.PI * 2) segmentAngle = Math.PI * 2 - 0.001; // bug on Android when segmentAngle is >= 2*PI;
+						cumulativeAngle += segmentAngle;
+						cumvalue += 1 * data[i].value;
 						if (typeof(data[i].title) == "string") lgtxt = data[i].title.trim();
 						else lgtxt = "";
 						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", midPieX, midPieY, 0, pieRadius, cumulativeAngle - segmentAngle, cumulativeAngle, lgtxt, 1 * data[i].value, cumvalue, totvalue, segmentAngle, i];
-						if (config.inGraphDataShow) {
+					        if (config.inGraphDataShow && segmentAngle >= (Math.PI/180) * config.inGraphDataMinimumSlice) {
 							if (config.inGraphDataAnglePosition == 1) posAngle = realCumulativeAngle + config.inGraphDataPaddingAngle * (Math.PI / 180);
 							else if (config.inGraphDataAnglePosition == 2) posAngle = realCumulativeAngle - segmentAngle / 2 + config.inGraphDataPaddingAngle * (Math.PI / 180);
 							else if (config.inGraphDataAnglePosition == 3) posAngle = realCumulativeAngle - segmentAngle + config.inGraphDataPaddingAngle * (Math.PI / 180);
 							if (config.inGraphDataRadiusPosition == 1) labelRadius = 0 + config.inGraphDataPaddingRadius;
 							else if (config.inGraphDataRadiusPosition == 2) labelRadius = pieRadius / 2 + config.inGraphDataPaddingRadius;
 							else if (config.inGraphDataRadiusPosition == 3) labelRadius = pieRadius + config.inGraphDataPaddingRadius;
-							realCumulativeAngle -= segmentAngle;
 							ctx.save();
 							if (config.inGraphDataAlign == "off-center") {
 								if (config.inGraphDataRotate == "inRadiusAxis" || (posAngle + 2 * Math.PI) % (2 * Math.PI) > 3 * Math.PI / 2 || (posAngle + 2 * Math.PI) % (2 * Math.PI) < Math.PI / 2) ctx.textAlign = "left";
@@ -2343,8 +2353,10 @@ window.Chart = function(context) {
 							ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, config.inGraphDataFontSize);
 							ctx.restore();
 						}
+						realCumulativeAngle -= segmentAngle;
 					}
 				}
+
 			}
 		};
 
@@ -2489,18 +2501,26 @@ window.Chart = function(context) {
 						ctx.strokeStyle = config.segmentStrokeColor;
 						ctx.stroke();
 					}
-					if (animationDecimal >= 1) {
+				}
+			}
+			if (animationDecimal >= 1) {
+				for (var i = 0; i < data.length; i++) {
+					correctedRotateAnimation = animationCorrection(rotateAnimation, data, config, i, -1, 0).mainVal;
+					if (!(typeof(data[i].value) == 'undefined')) {
+						var segmentAngle = correctedRotateAnimation * ((1 * data[i].value / segmentTotal) * (Math.PI * 2));
+						if (segmentAngle >= Math.PI * 2) segmentAngle = Math.PI * 2 - 0.001; // but on Android when segmentAngle is >= 2*PI;
+						cumulativeAngle += segmentAngle;
+						cumvalue += 1 * data[i].value;
 						if (typeof(data[i].title) == "string") lgtxt = data[i].title.trim();
 						else lgtxt = "";
 						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", midPieX, midPieY, cutoutRadius, doughnutRadius, cumulativeAngle - segmentAngle, cumulativeAngle, lgtxt, 1 * data[i].value, cumvalue, totvalue, segmentAngle, i];
-						if (config.inGraphDataShow) {
+					        if (config.inGraphDataShow && segmentAngle >= (Math.PI/180) * config.inGraphDataMinimumSlice) {
 							if (config.inGraphDataAnglePosition == 1) posAngle = realCumulativeAngle + config.inGraphDataPaddingAngle * (Math.PI / 180);
 							else if (config.inGraphDataAnglePosition == 2) posAngle = realCumulativeAngle - segmentAngle / 2 + config.inGraphDataPaddingAngle * (Math.PI / 180);
 							else if (config.inGraphDataAnglePosition == 3) posAngle = realCumulativeAngle - segmentAngle + config.inGraphDataPaddingAngle * (Math.PI / 180);
 							if (config.inGraphDataRadiusPosition == 1) labelRadius = cutoutRadius + config.inGraphDataPaddingRadius;
 							else if (config.inGraphDataRadiusPosition == 2) labelRadius = cutoutRadius + (doughnutRadius - cutoutRadius) / 2 + config.inGraphDataPaddingRadius;
 							else if (config.inGraphDataRadiusPosition == 3) labelRadius = doughnutRadius + config.inGraphDataPaddingRadius;
-							realCumulativeAngle -= segmentAngle;
 							ctx.save();
 							if (config.inGraphDataAlign == "off-center") {
 								if (config.inGraphDataRotate == "inRadiusAxis" || (posAngle + 2 * Math.PI) % (2 * Math.PI) > 3 * Math.PI / 2 || (posAngle + 2 * Math.PI) % (2 * Math.PI) < Math.PI / 2) ctx.textAlign = "left";
@@ -2543,6 +2563,7 @@ window.Chart = function(context) {
 							ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, config.inGraphDataFontSize);
 							ctx.restore();
 						}
+						realCumulativeAngle -= segmentAngle;
 					}
 				}
 			}
