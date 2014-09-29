@@ -1,6 +1,7 @@
 Change history
 --------------
 
+29/09/2014 - Chris2014              - default value defined for scaleLabel2
 27/09/2014 - naudhr                 - Fix Bug to mouse functions + code reduction
 25/09/2014 - Vancoppenolle François - Enhancements :
                                                 StackedBar and HorizontalStackedBar can now have negative values;
