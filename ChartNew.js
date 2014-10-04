@@ -1474,6 +1474,9 @@ window.Chart = function(context) {
 		footNoteSpaceAfter: 5,
 		legend: false,
 		showSingleLegend: false,
+		maxLegendCols : 999,
+		legendPosY :4,
+		legendPosX : -2, 
 		legendFontFamily: "'Arial'",
 		legendFontSize: 12,
 		legendFontStyle: "normal",
@@ -1493,6 +1496,9 @@ window.Chart = function(context) {
 		legendSpaceBetweenTextVertical: 5,
 		legendSpaceBetweenTextHorizontal: 5,
 		legendSpaceBetweenBoxAndText: 5,
+		legendFillColor : "rbga(0,0,0,0)",
+		legendXPadding : 0,
+		legendYPadding : 0,
 		annotateDisplay: false,
 		savePng: false,
 		savePngOutput: "NewWindow", // Allowed values : "NewWindow", "CurrentWindow", "Save"
@@ -1786,6 +1792,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
 		};
 
 		function drawScale() {
@@ -2034,6 +2041,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
 		};
 
 		function drawScale() {
@@ -2341,6 +2349,7 @@ window.Chart = function(context) {
 				}
 
 			}
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
 		};
 
 		function calculateDrawingSize() {
@@ -2550,6 +2559,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
 		};
 
 		function calculateDrawingSize() {
@@ -2752,6 +2762,8 @@ window.Chart = function(context) {
 				calculatedScale: calculatedScale2,
 				logarithmic: config.logarithmic2
 			});
+
+
 			if (animPc >= 1) {
 				if (typeof drawMath == "function") {
 					drawMath(ctx, config, data, msr, {
@@ -2765,6 +2777,7 @@ window.Chart = function(context) {
 					});
 				}
 			}
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
 		};
 
 		function drawScale() {
@@ -3185,6 +3198,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
 		};
 
 		function drawScale() {
@@ -3601,6 +3615,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
 		};
 
 		function drawScale() {
@@ -4027,6 +4042,7 @@ window.Chart = function(context) {
 					});
 				}
 			}
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
 		};
 
 		function roundRect(ctx, x, y, w, h, stroke, radius) {
@@ -4348,6 +4364,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
 		};
 
 		function roundRect(ctx, x, y, w, h, stroke, radius, zeroY) {
@@ -5045,8 +5062,7 @@ window.Chart = function(context) {
 	function setMeasures(data, config, ctx, height, width, ylabels, ylabels2, reverseLegend, reverseAxis, drawAxis, drawLegendOnData, legendBox, typegraph) {
 		if (config.canvasBackgroundColor != "none") ctx.canvas.style.background = config.canvasBackgroundColor;
 		var borderWidth = 0;
-		var yAxisLabelWidth = 0;
-		var yAxisLabelPos = 0;
+		var xAxisLabelPos = 0;
 		var graphTitleHeight = 0;
 		var graphTitlePosY = 0;
 		var graphSubTitleHeight = 0;
@@ -5065,7 +5081,8 @@ window.Chart = function(context) {
 		var xLegendBorderPos = 0;
 		var yLegendBorderPos = 0;
 		var yAxisLabelWidth = 0;
-		var yAxisLabelPos = 0;
+		var yAxisLabelPosLeft = 0;
+		var yAxisLabelPosRight = 0;
 		var xAxisLabelHeight = 0;
 		var xLabelHeight = 0;
 		var widestXLabel = 1;
@@ -5178,6 +5195,19 @@ window.Chart = function(context) {
 				footNotePosY = height - config.spaceBottom - borderWidth - config.footNoteSpaceAfter;
 			}
 		}
+		
+		// xAxisLabel
+		if (drawAxis) {
+			if (typeof(config.xAxisLabel) != "undefined") {
+				if (config.xAxisLabel.trim() != "") {
+					xAxisLabelHeight = (config.xAxisFontSize + config.xAxisLabelSpaceBefore + config.xAxisLabelSpaceAfter);
+					xAxisLabelPos = height - borderWidth - config.spaceBottom - footNoteHeight - config.xAxisLabelSpaceAfter;
+				}
+			}
+		}
+
+		bottomNotUsableHeightWithoutXLabels = borderWidth + config.spaceBottom + footNoteHeight + xAxisLabelHeight + config.graphSpaceAfter;
+
 		// compute space for Legend
 		if (typeof(config.legend) != "undefined") {
 			if (config.legend == true) {
@@ -5207,35 +5237,165 @@ window.Chart = function(context) {
 				}
 				if (nbeltLegend > 1 || (nbeltLegend == 1 && config.showSingleLegend)) {
 					widestLegend += config.legendBlockSize + config.legendSpaceBetweenBoxAndText;
-					availableLegendWidth = width - config.spaceLeft - config.spaceRight - 2 * (borderWidth) - config.legendSpaceLeftText - config.legendSpaceRightText;
+					if(config.legendPosY==1 || config.legendPosY==2 || config.legendPosY==3) {
+						availableLegendWidth = availableWidth- config.legendSpaceLeftText - config.legendSpaceRightText;
+					} else {
+						availableLegendWidth = width - config.spaceLeft - config.spaceRight - 2 * (borderWidth) - config.legendSpaceLeftText - config.legendSpaceRightText;
+					}
 					if (config.legendBorders == true) availableLegendWidth -= 2 * (config.legendBordersWidth) - config.legendBordersSpaceLeft - config.legendBordersSpaceRight;
-					maxLegendOnLine = Math.floor((availableLegendWidth + config.legendSpaceBetweenTextHorizontal) / (widestLegend + config.legendSpaceBetweenTextHorizontal));
+					maxLegendOnLine = Min([Math.floor((availableLegendWidth + config.legendSpaceBetweenTextHorizontal) / (widestLegend + config.legendSpaceBetweenTextHorizontal)),config.maxLegendCols]);
 					nbLegendLines = Math.ceil(nbeltLegend / maxLegendOnLine);
 					nbLegendCols = Math.ceil(nbeltLegend / nbLegendLines);
-					spaceLegendHeight = nbLegendLines * (config.legendFontSize + config.legendSpaceBetweenTextVertical) - config.legendSpaceBetweenTextVertical + config.legendSpaceBeforeText + config.legendSpaceAfterText;
-					yFirstLegendTextPos = height - borderWidth - config.spaceBottom - footNoteHeight - spaceLegendHeight + config.legendSpaceBeforeText + config.legendFontSize;
-					xFirstLegendTextPos = config.spaceLeft + (width - config.spaceLeft - config.spaceRight - nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal) + config.legendSpaceBetweenTextHorizontal) / 2;
+				
+					var legendHeight = nbLegendLines * (config.legendFontSize + config.legendSpaceBetweenTextVertical) - config.legendSpaceBetweenTextVertical + config.legendSpaceBeforeText + config.legendSpaceAfterText;
 					if (config.legendBorders == true) {
-						spaceLegendHeight += 2 * config.legendBordersWidth + config.legendBordersSpaceBefore + config.legendBordersSpaceAfter;
-						yFirstLegendTextPos -= (config.legendBordersWidth + config.legendBordersSpaceAfter);
-						yLegendBorderPos = Math.floor(height - borderWidth - config.spaceBottom - footNoteHeight - spaceLegendHeight + (config.legendBordersWidth / 2) + config.legendBordersSpaceBefore);
-						xLegendBorderPos = Math.floor(xFirstLegendTextPos - config.legendSpaceLeftText - (config.legendBordersWidth / 2));
-						legendBorderHeight = Math.ceil(spaceLegendHeight - config.legendBordersWidth) - config.legendBordersSpaceBefore - config.legendBordersSpaceAfter;
-						legendBorderWidth = Math.ceil(nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal)) - config.legendSpaceBetweenTextHorizontal + config.legendBordersWidth + config.legendSpaceRightText + config.legendSpaceLeftText;
+//						legendHeight += 2 * config.legendBordersWidth + config.legendBordersSpaceBefore + config.legendBordersSpaceAfter;
 					}
-				}
-			}
-		}
-		// xAxisLabel
-		if (drawAxis) {
-			if (typeof(config.xAxisLabel) != "undefined") {
-				if (config.xAxisLabel.trim() != "") {
-					xAxisLabelHeight = (config.xAxisFontSize + config.xAxisLabelSpaceBefore + config.xAxisLabelSpaceAfter);
-					xAxisLabelPos = height - borderWidth - config.spaceBottom - footNoteHeight - spaceLegendHeight - config.xAxisLabelSpaceAfter;
+
+					switch (config.legendPosY) {
+						case 0:
+							xFirstLegendTextPos = config.spaceLeft + (width - config.spaceLeft - config.spaceRight - nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal) + config.legendSpaceBetweenTextHorizontal) / 2;
+							spaceLegendHeight = legendHeight;
+							if (config.legendBorders == true) {
+								yLegendBorderPos = topNotUsableSize + config.legendBordersSpaceBefore + (config.legendBordersWidth/2);
+								yFirstLegendTextPos = yLegendBorderPos  + (config.legendBordersWidth/2) + config.legendSpaceBeforeText+config.legendFontSize;
+								spaceLegendHeight += 2 * config.legendBordersWidth + config.legendBordersSpaceBefore + config.legendBordersSpaceAfter;
+								xLegendBorderPos = Math.floor(xFirstLegendTextPos - config.legendSpaceLeftText - (config.legendBordersWidth / 2));
+								legendBorderHeight = Math.ceil(spaceLegendHeight - config.legendBordersWidth) - config.legendBordersSpaceBefore - config.legendBordersSpaceAfter;
+								legendBorderWidth = Math.ceil(nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal)) - config.legendSpaceBetweenTextHorizontal + config.legendBordersWidth + config.legendSpaceRightText + config.legendSpaceLeftText;
+							} else {
+								yFirstLegendTextPos = height - borderWidth - config.spaceBottom - footNoteHeight - spaceLegendHeight + config.legendSpaceBeforeText + config.legendFontSize;
+							}
+							if(yAxisUnitHeight>0) {
+								yAxisUnitPosY+=spaceLegendHeight;
+								if(config.legendBorders==true)yLegendBorderPos-=yAxisUnitHeight;
+								yFirstLegendTextPos-=yAxisUnitHeight;
+							}
+							topNotUsableSize += spaceLegendHeight;
+							break;
+						case 1:
+							spaceLegendHeight = legendHeight;
+							xFirstLegendTextPos = config.spaceLeft + (width - config.spaceLeft - config.spaceRight - nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal) + config.legendSpaceBetweenTextHorizontal) / 2;
+							yFirstLegendTextPos = topNotUsableSize + config.legendSpaceBeforeText+config.legendFontSize;
+							if (config.legendBorders == true) {
+								yFirstLegendTextPos += config.legendBordersSpaceBefore+config.legendBordersWidth;
+								yLegendBorderPos = yFirstLegendTextPos - config.legendSpaceBeforeText - config.legendFontSize - (config.legendBordersWidth /2 );
+								spaceLegendHeight += 2 * config.legendBordersWidth + config.legendBordersSpaceBefore + config.legendBordersSpaceAfter;
+								xLegendBorderPos = Math.floor(xFirstLegendTextPos - config.legendSpaceLeftText - (config.legendBordersWidth / 2));
+								legendBorderHeight = Math.ceil(spaceLegendHeight - config.legendBordersWidth) - config.legendBordersSpaceBefore - config.legendBordersSpaceAfter;
+								legendBorderWidth = Math.ceil(nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal)) - config.legendSpaceBetweenTextHorizontal + config.legendBordersWidth + config.legendSpaceRightText + config.legendSpaceLeftText;
+							}
+							break;
+						case 2:
+							spaceLegendHeight = legendHeight;
+							xFirstLegendTextPos = config.spaceLeft + (width - config.spaceLeft - config.spaceRight - nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal) + config.legendSpaceBetweenTextHorizontal) / 2;
+							yFirstLegendTextPos = topNotUsableSize + (height - topNotUsableSize - bottomNotUsableHeightWithXLabels - spaceLegendHeight) /2 + config.legendSpaceBeforeText+config.legendFontSize;
+							if (config.legendBorders == true) {
+								yFirstLegendTextPos += config.legendBordersSpaceBefore - config.legendBordersSpaceAfter;
+								yLegendBorderPos = yFirstLegendTextPos - config.legendSpaceBeforeText - config.legendFontSize - (config.legendBordersWidth /2 );
+								spaceLegendHeight += 2 * config.legendBordersWidth + config.legendBordersSpaceBefore + config.legendBordersSpaceAfter;
+								xLegendBorderPos = Math.floor(xFirstLegendTextPos - config.legendSpaceLeftText - (config.legendBordersWidth / 2));
+								legendBorderHeight = Math.ceil(spaceLegendHeight - config.legendBordersWidth) - config.legendBordersSpaceBefore - config.legendBordersSpaceAfter;
+								legendBorderWidth = Math.ceil(nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal)) - config.legendSpaceBetweenTextHorizontal + config.legendBordersWidth + config.legendSpaceRightText + config.legendSpaceLeftText;
+							}
+							break;
+						case 3:
+							spaceLegendHeight = legendHeight;
+							xFirstLegendTextPos = config.spaceLeft + (width - config.spaceLeft - config.spaceRight - nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal) + config.legendSpaceBetweenTextHorizontal) / 2;
+							availableHeight = height - topNotUsableSize - bottomNotUsableHeightWithoutXLabels;
+							yFirstLegendTextPos = topNotUsableSize + availableHeight - spaceLegendHeight + config.legendSpaceBeforeText+config.legendFontSize;
+							if (config.legendBorders == true) {
+								yFirstLegendTextPos -= (config.legendBordersSpaceAfter+config.legendBordersWidth);
+								yLegendBorderPos = yFirstLegendTextPos - config.legendSpaceBeforeText - config.legendFontSize - (config.legendBordersWidth /2 );
+								spaceLegendHeight += 2 * config.legendBordersWidth + config.legendBordersSpaceBefore + config.legendBordersSpaceAfter;
+								xLegendBorderPos = Math.floor(xFirstLegendTextPos - config.legendSpaceLeftText - (config.legendBordersWidth / 2));
+								legendBorderHeight = Math.ceil(spaceLegendHeight - config.legendBordersWidth) - config.legendBordersSpaceBefore - config.legendBordersSpaceAfter;
+								legendBorderWidth = Math.ceil(nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal)) - config.legendSpaceBetweenTextHorizontal + config.legendBordersWidth + config.legendSpaceRightText + config.legendSpaceLeftText;
+							}
+							break;
+						default:
+							spaceLegendHeight = legendHeight;
+							yFirstLegendTextPos = height - borderWidth - config.spaceBottom - footNoteHeight - spaceLegendHeight + config.legendSpaceBeforeText + config.legendFontSize;
+							xFirstLegendTextPos = config.spaceLeft + (width - config.spaceLeft - config.spaceRight - nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal) + config.legendSpaceBetweenTextHorizontal) / 2;
+							if (config.legendBorders == true) {
+								spaceLegendHeight += 2 * config.legendBordersWidth + config.legendBordersSpaceBefore + config.legendBordersSpaceAfter;
+								yFirstLegendTextPos -= (config.legendBordersWidth + config.legendBordersSpaceAfter);
+								yLegendBorderPos = Math.floor(height - borderWidth - config.spaceBottom - footNoteHeight - spaceLegendHeight + (config.legendBordersWidth / 2) + config.legendBordersSpaceBefore);
+								xLegendBorderPos = Math.floor(xFirstLegendTextPos - config.legendSpaceLeftText - (config.legendBordersWidth / 2));
+								legendBorderHeight = Math.ceil(spaceLegendHeight - config.legendBordersWidth) - config.legendBordersSpaceBefore - config.legendBordersSpaceAfter;
+								legendBorderWidth = Math.ceil(nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal)) - config.legendSpaceBetweenTextHorizontal + config.legendBordersWidth + config.legendSpaceRightText + config.legendSpaceLeftText;
+							} 
+							xAxisLabelPos -= spaceLegendHeight;
+//							xLabelPos -= spaceLegendHeight;
+							bottomNotUsableHeightWithoutXLabels +=spaceLegendHeight;
+							break;
+					}		
+					var fullLegendWidth=config.legendSpaceRightText + nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal) - config.legendSpaceBetweenTextHorizontal +config.legendSpaceLeftText;
+					if (config.legendBorders == true) {
+						fullLegendWidth+=2*config.legendBordersWidth+config.legendBordersSpaceLeft+config.legendBordersSpaceRight;
+					}
+
+					switch (config.legendPosX) {
+						case 0:
+							xFirstLegendTextPos = config.spaceLeft + config.canvasBorders * config.canvasBordersWidth + config.legendSpaceLeftText;  
+							if (config.legendBorders == true) {
+								xFirstLegendTextPos += config.legendBordersWidth+config.legendBordersSpaceLeft;
+								xLegendBorderPos = config.spaceLeft + config.canvasBorders * config.canvasBordersWidth + config.legendBordersSpaceLeft;
+							}
+							if(config.legendPosY>=1 && config.legendPosY <=3) {
+								leftNotUsableSize+=fullLegendWidth;
+								yAxisLabelPosLeft+=fullLegendWidth;
+							}
+							break;
+						case 1:
+							xFirstLegendTextPos = leftNotUsableSize + config.legendSpaceLeftText+config.scaleTickSizeLeft;  
+							if (config.legendBorders == true) {
+								xLegendBorderPos = xFirstLegendTextPos;
+								xFirstLegendTextPos += config.legendBordersWidth+config.legendBordersSpaceLeft;
+							}
+							break;
+						case 2:
+							xFirstLegendTextPos = leftNotUsableSize + (width - rightNotUsableSize - leftNotUsableSize)/2 - (config.legendSpaceLeftText-config.legendSpaceRightText) - (nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal) - config.legendSpaceBetweenTextHorizontal) / 2;  
+							if (config.legendBorders == true) {
+								xFirstLegendTextPos -= (config.legendBordersWidth + config.legendBordersSpaceRight);
+								xLegendBorderPos = xFirstLegendTextPos - config.legendBordersWidth/2 - config.legendSpaceLeftText ;
+							}
+							break;
+						case 3:
+							xFirstLegendTextPos = width - rightNotUsableSize - config.scaleTickSizeRight - config.legendSpaceRightText - nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal) + config.legendSpaceBetweenTextHorizontal / 2;  
+							if (config.legendBorders == true) {
+								xFirstLegendTextPos -= (config.legendBordersWidth + config.legendBordersSpaceRight);
+								xLegendBorderPos = xFirstLegendTextPos - config.legendBordersWidth/2 - config.legendSpaceLeftText ;
+							}
+							break;
+						case 4:
+							xFirstLegendTextPos = width - config.spaceRight - config.canvasBorders * config.canvasBordersWidth - config.legendSpaceRightText - nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal) + config.legendSpaceBetweenTextHorizontal / 2;  
+							if (config.legendBorders == true) {
+								xFirstLegendTextPos -= (config.legendBordersWidth+config.legendBordersSpaceRight);
+								xLegendBorderPos = xFirstLegendTextPos - config.legendBordersSpaceLeft - config.legendBordersWidth/2;
+							}
+							if(config.legendPosY>=1 && config.legendPosY <=3) {
+								rightNotUsableSize+=fullLegendWidth;
+								yAxisLabelPosRight-=fullLegendWidth;
+							}
+							break;
+							
+						default:
+							break;
+					}
+					if(config.legendBorders==true) {
+						yLegendBorderPos+=config.legendYPadding;
+						xLegendBorderPos+=config.legendXPadding;
+						
+					}
+					yFirstLegendTextPos+=config.legendYPadding;	
+					xFirstLegendTextPos+=config.legendXPadding;	
+					
 				}
 			}
 		}
 		xLabelWidth = 0;
+		bottomNotUsableHeightWithXLabels = bottomNotUsableHeightWithoutXLabels;
 		if (drawAxis && (config.xAxisBottom || config.xAxisTop)) {
 			if (reverseAxis == false) {
 				var widestLabel = widestXLabel;
@@ -5261,21 +5421,22 @@ window.Chart = function(context) {
 			}
 			if (rotateLabels > 90) rotateLabels += 180;
 			xLabelHeight = Math.abs(Math.sin(rotateLabels * Math.PI / 180) * widestLabel) + Math.abs(Math.sin((rotateLabels + 90) * Math.PI / 180) * highestLabel) + config.xAxisSpaceBefore + config.xAxisSpaceAfter;
-			xLabelPos = height - borderWidth - config.spaceBottom - footNoteHeight - spaceLegendHeight - xAxisLabelHeight - (xLabelHeight - config.xAxisSpaceBefore) - config.graphSpaceAfter;
+			xLabelPos = height - borderWidth - config.spaceBottom - footNoteHeight - xAxisLabelHeight - (xLabelHeight - config.xAxisSpaceBefore) - config.graphSpaceAfter;
 			xLabelWidth = Math.abs(Math.cos(rotateLabels * Math.PI / 180) * widestLabel) + Math.abs(Math.cos((rotateLabels + 90) * Math.PI / 180) * highestLabel);
 			leftNotUsableSize = Max([leftNotUsableSize, borderWidth + config.spaceLeft + xLabelWidth / 2]);
 			rightNotUsableSize = Max([rightNotUsableSize, borderWidth + config.spaceRight + xLabelWidth / 2]);
 			availableWidth = width - leftNotUsableSize - rightNotUsableSize;
+			if (config.xAxisBottom && config.legendPosY==3) {
+				bottomNotUsableHeightWithoutXLabels += spaceLegendHeight;	
+				xLabelPos-=spaceLegendHeight;
+			} 
+			bottomNotUsableHeightWithXLabels = bottomNotUsableHeightWithoutXLabels + xLabelHeight ;
 		}
-		if (config.xAxisBottom) {
-			bottomNotUsableHeightWithoutXLabels = borderWidth + config.spaceBottom + footNoteHeight + spaceLegendHeight + xAxisLabelHeight;
-			bottomNotUsableHeightWithXLabels = bottomNotUsableHeightWithoutXLabels + xLabelHeight + config.graphSpaceAfter;
-			availableHeight = height - topNotUsableSize - bottomNotUsableHeightWithXLabels;
-		} else {
-			bottomNotUsableHeightWithoutXLabels = borderWidth + config.spaceBottom + footNoteHeight + spaceLegendHeight + xAxisLabelHeight;
-			bottomNotUsableHeightWithXLabels = bottomNotUsableHeightWithoutXLabels + config.graphSpaceAfter;
-			availableHeight = height - topNotUsableSize - bottomNotUsableHeightWithXLabels;
-		}
+		
+
+		availableHeight = height - topNotUsableSize - bottomNotUsableHeightWithXLabels;
+
+
 		// ----------------------- DRAW EXTERNAL ELEMENTS -------------------------------------------------
 		dispCrossImage(ctx, config, width / 2, height / 2, width / 2, height / 2, false, data, -1, -1);
 		if (widestYLabel != 1) {
@@ -5394,100 +5555,16 @@ window.Chart = function(context) {
 			}
 			// Draw Legend
 			if (nbeltLegend > 1 || (nbeltLegend == 1 && config.showSingleLegend)) {
-				if (config.legendBorders == true) {
-					ctx.save();
-					ctx.beginPath();
-					ctx.lineWidth = config.legendBordersWidth;
-					ctx.strokeStyle = config.legendBordersColors;
-					ctx.moveTo(xLegendBorderPos, yLegendBorderPos);
-					ctx.lineTo(xLegendBorderPos, yLegendBorderPos + legendBorderHeight);
-					ctx.lineTo(xLegendBorderPos + legendBorderWidth, yLegendBorderPos + legendBorderHeight);
-					ctx.lineTo(xLegendBorderPos + legendBorderWidth, yLegendBorderPos);
-					ctx.lineTo(xLegendBorderPos, yLegendBorderPos);
-					ctx.lineTo(xLegendBorderPos + legendBorderWidth, yLegendBorderPos);
-					ctx.lineTo(xLegendBorderPos, yLegendBorderPos);
-					ctx.lineTo(xLegendBorderPos, yLegendBorderPos + legendBorderHeight);
-					ctx.stroke();
-					ctx.restore();
-				}
-				nbcols = nbLegendCols - 1;
-				ypos = yFirstLegendTextPos - (config.legendFontSize + config.legendSpaceBetweenTextVertical);
-				xpos = 0;
-				if (drawLegendOnData) fromi = data.datasets.length;
-				else fromi = data.length;
-				for (var i = fromi - 1; i >= 0; i--) {
-					orderi = i;
-					if (reverseLegend) {
-						if (drawLegendOnData) orderi = data.datasets.length - i - 1;
-						else orderi = data.length - i - 1;
-					}
-					if (drawLegendOnData) tpof = typeof(data.datasets[orderi].title);
-					else tpof = typeof(data[orderi].title)
-					if (tpof == "string") {
-						if (drawLegendOnData) lgtxt = fmtChartJS(config, data.datasets[orderi].title, config.fmtLegend).trim();
-						else lgtxt = fmtChartJS(config, data[orderi].title, config.fmtLegend).trim();
-						if (lgtxt != "") {
-							nbcols++;
-							if (nbcols == nbLegendCols) {
-								nbcols = 0;
-								xpos = xFirstLegendTextPos;
-								ypos += config.legendFontSize + config.legendSpaceBetweenTextVertical;
-							} else {
-								xpos += widestLegend + config.legendSpaceBetweenTextHorizontal;
-							}
-							ctx.save();
-							ctx.beginPath();
-							if (drawLegendOnData) {
-								if (typeof data.datasets[orderi].strokeColor == "function") ctx.strokeStyle = data.datasets[orderi].strokeColor("STROKECOLOR", data, config, orderi, -1, 1, -1, typegraph, ctx, -1, -1, -1, -1);
-								else if (typeof data.datasets[orderi].strokeColor == "string") ctx.strokeStyle = data.datasets[orderi].strokeColor;
-								else ctx.strokeStyle = config.defaultStrokeColor;
-							} else {
-								if (typeof data[orderi].color == "function") ctx.strokeStyle = data[orderi].color("COLOR", data, config, orderi, -1, 1, data[orderi].value, typegraph, ctx, 1, 1, 1, 1);
-								else if (typeof data[orderi].color == "string") ctx.strokeStyle = data[orderi].color;
-								else ctx.strokeStyle = config.defaultStrokeColor;
-							}
-							if (legendBox) {
-								ctx.lineWidth = 1;
-								ctx.moveTo(xpos, ypos);
-								ctx.lineTo(xpos + config.legendBlockSize, ypos);
-								ctx.lineTo(xpos + config.legendBlockSize, ypos - config.legendFontSize);
-								ctx.lineTo(xpos, ypos - config.legendFontSize);
-								ctx.lineTo(xpos, ypos);
-								ctx.closePath();
-								if (drawLegendOnData) {
-									if (typeof data.datasets[orderi].fillColor == "function") ctx.fillStyle = data.datasets[orderi].fillColor("LEGENDFILLCOLOR", data, config, orderi, -1, 1, -1, typegraph, ctx, xpos, ypos, xpos + config.legendBlockSize, ypos - config.legendFontSize);
-									else if (typeof data.datasets[orderi].fillColor == "string") ctx.fillStyle = data.datasets[orderi].fillColor;
-									else ctx.fillStyle = config.defaultFillColor;
-								} else {
-									if (typeof data[orderi].color == "function") ctx.fillStyle = data[orderi].color("LEGENDFILLCOLOR", data, config, orderi, -1, 1, -1, typegraph, ctx, xpos, ypos - config.legendFontSize, xpos + config.legendBlockSize, ypos);
-									else if (typeof data[orderi].color == "string") ctx.fillStyle = data[orderi].color;
-									else ctx.fillStyle = config.defaultFillColor;
-								}
-								ctx.fill();
-							} else {
-								ctx.lineWidth = config.legendColorIndicatorStrokeWidth ?
-									config.legendColorIndicatorStrokeWidth : config.datasetStrokeWidth;
-								if (config.legendColorIndicatorStrokeWidth && config.legendColorIndicatorStrokeWidth > config.legendFontSize) {
-									ctx.lineWidth = config.legendFontSize;
-								}
-								ctx.moveTo(xpos + 2, ypos - (config.legendFontSize / 2));
-								ctx.lineTo(xpos + 2 + config.legendBlockSize, ypos - (config.legendFontSize / 2));
-							}
-							ctx.stroke();
-							ctx.restore();
-							ctx.save();
-							ctx.beginPath();
-							ctx.font = config.legendFontStyle + " " + config.legendFontSize + "px " + config.legendFontFamily;
-							ctx.fillStyle = config.legendFontColor;
-							ctx.textAlign = "left";
-							ctx.textBaseline = "bottom";
-							ctx.translate(xpos + config.legendBlockSize + config.legendSpaceBetweenBoxAndText, ypos);
-							ctx.fillText(lgtxt, 0, 0);
-							ctx.stroke();
-							ctx.restore();
-						}
-					}
-				}
+				var legendMsr={dispLegend : true, xLegendBorderPos : xLegendBorderPos,
+					   yLegendBorderPos : yLegendBorderPos, legendBorderWidth : legendBorderWidth, legendBorderHeight : legendBorderHeight, 
+					   nbLegendCols: nbLegendCols, xFirstLegendTextPos : xFirstLegendTextPos , yFirstLegendTextPos : yFirstLegendTextPos, 
+					   drawLegendOnData : drawLegendOnData, reverseLegend : reverseLegend, legendBox : legendBox, widestLegend : widestLegend };
+				if(config.legendPosY==0 || config.legendPosY==4) {
+					drawLegend(legendMsr,data,config,ctx);
+					legendMsr.dispLegend=false;
+				} 
+			} else {
+				var legendMsr={dispLegend : false };
 			}
 			// Draw FootNote
 			if (config.footNote.trim() != "") {
@@ -5524,7 +5601,8 @@ window.Chart = function(context) {
 			clrx: clrx,
 			clry: clry,
 			clrwidth: clrwidth,
-			clrheight: clrheight
+			clrheight: clrheight,
+			legendMsr : legendMsr
 		};
 	};
 	// Function for additionalLine (BarLine|Line)
@@ -5919,4 +5997,106 @@ function animationCorrection(animationValue, data, config, vdata, vsubdata, addo
 		subVal: animSubValue,
 		animVal: animValue + animSubValue
 	};
+};
+
+
+function drawLegend(legendMsr,data,config,ctx) {
+	if (config.legendBorders == true) {
+		ctx.save();
+		ctx.beginPath();
+		ctx.lineWidth = config.legendBordersWidth;
+		ctx.strokeStyle = config.legendBordersColors;
+		ctx.moveTo(legendMsr.xLegendBorderPos, legendMsr.yLegendBorderPos);
+		ctx.lineTo(legendMsr.xLegendBorderPos, legendMsr.yLegendBorderPos + legendMsr.legendBorderHeight);
+		ctx.lineTo(legendMsr.xLegendBorderPos + legendMsr.legendBorderWidth, legendMsr.yLegendBorderPos + legendMsr.legendBorderHeight);
+		ctx.lineTo(legendMsr.xLegendBorderPos + legendMsr.legendBorderWidth, legendMsr.yLegendBorderPos);
+		ctx.lineTo(legendMsr.xLegendBorderPos, legendMsr.yLegendBorderPos);
+		ctx.lineTo(legendMsr.xLegendBorderPos + legendMsr.legendBorderWidth, legendMsr.yLegendBorderPos);
+		ctx.lineTo(legendMsr.xLegendBorderPos, legendMsr.yLegendBorderPos);
+		ctx.lineTo(legendMsr.xLegendBorderPos, legendMsr.yLegendBorderPos + legendMsr.legendBorderHeight);
+		ctx.stroke();
+		ctx.closePath();
+		ctx.fillStyle = "rgba(0,0,0,0)"; // config.legendFillColor;
+		ctx.fillStyle = config.legendFillColor;
+		ctx.fill();
+		ctx.restore();
+	}
+	nbcols = legendMsr.nbLegendCols - 1;
+	ypos = legendMsr.yFirstLegendTextPos - (config.legendFontSize + config.legendSpaceBetweenTextVertical);
+	xpos = 0;
+	if (legendMsr.drawLegendOnData) fromi = data.datasets.length;
+	else fromi = data.length;
+	for (var i = fromi - 1; i >= 0; i--) {
+		orderi = i;
+		if (legendMsr.reverseLegend) {
+			if (legendMsr.drawLegendOnData) orderi = data.datasets.length - i - 1;
+			else orderi = data.length - i - 1;
+		}
+		if (legendMsr.drawLegendOnData) tpof = typeof(data.datasets[orderi].title);
+		else tpof = typeof(data[orderi].title)
+		if (tpof == "string") {
+			if (legendMsr.drawLegendOnData) lgtxt = fmtChartJS(config, data.datasets[orderi].title, config.fmtLegend).trim();
+			else lgtxt = fmtChartJS(config, data[orderi].title, config.fmtLegend).trim();
+			if (lgtxt != "") {
+				nbcols++;
+				if (nbcols == legendMsr.nbLegendCols) {
+					nbcols = 0;
+					xpos = legendMsr.xFirstLegendTextPos;
+					ypos += config.legendFontSize + config.legendSpaceBetweenTextVertical;
+				} else {
+					xpos += legendMsr.widestLegend + config.legendSpaceBetweenTextHorizontal;
+				}
+				ctx.save();
+				ctx.beginPath();
+				if (legendMsr.drawLegendOnData) {
+					if (typeof data.datasets[orderi].strokeColor == "function") ctx.strokeStyle = data.datasets[orderi].strokeColor("STROKECOLOR", data, config, orderi, -1, 1, -1, typegraph, ctx, -1, -1, -1, -1);
+					else if (typeof data.datasets[orderi].strokeColor == "string") ctx.strokeStyle = data.datasets[orderi].strokeColor;
+					else ctx.strokeStyle = config.defaultStrokeColor;
+				} else {
+					if (typeof data[orderi].color == "function") ctx.strokeStyle = data[orderi].color("COLOR", data, config, orderi, -1, 1, data[orderi].value, typegraph, ctx, 1, 1, 1, 1);
+					else if (typeof data[orderi].color == "string") ctx.strokeStyle = data[orderi].color;
+					else ctx.strokeStyle = config.defaultStrokeColor;
+				}
+				if (legendMsr.legendBox) {
+					ctx.lineWidth = 1;
+					ctx.moveTo(xpos, ypos);
+					ctx.lineTo(xpos + config.legendBlockSize, ypos);
+					ctx.lineTo(xpos + config.legendBlockSize, ypos - config.legendFontSize);
+					ctx.lineTo(xpos, ypos - config.legendFontSize);
+					ctx.lineTo(xpos, ypos);
+					ctx.closePath();
+					if (legendMsr.drawLegendOnData) {
+						if (typeof data.datasets[orderi].fillColor == "function") ctx.fillStyle = data.datasets[orderi].fillColor("LEGENDFILLCOLOR", data, config, orderi, -1, 1, -1, typegraph, ctx, xpos, ypos, xpos + config.legendBlockSize, ypos - config.legendFontSize);
+						else if (typeof data.datasets[orderi].fillColor == "string") ctx.fillStyle = data.datasets[orderi].fillColor;
+						else ctx.fillStyle = config.defaultFillColor;
+					} else {
+						if (typeof data[orderi].color == "function") ctx.fillStyle = data[orderi].color("LEGENDFILLCOLOR", data, config, orderi, -1, 1, -1, typegraph, ctx, xpos, ypos - config.legendFontSize, xpos + config.legendBlockSize, ypos);
+						else if (typeof data[orderi].color == "string") ctx.fillStyle = data[orderi].color;
+						else ctx.fillStyle = config.defaultFillColor;
+					}
+					ctx.fill();
+				} else {
+					ctx.lineWidth = config.legendColorIndicatorStrokeWidth ?
+						config.legendColorIndicatorStrokeWidth : config.datasetStrokeWidth;
+					if (config.legendColorIndicatorStrokeWidth && config.legendColorIndicatorStrokeWidth > config.legendFontSize) {
+						ctx.lineWidth = config.legendFontSize;
+					}
+					ctx.moveTo(xpos + 2, ypos - (config.legendFontSize / 2));
+					ctx.lineTo(xpos + 2 + config.legendBlockSize, ypos - (config.legendFontSize / 2));
+				}
+				ctx.stroke();
+				ctx.restore();
+				ctx.save();
+				ctx.beginPath();
+				ctx.font = config.legendFontStyle + " " + config.legendFontSize + "px " + config.legendFontFamily;
+				ctx.fillStyle = config.legendFontColor;
+				ctx.textAlign = "left";
+				ctx.textBaseline = "bottom";
+				ctx.translate(xpos + config.legendBlockSize + config.legendSpaceBetweenBoxAndText, ypos);
+				ctx.fillText(lgtxt, 0, 0);
+				ctx.stroke();
+				ctx.restore();
+			}
+		}
+	}
 };
