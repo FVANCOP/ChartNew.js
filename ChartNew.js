@@ -4122,6 +4122,7 @@ window.Chart = function(context) {
 					for (var i = 0; i < data.labels.length; i++) {
 						ctx.save();
 						if (msr.rotateLabels > 0) {
+
 							ctx.translate(yAxisPosX + i * valueHop + (valueHop / 2) - msr.highestXLabel / 2, msr.xLabelPos);
 							ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
 							ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), 0, 0, ctx.textBaseline, config.scaleFontSize);
@@ -5428,16 +5429,12 @@ window.Chart = function(context) {
 			leftNotUsableSize = Max([leftNotUsableSize, borderWidth + config.spaceLeft + xLabelWidth / 2]);
 			rightNotUsableSize = Max([rightNotUsableSize, borderWidth + config.spaceRight + xLabelWidth / 2]);
 			availableWidth = width - leftNotUsableSize - rightNotUsableSize;
-			if (config.xAxisBottom && config.legendPosY==3) {
-				bottomNotUsableHeightWithoutXLabels += spaceLegendHeight;	
+			if (config.legend && config.xAxisBottom && config.legendPosY==4) {
 				xLabelPos-=spaceLegendHeight;
 			} 
 			bottomNotUsableHeightWithXLabels = bottomNotUsableHeightWithoutXLabels + xLabelHeight ;
 		}
-		
-
 		availableHeight = height - topNotUsableSize - bottomNotUsableHeightWithXLabels;
-
 
 		// ----------------------- DRAW EXTERNAL ELEMENTS -------------------------------------------------
 		dispCrossImage(ctx, config, width / 2, height / 2, width / 2, height / 2, false, data, -1, -1);
