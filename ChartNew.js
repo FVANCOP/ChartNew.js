@@ -3022,6 +3022,9 @@ window.Chart = function(context) {
 		yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
 		xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
 		barWidth = (valueHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * data.datasets.length - 1) - (config.barStrokeWidth / 2) - 1);
+		if(barWidth>=0 && barWidth<=1)barWidth=1;
+		if(barWidth<0 && barWidth>=-1)barWidth=-1;
+
 		drawLabels();
 		animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
 
@@ -3434,6 +3437,8 @@ window.Chart = function(context) {
 		yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
 		xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
 		barWidth = (scaleHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * data.datasets.length - 1) - (config.barStrokeWidth / 2) - 1);
+		if(barWidth>=0 && barWidth<=1)barWidth=1;
+		if(barWidth<0 && barWidth>=-1)barWidth=-1;
 		drawLabels();
 		animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
 
@@ -3872,6 +3877,8 @@ window.Chart = function(context) {
 		xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
  
 		barWidth = (valueHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * nrOfBars - 1) - ((config.barStrokeWidth / 2) * nrOfBars - 1)) / nrOfBars;
+		if(barWidth>=0 && barWidth<=1)barWidth=1;
+		if(barWidth<0 && barWidth>=-1)barWidth=-1;
 		var zeroY = 0;
 		if (valueBounds.minValue < 0) {
 			var zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, scaleHop);
@@ -4246,6 +4253,8 @@ window.Chart = function(context) {
 		yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
 		xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
 		barWidth = (scaleHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * data.datasets.length - 1) - ((config.barStrokeWidth / 2) * data.datasets.length - 1)) / data.datasets.length;
+		if(barWidth>=0 && barWidth<=1)barWidth=1;
+		if(barWidth<0 && barWidth>=-1)barWidth=-1;
 		var zeroY = 0;
 		if (valueBounds.minValue < 0) {
 			var zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, valueHop);
