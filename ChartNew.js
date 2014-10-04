@@ -2711,6 +2711,8 @@ window.Chart = function(context) {
 			}
 		}
 		msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, calculatedScale2.labels, false, false, true, true, config.datasetFill, "Line");
+
+		var prevHeight=msr.availableHeight;
 		msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
 		msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
 		scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
@@ -2720,6 +2722,8 @@ window.Chart = function(context) {
 		msr.clrwidth = msr.clrwidth - (msr.availableWidth - (data.labels.length - 1) * valueHop);
 		msr.availableWidth = (data.labels.length - 1) * valueHop;
 		msr.availableHeight = (calculatedScale.steps) * scaleHop;
+		msr.xLabelPos+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
+
 		yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
 		xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
 		drawLabels();
@@ -3002,6 +3006,9 @@ window.Chart = function(context) {
 			}
 			msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true, true, "StackedBar");
 		}
+
+		var prevHeight=msr.availableHeight;
+
 		msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
 		msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
 		scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
@@ -3010,6 +3017,8 @@ window.Chart = function(context) {
 		msr.clrwidth = msr.clrwidth - (msr.availableWidth - ((data.labels.length) * valueHop));
 		msr.availableWidth = (data.labels.length) * valueHop;
 		msr.availableHeight = (calculatedScale.steps) * scaleHop;
+		msr.xLabelPos+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
+
 		yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
 		xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
 		barWidth = (valueHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * data.datasets.length - 1) - (config.barStrokeWidth / 2) - 1);
@@ -3846,6 +3855,9 @@ window.Chart = function(context) {
 			populateLabels(1, config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
 			msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true, true, "Bar");
 		}
+
+		var prevHeight=msr.availableHeight;
+
 		msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
 		msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
 		scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
@@ -3854,8 +3866,11 @@ window.Chart = function(context) {
 		msr.clrwidth = msr.clrwidth - (msr.availableWidth - ((data.labels.length) * valueHop));
 		msr.availableWidth = (data.labels.length) * valueHop;
 		msr.availableHeight = (calculatedScale.steps) * scaleHop;
+		msr.xLabelPos+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
+
 		yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
 		xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
+ 
 		barWidth = (valueHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * nrOfBars - 1) - ((config.barStrokeWidth / 2) * nrOfBars - 1)) / nrOfBars;
 		var zeroY = 0;
 		if (valueBounds.minValue < 0) {
@@ -5434,6 +5449,7 @@ window.Chart = function(context) {
 			} 
 			bottomNotUsableHeightWithXLabels = bottomNotUsableHeightWithoutXLabels + xLabelHeight ;
 		}
+
 		availableHeight = height - topNotUsableSize - bottomNotUsableHeightWithXLabels;
 
 		// ----------------------- DRAW EXTERNAL ELEMENTS -------------------------------------------------
