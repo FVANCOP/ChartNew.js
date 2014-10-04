@@ -1472,7 +1472,7 @@ window.Chart = function(context) {
 		footNoteFontColor: "#666",
 		footNoteSpaceBefore: 5,
 		footNoteSpaceAfter: 5,
-		legend: false,
+		legend : false,
 		showSingleLegend: false,
 		maxLegendCols : 999,
 		legendPosY :4,
@@ -2221,7 +2221,7 @@ window.Chart = function(context) {
 		defMouse(ctx, data, config, "Pie");
 		//In case we have a canvas that is not a square. Minus 5 pixels as padding round the edge.
 		setRect(ctx, config);
-		msr = setMeasures(data, config, ctx, height, width, null, null, true, false, false, false, true, "Pie");
+		msr = setMeasures(data, config, ctx, height, width, "none", null, true, false, false, false, true, "Pie");
 		//        midPieX = msr.leftNotUsableSize + (msr.availableWidth / 2);
 		//        midPieY = msr.topNotUsableSize + (msr.availableHeight / 2);
 		//        pieRadius = Min([msr.availableHeight / 2, msr.availableWidth / 2]) - 5;
@@ -2442,7 +2442,7 @@ window.Chart = function(context) {
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
 		defMouse(ctx, data, config, "Doughnut");
 		setRect(ctx, config);
-		msr = setMeasures(data, config, ctx, height, width, null, null, true, false, false, false, true, "Doughnut");
+		msr = setMeasures(data, config, ctx, height, width, "none", null, true, false, false, false, true, "Doughnut");
 		calculateDrawingSize();
 		var cutoutRadius = doughnutRadius * (config.percentageInnerCutout / 100);
 		for (var i = 0; i < data.length; i++) {
@@ -2650,7 +2650,7 @@ window.Chart = function(context) {
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
 		defMouse(ctx, data, config, "Line");
 		setRect(ctx, config);
-		msr = setMeasures(data, config, ctx, height, width, [""], [""], false, false, true, true, config.datasetFill, "Line");
+		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], false, false, true, true, config.datasetFill, "Line");
 		valueBounds = getValueBounds();
 		// true or fuzzy (error for negativ values (included 0))
 		if (config.logarithmic !== false) {
@@ -2723,6 +2723,7 @@ window.Chart = function(context) {
 		msr.availableWidth = (data.labels.length - 1) * valueHop;
 		msr.availableHeight = (calculatedScale.steps) * scaleHop;
 		msr.xLabelPos+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
+		msr.clrheight+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
 
 		yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
 		xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
@@ -2983,7 +2984,7 @@ window.Chart = function(context) {
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
 		defMouse(ctx, data, config, "StackedBar");
 		setRect(ctx, config);
-		msr = setMeasures(data, config, ctx, height, width, [""], [""], true, false, true, true, true, "StackedBar");
+		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], true, false, true, true, true, "StackedBar");
 		valueBounds = getValueBounds();
 		//Check and set the scale
 		labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
@@ -3018,6 +3019,7 @@ window.Chart = function(context) {
 		msr.availableWidth = (data.labels.length) * valueHop;
 		msr.availableHeight = (calculatedScale.steps) * scaleHop;
 		msr.xLabelPos+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
+		msr.clrheight+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
 
 		yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
 		xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
@@ -3679,7 +3681,7 @@ window.Chart = function(context) {
 		function drawLabels() {
 			ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
 			//X axis line                                                          
-			if (config.xAxisTop || config.xAxisBottom) {
+			if (config.scaleShowLabels && (config.xAxisTop || config.xAxisBottom)) {
 				ctx.textBaseline = "top";
 				if (msr.rotateLabels > 90) {
 					ctx.save();
@@ -3709,15 +3711,13 @@ window.Chart = function(context) {
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
 			for (var j = 0; j < data.labels.length; j++) {
-				if (config.scaleShowLabels) {
-					if (config.yAxisLeft) {
-						ctx.textAlign = "right";
-						ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX - (config.scaleTickSizeLeft + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2, ctx.textBaseline, config.scaleFontSize);
-					}
-					if (config.yAxisRight) {
-						ctx.textAlign = "left";
-						ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2, ctx.textBaseline, config.scaleFontSize);
-					}
+				if (config.yAxisLeft) {
+					ctx.textAlign = "right";
+					ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX - (config.scaleTickSizeLeft + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2, ctx.textBaseline, config.scaleFontSize);
+				}
+				if (config.yAxisRight) {
+					ctx.textAlign = "left";
+					ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2, ctx.textBaseline, config.scaleFontSize);
 				}
 			}
 		};
@@ -3831,8 +3831,9 @@ window.Chart = function(context) {
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
 		defMouse(ctx, data, config, "Bar");
 		setRect(ctx, config);
-		msr = setMeasures(data, config, ctx, height, width, [""], [""], true, false, true, true, true, "Bar");
+		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], true, false, true, true, true, "Bar");
 		valueBounds = getValueBounds();
+
 		// true or fuzzy (error for negativ values (included 0))
 		if (config.logarithmic !== false) {
 			if (valueBounds.minValue <= 0) {
@@ -3863,6 +3864,8 @@ window.Chart = function(context) {
 
 		var prevHeight=msr.availableHeight;
 
+
+
 		msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
 		msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
 		scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
@@ -3872,10 +3875,10 @@ window.Chart = function(context) {
 		msr.availableWidth = (data.labels.length) * valueHop;
 		msr.availableHeight = (calculatedScale.steps) * scaleHop;
 		msr.xLabelPos+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
+		msr.clrheight+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
 
 		yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
 		xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
- 
 		barWidth = (valueHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * nrOfBars - 1) - ((config.barStrokeWidth / 2) * nrOfBars - 1)) / nrOfBars;
 		if(barWidth>=0 && barWidth<=1)barWidth=1;
 		if(barWidth<0 && barWidth>=-1)barWidth=-1;
@@ -4088,6 +4091,8 @@ window.Chart = function(context) {
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
 			ctx.beginPath();
+
+
 			ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY);
 			ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, xAxisPosY);
 			ctx.stroke();
@@ -4455,7 +4460,7 @@ window.Chart = function(context) {
 		function drawLabels() {
 			ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
 			//X axis line                                                          
-			if (config.xAxisTop || config.xAxisBottom) {
+			if (config.scaleShowLabels && (config.xAxisTop || config.xAxisBottom)) {
 				ctx.textBaseline = "top";
 				if (msr.rotateLabels > 90) {
 					ctx.save();
@@ -4485,15 +4490,13 @@ window.Chart = function(context) {
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
 			for (var j = 0; j < data.labels.length; j++) {
-				if (config.scaleShowLabels) {
-					if (config.yAxisLeft) {
-						ctx.textAlign = "right";
-						ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX - (config.scaleTickSizeLeft + config.yAxisSpaceRight), xAxisPosY - (j * scaleHop) - scaleHop / 2, ctx.textBaseline, config.scaleFontSize);
-					}
-					if (config.yAxisRight) {
-						ctx.textAlign = "left";
-						ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - (j * scaleHop) - scaleHop / 2, ctx.textBaseline, config.scaleFontSize);
-					}
+				if (config.yAxisLeft) {
+					ctx.textAlign = "right";
+					ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX - (config.scaleTickSizeLeft + config.yAxisSpaceRight), xAxisPosY - (j * scaleHop) - scaleHop / 2, ctx.textBaseline, config.scaleFontSize);
+				}
+				if (config.yAxisRight) {
+					ctx.textAlign = "left";
+					ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - (j * scaleHop) - scaleHop / 2, ctx.textBaseline, config.scaleFontSize);
 				}
 			}
 		};
@@ -5140,7 +5143,7 @@ window.Chart = function(context) {
 		// compute Y Label Width
 		if (drawAxis) {
 			widestYLabel = 1;
-			if (ylabels != null) {
+			if (ylabels != null && ylabels != "nihil") {
 				ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
 				for (var i = ylabels.length - 1; i >= 0; i--) {
 					if (typeof(ylabels[i]) == "string") {
@@ -5291,7 +5294,7 @@ window.Chart = function(context) {
 								legendBorderHeight = Math.ceil(spaceLegendHeight - config.legendBordersWidth) - config.legendBordersSpaceBefore - config.legendBordersSpaceAfter;
 								legendBorderWidth = Math.ceil(nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal)) - config.legendSpaceBetweenTextHorizontal + config.legendBordersWidth + config.legendSpaceRightText + config.legendSpaceLeftText;
 							} else {
-								yFirstLegendTextPos = height - borderWidth - config.spaceBottom - footNoteHeight - spaceLegendHeight + config.legendSpaceBeforeText + config.legendFontSize;
+								yFirstLegendTextPos = topNotUsableSize + config.legendBordersSpaceBefore + (config.legendBordersWidth/2);
 							}
 							if(yAxisUnitHeight>0) {
 								yAxisUnitPosY+=spaceLegendHeight;
@@ -5316,7 +5319,7 @@ window.Chart = function(context) {
 						case 2:
 							spaceLegendHeight = legendHeight;
 							xFirstLegendTextPos = config.spaceLeft + (width - config.spaceLeft - config.spaceRight - nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal) + config.legendSpaceBetweenTextHorizontal) / 2;
-							yFirstLegendTextPos = topNotUsableSize + (height - topNotUsableSize - bottomNotUsableHeightWithXLabels - spaceLegendHeight) /2 + config.legendSpaceBeforeText+config.legendFontSize;
+							yFirstLegendTextPos = topNotUsableSize + (height - topNotUsableSize - bottomNotUsableHeightWithoutXLabels - spaceLegendHeight) /2 + config.legendSpaceBeforeText+config.legendFontSize;
 							if (config.legendBorders == true) {
 								yFirstLegendTextPos += config.legendBordersSpaceBefore - config.legendBordersSpaceAfter;
 								yLegendBorderPos = yFirstLegendTextPos - config.legendSpaceBeforeText - config.legendFontSize - (config.legendBordersWidth /2 );
@@ -5457,13 +5460,15 @@ window.Chart = function(context) {
 				xLabelPos-=spaceLegendHeight;
 			} 
 			bottomNotUsableHeightWithXLabels = bottomNotUsableHeightWithoutXLabels + xLabelHeight ;
+		}  else {
+			availableWidth = width - leftNotUsableSize - rightNotUsableSize;
 		}
 
 		availableHeight = height - topNotUsableSize - bottomNotUsableHeightWithXLabels;
 
 		// ----------------------- DRAW EXTERNAL ELEMENTS -------------------------------------------------
 		dispCrossImage(ctx, config, width / 2, height / 2, width / 2, height / 2, false, data, -1, -1);
-		if (widestYLabel != 1) {
+ 		if (ylabels != "nihil") {
 			// Draw Borders
 			if (borderWidth > 0) {
 				ctx.save();
@@ -5585,7 +5590,7 @@ window.Chart = function(context) {
 					   drawLegendOnData : drawLegendOnData, reverseLegend : reverseLegend, legendBox : legendBox, widestLegend : widestLegend };
 				if(config.legendPosY==0 || config.legendPosY==4) {
 					drawLegend(legendMsr,data,config,ctx);
-					legendMsr.dispLegend=false;
+					var legendMsr={dispLegend : false};
 				} 
 			} else {
 				var legendMsr={dispLegend : false };
