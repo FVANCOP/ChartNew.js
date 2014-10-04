@@ -5096,6 +5096,7 @@ window.Chart = function(context) {
 		var rotateLabels = 0;
 		var xLabelPos = 0;
 		var legendBorderWidth = 0;
+		var legendBorderHeight = 0;
 		// Borders
 		if (config.canvasBorders) borderWidth = config.canvasBordersWidth;
 		// compute widest X label
