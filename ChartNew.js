@@ -1729,7 +1729,7 @@ window.Chart = function(context) {
 				}
 			}
 			if (animationDecimal >= 1) {
-				startAngle = -config.startAngle * (Math.PI / 180) + 2 * Math.PI;
+				startAngle -= 2*Math.PI;
 				for (var i = 0; i < data.length; i++) {
 					if (!(typeof(data[i].value) == 'undefined')) {
 						cumvalue += 1 * data[i].value;
@@ -2284,6 +2284,7 @@ window.Chart = function(context) {
 				}
 			}
 			if (animationDecimal >= 1) {
+				cumulativeAngle-=2*Math.PI;
 				for (var i = 0; i < data.length; i++) {
 					correctedRotateAnimation = animationCorrection(rotateAnimation, data, config, i, -1, 0).mainVal;
 					if (!(typeof(data[i].value) == 'undefined')) {
@@ -2496,6 +2497,7 @@ window.Chart = function(context) {
 				}
 			}
 			if (animationDecimal >= 1) {
+				cumulativeAngle-=2*Math.PI;
 				for (var i = 0; i < data.length; i++) {
 					correctedRotateAnimation = animationCorrection(rotateAnimation, data, config, i, -1, 0).mainVal;
 					if (!(typeof(data[i].value) == 'undefined')) {
@@ -5378,7 +5380,7 @@ window.Chart = function(context) {
 							}
 							break;
 						case 1:
-							xFirstLegendTextPos = leftNotUsableSize + config.legendSpaceLeftText+config.scaleTickSizeLeft;  
+							xFirstLegendTextPos = leftNotUsableSize + config.legendSpaceLeftText;  
 							if (config.legendBorders == true) {
 								xLegendBorderPos = xFirstLegendTextPos;
 								xFirstLegendTextPos += config.legendBordersWidth+config.legendBordersSpaceLeft;
@@ -5392,7 +5394,8 @@ window.Chart = function(context) {
 							}
 							break;
 						case 3:
-							xFirstLegendTextPos = width - rightNotUsableSize - config.scaleTickSizeRight - config.legendSpaceRightText - nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal) + config.legendSpaceBetweenTextHorizontal / 2;  
+							
+							xFirstLegendTextPos = width - rightNotUsableSize - config.legendSpaceRightText - nbLegendCols * (widestLegend + config.legendSpaceBetweenTextHorizontal) + config.legendSpaceBetweenTextHorizontal / 2;  
 							if (config.legendBorders == true) {
 								xFirstLegendTextPos -= (config.legendBordersWidth + config.legendBordersSpaceRight);
 								xLegendBorderPos = xFirstLegendTextPos - config.legendBordersWidth/2 - config.legendSpaceLeftText ;
@@ -5583,6 +5586,7 @@ window.Chart = function(context) {
 				}
 			}
 			// Draw Legend
+
 			if (nbeltLegend > 1 || (nbeltLegend == 1 && config.showSingleLegend)) {
 				var legendMsr={dispLegend : true, xLegendBorderPos : xLegendBorderPos,
 					   yLegendBorderPos : yLegendBorderPos, legendBorderWidth : legendBorderWidth, legendBorderHeight : legendBorderHeight, 
