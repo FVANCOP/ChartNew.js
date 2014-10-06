@@ -1,6 +1,8 @@
 Change history
 --------------
 
+06/10/2014 - Vancoppenolle Francois - new options to set the legend whereever you want
+                                    - fix of several bugs
 29/09/2014 - Chris2014              - default value defined for scaleLabel2
 27/09/2014 - naudhr                 - Fix Bug to mouse functions + code reduction
 25/09/2014 - Vancoppenolle François - Enhancements :
@@ -126,16 +128,12 @@ Change history
 
 Future Improvements
 -------------------
-- negative values in StackedBar (issue #143)
 - merge Pie/Doughnut code (can be the same code : A pie = Dougnut with a hole having a radiant of 0...)
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
-- display the legend on other places (center, bottom or top on the left/right of the graph;
-  center, right, left over/under the graph). 
 - non evolutive animation in Pie/Doughnut (https://github.com/nnnick/Chart.js/issues/357)
 - code reduction
 - animate Canvas when mouse is over a piece of graph (like in http://zurb.com/playground/pizza-pie-charts)
 - dynamicDisplay defines a canvas.id when not defined; Avoid defining a canvas.id (issue 35)
-- Different units for Y-axes on left and right (issue #41)
 - live update of the data (see : http://www.jqchart.com/jquery/chart/RealTime/LiveData)
 - responsive chart (see issue #43)
 - see issue #128
