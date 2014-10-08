@@ -2203,13 +2203,8 @@ window.Chart = function(context) {
 			};
 		}
 	};
-function myFunction() {
-console.log("Resize") ;
-};
 
 	var Pie = function(data, config, ctx) {
-
-		window.addEventListener("resize", myFunction);
 
 		var segmentTotal = 0;
 		var msr, midPieX, midPieY, pieRadius;
