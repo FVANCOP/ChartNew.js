@@ -1792,7 +1792,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
-			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"PolarArea");
 		};
 
 		function drawScale() {
@@ -2041,7 +2041,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
-			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"Radar");
 		};
 
 		function drawScale() {
@@ -2203,7 +2203,14 @@ window.Chart = function(context) {
 			};
 		}
 	};
+function myFunction() {
+console.log("Resize") ;
+};
+
 	var Pie = function(data, config, ctx) {
+
+		window.addEventListener("resize", myFunction);
+
 		var segmentTotal = 0;
 		var msr, midPieX, midPieY, pieRadius;
 		setting_new_chart_vars(ctx, "Pie");
@@ -2350,7 +2357,7 @@ window.Chart = function(context) {
 				}
 
 			}
-			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"Pie");
 		};
 
 		function calculateDrawingSize() {
@@ -2561,7 +2568,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
-			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"Doughnut");
 		};
 
 		function calculateDrawingSize() {
@@ -2784,7 +2791,7 @@ window.Chart = function(context) {
 					});
 				}
 			}
-			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"Line");
 		};
 
 		function drawScale() {
@@ -3214,7 +3221,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
-			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"StackedBar");
 		};
 
 		function drawScale() {
@@ -3633,7 +3640,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
-			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"HorizontalStackedBar");
 		};
 
 		function drawScale() {
@@ -4069,7 +4076,7 @@ window.Chart = function(context) {
 					});
 				}
 			}
-			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"Bar");
 		};
 
 		function roundRect(ctx, x, y, w, h, stroke, radius) {
@@ -4396,7 +4403,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
-			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx);
+			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"HorizontalBar");
 		};
 
 		function roundRect(ctx, x, y, w, h, stroke, radius, zeroY) {
@@ -5593,7 +5600,7 @@ window.Chart = function(context) {
 					   nbLegendCols: nbLegendCols, xFirstLegendTextPos : xFirstLegendTextPos , yFirstLegendTextPos : yFirstLegendTextPos, 
 					   drawLegendOnData : drawLegendOnData, reverseLegend : reverseLegend, legendBox : legendBox, widestLegend : widestLegend };
 				if(config.legendPosY==0 || config.legendPosY==4) {
-					drawLegend(legendMsr,data,config,ctx);
+					drawLegend(legendMsr,data,config,ctx,typegraph);
 					var legendMsr={dispLegend : false};
 				} 
 			} else {
@@ -6033,7 +6040,7 @@ function animationCorrection(animationValue, data, config, vdata, vsubdata, addo
 };
 
 
-function drawLegend(legendMsr,data,config,ctx) {
+function drawLegend(legendMsr,data,config,ctx,typegraph) {
 	if (config.legendBorders == true) {
 		ctx.save();
 		ctx.beginPath();
