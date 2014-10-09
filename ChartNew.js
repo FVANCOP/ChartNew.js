@@ -538,10 +538,10 @@ function getMousePos(canvas, evt) {
 };
 
 function doMouseAction(config, ctx, event, data, action, funct) {
+	var onData = false;
 	if (action == "annotate") {
 		var annotateDIV = document.getElementById('divCursor');
-		show = false;
-		onData = false;
+		var show = false;
 		annotateDIV.className = (config.annotateClassName) ? config.annotateClassName : '';
 		annotateDIV.style.border = (config.annotateClassName) ? '' : config.annotateBorder;
 		annotateDIV.style.padding = (config.annotateClassName) ? '' : config.annotatePadding;
