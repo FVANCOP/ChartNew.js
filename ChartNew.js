@@ -316,7 +316,127 @@ function createCursorDiv() {
 		cursorDivCreated = true;
 	}
 };
-//Default browsercheck, added to all scripts!
+
+initChartJsResize = false;
+var jsGraphResize = new Array();
+
+function initChartResize() {
+	if(initChartJsResize==false) {
+		window.addEventListener("resize", chartJsResize);
+	}
+};
+
+function getMaximumWidth(domNode){
+	var container = domNode.parentNode;
+	// TODO = check cross browser stuff with this.
+	return container.clientWidth;
+};
+
+function getMaximumHeight(domNode){
+	var container = domNode.parentNode;
+	// TODO = check cross browser stuff with this.
+	return container.clientHeight;
+};
+
+
+function resizeGraph(ctx,config) {
+
+	var canvas = ctx.canvas;
+	if(typeof ctx.aspectRatio == "undefined") {
+		ctx.aspectRatio = canvas.width / canvas.height;
+	}
+	aspectRatio = canvas.height/canvas.width;
+	
+  	var newWidth = getMaximumWidth(canvas);
+	var newHeight = config.maintainAspectRatio ? newWidth / ctx.aspectRatio : getMaximumHeight(canvas);
+	
+        return { newWidth : newWidth, newHeight :  newHeight};
+};
+
+function addResponsiveChart(id,tpchart,ctx,data,config) {
+	ctx.tpchart=tpchart;
+	initChartResize();
+	var newSize=resizeGraph(ctx,config);
+
+	if(typeof ctx.prevWidth != "undefined") {
+		ctx.canvas.width=newSize.newWidth;
+		ctx.canvas.height=newSize.newHeight;
+	}
+	ctx.prevWidth=newSize.newWidth;
+	ctx.prevHeight=newSize.newHeight;
+	jsGraphResize[jsGraphResize.length]= [id,tpchart,ctx,data,config];
+};
+
+
+function chartJsResize() {
+	for (var i=0;i<jsGraphResize.length;i++)  {
+		updateChart(jsGraphResize[i][2],jsGraphResize[i][3],jsGraphResize[i][4]);
+	}
+};
+
+
+function updateChart(ctx,data,config) {
+	if(typeof ctx.inUpdate == "undefined") { ctx.inUpdate=false; ctx.firstPass=0; }
+	if(ctx.firstPass==0) {
+		ctx.firstPass=1;
+		var newSize=resizeGraph(ctx,config);
+		ctx.canvas.width=newSize.newWidth;
+		ctx.canvas.height=newSize.newHeight;
+		redrawGraph(ctx,data,config);
+	} else if(ctx.firstPass==1 || ctx.firstPass==2) {
+		ctx.firstPass=2;
+	} else {
+		if(ctx.inUpdate==false) {
+			var newSize=resizeGraph(ctx,config);
+			if (ctx.firstPass ==-1 || newSize.newWidth!=ctx.prevWidth || newSize.newHeigth != ctx.prevHeigth || ctx.canvas.width!=ctx.prevWidth || ctx.canvas.height!=ctx.prevHeight) {
+				if(ctx.firstPass !=-1){ctx.inUpdate=true;config.animation=false;}
+				ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+				ctx.canvas.width=newSize.newWidth;
+				ctx.canvas.height=newSize.newHeight;
+				redrawGraph(ctx,data,config);
+			}
+		}
+	} 
+};
+
+function redrawGraph(ctx,data,config) {
+	var myGraph = new Chart(ctx);	
+	switch (ctx.tpchart) {
+		case "Bar":
+			myGraph.Bar(data,config);
+			break;
+		case "Pie":
+			myGraph.Pie(data,config);
+			break;
+		case "Doughnut":
+			myGraph.Doughnut(data,config);
+			break;
+		case "Radar":
+			myGraph.Radar(data,config);
+			break;
+		case "PolarArea":
+			myGraph.PolarArea(data,config);
+			break;
+		case "HorizontalBar":
+			myGraph.HorizontalBar(data,config);
+			break;
+		case "StackedBar":
+			myGraph.StackedBar(data,config);
+			break;
+		case "HorizontalStackedBar":
+			myGraph.HorizontalStackedBar(data,config);
+			break;
+		case "Line":
+			myGraph.Line(data,config);
+			break;
+	}
+
+	
+
+}
+
+
+//Default browsercheck, added to all scripts!                                   
 function checkBrowser() {
 	this.ver = navigator.appVersion
 	this.dom = document.getElementById ? 1 : 0
@@ -390,35 +510,8 @@ function saveCanvas(ctx, data, config, tpgraph) {
 	var savePngConfig = mergeChartConfig(config, saveCanvasConfig);
 	savePngConfig.clearRect = false;
 	/* And ink them */
-	switch (tpgraph) {
-		case "Bar":
-			new Chart(ctx.canvas.getContext("2d")).Bar(data, savePngConfig);
-			break;
-		case "Pie":
-			new Chart(ctx.canvas.getContext("2d")).Pie(data, savePngConfig);
-			break;
-		case "Doughnut":
-			new Chart(ctx.canvas.getContext("2d")).Doughnut(data, savePngConfig);
-			break;
-		case "Radar":
-			new Chart(ctx.canvas.getContext("2d")).Radar(data, savePngConfig);
-			break;
-		case "PolarArea":
-			new Chart(ctx.canvas.getContext("2d")).PolarArea(data, savePngConfig);
-			break;
-		case "HorizontalBar":
-			new Chart(ctx.canvas.getContext("2d")).HorizontalBar(data, savePngConfig);
-			break;
-		case "StackedBar":
-			new Chart(ctx.canvas.getContext("2d")).StackedBar(data, savePngConfig);
-			break;
-		case "HorizontalStackedBar":
-			new Chart(ctx.canvas.getContext("2d")).HorizontalStackedBar(data, savePngConfig);
-			break;
-		case "Line":
-			new Chart(ctx.canvas.getContext("2d")).Line(data, savePngConfig);
-			break;
-	}
+	ctx.tpchart=tpgraph;
+	redrawGraph(ctx,data,savePngConfig);
 	if (config.savePngOutput == "NewWindow") {
 		var image = ctx.canvas.toDataURL();
 		ctx.putImageData(cvSave, 0, 0);
@@ -452,6 +545,15 @@ var dynamicDisplay = new Array();
 var dynamicDisplayList = new Array();
 
 function dynamicFunction(data, config, ctx, tpgraph) {
+	if (config.responsive)
+	{
+		var newSize=resizeGraph(ctx,config);
+		ctx.canvas.width=newSize.newWidth;
+		ctx.canvas.height=newSize.newHeight;
+		if(typeof ctx.firstPass != "undefined"){
+			if (ctx.firstPass==3) return true;
+		}
+	}
 	if (config.dynamicDisplay) {
 		if (ctx.canvas.id == "") {
 			var cvdate = new Date();
@@ -460,11 +562,14 @@ function dynamicFunction(data, config, ctx, tpgraph) {
 		}
 		if (typeof(dynamicDisplay[ctx.canvas.id]) == "undefined") {
 			dynamicDisplayList[dynamicDisplayList["length"]] = ctx.canvas.id;
-			dynamicDisplay[ctx.canvas.id] = [ctx.canvas, false, false, data, config, ctx.canvas, tpgraph];
+			dynamicDisplay[ctx.canvas.id] = [ctx, false, false, data, config, ctx.canvas, tpgraph];
 			dynamicDisplay[ctx.canvas.id][1] = isScrolledIntoView(ctx.canvas);
 			window.onscroll = scrollFunction;
 		}
-		if (dynamicDisplay[ctx.canvas.id][1] == false || dynamicDisplay[ctx.canvas.id][2] == true) return false;
+		if (dynamicDisplay[ctx.canvas.id][1] == false || dynamicDisplay[ctx.canvas.id][2] == true) {
+			return false;
+			
+		}
 		dynamicDisplay[ctx.canvas.id][2] = true;
 	}
 	return true;
@@ -491,38 +596,12 @@ function scrollFunction() {
 	for (var i = 0; i < dynamicDisplayList["length"]; i++) {
 		if (isScrolledIntoView(dynamicDisplay[dynamicDisplayList[i]][5]) && dynamicDisplay[dynamicDisplayList[i]][2] == false) {
 			dynamicDisplay[dynamicDisplayList[i]][1] = true;
-			switch (dynamicDisplay[dynamicDisplayList[i]][6]) {
-				case "Bar":
-					new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).Bar(dynamicDisplay[dynamicDisplayList[i]][3], dynamicDisplay[dynamicDisplayList[i]][4]);
-					break;
-				case "Pie":
-					new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).Pie(dynamicDisplay[dynamicDisplayList[i]][3], dynamicDisplay[dynamicDisplayList[i]][4]);
-					break;
-				case "Doughnut":
-					new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).Doughnut(dynamicDisplay[dynamicDisplayList[i]][3], dynamicDisplay[dynamicDisplayList[i]][4]);
-					break;
-				case "Radar":
-					new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).Radar(dynamicDisplay[dynamicDisplayList[i]][3], dynamicDisplay[dynamicDisplayList[i]][4]);
-					break;
-				case "PolarArea":
-					new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).PolarArea(dynamicDisplay[dynamicDisplayList[i]][3], dynamicDisplay[dynamicDisplayList[i]][4]);
-					break;
-				case "HorizontalBar":
-					new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).HorizontalBar(dynamicDisplay[dynamicDisplayList[i]][3], dynamicDisplay[dynamicDisplayList[i]][4]);
-					break;
-				case "StackedBar":
-					new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).StackedBar(dynamicDisplay[dynamicDisplayList[i]][3], dynamicDisplay[dynamicDisplayList[i]][4]);
-					break;
-				case "HorizontalStackedBar":
-					new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).HorizontalStackedBar(dynamicDisplay[dynamicDisplayList[i]][3], dynamicDisplay[dynamicDisplayList[i]][4]);
-					break;
-				case "Line":
-					new Chart(document.getElementById(dynamicDisplayList[i]).getContext("2d")).Line(dynamicDisplay[dynamicDisplayList[i]][3], dynamicDisplay[dynamicDisplayList[i]][4]);
-					break;
-			}
+			dynamicDisplay[dynamicDisplayList[i]][0].tpchart=dynamicDisplay[dynamicDisplayList[i]][6];
+			redrawGraph(dynamicDisplay[dynamicDisplayList[i]][0],dynamicDisplay[dynamicDisplayList[i]][3], dynamicDisplay[dynamicDisplayList[i]][4]);
 		}
 	}
 };
+
 var jsGraphAnnotate = new Array();
 
 function clearAnnotate(ctxid) {
@@ -1496,7 +1575,7 @@ window.Chart = function(context) {
 		legendSpaceBetweenTextVertical: 5,
 		legendSpaceBetweenTextHorizontal: 5,
 		legendSpaceBetweenBoxAndText: 5,
-		legendFillColor : "rbga(0,0,0,0)",
+		legendFillColor : "rgba(0,0,0,0)",
 		legendXPadding : 0,
 		legendYPadding : 0,
 		annotateDisplay: false,
@@ -1581,7 +1660,9 @@ window.Chart = function(context) {
 		mouseMove: null,
 		mouseOut: null,
 		mouseWheel : null,
-		savePngName: "canvas"
+		savePngName: "canvas",
+		responsive : false,
+		maintainAspectRatio: true
 	};
 	chart.defaults.xyAxisCommonOptions = {
 		yAxisMinimumInterval: "none",
@@ -1638,7 +1719,21 @@ window.Chart = function(context) {
 	var PolarArea = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
 		setting_new_chart_vars(ctx, "PolarArea");
-		if (!dynamicFunction(data, config, ctx, "PolarArea")) return;
+
+        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph ) {
+        		addResponsiveChart(ctx.ChartNewId,"PolarArea",ctx,data,config);
+        		updateChart(ctx,data,config);
+        		return;
+		} 
+
+		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "PolarArea")) return;
+		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
+			ctx.firstPass=-1;
+			ctx.alreadydone=true;
+			updateChart(ctx,data,config);
+			return;
+		} else if (ctx.firstPass==-1)ctx.firstPass=1;
+
 		var realStartAngle = config.startAngle * (Math.PI / 180) + 2 * Math.PI;
 		while (config.startAngle < 0) {
 			config.startAngle += 360;
@@ -1679,7 +1774,13 @@ window.Chart = function(context) {
 		midPosY = msr.topNotUsableSize + (msr.availableHeight / 2);
 		scaleHop = Math.floor(((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5) / calculatedScale.steps);
 		//Wrap in an animation loop wrapper
-		animationLoop(config, drawScale, drawAllSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPosX, midPosY, midPosX - ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), midPosY + ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), data);
+ 		if(scaleHop > 0) {
+			animationLoop(config, drawScale, drawAllSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPosX, midPosY, midPosX - ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), midPosY + ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), data);
+		} else {
+			ctx.inUpdate=false;
+			ctx.prevWidth=ctx.canvas.width;
+			ctx.prevHeight=ctx.canvas.height;
+		}
 
 		function drawAllSegments(animationDecimal) {
 			var startAngle = -config.startAngle * (Math.PI / 180) + 2 * Math.PI,
@@ -1859,7 +1960,19 @@ window.Chart = function(context) {
 	var Radar = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
 		setting_new_chart_vars(ctx, "Radar");
-		if (!dynamicFunction(data, config, ctx, "Radar")) return;
+        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
+        		addResponsiveChart(ctx.ChartNewId,"Radar",ctx,data,config);
+        		updateChart(ctx,data,config);
+        		return;
+		} 
+		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "Radar")) return;
+		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
+			ctx.firstPass=-1;
+			ctx.alreadydone=true;
+			updateChart(ctx,data,config);
+			return;
+		} else if (ctx.firstPass==-1)ctx.firstPass=1;
+
 		while (config.startAngle < 0) {
 			config.startAngle += 360;
 		}
@@ -2204,12 +2317,27 @@ window.Chart = function(context) {
 		}
 	};
 
+
 	var Pie = function(data, config, ctx) {
 
 		var segmentTotal = 0;
 		var msr, midPieX, midPieY, pieRadius;
 		setting_new_chart_vars(ctx, "Pie");
-		if (!dynamicFunction(data, config, ctx, "Pie")) return;
+
+        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
+        		addResponsiveChart(ctx.ChartNewId,"Pie",ctx,data,config);
+        		updateChart(ctx,data,config);
+        		return;
+		} 
+		
+		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "Pie")) return;
+		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
+			ctx.firstPass=-1;
+			ctx.alreadydone=true;
+			updateChart(ctx,data,config);
+			return;
+		} else if (ctx.firstPass==-1)ctx.firstPass=1;
+
 		while (config.startAngle < 0) {
 			config.startAngle += 360;
 		}
@@ -2231,8 +2359,13 @@ window.Chart = function(context) {
 			if (!(typeof(data[i].value) == 'undefined')) segmentTotal += 1 * data[i].value;
 		}
 		calculateDrawingSize();
-		animationLoop(config, null, drawPieSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPieX, midPieY, midPieX - pieRadius, midPieY + pieRadius, data);
-
+		if(pieRadius > 0) {
+			animationLoop(config, null, drawPieSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPieX, midPieY, midPieX - pieRadius, midPieY + pieRadius, data);
+		} else {
+			ctx.inUpdate=false;
+			ctx.prevWidth=ctx.canvas.width;
+			ctx.prevHeight=ctx.canvas.height;
+		}
 		function drawPieSegments(animationDecimal) {
 			var cumulativeAngle = -config.startAngle * (Math.PI / 180) + 2 * Math.PI,
 				cumvalue = 0,
@@ -2425,7 +2558,21 @@ window.Chart = function(context) {
 		var segmentTotal = 0;
 		var msr, midPieX, midPieY, doughnutRadius;
 		setting_new_chart_vars(ctx, "Doughnut");
-		if (!dynamicFunction(data, config, ctx, "Doughnut")) return;
+
+        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
+        		addResponsiveChart(ctx.ChartNewId,"Doughnut",ctx,data,config);
+        		updateChart(ctx,data,config);
+        		return;
+		} 
+
+		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "Doughnut")) return;
+		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
+			ctx.firstPass=-1;
+			ctx.alreadydone=true;
+			updateChart(ctx,data,config);
+			return;
+		} else if (ctx.firstPass==-1)ctx.firstPass=1;
+
 		var realCumulativeAngle = config.startAngle * (Math.PI / 180) + 2 * Math.PI;
 		while (config.startAngle < 0) {
 			config.startAngle += 360;
@@ -2451,7 +2598,14 @@ window.Chart = function(context) {
 		for (var i = 0; i < data.length; i++) {
 			if (!(typeof(data[i].value) == 'undefined')) segmentTotal += 1 * data[i].value;
 		}
-		animationLoop(config, null, drawPieSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPieX, midPieY, midPieX - doughnutRadius, midPieY + doughnutRadius, data);
+		if(doughnutRadius > 0) {
+			animationLoop(config, null, drawPieSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPieX, midPieY, midPieX - doughnutRadius, midPieY + doughnutRadius, data);
+		} else {
+			ctx.inUpdate=false;
+			ctx.prevWidth=ctx.canvas.width;
+			ctx.prevHeight=ctx.canvas.height;
+		}
+
 
 		function drawPieSegments(animationDecimal) {
 			var cumulativeAngle = -config.startAngle * (Math.PI / 180) + 2 * Math.PI,
@@ -2640,6 +2794,12 @@ window.Chart = function(context) {
 		var zeroY2 = 0;
 		var offsets = [];
 		setting_new_chart_vars(ctx, "Line");
+        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
+        		addResponsiveChart(ctx.ChartNewId,"Line",ctx,data,config);
+        		updateChart(ctx,data,config);
+        		return;
+		} 
+
 		// adapt data when length is 1;
 		var mxlgt = 0;
 		for (var i = 0; i < data.datasets.length; i++) mxlgt = Max([mxlgt, data.datasets[i].data.length]);
@@ -2649,7 +2809,14 @@ window.Chart = function(context) {
 				if (typeof(data.datasets[i].data[0] != "undefined")) data.datasets[i].data = [undefined, data.datasets[i].data[0], undefined];
 			}
 		}
-		if (!dynamicFunction(data, config, ctx, "Line")) return;
+		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "Line")) return;
+		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
+			ctx.firstPass=-1;
+			ctx.alreadydone=true;
+			updateChart(ctx,data,config);
+			return;
+		} else if (ctx.firstPass==-1)ctx.firstPass=1;
+
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
 		defMouse(ctx, data, config, "Line");
@@ -2681,7 +2848,9 @@ window.Chart = function(context) {
 		labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
 		labelTemplateString2 = (config.scaleShowLabels2) ? config.scaleLabel2 : "";
 		if (!config.scaleOverride) {
-			calculatedScale = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
+			if(valueBounds.maxSteps>0 && valueBounds.minSteps>0) {
+				calculatedScale = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
+			}
 		} else {
 			calculatedScale = {
 				steps: config.scaleSteps,
@@ -2692,9 +2861,12 @@ window.Chart = function(context) {
 			}
 			populateLabels(1, config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
 		}
+
 		if (valueBounds.dbAxis) {
 			if (!config.scaleOverride2) {
-				calculatedScale2 = calculateScale(2, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue2, valueBounds.minValue2, labelTemplateString);
+				if(valueBounds.maxSteps>0 && valueBounds.minSteps>0) {
+					calculatedScale2 = calculateScale(2, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue2, valueBounds.minValue2, labelTemplateString);
+				}
 			} else {
 				calculatedScale2 = {
 					steps: config.scaleSteps2,
@@ -2714,41 +2886,46 @@ window.Chart = function(context) {
 				labels: null
 			}
 		}
-		msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, calculatedScale2.labels, false, false, true, true, config.datasetFill, "Line");
-
-		var prevHeight=msr.availableHeight;
-		msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
-		msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
-		scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
-		scaleHop2 = Math.floor(msr.availableHeight / calculatedScale2.steps);
-		valueHop = Math.floor(msr.availableWidth / (data.labels.length - 1));
-		if (valueHop == 0 || config.fullWidthGraph) valueHop = (msr.availableWidth / (data.labels.length - 1));
-		msr.clrwidth = msr.clrwidth - (msr.availableWidth - (data.labels.length - 1) * valueHop);
-		msr.availableWidth = (data.labels.length - 1) * valueHop;
-		msr.availableHeight = (calculatedScale.steps) * scaleHop;
-		msr.xLabelPos+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
-		msr.clrheight+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
-
-		yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
-		xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
-		drawLabels();
-		if (valueBounds.minValue < 0) {
-			zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, scaleHop);
-		}
-		if (valueBounds.minValue2 < 0) {
-			zeroY2 = calculateOffset(config.logarithmic2, 0, calculatedScale2, scaleHop2);
-		}
-		for (var i = 0; i < data.datasets.length; i++) {
-			offsets[i] = [];
-			for (var j = 0; j < data.datasets[i].data.length; j++) {
-				if (data.datasets[i].axis == 2) {
-					offsets[i][j] = (calculateOffset(config.logarithmic2, data.datasets[i].data[j], calculatedScale2, scaleHop2) - zeroY2);
-				} else {
-					offsets[i][j] = (calculateOffset(config.logarithmic, data.datasets[i].data[j], calculatedScale, scaleHop) - zeroY);
+		if(valueBounds.maxSteps>0 && valueBounds.minSteps>0) {
+			msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, calculatedScale2.labels, false, false, true, true, config.datasetFill, "Line");
+			var prevHeight=msr.availableHeight;
+			msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
+			msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
+			scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
+			scaleHop2 = Math.floor(msr.availableHeight / calculatedScale2.steps);
+			valueHop = Math.floor(msr.availableWidth / (data.labels.length - 1));
+			if (valueHop == 0 || config.fullWidthGraph) valueHop = (msr.availableWidth / (data.labels.length - 1));
+			msr.clrwidth = msr.clrwidth - (msr.availableWidth - (data.labels.length - 1) * valueHop);
+			msr.availableWidth = (data.labels.length - 1) * valueHop;
+			msr.availableHeight = (calculatedScale.steps) * scaleHop;
+			msr.xLabelPos+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
+			msr.clrheight+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
+  			yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
+			xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
+			drawLabels();
+			if (valueBounds.minValue < 0) {
+				zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, scaleHop);
+			}
+			if (valueBounds.minValue2 < 0) {
+				zeroY2 = calculateOffset(config.logarithmic2, 0, calculatedScale2, scaleHop2);
+			}
+			for (var i = 0; i < data.datasets.length; i++) {
+				offsets[i] = [];
+				for (var j = 0; j < data.datasets[i].data.length; j++) {
+					if (data.datasets[i].axis == 2) {
+						offsets[i][j] = (calculateOffset(config.logarithmic2, data.datasets[i].data[j], calculatedScale2, scaleHop2) - zeroY2);
+					} else {
+						offsets[i][j] = (calculateOffset(config.logarithmic, data.datasets[i].data[j], calculatedScale, scaleHop) - zeroY);
+					}
 				}
 			}
+			animationLoop(config, drawScale, drawLines, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
+		} else {
+			ctx.inUpdate=false;
+			ctx.prevWidth=ctx.canvas.width;
+			ctx.prevHeight=ctx.canvas.height;
 		}
-		animationLoop(config, drawScale, drawLines, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
+
 
 		function drawLines(animPc) {
 			drawLinesDataset(1, animPc, data, config, ctx, offsets, {
@@ -2982,7 +3159,19 @@ window.Chart = function(context) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
 		setting_new_chart_vars(ctx, "StackedBar");
-		if (!dynamicFunction(data, config, ctx, "StackedBar")) return;
+        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
+        		addResponsiveChart(ctx.ChartNewId,"StackedBar",ctx,data,config);
+        		updateChart(ctx,data,config);
+        		return;
+		} 
+		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "StackedBar")) return;
+		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
+			ctx.firstPass=-1;
+			ctx.alreadydone=true;
+			updateChart(ctx,data,config);
+			return;
+		} else if (ctx.firstPass==-1)ctx.firstPass=1;
+
 		config.logarithmic = false;
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
@@ -2990,50 +3179,56 @@ window.Chart = function(context) {
 		setRect(ctx, config);
 		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], true, false, true, true, true, "StackedBar");
 		valueBounds = getValueBounds();
-		//Check and set the scale
-		labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
-		if (!config.scaleOverride) {
-			calculatedScale = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
-			msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true, true, "StackedBar");
-		} else {
-			calculatedScale = {
-				steps: config.scaleSteps,
-				stepValue: config.scaleStepWidth,
-				graphMin: config.scaleStartValue,
-				labels: []
-			}
-			for (var i = 0; i <= calculatedScale.steps; i++) {
-				if (labelTemplateString) {
-					calculatedScale.labels.push(tmpl(labelTemplateString, {
-						value: fmtChartJS(config, 1 * ((config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces(config.scaleStepWidth))), config.fmtYLabel)
-					}));
+		
+		if(valueBounds.maxSteps>0 && valueBounds.minSteps>0) {
+			//Check and set the scale
+			labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
+			if (!config.scaleOverride) {
+				calculatedScale = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
+				msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true, true, "StackedBar");
+			} else {
+				calculatedScale = {
+					steps: config.scaleSteps,
+					stepValue: config.scaleStepWidth,
+					graphMin: config.scaleStartValue,
+					labels: []
 				}
+				for (var i = 0; i <= calculatedScale.steps; i++) {
+					if (labelTemplateString) {
+						calculatedScale.labels.push(tmpl(labelTemplateString, {
+							value: fmtChartJS(config, 1 * ((config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces(config.scaleStepWidth))), config.fmtYLabel)
+						}));
+					}
+				}
+				msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true, true, "StackedBar");
 			}
-			msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true, true, "StackedBar");
+       	
+			var prevHeight=msr.availableHeight;
+       	
+			msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
+			msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
+			scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
+			valueHop = Math.floor(msr.availableWidth / (data.labels.length));
+			if (valueHop == 0 || config.fullWidthGraph) valueHop = (msr.availableWidth / data.labels.length);
+			msr.clrwidth = msr.clrwidth - (msr.availableWidth - ((data.labels.length) * valueHop));
+			msr.availableWidth = (data.labels.length) * valueHop;
+			msr.availableHeight = (calculatedScale.steps) * scaleHop;
+			msr.xLabelPos+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
+			msr.clrheight+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
+       	
+			yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
+			xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
+			barWidth = (valueHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * data.datasets.length - 1) - (config.barStrokeWidth / 2) - 1);
+			if(barWidth>=0 && barWidth<=1)barWidth=1;
+			if(barWidth<0 && barWidth>=-1)barWidth=-1;
+       	
+			drawLabels();
+			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
+		} else {
+			ctx.inUpdate=false;
+			ctx.prevWidth=ctx.canvas.width;
+			ctx.prevHeight=ctx.canvas.height;
 		}
-
-		var prevHeight=msr.availableHeight;
-
-		msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
-		msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
-		scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
-		valueHop = Math.floor(msr.availableWidth / (data.labels.length));
-		if (valueHop == 0 || config.fullWidthGraph) valueHop = (msr.availableWidth / data.labels.length);
-		msr.clrwidth = msr.clrwidth - (msr.availableWidth - ((data.labels.length) * valueHop));
-		msr.availableWidth = (data.labels.length) * valueHop;
-		msr.availableHeight = (calculatedScale.steps) * scaleHop;
-		msr.xLabelPos+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
-		msr.clrheight+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
-
-		yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
-		xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
-		barWidth = (valueHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * data.datasets.length - 1) - (config.barStrokeWidth / 2) - 1);
-		if(barWidth>=0 && barWidth<=1)barWidth=1;
-		if(barWidth<0 && barWidth>=-1)barWidth=-1;
-
-		drawLabels();
-		animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
-
 		function drawBars(animPc) {
 			ctx.lineWidth = config.barStrokeWidth;
 			var tempp = new Array(data.datasets.length);
@@ -3403,51 +3598,72 @@ window.Chart = function(context) {
 		if (config.reverseOrder) {
 			data = reverseData(data);
 		}
+
 		setting_new_chart_vars(ctx, "HorizontalStackedBar");
-		if (!dynamicFunction(data, config, ctx, "HorizontalStackedBar")) return;
+        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
+        		addResponsiveChart(ctx.ChartNewId,"HorizontalStackedBar",ctx,data,config);
+        		updateChart(ctx,data,config);
+        		return;
+		} 
+
+		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "HorizontalStackedBar")) return;
+		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
+			ctx.firstPass=-1;
+			ctx.alreadydone=true;
+			updateChart(ctx,data,config);
+			return;
+		} else if (ctx.firstPass==-1)ctx.firstPass=1;
+
 		config.logarithmic = false;
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
 		defMouse(ctx, data, config, "HorizontalStackedBar");
 		setRect(ctx, config);
-		valueBounds = getValueBounds();
-		//Check and set the scale
-		labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
-		if (!config.scaleOverride) {
-			calculatedScale = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
-			msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true, true, "HorizontalStackedBar");
-		} else {
-			calculatedScale = {
-				steps: config.scaleSteps,
-				stepValue: config.scaleStepWidth,
-				graphMin: config.scaleStartValue,
-				labels: []
-			}
-			for (var i = 0; i <= calculatedScale.steps; i++) {
-				if (labelTemplateString) {
-					calculatedScale.labels.push(tmpl(labelTemplateString, {
-						value: fmtChartJS(config, 1 * ((config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces(config.scaleStepWidth))), config.fmtYLabel)
-					}));
+		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], true, true, true, true, true, "HorizontalStackedBar");
+ 		valueBounds = getValueBounds();
+		
+		if(valueBounds.maxSteps>0 && valueBounds.minSteps>0) {
+			//Check and set the scale
+			labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
+			if (!config.scaleOverride) {
+				calculatedScale = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
+				msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true, true, "HorizontalStackedBar");
+			} else {
+				calculatedScale = {
+					steps: config.scaleSteps,
+					stepValue: config.scaleStepWidth,
+					graphMin: config.scaleStartValue,
+					labels: []
 				}
+				for (var i = 0; i <= calculatedScale.steps; i++) {
+					if (labelTemplateString) {
+						calculatedScale.labels.push(tmpl(labelTemplateString, {
+							value: fmtChartJS(config, 1 * ((config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces(config.scaleStepWidth))), config.fmtYLabel)
+						}));
+					}
+				}
+				msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true, true, "HorizontalStackedBar");
 			}
-			msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true, true, "HorizontalStackedBar");
+			msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
+			msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
+			scaleHop = Math.floor(msr.availableHeight / data.labels.length);
+			valueHop = Math.floor(msr.availableWidth / (calculatedScale.steps));
+			if (valueHop == 0 || config.fullWidthGraph) valueHop = (msr.availableWidth / (calculatedScale.steps));
+			msr.clrwidth = msr.clrwidth - (msr.availableWidth - (calculatedScale.steps * valueHop));
+			msr.availableWidth = (calculatedScale.steps) * valueHop;
+			msr.availableHeight = (data.labels.length) * scaleHop;
+			yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
+			xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
+			barWidth = (scaleHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * data.datasets.length - 1) - (config.barStrokeWidth / 2) - 1);
+			if(barWidth>=0 && barWidth<=1)barWidth=1;
+			if(barWidth<0 && barWidth>=-1)barWidth=-1;
+			drawLabels();
+			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
+		} else {
+			ctx.inUpdate=false;
+			ctx.prevWidth=ctx.canvas.width;
+			ctx.prevHeight=ctx.canvas.height;
 		}
-		msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
-		msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
-		scaleHop = Math.floor(msr.availableHeight / data.labels.length);
-		valueHop = Math.floor(msr.availableWidth / (calculatedScale.steps));
-		if (valueHop == 0 || config.fullWidthGraph) valueHop = (msr.availableWidth / (calculatedScale.steps));
-		msr.clrwidth = msr.clrwidth - (msr.availableWidth - (calculatedScale.steps * valueHop));
-		msr.availableWidth = (calculatedScale.steps) * valueHop;
-		msr.availableHeight = (data.labels.length) * scaleHop;
-		yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
-		xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
-		barWidth = (scaleHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * data.datasets.length - 1) - (config.barStrokeWidth / 2) - 1);
-		if(barWidth>=0 && barWidth<=1)barWidth=1;
-		if(barWidth<0 && barWidth>=-1)barWidth=-1;
-		drawLabels();
-		animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
-
 		function HorizontalCalculateOffset(val, calculatedScale, scaleHop) {
 			var outerValue = calculatedScale.steps * calculatedScale.stepValue;
 			var adjustedValue = val - calculatedScale.graphMin;
@@ -3787,6 +4003,8 @@ window.Chart = function(context) {
 				upperValue = Max([upperValue * 2, 1]);
 				lowerValue = 0;
 			}
+			labelHeight = config.scaleFontSize;
+			scaleHeight = msr.availableHeight;
 			var maxSteps = Math.floor((scaleHeight / (labelHeight * 0.66)));
 			var minSteps = Math.floor((scaleHeight / labelHeight * 0.5));
 			return {
@@ -3804,6 +4022,12 @@ window.Chart = function(context) {
 			msr;
 		var offsets = [];
 		setting_new_chart_vars(ctx, "Bar");
+        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
+        		addResponsiveChart(ctx.ChartNewId,"Bar",ctx,data,config);
+        		updateChart(ctx,data,config);
+        		return;
+		} 
+
 		// for BarLineCharts
 		var nrOfBars = data.datasets.length;
 		var nrOfLines = 0;
@@ -3830,75 +4054,89 @@ window.Chart = function(context) {
 			}
 		}
 		nrOfBars -= nrOfLines;
-		if (!dynamicFunction(data, config, ctx, "Bar")) return;
+		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "Bar")) return;
+		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
+			ctx.firstPass=-1;
+			ctx.alreadydone=true;
+			updateChart(ctx,data,config);
+			return;
+		} else if (ctx.firstPass==-1)ctx.firstPass=1;
+
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
 		defMouse(ctx, data, config, "Bar");
 		setRect(ctx, config);
+		
 		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], true, false, true, true, true, "Bar");
 		valueBounds = getValueBounds();
+ 
+		if(valueBounds.maxSteps>0 && valueBounds.minSteps>0) {
 
-		// true or fuzzy (error for negativ values (included 0))
-		if (config.logarithmic !== false) {
-			if (valueBounds.minValue <= 0) {
+			// true or fuzzy (error for negativ values (included 0))
+			if (config.logarithmic !== false) {
+				if (valueBounds.minValue <= 0) {
+					config.logarithmic = false;
+				}
+			}
+			// Check if logarithmic is meanigful
+			var OrderOfMagnitude = calculateOrderOfMagnitude(Math.pow(10, calculateOrderOfMagnitude(valueBounds.maxValue) + 1)) - calculateOrderOfMagnitude(Math.pow(10, calculateOrderOfMagnitude(valueBounds.minValue)));
+			if ((config.logarithmic == 'fuzzy' && OrderOfMagnitude < 4) || config.scaleOverride) {
 				config.logarithmic = false;
 			}
-		}
-		// Check if logarithmic is meanigful
-		var OrderOfMagnitude = calculateOrderOfMagnitude(Math.pow(10, calculateOrderOfMagnitude(valueBounds.maxValue) + 1)) - calculateOrderOfMagnitude(Math.pow(10, calculateOrderOfMagnitude(valueBounds.minValue)));
-		if ((config.logarithmic == 'fuzzy' && OrderOfMagnitude < 4) || config.scaleOverride) {
-			config.logarithmic = false;
-		}
-		//Check and set the scale
-		labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
-		if (!config.scaleOverride) {
-			calculatedScale = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
-			msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true, true, "Bar");
+			//Check and set the scale
+			labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
+			if (!config.scaleOverride) {
+				calculatedScale = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
+				msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true, true, "Bar");
+			} else {
+				calculatedScale = {
+					steps: config.scaleSteps,
+					stepValue: config.scaleStepWidth,
+					graphMin: config.scaleStartValue,
+					graphMax: config.scaleStartValue + config.scaleSteps * config.scaleStepWidth,
+					labels: []
+				}
+				populateLabels(1, config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
+				msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true, true, "Bar");
+			}
+
+			var prevHeight=msr.availableHeight;
+
+
+
+			msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
+			msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
+			scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
+			valueHop = Math.floor(msr.availableWidth / (data.labels.length));
+			if (valueHop == 0 || config.fullWidthGraph) valueHop = (msr.availableWidth / data.labels.length);
+			msr.clrwidth = msr.clrwidth - (msr.availableWidth - ((data.labels.length) * valueHop));
+			msr.availableWidth = (data.labels.length) * valueHop;
+			msr.availableHeight = (calculatedScale.steps) * scaleHop;
+			msr.xLabelPos+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
+			msr.clrheight+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
+
+			yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
+			xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
+			barWidth = (valueHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * nrOfBars - 1) - ((config.barStrokeWidth / 2) * nrOfBars - 1)) / nrOfBars;
+			if(barWidth>=0 && barWidth<=1)barWidth=1;
+			if(barWidth<0 && barWidth>=-1)barWidth=-1;
+			var zeroY = 0;
+			if (valueBounds.minValue < 0) {
+				var zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, scaleHop);
+			}
+			for (var i = 0; i < data.datasets.length; i++) {
+				offsets[i] = [];
+				for (var j = 0; j < data.datasets[i].data.length; j++) {
+					offsets[i][j] = (calculateOffset(config.logarithmic, data.datasets[i].data[j], calculatedScale, scaleHop) - zeroY);
+				}
+			}
+			drawLabels();
+			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
 		} else {
-			calculatedScale = {
-				steps: config.scaleSteps,
-				stepValue: config.scaleStepWidth,
-				graphMin: config.scaleStartValue,
-				graphMax: config.scaleStartValue + config.scaleSteps * config.scaleStepWidth,
-				labels: []
-			}
-			populateLabels(1, config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
-			msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true, true, "Bar");
+			ctx.inUpdate=false;
+			ctx.prevWidth=ctx.canvas.width;
+			ctx.prevHeight=ctx.canvas.height;
 		}
-
-		var prevHeight=msr.availableHeight;
-
-
-
-		msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
-		msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
-		scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
-		valueHop = Math.floor(msr.availableWidth / (data.labels.length));
-		if (valueHop == 0 || config.fullWidthGraph) valueHop = (msr.availableWidth / data.labels.length);
-		msr.clrwidth = msr.clrwidth - (msr.availableWidth - ((data.labels.length) * valueHop));
-		msr.availableWidth = (data.labels.length) * valueHop;
-		msr.availableHeight = (calculatedScale.steps) * scaleHop;
-		msr.xLabelPos+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
-		msr.clrheight+=(config.scaleTickSizeBottom + config.scaleTickSizeTop - (prevHeight-msr.availableHeight));
-
-		yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
-		xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
-		barWidth = (valueHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * nrOfBars - 1) - ((config.barStrokeWidth / 2) * nrOfBars - 1)) / nrOfBars;
-		if(barWidth>=0 && barWidth<=1)barWidth=1;
-		if(barWidth<0 && barWidth>=-1)barWidth=-1;
-		var zeroY = 0;
-		if (valueBounds.minValue < 0) {
-			var zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, scaleHop);
-		}
-		for (var i = 0; i < data.datasets.length; i++) {
-			offsets[i] = [];
-			for (var j = 0; j < data.datasets[i].data.length; j++) {
-				offsets[i][j] = (calculateOffset(config.logarithmic, data.datasets[i].data[j], calculatedScale, scaleHop) - zeroY);
-			}
-		}
-		drawLabels();
-		animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
-
 		function drawBars(animPc) {
 			var t1, t2, t3;
 			var cumvalue = new Array();
@@ -4229,47 +4467,70 @@ window.Chart = function(context) {
 			data = reverseData(data);
 		}
 		setting_new_chart_vars(ctx, "HorizontalBar");
-		if (!dynamicFunction(data, config, ctx, "HorizontalBar")) return;
+        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
+        		addResponsiveChart(ctx.ChartNewId,"HorizontalBar",ctx,data,config);
+        		updateChart(ctx,data,config);
+        		return;
+		} 
+
+		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "HorizontalBar")) return;
+		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
+			ctx.firstPass=-1;
+			ctx.alreadydone=true;
+			updateChart(ctx,data,config);
+			return;
+		} else if (ctx.firstPass==-1)ctx.firstPass=1;
+
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
+
 		defMouse(ctx, data, config, "HorizontalBar");
 		setRect(ctx, config);
+		
+		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], true, true, true, true, true, "StackedBar");
 		valueBounds = getValueBounds();
-		//Check and set the scale
-		labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
-		if (!config.scaleOverride) {
-			calculatedScale = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
-			msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true, true, "HorizontalBar");
-		} else {
-			calculatedScale = {
-				steps: config.scaleSteps,
-				stepValue: config.scaleStepWidth,
-				graphMin: config.scaleStartValue,
-				graphMax: config.scaleStartValue + config.scaleSteps * config.scaleStepWidth,
-				labels: []
+
+		if(valueBounds.maxSteps>0 && valueBounds.minSteps>0) {
+			//Check and set the scale
+			labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
+			if (!config.scaleOverride) {
+				calculatedScale = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
+				msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true, true, "HorizontalBar");
+			} else {
+				calculatedScale = {
+					steps: config.scaleSteps,
+					stepValue: config.scaleStepWidth,
+					graphMin: config.scaleStartValue,
+					graphMax: config.scaleStartValue + config.scaleSteps * config.scaleStepWidth,
+					labels: []
+				}
+				populateLabels(1, config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
+				msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true, true, "HorizontalBar");
 			}
-			populateLabels(1, config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
-			msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true, true, "HorizontalBar");
+			msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
+			msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
+			scaleHop = Math.floor(msr.availableHeight / data.labels.length);
+			valueHop = Math.floor(msr.availableWidth / (calculatedScale.steps));
+			if (valueHop == 0 || config.fullWidthGraph) valueHop = (msr.availableWidth / calculatedScale.steps);
+			msr.clrwidth = msr.clrwidth - (msr.availableWidth - (calculatedScale.steps * valueHop));
+			msr.availableWidth = (calculatedScale.steps) * valueHop;
+			msr.availableHeight = (data.labels.length) * scaleHop;
+			yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
+			xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
+			barWidth = (scaleHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * data.datasets.length - 1) - ((config.barStrokeWidth / 2) * data.datasets.length - 1)) / data.datasets.length;
+			if(barWidth>=0 && barWidth<=1)barWidth=1;
+			if(barWidth<0 && barWidth>=-1)barWidth=-1;
+			var zeroY = 0;
+			if (valueBounds.minValue < 0) {
+				var zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, valueHop);
+			}
+			drawLabels();
+			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
+		} else {
+			ctx.inUpdate=false;
+			ctx.prevWidth=ctx.canvas.width;
+			ctx.prevHeight=ctx.canvas.height;
 		}
-		msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
-		msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
-		scaleHop = Math.floor(msr.availableHeight / data.labels.length);
-		valueHop = Math.floor(msr.availableWidth / (calculatedScale.steps));
-		if (valueHop == 0 || config.fullWidthGraph) valueHop = (msr.availableWidth / calculatedScale.steps);
-		msr.clrwidth = msr.clrwidth - (msr.availableWidth - (calculatedScale.steps * valueHop));
-		msr.availableWidth = (calculatedScale.steps) * valueHop;
-		msr.availableHeight = (data.labels.length) * scaleHop;
-		yAxisPosX = msr.leftNotUsableSize + config.scaleTickSizeLeft;
-		xAxisPosY = msr.topNotUsableSize + msr.availableHeight + config.scaleTickSizeTop;
-		barWidth = (scaleHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * data.datasets.length - 1) - ((config.barStrokeWidth / 2) * data.datasets.length - 1)) / data.datasets.length;
-		if(barWidth>=0 && barWidth<=1)barWidth=1;
-		if(barWidth<0 && barWidth>=-1)barWidth=-1;
-		var zeroY = 0;
-		if (valueBounds.minValue < 0) {
-			var zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, valueHop);
-		}
-		drawLabels();
-		animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
 
 		function drawBars(animPc) {
 			var cumvalue = new Array();
@@ -4525,6 +4786,10 @@ window.Chart = function(context) {
 			// AJOUT CHANGEMENT
 			if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
 			if (!isNaN(config.graphMax)) upperValue = config.graphMax;
+
+			labelHeight = config.scaleFontSize;
+			scaleHeight = msr.availableHeight;
+
 			var maxSteps = Math.floor((scaleHeight / (labelHeight * 0.66)));
 			var minSteps = Math.floor((scaleHeight / labelHeight * 0.5));
 			return {
@@ -4592,19 +4857,48 @@ window.Chart = function(context) {
 			//We need to check if the animation is incomplete (less than 1), or complete (1).
 			cntiter += multAnim;
 			percentAnimComplete += multAnim * animFrameAmount;
-			if (cntiter == config.animationSteps || config.animation == false) percentAnimComplete = 1;
+			if (cntiter == config.animationSteps || config.animation == false || ctx.inUpdate==true) percentAnimComplete = 1;
 			else if (percentAnimComplete >= 1) percentAnimComplete = 0.999;
 			animateFrame();
 			//Stop the loop continuing forever
 			if (multAnim == -1 && cntiter <= beginAnim) {
 				if (typeof config.onAnimationComplete == "function") config.onAnimationComplete(ctx, config, data, 0, animationCount + 1);
+				if(ctx.inUpdate==true) {
+					ctx.inUpdate=false;
+					ctx.prevWidth=ctx.canvas.width;
+					ctx.prevHeight=ctx.canvas.height;
+					updateChart(ctx,data,config);										
+				} else {
+					if(ctx.firstPass==2) {
+						ctx.firstPass=3;
+//						ctx.prevWidth=ctx.canvas.width;
+//						ctx.prevHeight=ctx.canvas.height;
+						updateChart(ctx,data,config);										
+					} else {
+						ctx.firstPass=3;
+					}
+				}
 				multAnim = 1;
 				requestAnimFrame(animLoop);
 			} else if (percentAnimComplete < config.animationStopValue) {
 				requestAnimFrame(animLoop);
 			} else {
+
 				if (typeof config.onAnimationComplete == "function") config.onAnimationComplete(ctx, config, data, 1, animationCount + 1);
 				// stop animation ? 
+				if(ctx.inUpdate==true) {
+					ctx.inUpdate=false;
+					ctx.prevWidth=ctx.canvas.width;
+					ctx.prevHeight=ctx.canvas.height;
+					updateChart(ctx,data,config);										
+				} else {
+					if(ctx.firstPass==2) {
+						ctx.firstPass=3;
+						updateChart(ctx,data,config);										
+					} else {
+						ctx.firstPass=3;
+					}
+				}
 				if (animationCount < config.animationCount || config.animationCount == 0) {
 					animationCount++;
 					if (config.animationBackward && multAnim == 1) {
@@ -4683,6 +4977,7 @@ window.Chart = function(context) {
 					numberOfSteps = Math.round(graphRange / stepValue);
 				}
 			}
+
 			if (typeof yAxisMinimumInterval == "number") {
 				if (stepValue < yAxisMinimumInterval) {
 					stepValue = yAxisMinimumInterval;
