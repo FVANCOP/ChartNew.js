@@ -128,6 +128,8 @@ Change history
 
 Future Improvements
 -------------------
+- Diamonds, triangles, square or other shapes instead of circle for points in graphs;
+- Currently, for the color, users can specify a function or an array; Extend this possibility to all text options (size, family, style)
 - merge Pie/Doughnut code (can be the same code : A pie = Dougnut with a hole having a radiant of 0...)
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
 - non evolutive animation in Pie/Doughnut (https://github.com/nnnick/Chart.js/issues/357)
