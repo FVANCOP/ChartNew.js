@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<script src="../ChartNew.js"></script>
+
+
+	<script>
+	var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+
+	var barChartData = {
+		labels : ["January","February","March","April","May","June","July"],
+		datasets : [
+			{
+				fillColor : "rgba(220,220,220,0.5)",
+				strokeColor : "rgba(220,220,220,0.8)",
+				highlightFill: "rgba(220,220,220,0.75)",
+				highlightStroke: "rgba(220,220,220,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+			},
+			{
+				fillColor : "rgba(151,187,205,0.5)",
+				strokeColor : "rgba(151,187,205,0.8)",
+				highlightFill : "rgba(151,187,205,0.75)",
+				highlightStroke : "rgba(151,187,205,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+			}
+		]
+
+	}
+
+</script>
+	<head>
+	
+		<title>
+			Responsive Chart 
+		</title>
+		
+<style type="text/css" media="screen"><!--
+#page
+	{
+	font-size: 11px;
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	line-height: 14px;
+	text-align: left;
+	visibility: visible;
+	margin-top: 40px;
+	margin-right: auto;
+	margin-left: auto;
+	position: relative;
+	width: 85%
+	}
+
+#en_tete
+	{
+	font-size: 20px;
+	position: relative;
+	text-align: center;
+	font-family: verdana, geneva, arial, sans-serif;
+	font-size: 42px;
+	font-weight: bold
+	}
+
+#boite1 
+	{
+	font-size: 20px;
+	background-color: #f6f6b8;
+	position: relative;
+	text-align: center
+	}
+
+#boite2 
+	{
+	padding: 10px;
+	position: relative
+	}
+
+#boite3  
+	{
+	font-size: 20px;
+	background-color: #f6c3f6;
+	margin-top: 10px;
+	position: relative;
+	text-align: center
+	}
+
+
+#boite5
+	{
+	position: relative;
+//	padding: 10px;
+	margin-top: 10px;
+	width: 49%;
+	float: left
+	}
+
+#boite6
+	{
+	position: relative;
+//	padding: 10px;
+	margin-top: 10px;
+	width: 49%;
+	float: left;
+	margin-left: 2%;
+	margin-bottom: 10px;
+	line-height: 16px
+	}
+
+
+
+
+
+--></style> 
+	</head>
+
+	<body>
+		<div align="center">
+			<div id="en_tete">
+				Responsive Chart 
+			</div>
+			<div id="page">
+				<div id="boite1"><BR>1st graph<BR><BR></div>
+				<div id="boite2"><center>
+				<canvas id="canvas1" height="300" width="600"></canvas>
+				</center></div>
+
+				<div id="boite3"><BR>Graph 2 & 3<BR><BR></div>
+				<div id="boite5"><center>
+				<canvas id="canvas2" height="300" width="600"></canvas>
+				</center></div>
+				<div id="boite6"><center>
+				<canvas id="canvas3" height="300" width="600"></canvas>
+				</center></div>
+
+			</div>
+		</div>
+<script>
+	window.onload = function(){
+		var ctx1 = document.getElementById("canvas1").getContext("2d");
+		window.myBar = new Chart(ctx1).Bar(barChartData, {
+			responsive : true, maintainAspectRatio : true
+		});
+		var ctx2 = document.getElementById("canvas2").getContext("2d");
+		window.myBar = new Chart(ctx2).Line(barChartData, {
+			responsive : true, maintainAspectRatio : true
+		});
+		var ctx3 = document.getElementById("canvas3").getContext("2d");
+		window.myBar = new Chart(ctx3).HorizontalBar(barChartData, {
+			responsive : true, maintainAspectRatio : true
+		});
+	}
+
+	</script>
+
+	</body>
+</html>
