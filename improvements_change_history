@@ -138,8 +138,6 @@ Future Improvements
 - code reduction
 - animate Canvas when mouse is over a piece of graph (like in http://zurb.com/playground/pizza-pie-charts)
 - dynamicDisplay defines a canvas.id when not defined; Avoid defining a canvas.id (issue 35)
-- live update of the data (see : http://www.jqchart.com/jquery/chart/RealTime/LiveData)
-- responsive chart (see issue #43)
 - see issue #128
 
 Known Bugs
