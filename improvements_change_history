@@ -1,6 +1,8 @@
 Change history
 --------------
 
+28/10/2014 - Vancoppenolle Francois - responsive options is available 
+				    - function updateChart can be used to update a graph
 06/10/2014 - Vancoppenolle Francois - new options to set the legend whereever you want
                                     - fix of several bugs
 29/09/2014 - Chris2014              - default value defined for scaleLabel2
