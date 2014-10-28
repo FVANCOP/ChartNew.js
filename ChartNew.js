@@ -31,6 +31,7 @@
  *     graphMin / graphMax
  *     logarithmic y-axis (for line and bar)
  *     rotateLabels
+ *     and lot of others...
  *
  */
 // non standard functions;
