@@ -320,6 +320,19 @@ function createCursorDiv() {
 initChartJsResize = false;
 var jsGraphResize = new Array();
 
+function addResponsiveChart(id,ctx,data,config) {
+	initChartResize();
+	var newSize=resizeGraph(ctx,config);
+
+	if(typeof ctx.prevWidth != "undefined") {
+		resizeCtx(ctx,newSize.newWidth,newSize.newHeight);
+		ctx.prevWidth=newSize.newWidth;
+	}
+	ctx.prevWidth=newSize.newWidth;
+	ctx.prevHeight=newSize.newHeight;
+	jsGraphResize[jsGraphResize.length]= [id,ctx.tpchart,ctx,data,config];
+};
+
 function initChartResize() {
 	if(initChartJsResize==false) {
 		window.addEventListener("resize", chartJsResize);
@@ -339,63 +352,140 @@ function getMaximumHeight(domNode){
 };
 
 
-function resizeGraph(ctx,config) {
+function resizeCtx(ctx,newWidth,newHeight)
+{
+	if (window.devicePixelRatio) {    // Retina devine
 
+		ctx.canvas.style.width = newWidth/window.devicePixelRatio + "px";
+		ctx.canvas.style.height = newHeight/window.devicePixelRatio + "px";
+		ctx.canvas.height = newHeight/window.devicePixelRatio * window.devicePixelRatio;
+		ctx.canvas.width = newWidth/window.devicePixelRatio * window.devicePixelRatio;
+		ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+	} else {
+		ctx.canvas.height = newHeight ;
+		ctx.canvas.width = newWidth;
+	}
+}
+
+function resizeGraph(ctx,config) {
+	if(typeof config.maintainAspectRatio == "undefined")config.maintainAspectRatio=true;
 	var canvas = ctx.canvas;
 	if(typeof ctx.aspectRatio == "undefined") {
 		ctx.aspectRatio = canvas.width / canvas.height;
 	}
-	aspectRatio = canvas.height/canvas.width;
-	
   	var newWidth = getMaximumWidth(canvas);
 	var newHeight = config.maintainAspectRatio ? newWidth / ctx.aspectRatio : getMaximumHeight(canvas);
-	
-        return { newWidth : newWidth, newHeight :  newHeight};
+        return { newWidth : parseInt(newWidth), newHeight :  parseInt(newHeight)};
 };
 
-function addResponsiveChart(id,tpchart,ctx,data,config) {
-	ctx.tpchart=tpchart;
-	initChartResize();
-	var newSize=resizeGraph(ctx,config);
-
-	if(typeof ctx.prevWidth != "undefined") {
-		ctx.canvas.width=newSize.newWidth;
-		ctx.canvas.height=newSize.newHeight;
-	}
-	ctx.prevWidth=newSize.newWidth;
-	ctx.prevHeight=newSize.newHeight;
-	jsGraphResize[jsGraphResize.length]= [id,tpchart,ctx,data,config];
-};
 
 
 function chartJsResize() {
 	for (var i=0;i<jsGraphResize.length;i++)  {
-		updateChart(jsGraphResize[i][2],jsGraphResize[i][3],jsGraphResize[i][4]);
+		if(typeof jsGraphResize[i][2].firstPass != "undefined") {
+			if(jsGraphResize[i][2].firstPass == 5)jsGraphResize[i][2].firstPass=6;
+		}
+		subUpdateChart(jsGraphResize[i][2],jsGraphResize[i][3],jsGraphResize[i][4]);
 	}
 };
 
+function testRedraw(ctx,data,config) {
+	if (ctx.firstPass==2 || ctx.firstPass==4 || ctx.firstPass==9) {
+		ctx.firstPass=6;
+		subUpdateChart(ctx,data,config) ;
+		return true;
+	} else {
+		ctx.firstPass=5;
+		return false;
+	}		
+}
 
-function updateChart(ctx,data,config) {
-	if(typeof ctx.inUpdate == "undefined") { ctx.inUpdate=false; ctx.firstPass=0; }
-	if(ctx.firstPass==0) {
+function updateChart(ctx,data,config,animation,runanimationcompletefunction) {
+	if (ctx.firstPass==5)
+	{
+		ctx.runanimationcompletefunction=runanimationcompletefunction;
+		if(animation)ctx.firstPass=0;
+		else if (config.responsive) ctx.firstPass=7;
+		else ctx.firstPass=7;
+		subUpdateChart(ctx,data,config) ;
+		
+	}
+}
+
+function subUpdateChart(ctx,data,config) {
+	// ctx.firstPass==undefined => graph never drawn
+	// ctx.firstPass==0 => graph is drawn but need to be redrawn with animation
+	// ctx.firstPass==1 => graph is drawn with animation 
+	// ctx.firstPass==2 => graph is in animation but at the end the graph need perhaps to be redrawn;
+	// ctx.firstPass==3 => graph currently drawing without animation; 
+	// ctx.firstPass==4 => graph currently drawing without animationb but at the end, the graph need perhaps to be redrawn;
+	// ctx.firstPass==5 => graph is displayed ; 
+	// ctx.firstPass==6 => graph is displayed but need to be redraw without animation (because of a resize);
+	// ctx.firstPass==7 => graph is displayed but need to be redraw without responsivity;
+
+
+	if(!dynamicFunction(data, config, ctx)) { return; }
+
+	if(typeof ctx.firstPass == "undefined") { 
 		ctx.firstPass=1;
 		var newSize=resizeGraph(ctx,config);
-		ctx.canvas.width=newSize.newWidth;
-		ctx.canvas.height=newSize.newHeight;
+		if(config.responsive) {
+			resizeCtx(ctx,newSize.newWidth,newSize.newHeight);
+			ctx.prevWidth=newSize.newWidth;
+			ctx.prevHeight=newSize.newHeight;
+		} else {
+			ctx.prevWidth=0;
+			ctx.prevHeight=0;
+		}
+		ctx.runanimationcompletefunction=true;
+		redrawGraph(ctx,data,config);
+	} else if(ctx.firstPass == 0) { 
+		ctx.firstPass=1;
+		var newSize=resizeGraph(ctx,config);
+		if(config.responsive) {
+			resizeCtx(ctx,newSize.newWidth,newSize.newHeight);
+			ctx.prevWidth=newSize.newWidth;
+			ctx.prevHeight=newSize.newHeight;
+		} else {
+			ctx.prevWidth=0;
+			ctx.prevHeight=0;
+		}
 		redrawGraph(ctx,data,config);
 	} else if(ctx.firstPass==1 || ctx.firstPass==2) {
 		ctx.firstPass=2;
-	} else {
-		if(ctx.inUpdate==false) {
-			var newSize=resizeGraph(ctx,config);
-			if (ctx.firstPass ==-1 || newSize.newWidth!=ctx.prevWidth || newSize.newHeigth != ctx.prevHeigth || ctx.canvas.width!=ctx.prevWidth || ctx.canvas.height!=ctx.prevHeight) {
-				if(ctx.firstPass !=-1){ctx.inUpdate=true;config.animation=false;}
-				ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-				ctx.canvas.width=newSize.newWidth;
-				ctx.canvas.height=newSize.newHeight;
-				redrawGraph(ctx,data,config);
+	} else if (ctx.firstPass==3 || ctx.firstPass==4) {
+		ctx.firstPass=4;
+	} else if(ctx.firstPass==5) {
+		ctx.firstPass=1;
+		redrawGraph(ctx,data,config);
+	} else if(ctx.firstPass==6) {
+		var newSize=resizeGraph(ctx,config);
+		if (newSize.newWidth!=ctx.prevWidth || newSize.newHeight != ctx.prevHeight) {
+			ctx.firstPass=3;
+			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+			if(config.responsive) {
+				resizeCtx(ctx,newSize.newWidth,newSize.newHeight);
+				ctx.prevWidth=newSize.newWidth;
+				ctx.prevHeight=newSize.newHeight;
+			} else {
+				ctx.prevWidth=0;
+				ctx.prevHeight=0;
 			}
+			redrawGraph(ctx,data,config);
+		} else ctx.firstPass=5;
+	} else if(ctx.firstPass==7) {
+		var newSize=resizeGraph(ctx,config);
+		ctx.firstPass=3;
+		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		if(config.responsive) {
+			resizeCtx(ctx,newSize.newWidth,newSize.newHeight);
+			ctx.prevWidth=newSize.newWidth;
+			ctx.prevHeight=newSize.newHeight;
+		} else {
+			ctx.prevWidth=0;
+			ctx.prevHeight=0;
 		}
+		redrawGraph(ctx,data,config);
 	} 
 };
 
@@ -499,7 +589,7 @@ function sleep(ms) {
 	while (new Date().getTime() < dt.getTime()) {};
 };
 
-function saveCanvas(ctx, data, config, tpgraph) {
+function saveCanvas(ctx, data, config) {
 	cvSave = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
 	var saveCanvasConfig = {
 		savePng: false,
@@ -510,7 +600,7 @@ function saveCanvas(ctx, data, config, tpgraph) {
 	var savePngConfig = mergeChartConfig(config, saveCanvasConfig);
 	savePngConfig.clearRect = false;
 	/* And ink them */
-	ctx.tpchart=tpgraph;
+
 	redrawGraph(ctx,data,savePngConfig);
 	if (config.savePngOutput == "NewWindow") {
 		var image = ctx.canvas.toDataURL();
@@ -544,16 +634,8 @@ if (typeof String.prototype.trim !== 'function') {
 var dynamicDisplay = new Array();
 var dynamicDisplayList = new Array();
 
-function dynamicFunction(data, config, ctx, tpgraph) {
-	if (config.responsive)
-	{
-		var newSize=resizeGraph(ctx,config);
-		ctx.canvas.width=newSize.newWidth;
-		ctx.canvas.height=newSize.newHeight;
-		if(typeof ctx.firstPass != "undefined"){
-			if (ctx.firstPass==3) return true;
-		}
-	}
+function dynamicFunction(data, config, ctx) {
+
 	if (config.dynamicDisplay) {
 		if (ctx.canvas.id == "") {
 			var cvdate = new Date();
@@ -562,13 +644,15 @@ function dynamicFunction(data, config, ctx, tpgraph) {
 		}
 		if (typeof(dynamicDisplay[ctx.canvas.id]) == "undefined") {
 			dynamicDisplayList[dynamicDisplayList["length"]] = ctx.canvas.id;
-			dynamicDisplay[ctx.canvas.id] = [ctx, false, false, data, config, ctx.canvas, tpgraph];
+			dynamicDisplay[ctx.canvas.id] = [ctx, false, false, data, config, ctx.canvas];
 			dynamicDisplay[ctx.canvas.id][1] = isScrolledIntoView(ctx.canvas);
 			window.onscroll = scrollFunction;
+		} else if (dynamicDisplay[ctx.canvas.id][2] == false) {
+			dynamicDisplay[ctx.canvas.id][1] = isScrolledIntoView(ctx.canvas);
 		}
-		if (dynamicDisplay[ctx.canvas.id][1] == false || dynamicDisplay[ctx.canvas.id][2] == true) {
+//		if (dynamicDisplay[ctx.canvas.id][1] == false || dynamicDisplay[ctx.canvas.id][2] == true) {
+		if (dynamicDisplay[ctx.canvas.id][1] == false && dynamicDisplay[ctx.canvas.id][2] == false) {
 			return false;
-			
 		}
 		dynamicDisplay[ctx.canvas.id][2] = true;
 	}
@@ -596,7 +680,6 @@ function scrollFunction() {
 	for (var i = 0; i < dynamicDisplayList["length"]; i++) {
 		if (isScrolledIntoView(dynamicDisplay[dynamicDisplayList[i]][5]) && dynamicDisplay[dynamicDisplayList[i]][2] == false) {
 			dynamicDisplay[dynamicDisplayList[i]][1] = true;
-			dynamicDisplay[dynamicDisplayList[i]][0].tpchart=dynamicDisplay[dynamicDisplayList[i]][6];
 			redrawGraph(dynamicDisplay[dynamicDisplayList[i]][0],dynamicDisplay[dynamicDisplayList[i]][3], dynamicDisplay[dynamicDisplayList[i]][4]);
 		}
 	}
@@ -617,6 +700,7 @@ function getMousePos(canvas, evt) {
 };
 
 function doMouseAction(config, ctx, event, data, action, funct) {
+
 	var onData = false;
 	if (action == "annotate") {
 		var annotateDIV = document.getElementById('divCursor');
@@ -1707,32 +1791,33 @@ window.Chart = function(context) {
 		c.clearRect(0, 0, width, height);
 	};
 
-	function setting_new_chart_vars(ctx, type_str) {
+	function setting_new_chart_vars(ctx) {
+	
 		if (typeof ctx.ChartNewId === typeof undefined) {
+			ctx.runanimationcompletefunction=true;
 			var cvdate = new Date();
 			var cvmillsec = cvdate.getTime();
-			ctx.ChartNewId = type_str + '_' + cvmillsec;
+			ctx.ChartNewId = ctx.tpchart + '_' + cvmillsec;
 			ctx._eventListeners = {};
 		}
 	}
 
 	var PolarArea = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
-		setting_new_chart_vars(ctx, "PolarArea");
 
-        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph ) {
-        		addResponsiveChart(ctx.ChartNewId,"PolarArea",ctx,data,config);
-        		updateChart(ctx,data,config);
-        		return;
+		ctx.tpchart="PolarArea";
+		setting_new_chart_vars(ctx);
+		if (!dynamicFunction(data, config, ctx)) { 
+	        	if(config.responsive && typeof ctx.firstPass == "undefined") { if(!config.multiGraph) { addResponsiveChart(ctx.ChartNewId,ctx,data,config); } }
+			return; 
+		}
+        	if(config.responsive && typeof ctx.firstPass == "undefined") {
+        		if(!config.multiGraph) {
+				addResponsiveChart(ctx.ChartNewId,ctx,data,config);
+        			subUpdateChart(ctx,data,config);
+        			return;
+        		} else { ctx.firstPass=1; }
 		} 
-
-		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "PolarArea")) return;
-		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
-			ctx.firstPass=-1;
-			ctx.alreadydone=true;
-			updateChart(ctx,data,config);
-			return;
-		} else if (ctx.firstPass==-1)ctx.firstPass=1;
 
 		var realStartAngle = config.startAngle * (Math.PI / 180) + 2 * Math.PI;
 		while (config.startAngle < 0) {
@@ -1751,7 +1836,7 @@ window.Chart = function(context) {
 		config.logarithmic2 = false;
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
-		defMouse(ctx, data, config, "PolarArea");
+		defMouse(ctx, data, config);
 		setRect(ctx, config);
 		valueBounds = getValueBounds();
 		//Check and set the scale
@@ -1777,9 +1862,7 @@ window.Chart = function(context) {
  		if(scaleHop > 0) {
 			animationLoop(config, drawScale, drawAllSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPosX, midPosY, midPosX - ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), midPosY + ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), data);
 		} else {
-			ctx.inUpdate=false;
-			ctx.prevWidth=ctx.canvas.width;
-			ctx.prevHeight=ctx.canvas.height;
+			testRedraw(ctx,data,config);
 		}
 
 		function drawAllSegments(animationDecimal) {
@@ -1959,19 +2042,20 @@ window.Chart = function(context) {
 	};
 	var Radar = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
-		setting_new_chart_vars(ctx, "Radar");
-        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
-        		addResponsiveChart(ctx.ChartNewId,"Radar",ctx,data,config);
-        		updateChart(ctx,data,config);
-        		return;
+
+		ctx.tpchart="Radar";
+		setting_new_chart_vars(ctx);
+		if (!dynamicFunction(data, config, ctx)) { 
+	        	if(config.responsive && typeof ctx.firstPass == "undefined") { if(!config.multiGraph) { addResponsiveChart(ctx.ChartNewId,ctx,data,config); } }
+			return; 
+		}
+        	if(config.responsive && typeof ctx.firstPass == "undefined") {
+        		if(!config.multiGraph) {
+				addResponsiveChart(ctx.ChartNewId,ctx,data,config);
+        			subUpdateChart(ctx,data,config);
+        			return;
+        		} else { ctx.firstPass=1; }
 		} 
-		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "Radar")) return;
-		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
-			ctx.firstPass=-1;
-			ctx.alreadydone=true;
-			updateChart(ctx,data,config);
-			return;
-		} else if (ctx.firstPass==-1)ctx.firstPass=1;
 
 		while (config.startAngle < 0) {
 			config.startAngle += 360;
@@ -1983,7 +2067,7 @@ window.Chart = function(context) {
 		config.logarithmic2 = false;
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
-		defMouse(ctx, data, config, "Radar");
+		defMouse(ctx, data, config);
 		//If no labels are defined set to an empty array, so referencing length for looping doesn't blow up.
 		if (!data.labels) data.labels = [];
 		setRect(ctx, config);
@@ -2004,6 +2088,8 @@ window.Chart = function(context) {
 			populateLabels(1, config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, config.scaleStartValue, calculatedScale.graphMax, config.scaleStepWidth);
 			msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, false, true, config.datasetFill, "Radar");
 		}
+
+
 		calculateDrawingSizes();
 		midPosY = msr.topNotUsableSize + (msr.availableHeight / 2);
 		scaleHop = maxSize / (calculatedScale.steps);
@@ -2322,21 +2408,20 @@ window.Chart = function(context) {
 
 		var segmentTotal = 0;
 		var msr, midPieX, midPieY, pieRadius;
-		setting_new_chart_vars(ctx, "Pie");
 
-        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
-        		addResponsiveChart(ctx.ChartNewId,"Pie",ctx,data,config);
-        		updateChart(ctx,data,config);
-        		return;
+		ctx.tpchart="Pie";
+		setting_new_chart_vars(ctx);
+		if (!dynamicFunction(data, config, ctx)) { 
+	        	if(config.responsive && typeof ctx.firstPass == "undefined") { if(!config.multiGraph) { addResponsiveChart(ctx.ChartNewId,ctx,data,config); } }
+			return; 
+		}
+        	if(config.responsive && typeof ctx.firstPass == "undefined") {
+        		if(!config.multiGraph) {
+				addResponsiveChart(ctx.ChartNewId,ctx,data,config);
+        			subUpdateChart(ctx,data,config);
+        			return;
+        		} else { ctx.firstPass=1; }
 		} 
-		
-		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "Pie")) return;
-		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
-			ctx.firstPass=-1;
-			ctx.alreadydone=true;
-			updateChart(ctx,data,config);
-			return;
-		} else if (ctx.firstPass==-1)ctx.firstPass=1;
 
 		while (config.startAngle < 0) {
 			config.startAngle += 360;
@@ -2348,7 +2433,7 @@ window.Chart = function(context) {
 		config.logarithmic2 = false;
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
-		defMouse(ctx, data, config, "Pie");
+		defMouse(ctx, data, config);
 		//In case we have a canvas that is not a square. Minus 5 pixels as padding round the edge.
 		setRect(ctx, config);
 		msr = setMeasures(data, config, ctx, height, width, "none", null, true, false, false, false, true, "Pie");
@@ -2362,9 +2447,7 @@ window.Chart = function(context) {
 		if(pieRadius > 0) {
 			animationLoop(config, null, drawPieSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPieX, midPieY, midPieX - pieRadius, midPieY + pieRadius, data);
 		} else {
-			ctx.inUpdate=false;
-			ctx.prevWidth=ctx.canvas.width;
-			ctx.prevHeight=ctx.canvas.height;
+			testRedraw(ctx,data,config);
 		}
 		function drawPieSegments(animationDecimal) {
 			var cumulativeAngle = -config.startAngle * (Math.PI / 180) + 2 * Math.PI,
@@ -2557,21 +2640,20 @@ window.Chart = function(context) {
 	var Doughnut = function(data, config, ctx) {
 		var segmentTotal = 0;
 		var msr, midPieX, midPieY, doughnutRadius;
-		setting_new_chart_vars(ctx, "Doughnut");
 
-        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
-        		addResponsiveChart(ctx.ChartNewId,"Doughnut",ctx,data,config);
-        		updateChart(ctx,data,config);
-        		return;
+		ctx.tpchart="Doughnut";
+		setting_new_chart_vars(ctx);
+		if (!dynamicFunction(data, config, ctx)) { 
+	        	if(config.responsive && typeof ctx.firstPass == "undefined") { if(!config.multiGraph) { addResponsiveChart(ctx.ChartNewId,ctx,data,config); } }
+			return; 
+		}
+        	if(config.responsive && typeof ctx.firstPass == "undefined") {
+        		if(!config.multiGraph) {
+				addResponsiveChart(ctx.ChartNewId,ctx,data,config);
+        			subUpdateChart(ctx,data,config);
+        			return;
+        		} else { ctx.firstPass=1; }
 		} 
-
-		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "Doughnut")) return;
-		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
-			ctx.firstPass=-1;
-			ctx.alreadydone=true;
-			updateChart(ctx,data,config);
-			return;
-		} else if (ctx.firstPass==-1)ctx.firstPass=1;
 
 		var realCumulativeAngle = config.startAngle * (Math.PI / 180) + 2 * Math.PI;
 		while (config.startAngle < 0) {
@@ -2590,7 +2672,7 @@ window.Chart = function(context) {
 		config.logarithmic2 = false;
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
-		defMouse(ctx, data, config, "Doughnut");
+		defMouse(ctx, data, config);
 		setRect(ctx, config);
 		msr = setMeasures(data, config, ctx, height, width, "none", null, true, false, false, false, true, "Doughnut");
 		calculateDrawingSize();
@@ -2601,9 +2683,7 @@ window.Chart = function(context) {
 		if(doughnutRadius > 0) {
 			animationLoop(config, null, drawPieSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPieX, midPieY, midPieX - doughnutRadius, midPieY + doughnutRadius, data);
 		} else {
-			ctx.inUpdate=false;
-			ctx.prevWidth=ctx.canvas.width;
-			ctx.prevHeight=ctx.canvas.height;
+			testRedraw(ctx,data,config);
 		}
 
 
@@ -2793,11 +2873,18 @@ window.Chart = function(context) {
 		var zeroY = 0;
 		var zeroY2 = 0;
 		var offsets = [];
-		setting_new_chart_vars(ctx, "Line");
-        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
-        		addResponsiveChart(ctx.ChartNewId,"Line",ctx,data,config);
-        		updateChart(ctx,data,config);
-        		return;
+		ctx.tpchart="Line";
+		setting_new_chart_vars(ctx);
+		if (!dynamicFunction(data, config, ctx)) { 
+	        	if(config.responsive && typeof ctx.firstPass == "undefined") { if(!config.multiGraph) { addResponsiveChart(ctx.ChartNewId,ctx,data,config); } }
+			return; 
+		}
+        	if(config.responsive && typeof ctx.firstPass == "undefined") {
+        		if(!config.multiGraph) {
+				addResponsiveChart(ctx.ChartNewId,ctx,data,config);
+        			subUpdateChart(ctx,data,config);
+        			return;
+        		} else { ctx.firstPass=1; }
 		} 
 
 		// adapt data when length is 1;
@@ -2809,17 +2896,10 @@ window.Chart = function(context) {
 				if (typeof(data.datasets[i].data[0] != "undefined")) data.datasets[i].data = [undefined, data.datasets[i].data[0], undefined];
 			}
 		}
-		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "Line")) return;
-		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
-			ctx.firstPass=-1;
-			ctx.alreadydone=true;
-			updateChart(ctx,data,config);
-			return;
-		} else if (ctx.firstPass==-1)ctx.firstPass=1;
 
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
-		defMouse(ctx, data, config, "Line");
+		defMouse(ctx, data, config);
 		setRect(ctx, config);
 		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], false, false, true, true, config.datasetFill, "Line");
 		valueBounds = getValueBounds();
@@ -2921,9 +3001,7 @@ window.Chart = function(context) {
 			}
 			animationLoop(config, drawScale, drawLines, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
 		} else {
-			ctx.inUpdate=false;
-			ctx.prevWidth=ctx.canvas.width;
-			ctx.prevHeight=ctx.canvas.height;
+			testRedraw(ctx,data,config);
 		}
 
 
@@ -3158,24 +3236,24 @@ window.Chart = function(context) {
 	var StackedBar = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
-		setting_new_chart_vars(ctx, "StackedBar");
-        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
-        		addResponsiveChart(ctx.ChartNewId,"StackedBar",ctx,data,config);
-        		updateChart(ctx,data,config);
-        		return;
+		ctx.tpchart="StackedBar";
+		setting_new_chart_vars(ctx);
+		if (!dynamicFunction(data, config, ctx)) { 
+	        	if(config.responsive && typeof ctx.firstPass == "undefined") { if(!config.multiGraph) { addResponsiveChart(ctx.ChartNewId,ctx,data,config); } }
+			return; 
+		}
+        	if(config.responsive && typeof ctx.firstPass == "undefined") {
+        		if(!config.multiGraph) {
+				addResponsiveChart(ctx.ChartNewId,ctx,data,config);
+        			subUpdateChart(ctx,data,config);
+        			return;
+        		} else { ctx.firstPass=1; }
 		} 
-		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "StackedBar")) return;
-		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
-			ctx.firstPass=-1;
-			ctx.alreadydone=true;
-			updateChart(ctx,data,config);
-			return;
-		} else if (ctx.firstPass==-1)ctx.firstPass=1;
 
 		config.logarithmic = false;
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
-		defMouse(ctx, data, config, "StackedBar");
+		defMouse(ctx, data, config);
 		setRect(ctx, config);
 		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], true, false, true, true, true, "StackedBar");
 		valueBounds = getValueBounds();
@@ -3225,9 +3303,7 @@ window.Chart = function(context) {
 			drawLabels();
 			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
 		} else {
-			ctx.inUpdate=false;
-			ctx.prevWidth=ctx.canvas.width;
-			ctx.prevHeight=ctx.canvas.height;
+			testRedraw(ctx,data,config);
 		}
 		function drawBars(animPc) {
 			ctx.lineWidth = config.barStrokeWidth;
@@ -3595,29 +3671,32 @@ window.Chart = function(context) {
 	var HorizontalStackedBar = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
-		if (config.reverseOrder) {
+
+		ctx.tpchart="HorizontalStackedBar";
+		setting_new_chart_vars(ctx);
+
+		if (!dynamicFunction(data, config, ctx)) { 
+	        	if(config.responsive && typeof ctx.firstPass == "undefined") { if(!config.multiGraph) { addResponsiveChart(ctx.ChartNewId,ctx,data,config); } }
+			return; 
+		}
+        	if(config.responsive && typeof ctx.firstPass == "undefined") {
+        		if(!config.multiGraph) {
+				addResponsiveChart(ctx.ChartNewId,ctx,data,config);
+        			subUpdateChart(ctx,data,config);
+        			return;
+        		} else { ctx.firstPass=1; }
+		} 
+
+		if (config.reverseOrder && typeof ctx.reversed == "undefined") {
+			ctx.reversed=true;
 			data = reverseData(data);
 		}
 
-		setting_new_chart_vars(ctx, "HorizontalStackedBar");
-        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
-        		addResponsiveChart(ctx.ChartNewId,"HorizontalStackedBar",ctx,data,config);
-        		updateChart(ctx,data,config);
-        		return;
-		} 
-
-		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "HorizontalStackedBar")) return;
-		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
-			ctx.firstPass=-1;
-			ctx.alreadydone=true;
-			updateChart(ctx,data,config);
-			return;
-		} else if (ctx.firstPass==-1)ctx.firstPass=1;
 
 		config.logarithmic = false;
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
-		defMouse(ctx, data, config, "HorizontalStackedBar");
+		defMouse(ctx, data, config);
 		setRect(ctx, config);
 		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], true, true, true, true, true, "HorizontalStackedBar");
  		valueBounds = getValueBounds();
@@ -3660,9 +3739,7 @@ window.Chart = function(context) {
 			drawLabels();
 			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
 		} else {
-			ctx.inUpdate=false;
-			ctx.prevWidth=ctx.canvas.width;
-			ctx.prevHeight=ctx.canvas.height;
+			testRedraw(ctx,data,config);
 		}
 		function HorizontalCalculateOffset(val, calculatedScale, scaleHop) {
 			var outerValue = calculatedScale.steps * calculatedScale.stepValue;
@@ -4021,11 +4098,20 @@ window.Chart = function(context) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
 		var offsets = [];
-		setting_new_chart_vars(ctx, "Bar");
-        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
-        		addResponsiveChart(ctx.ChartNewId,"Bar",ctx,data,config);
-        		updateChart(ctx,data,config);
-        		return;
+		
+		ctx.tpchart="Bar";
+		setting_new_chart_vars(ctx);
+
+		if (!dynamicFunction(data, config, ctx)) { 
+	        	if(config.responsive && typeof ctx.firstPass == "undefined") { if(!config.multiGraph) { addResponsiveChart(ctx.ChartNewId,ctx,data,config); } }
+			return; 
+		}
+        	if(config.responsive && typeof ctx.firstPass == "undefined") {
+        		if(!config.multiGraph) {
+				addResponsiveChart(ctx.ChartNewId,ctx,data,config);
+        			subUpdateChart(ctx,data,config);
+        			return;
+        		} else { ctx.firstPass=1; }
 		} 
 
 		// for BarLineCharts
@@ -4054,17 +4140,10 @@ window.Chart = function(context) {
 			}
 		}
 		nrOfBars -= nrOfLines;
-		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "Bar")) return;
-		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
-			ctx.firstPass=-1;
-			ctx.alreadydone=true;
-			updateChart(ctx,data,config);
-			return;
-		} else if (ctx.firstPass==-1)ctx.firstPass=1;
 
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
-		defMouse(ctx, data, config, "Bar");
+		defMouse(ctx, data, config);
 		setRect(ctx, config);
 		
 		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], true, false, true, true, true, "Bar");
@@ -4133,9 +4212,7 @@ window.Chart = function(context) {
 			drawLabels();
 			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
 		} else {
-			ctx.inUpdate=false;
-			ctx.prevWidth=ctx.canvas.width;
-			ctx.prevHeight=ctx.canvas.height;
+			testRedraw(ctx,data,config);
 		}
 		function drawBars(animPc) {
 			var t1, t2, t3;
@@ -4463,28 +4540,30 @@ window.Chart = function(context) {
 	var HorizontalBar = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
-		if (config.reverseOrder) {
-			data = reverseData(data);
+		ctx.tpchart="HorizontalBar";
+		setting_new_chart_vars(ctx);
+
+		if (!dynamicFunction(data, config, ctx)) { 
+	        	if(config.responsive && typeof ctx.firstPass == "undefined") { if(!config.multiGraph) { addResponsiveChart(ctx.ChartNewId,ctx,data,config); } }
+			return; 
 		}
-		setting_new_chart_vars(ctx, "HorizontalBar");
-        	if(config.responsive && typeof ctx.prevWidth == "undefined" && !config.multiGraph) {
-        		addResponsiveChart(ctx.ChartNewId,"HorizontalBar",ctx,data,config);
-        		updateChart(ctx,data,config);
-        		return;
+        	if(config.responsive && typeof ctx.firstPass == "undefined") {
+        		if(!config.multiGraph) {
+				addResponsiveChart(ctx.ChartNewId,ctx,data,config);
+        			subUpdateChart(ctx,data,config);
+        			return;
+        		} else { ctx.firstPass=1; }
 		} 
 
-		if (typeof ctx.alreadydone =="undefined" && !dynamicFunction(data, config, ctx, "HorizontalBar")) return;
-		else if(config.responsive && config.dynamicDisplay && typeof ctx.alreadydone == "undefined") {
-			ctx.firstPass=-1;
-			ctx.alreadydone=true;
-			updateChart(ctx,data,config);
-			return;
-		} else if (ctx.firstPass==-1)ctx.firstPass=1;
+		if (config.reverseOrder && typeof ctx.reversed == "undefined") {
+			ctx.reversed=true;
+			data = reverseData(data);
+		}
 
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
 
-		defMouse(ctx, data, config, "HorizontalBar");
+		defMouse(ctx, data, config);
 		setRect(ctx, config);
 		
 		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], true, true, true, true, true, "StackedBar");
@@ -4527,9 +4606,7 @@ window.Chart = function(context) {
 			drawLabels();
 			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
 		} else {
-			ctx.inUpdate=false;
-			ctx.prevWidth=ctx.canvas.width;
-			ctx.prevHeight=ctx.canvas.height;
+			testRedraw(ctx,data,config);
 		}
 
 		function drawBars(animPc) {
@@ -4837,7 +4914,7 @@ window.Chart = function(context) {
 
 		function animateFrame() {
 			var easeAdjustedAnimationPercent = (config.animation) ? CapValue(easingFunction(percentAnimComplete), null, 0) : 1;
-			if (1 * cntiter >= 1 * CapValue(config.animationSteps, Number.MAX_VALUE, 1) || config.animation == false) easeAdjustedAnimationPercent = 1;
+			if (1 * cntiter >= 1 * CapValue(config.animationSteps, Number.MAX_VALUE, 1) || config.animation == false || ctx.firstPass==3 || ctx.firstPass==4 || ctx.firstPass==8 || ctx.firstPass==9) easeAdjustedAnimationPercent = 1;
 			else if (easeAdjustedAnimationPercent >= 1) easeAdjustedAnimationPercent = 0.9999;
 			if (config.animation && !(isIE() < 9 && isIE() != false) && config.clearRect) ctx.clearRect(clrx, clry, clrwidth, clrheight);
 			dispCrossImage(ctx, config, midPosX, midPosY, borderX, borderY, false, data, easeAdjustedAnimationPercent, cntiter);
@@ -4857,49 +4934,18 @@ window.Chart = function(context) {
 			//We need to check if the animation is incomplete (less than 1), or complete (1).
 			cntiter += multAnim;
 			percentAnimComplete += multAnim * animFrameAmount;
-			if (cntiter == config.animationSteps || config.animation == false || ctx.inUpdate==true) percentAnimComplete = 1;
+			if (cntiter == config.animationSteps || config.animation == false || ctx.firstPass==3 || ctx.firstPass==4 || ctx.firstPass==8 || ctx.firstPass==9) percentAnimComplete = 1;
 			else if (percentAnimComplete >= 1) percentAnimComplete = 0.999;
 			animateFrame();
 			//Stop the loop continuing forever
 			if (multAnim == -1 && cntiter <= beginAnim) {
-				if (typeof config.onAnimationComplete == "function") config.onAnimationComplete(ctx, config, data, 0, animationCount + 1);
-				if(ctx.inUpdate==true) {
-					ctx.inUpdate=false;
-					ctx.prevWidth=ctx.canvas.width;
-					ctx.prevHeight=ctx.canvas.height;
-					updateChart(ctx,data,config);										
-				} else {
-					if(ctx.firstPass==2) {
-						ctx.firstPass=3;
-//						ctx.prevWidth=ctx.canvas.width;
-//						ctx.prevHeight=ctx.canvas.height;
-						updateChart(ctx,data,config);										
-					} else {
-						ctx.firstPass=3;
-					}
-				}
+				if (typeof config.onAnimationComplete == "function" && ctx.runanimationcompletefunction==true) config.onAnimationComplete(ctx, config, data, 0, animationCount + 1);
 				multAnim = 1;
 				requestAnimFrame(animLoop);
 			} else if (percentAnimComplete < config.animationStopValue) {
 				requestAnimFrame(animLoop);
 			} else {
-
-				if (typeof config.onAnimationComplete == "function") config.onAnimationComplete(ctx, config, data, 1, animationCount + 1);
-				// stop animation ? 
-				if(ctx.inUpdate==true) {
-					ctx.inUpdate=false;
-					ctx.prevWidth=ctx.canvas.width;
-					ctx.prevHeight=ctx.canvas.height;
-					updateChart(ctx,data,config);										
-				} else {
-					if(ctx.firstPass==2) {
-						ctx.firstPass=3;
-						updateChart(ctx,data,config);										
-					} else {
-						ctx.firstPass=3;
-					}
-				}
-				if (animationCount < config.animationCount || config.animationCount == 0) {
+				if ((animationCount < config.animationCount || config.animationCount == 0) && (ctx.firstPass ==1 || ctx.firstPass!=2)) {
 					animationCount++;
 					if (config.animationBackward && multAnim == 1) {
 						percentAnimComplete -= animFrameAmount;
@@ -4909,8 +4955,16 @@ window.Chart = function(context) {
 						cntiter = beginAnim - 1;
 						percentAnimComplete = beginAnimPct - animFrameAmount;
 					}
-					window.setTimeout(animLoop, 2000);
+					window.setTimeout(animLoop, config.animationPauseTime*1000);
+				} else {
+					if(!testRedraw(ctx,data,config) ) {
+						if (typeof config.onAnimationComplete == "function" && ctx.runanimationcompletefunction==true) {
+							config.onAnimationComplete(ctx, config, data, 1, animationCount + 1);
+							ctx.runanimationcompletefunction=false;
+						}
+					}
 				}
+				
 			}
 		};
 	};
@@ -5424,6 +5478,10 @@ window.Chart = function(context) {
 		var xLabelPos = 0;
 		var legendBorderWidth = 0;
 		var legendBorderHeight = 0;
+		
+		ctx.widthAtSetMeasures=width;
+		ctx.heightAtSetMeasures=height;
+		
 		// Borders
 		if (config.canvasBorders) borderWidth = config.canvasBordersWidth;
 		// compute widest X label
@@ -6186,6 +6244,7 @@ window.Chart = function(context) {
 		} else {
 			clear(ctx);
 			ctx.clearRect(0, 0, width, height);
+	
 			ctx.fillStyle = config.savePngBackgroundColor;
 			ctx.strokeStyle = config.savePngBackgroundColor;
 			ctx.beginPath();
@@ -6199,7 +6258,7 @@ window.Chart = function(context) {
 		}
 	};
 
-	function defMouse(ctx, data, config, tpgraph) {
+	function defMouse(ctx, data, config) {
 		if (config.annotateDisplay == true) {
 			if (cursorDivCreated == false) oCursor = new makeCursorObj('divCursor');
 			if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("on" + config.annotateFunction.split(' ')[0], function(event) {
@@ -6220,13 +6279,13 @@ window.Chart = function(context) {
 				if ((config.savePngFunction.split(' ')[1] == "left" && event.which == 1) ||
 					(config.savePngFunction.split(' ')[1] == "middle" && event.which == 2) ||
 					(config.savePngFunction.split(' ')[1] == "right" && event.which == 3) ||
-					(typeof(config.savePngFunction.split(' ')[1]) != "string")) saveCanvas(ctx, data, config, tpgraph);
+					(typeof(config.savePngFunction.split(' ')[1]) != "string")) saveCanvas(ctx, data, config);
 			});
 			else ctx.canvas.addEventListener(config.savePngFunction.split(' ')[0], function(event) {
 				if ((config.savePngFunction.split(' ')[1] == "left" && event.which == 1) ||
 					(config.savePngFunction.split(' ')[1] == "middle" && event.which == 2) ||
 					(config.savePngFunction.split(' ')[1] == "right" && event.which == 3) ||
-					(typeof(config.savePngFunction.split(' ')[1]) != "string")) saveCanvas(ctx, data, config, tpgraph);
+					(typeof(config.savePngFunction.split(' ')[1]) != "string")) saveCanvas(ctx, data, config);
 			}, false);
 		}
 
@@ -6276,7 +6335,6 @@ window.Chart = function(context) {
 };
 
 function animationCorrection(animationValue, data, config, vdata, vsubdata, addone) {
-	//window.alert((config.animationStartWithDataset-1) +" "+ vdata)
 	var animValue = animationValue;
 	var animSubValue = 0;
 	if (vsubdata != -1) {
