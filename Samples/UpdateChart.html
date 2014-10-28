@@ -1,0 +1,147 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/format.js'></script>
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=600;
+defCanvasHeight=300;
+
+
+
+
+
+var mydata = {
+	labels : [],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointstrokeColor : "yellow",
+			xPos : [],
+			data : [],
+      			title : "2014"
+		}
+	]
+}               
+
+var startWithDataset =1;
+var startWithData =1;
+
+var opt = {
+      animationStartWithDataset : startWithDataset,
+      animationStartWithData : startWithData,
+//      animation : true,
+      animationLeftToRight : true,
+      animationSteps : 20,
+      animationEasing: "linear",
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "animation With Update",
+      legend : true,
+//      inGraphDataShow : true,
+      annotateDisplay : true,
+      onAnimationComplete : startUpdate,
+      graphTitleFontSize: 18, 
+	responsive : true,
+	scaleOverride: true,
+	scaleSteps: 10,
+	scaleStepWidth: 10,
+	scaleStartValue: 0,
+	fmtXLabel : "fmttime hh:mm:ss",
+	animationCount: 1,
+	animationPauseTime : 0,
+	animationBackward: true
+	
+
+};
+
+
+function startUpdate(ctx, config, data, tp, count) {
+console.log("onAnimationComplete Function executed");
+};
+
+
+function updt(ctx,data,config) {
+	updtData(data);
+        config.animationSteps = 50*data.datasets[0].xPos.length;
+	config.animationStartValue=1-(1/data.datasets[0].xPos.length);
+	updateChart(ctx,data,config,true,true);
+	setTimeout(function (){updt(ctx,data,config);}, 1000+Math.random()*2000);
+}
+
+function updtData(data) {
+	var i;
+
+	var t=new Date();
+
+	var coeff = 1000 ;
+	var rounded = new Date(Math.round(t.getTime() / coeff) * coeff + coeff);
+
+	for(i=0;i<10;i++)
+	{
+		var t2 = new Date(rounded - (18-2*i) * 1000);
+		data.labels[i]=t2;
+	} 
+	
+	data.xBegin=data.labels[0];
+	data.xEnd=data.labels[9];
+
+	
+	data.datasets[0].xPos[data.datasets[0].xPos.length]=t;
+	vl=Math.random()*100;
+	data.datasets[0].data[data.datasets[0].data.length]=vl;
+
+
+	
+	// remove data outside first time;
+	while(data.datasets[0].xPos[0]<data.labels[0]) {
+		data.datasets[0].xPos.splice(0,1);
+		data.datasets[0].data.splice(0,1);
+	}
+
+
+}
+
+updtData(mydata);
+updtData(mydata);
+updtData(mydata);
+mydata.datasets[0].xPos[0]=new Date(mydata.datasets[0].xPos[0]-2000);
+mydata.datasets[0].xPos[1]=new Date(mydata.datasets[0].xPos[1]-1000);
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+	var myLine = new Chart(document.getElementById("canvas_Line").getContext("2d")).Line(mydata,opt);
+	setTimeout(function (){updt(document.getElementById("canvas_Line").getContext("2d"),mydata,opt);}, 2000+Math.random()*2000);
+
+ }
+    </script>
+  </body>
+</html>
