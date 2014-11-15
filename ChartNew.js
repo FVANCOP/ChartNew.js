@@ -637,6 +637,8 @@ var dynamicDisplayList = new Array();
 
 function dynamicFunction(data, config, ctx) {
 
+	if (isIE() < 9 && isIE() != false) return(true);
+
 	if (config.dynamicDisplay) {
 		if (ctx.canvas.id == "") {
 			var cvdate = new Date();
