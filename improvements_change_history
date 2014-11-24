@@ -1,6 +1,8 @@
 Change history
 --------------
 
+24/11/2014 - Vancoppenolle Francois - Fix issue 185 (Bug reported by Omerbonfil)
+15/11/2014 - Joe343                 - Fix Typo Issue 184
 28/10/2014 - Vancoppenolle Francois - responsive options is available 
 				    - function updateChart can be used to update a graph
 06/10/2014 - Vancoppenolle Francois - new options to set the legend whereever you want
