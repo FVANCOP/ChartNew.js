@@ -3367,7 +3367,7 @@ window.Chart = function(context) {
 							}
 						}
 						ctx.strokeStyle = config.defaultStrokeColor;
-						if (typeof data.datasets[i].strokeColor == "function") ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "StackedBar", ctx, barOffset, botBar, barOffset + barwidth, topBar);
+						if (typeof data.datasets[i].strokeColor == "function") ctx.strokeStyle = data.datasets[i].strokeColor("STROKECOLOR", data, config, i, j, currentAnimPc, 1 * data.datasets[i].data[j], "StackedBar", ctx, barOffset, botBar, barOffset + barWidth, topBar);
 						else if (typeof(data.datasets[i].strokeColor) == "string") {
 							ctx.strokeStyle = data.datasets[i].strokeColor;
 						} else if (typeof(data.datasets[i].strokeColor) == "object") {
