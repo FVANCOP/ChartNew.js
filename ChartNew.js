@@ -3334,7 +3334,7 @@ window.Chart = function(context) {
 				for (var j = 0; j < data.datasets[i].data.length; j++) {
 					var currentAnimPc = animationCorrection(animPc, data, config, i, j, 1).animVal;
 					if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
-					if (i == 0) {
+					if (typeof tempp[j]=="undefined") {
 						tempp[j]=0;
 						tempn[j]=0;
 						zeroY=  calculateOffset(config.logarithmic, 0 , calculatedScale, scaleHop);
@@ -3405,6 +3405,10 @@ window.Chart = function(context) {
 					}
 				}
 			}
+
+			var tempp = new Array(data.datasets.length);
+			var tempn = new Array(data.datasets.length);
+
 			if (animPc >= 1 && config.inGraphDataShow) {
 				var yPos = 0,
 					xPos = 0;
@@ -3417,7 +3421,7 @@ window.Chart = function(context) {
 					if (typeof(data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
 					else lgtxt = "";
 					for (var j = 0; j < data.datasets[i].data.length; j++) {
-						if (i == 0) {
+						if (typeof tempp[j]=="undefined") {
 							tempp[j]=0;
 							tempn[j]=0;
 							zeroY=  calculateOffset(config.logarithmic, 0 , calculatedScale, scaleHop);
@@ -3777,7 +3781,7 @@ window.Chart = function(context) {
 				for (var j = 0; j < data.datasets[i].data.length; j++) {
 					var currentAnimPc = animationCorrection(animPc, data, config, i, j, 1).animVal;
 					if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
-					if (i == 0) {
+					if (typeof tempp[j] == "undefined") {
 						tempp[j]=0;
 						tempn[j]=0;
 						zeroY=  HorizontalCalculateOffset(0 , calculatedScale, scaleHop);
@@ -3848,6 +3852,10 @@ window.Chart = function(context) {
 				}
 			}
 			if (animPc >= 1 && config.inGraphDataShow) {
+
+				var tempp = new Array(data.datasets.length);
+				var tempn = new Array(data.datasets.length);
+
 				var yPos = 0,
 					xPos = 0;
 				for (var i = 0; i < data.datasets.length; i++) {
@@ -3859,7 +3867,7 @@ window.Chart = function(context) {
 					if (typeof(data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
 					else lgtxt = "";
 					for (var j = 0; j < data.datasets[i].data.length; j++) {
-						if (i == 0) {
+						if (typeof tempp[j] == "undefined") {
 							tempp[j]=0;
 							tempn[j]=0;
 							zeroY=  HorizontalCalculateOffset(0 , calculatedScale, scaleHop);
