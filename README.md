@@ -15,7 +15,7 @@ June 2014 - [Ole Kröger](http://github.com/Wikunia) is now a co-developper of t
 
 
 
-New Charts integrated in this version compared to Graph.js
+New Charts integrated in this version compared to Chart.js
 
 * HorizontalBar
 * HorizontalStackedBar
@@ -23,7 +23,7 @@ New Charts integrated in this version compared to Graph.js
 * [BarLine (bar chart with an integrated line chart)](../../wiki/070_020_Bar#barline)
 	
 
-New Items in graph compared to Graph.js :
+New Items in graph compared to Chart.js :
 
 * Title
 * Subtitle
