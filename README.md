@@ -7,11 +7,11 @@ Simple HTML5 Charts using the canvas element
 
 
 
-For my personnal use, I had to integrate lot of changes into Chart.js (https://github.com/nnnick/Chart.js). 
+For my personal use, I had to integrate lot of changes into Chart.js (https://github.com/nnnick/Chart.js). 
 
-So, I have re-worked Chart.js. Most of the changes, are associated to requests in "GitHub" issues of Chart.js.
+So, I have re-worked Chart.js. Most of the changes are associated to requests in "GitHub" issues of Chart.js.
 
-June 2014 - [Ole Kröger](http://github.com/Wikunia) is now a co-developper of the project. More ideas, more people to give support. Welcome to him. 
+June 2014 - [Ole Kröger](http://github.com/Wikunia) is now a co-developer of the project. More ideas, more people to give support. Welcome to him. 
 
 
 
@@ -47,7 +47,7 @@ A quick sample can be found on http://fvancop.github.io/ChartNew.js/
 
 This version is down-compatible (on PC) with the version of Chart.js available on 13 January 2014.
 
-Hope it will be usefull for some of you ! Perhaps a start for a new community developpement... Why not ?
+Hope it will be useful for some of you ! Perhaps a start for a new community development... Why not ?
 
 # Documentation
 
@@ -59,7 +59,7 @@ Full documentation is now available via the "wiki" entry that you will find on t
 
 # Graph Generator
 
-Using ChartNew.js, Omar Sedki has developped a graph generator. Though a user friendly interface, you can produce a graph and save it.
+Using ChartNew.js, Omar Sedki has developed a graph generator. Though a user friendly interface, you can produce a graph and save it.
 
 
 [http://charts.livegap.com/](http://charts.livegap.com/)
