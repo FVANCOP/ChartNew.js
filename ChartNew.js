@@ -3558,11 +3558,11 @@ window.Chart = function(context) {
 					for (var i = 0; i < data.labels.length; i++) {
 						ctx.save();
 						if (msr.rotateLabels > 0) {
-							ctx.translate(yAxisPosX + i * valueHop + (barWidth / 2) - msr.highestXLabel / 2, msr.xLabelPos);
+							ctx.translate(yAxisPosX + config.barValueSpacing + i * valueHop + (barWidth / 2) - msr.highestXLabel / 2, msr.xLabelPos);
 							ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
 							ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), 0, 0, ctx.textBaseline, config.scaleFontSize);
 						} else {
-							ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), yAxisPosX + i * valueHop + (barWidth / 2), msr.xLabelPos, ctx.textBaseline, config.scaleFontSize);
+							ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), yAxisPosX + config.barValueSpacing + i * valueHop + (barWidth / 2), msr.xLabelPos, ctx.textBaseline, config.scaleFontSize);
 						}
 						ctx.restore();
 					}
@@ -5958,7 +5958,7 @@ window.Chart = function(context) {
 					   yLegendBorderPos : yLegendBorderPos, legendBorderWidth : legendBorderWidth, legendBorderHeight : legendBorderHeight, 
 					   nbLegendCols: nbLegendCols, xFirstLegendTextPos : xFirstLegendTextPos , yFirstLegendTextPos : yFirstLegendTextPos, 
 					   drawLegendOnData : drawLegendOnData, reverseLegend : reverseLegend, legendBox : legendBox, widestLegend : widestLegend };
-				if(config.legendPosY==0 || config.legendPosY==4) {
+				if(config.legendPosY==0 || config.legendPosY==4 || config.legendPosX==0 || config.legendPosX==4) {
 					drawLegend(legendMsr,data,config,ctx,typegraph);
 					var legendMsr={dispLegend : false};
 				} 
