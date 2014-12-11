@@ -5570,12 +5570,12 @@ window.Chart = function(context) {
 		availableWidth = width - leftNotUsableSize - rightNotUsableSize;
 		// Title
 		if (config.graphTitle.trim() != "") {
-			graphTitleHeight = (config.graphTitleFontSize + config.graphTitleSpaceBefore + config.graphTitleSpaceAfter);
+			graphTitleHeight = (config.graphTitleFontSize * (config.graphTitle.split("\n").length || 1) + config.graphTitleSpaceBefore + config.graphTitleSpaceAfter);
 			graphTitlePosY = borderWidth + config.spaceTop + graphTitleHeight - config.graphTitleSpaceAfter;
 		}
 		// subTitle
 		if (config.graphSubTitle.trim() != "") {
-			graphSubTitleHeight = (config.graphSubTitleFontSize + config.graphSubTitleSpaceBefore + config.graphSubTitleSpaceAfter);
+			graphSubTitleHeight = (config.graphSubTitleFontSize * (config.graphSubTitle.split("\n").length || 1) + config.graphSubTitleSpaceBefore + config.graphSubTitleSpaceAfter);
 			graphSubTitlePosY = borderWidth + config.spaceTop + graphTitleHeight + graphSubTitleHeight - config.graphSubTitleSpaceAfter;
 		}
 		// yAxisUnit
@@ -5861,7 +5861,7 @@ window.Chart = function(context) {
 				ctx.textAlign = "center";
 				ctx.textBaseline = "bottom";
 				ctx.translate(config.spaceLeft + (width - config.spaceLeft - config.spaceRight) / 2, graphTitlePosY);
-				ctx.fillText(config.graphTitle, 0, 0);
+				ctx.fillTextMultiLine(config.graphTitle, 0, 0, ctx.textBaseline, config.graphTitleFontSize);
 				ctx.stroke();
 				ctx.restore();
 			}
@@ -5874,7 +5874,7 @@ window.Chart = function(context) {
 				ctx.textAlign = "center";
 				ctx.textBaseline = "bottom";
 				ctx.translate(config.spaceLeft + (width - config.spaceLeft - config.spaceRight) / 2, graphSubTitlePosY);
-				ctx.fillText(config.graphSubTitle, 0, 0);
+				ctx.fillTextMultiLine(config.graphSubTitle, 0, 0, ctx.textBaseline, config.graphSubTitleFontSize);
 				ctx.stroke();
 				ctx.restore();
 			}
