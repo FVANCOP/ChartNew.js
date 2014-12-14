@@ -1,6 +1,8 @@
 Change history
 --------------
 
+14/12/2014 - omerbonfil             - Fix issue 203 
+11/12/2014 - Matt Luedke            - break lines in title/subtitle
 24/11/2014 - Vancoppenolle Francois - Fix issue 185 (Bug reported by Omerbonfil)
 15/11/2014 - Joe343                 - Fix Typo Issue 184
 28/10/2014 - Vancoppenolle Francois - responsive options is available 
