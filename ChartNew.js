@@ -3475,7 +3475,7 @@ window.Chart = function(context) {
 							if (config.inGraphDataYPosition == 1) {
 								yPos = botBar - config.inGraphDataPaddingY;
 							} else if (config.inGraphDataYPosition == 2) {
-								yPos = topBar - (botbar-topbar)/2 - config.inGraphDataPaddingY;
+								yPos = topBar + (botBar-topBar)/2 - config.inGraphDataPaddingY;
 							} else if (config.inGraphDataYPosition == 3) {
 								yPos = topBar - config.inGraphDataPaddingY;
 							}
