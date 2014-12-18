@@ -267,45 +267,50 @@ function tmplbis(str, data) {
 	// Provide some basic currying to the user
 	return data ? fn(data) : fn;
 };
-/**
- * ctx.prototype
- * fillText option for canvas Multiline Support
- * @param text string \n for newline
- * @param x x position
- * @param y y position
- * @param yLevel = "bottom" => last line has this y-Pos [default], = "middle" => the middle line has this y-Pos)
- * @param lineHeight lineHeight
- */
-CanvasRenderingContext2D.prototype.fillTextMultiLine = function(text, x, y, yLevel, lineHeight) {
-	var lines = ("" + text).split("\n");
-	// if its one line => in the middle 
-	// two lines one above the mid one below etc.	
-	if (yLevel == "middle") {
-		y -= ((lines.length - 1) / 2) * lineHeight;
-	} else if (yLevel == "bottom") { // default
-		y -= (lines.length - 1) * lineHeight;
+
+if (typeof CanvasRenderingContext2D !== 'undefined') {
+
+	/**
+	 * ctx.prototype
+	 * fillText option for canvas Multiline Support
+	 * @param text string \n for newline
+	 * @param x x position
+	 * @param y y position
+	 * @param yLevel = "bottom" => last line has this y-Pos [default], = "middle" => the middle line has this y-Pos)
+	 * @param lineHeight lineHeight
+	 */
+	CanvasRenderingContext2D.prototype.fillTextMultiLine = function(text, x, y, yLevel, lineHeight) {
+		var lines = ("" + text).split("\n");
+		// if its one line => in the middle 
+		// two lines one above the mid one below etc.	
+		if (yLevel == "middle") {
+			y -= ((lines.length - 1) / 2) * lineHeight;
+		} else if (yLevel == "bottom") { // default
+			y -= (lines.length - 1) * lineHeight;
+		}
+		for (var i = 0; i < lines.length; i++) {
+			this.fillText(lines[i], x, y);
+			y += lineHeight;
+		}
 	}
-	for (var i = 0; i < lines.length; i++) {
-		this.fillText(lines[i], x, y);
-		y += lineHeight;
+	CanvasRenderingContext2D.prototype.measureTextMultiLine = function(text, lineHeight) {
+		var textWidth = 0;
+		var lg;
+		var lines = ("" + text).split("\n");
+		var textHeight = lines.length * lineHeight;
+		// if its one line => in the middle 
+		// two lines one above the mid one below etc.	
+		for (var i = 0; i < lines.length; i++) {
+			lg = this.measureText(lines[i]).width;
+			if (lg > textWidth) textWidth = lg;
+		}
+		return {
+			textWidth: textWidth,
+			textHeight: textHeight
+		};
 	}
 }
-CanvasRenderingContext2D.prototype.measureTextMultiLine = function(text, lineHeight) {
-	var textWidth = 0;
-	var lg;
-	var lines = ("" + text).split("\n");
-	var textHeight = lines.length * lineHeight;
-	// if its one line => in the middle 
-	// two lines one above the mid one below etc.	
-	for (var i = 0; i < lines.length; i++) {
-		lg = this.measureText(lines[i]).width;
-		if (lg > textWidth) textWidth = lg;
-	}
-	return {
-		textWidth: textWidth,
-		textHeight: textHeight
-	};
-}
+
 cursorDivCreated = false;
 
 function createCursorDiv() {
