@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+  <meta name="generator" content="PSPad editor, www.pspad.com">
+  <title></title>
+  <SCRIPT src='../mathFunctions.js'></script>
+  <!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+  </head>
+  <body>
+  <canvas id="mycanvas" height="600" width="800"></canvas>
+  <script>
+var LineData = {
+	labels : ["January","February","March","April","May","June"],
+	datasets : [
+		{
+			strokeColor : "blue",
+			pointColor : "blue",
+			pointStrokeColor : "blue",
+			data : [12,8,12,8,12,8],
+			markerShape : "square",
+  			pointDotRadius : 5,
+			title : "square"
+		},
+		{
+			strokeColor : "red",
+			pointColor : "red",
+			pointStrokeColor : "red",
+			data : [22,18,22,18,22,18],
+			markerShape : "diamond",
+  			pointDotRadius : 5,
+			title : "diamond"
+		},
+		{
+			strokeColor : "green",
+			pointColor : "green",
+			pointStrokeColor : "green",
+			data : [32,28,32,28,32,28],
+			markerShape : "plus",
+  			pointDotRadius : 5,
+			title : "plus"
+		},
+		{
+			strokeColor : "brown",
+			pointColor : "brown",
+			pointStrokeColor : "brown",
+			data : [42,38,42,38,42,38],
+			markerShape : "cross",
+  			pointDotRadius : 5,
+			title : "cross"
+		},
+		{
+			strokeColor : "black",
+			pointColor : "black",
+			pointStrokeColor : "black",
+			data : [52,48,52,48,52,48],
+			markerShape : "circle",
+  			pointDotRadius : 5,
+			title : "circle"
+		},
+		{
+			strokeColor : "cyan",
+			pointColor : "cyan",
+			pointStrokeColor : "cyan",
+			data : [62,58,62,58,62,58],
+  			markerShape : "triangle",
+  			pointDotRadius : 10,
+      			title : "triangle"
+		}
+	]
+}
+
+var opts = {
+      animation: false,
+      inGraphDataShow: true,
+      datasetFill: false ,
+      legend : true,
+      graphMin :0,
+      graphMax : 70
+}
+
+  window.onload = function() {
+    var myBar = new Chart(document.getElementById("mycanvas").getContext("2d")).Line(LineData,opts);
+    }
+    </script>
+
+  </body>
+</html>
