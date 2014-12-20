@@ -1,0 +1,92 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+var mydata2 = [
+	{
+		value : 30,
+		color: "#D97041",
+    title : "data1"
+	},
+	{
+		value : 90,
+		color: "#C7604C",
+    title : "data2"
+	},
+	{
+		value : 24,
+		color: "#21323D",
+    title : "data3"
+	},
+	{
+		value : 58,
+		color: "#9D9B7F",
+    title : "data4"
+	},
+	{
+		value : 82,
+		color: "#7D4F6D",
+    title : "data5"
+	},
+	{
+		value : 8,
+		color: "#584A5E",
+    title : "data6"
+	}
+];
+
+function setFontSize(area,ctx,data,statData,posi,posj,othervars) {
+	if(statData[posi].v6<=5) return(0);          // do not display the data if the slice is less than 5 % 
+	else if (statData[posi].v6<10)return(10);    // display with font size=10 when slice is between 5 and 10 %
+	else return(20);                             // otherwise, display with font size= 20 
+}
+
+var opt1 = {
+      animation : false,
+      graphTitle : "issue 169",
+      legend : true,
+      inGraphDataFontSize: setFontSize,
+      inGraphDataShow : true
+}
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Pie1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+
+window.onload = function() {
+    var myPie = new Chart(document.getElementById("canvas_Pie1").getContext("2d")).Pie(mydata2,opt1);
+	}
+
+    </script>
+  </body>
+</html>
