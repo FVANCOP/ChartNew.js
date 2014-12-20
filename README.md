@@ -11,6 +11,8 @@ For my personal use, I had to integrate lot of changes into Chart.js (https://gi
 
 So, I have re-worked Chart.js. Most of the changes are associated to requests in "GitHub" issues of Chart.js.
 
+Chart.js has been completely rewritten since ChartNew.js has been developped; Both code are now completely different. Most of the functionnalities inserted in the new version of Chart.js are also available in ChartNew.js
+
 June 2014 - [Ole Kröger](http://github.com/Wikunia) is now a co-developer of the project. More ideas, more people to give support. Welcome to him. 
 
 

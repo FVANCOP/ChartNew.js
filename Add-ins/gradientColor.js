@@ -5,27 +5,49 @@
 // Change 1 : Omar Sedki - possibility to specify a percentage 
 // Change 2 : Vancoppenolle François - generalized for all graph types
 //
-function gradientColor(area, data, config, i, j, currentAnimPc, value, typegraph, ctx, v0, v1, v2, v3) {
+
+
+function gradientColor(area,ctx,data,statData,posi,posj,othervars) {
 	// v0 = left xAxis of rectangle or xAxis of center
 	// v1 = top yAxis of rectangle or yAxis of center
 	// v2 = right xAxis of rectangle or internal radius (=0 for PolarArea, Pie and Radar)
 	// v3 = bottom yAxis or rectangle or external radius
 	var grd;
-	if (typegraph == "Line" || typegraph == "Bar" || typegraph == "StackedBar") {
-		grd = ctx.createLinearGradient(v0, v1, v0, v3);
-		var gradientColors = data.datasets[i].gradientColors;
-	} else if (typegraph == "HorizontalStackedBar" || typegraph == "HorizontalBar") {
-		grd = ctx.createLinearGradient(v0, v1, v2, v1);
-		var gradientColors = data.datasets[i].gradientColors;
-	} else if (typegraph == "Pie" || typegraph == "Doughnut" || typegraph == "PolarArea" || typegraph == "Radar") {
-		if (area == "COLOR" || (typegraph == "Radar" && area == "FILLCOLOR")) {
-			var grd = ctx.createRadialGradient(v0, v1, v2, v0, v1, v3);
-		} else {
-			var grd = ctx.createRadialGradient(v0 + (v2 - v0) / 2, v1 + (v3 - v1) / 2, 0, v0 + (v2 - v0) / 2, v1 + (v3 - v1) / 2, Math.max((v2 - v0) / 2, (v3 - v1) / 2));
-		}
-		if (typegraph == "Radar") var gradientColors = data.datasets[i].gradientColors;
-		else var gradientColors = data[i].gradientColors;
+	switch(ctx.tpchart) {
+		case "Radar" :
+			if (area == "COLOR") {
+				var grd = ctx.createRadialGradient(othervars.midPosX, othervars.midPosY, 0, othervars.midPosX, othervars.midPosY , othervars.ext_radius);
+			} else {
+				var grd = ctx.createRadialGradient(othervars.xPosLeft + (othervars.xPosRight - othervars.xPosLeft) / 2, othervars.yPosBottom + (othervars.yPosTop - othervars.yPosBottom) / 2, 0, othervars.xPosLeft + (othervars.xPosRight - othervars.xPosLeft) / 2, othervars.yPosBottom + (othervars.yPosTop - othervars.yPosBottom) / 2, Math.max((othervars.xPosRight - othervars.xPosLeft) / 2, (othervars.yPosTop - othervars.yPosBottom) / 2));
+			}
+			var gradientColors = data.datasets[posi].gradientColors;
+			break;
+		case "PolarArea" :
+		case "Pie" : 
+		case "Doughnut" :
+			if (area == "COLOR") {
+				var grd = ctx.createRadialGradient(statData[0].midPosX, statData[0].midPosY, othervars.scaleAnimation*statData[0].int_radius, statData[0].midPosX, statData[0].midPosY , othervars.scaleAnimation* statData[0].radiusOffset);
+			} else {
+				var grd = ctx.createRadialGradient(othervars.xPosLeft + (othervars.xPosRight - othervars.xPosLeft) / 2, othervars.yPosBottom + (othervars.yPosTop - othervars.yPosBottom) / 2, 0, othervars.xPosLeft + (othervars.xPosRight - othervars.xPosLeft) / 2, othervars.yPosBottom + (othervars.yPosTop - othervars.yPosBottom) / 2, Math.max((othervars.xPosRight - othervars.xPosLeft) / 2, (othervars.yPosTop - othervars.yPosBottom) / 2));
+			}
+			var gradientColors = data[posi].gradientColors;
+			break;
+		case "Line" :
+		case "Bar" :
+		case "StackedBar" :
+			grd = ctx.createLinearGradient(othervars.xPosLeft, othervars.yPosBottom, othervars.xPosLeft, othervars.yPosTop);
+			var gradientColors = data.datasets[posi].gradientColors;
+			break;
+		case "HorizontalBar" :
+		case "HorizontalStackedBar" :
+			grd = ctx.createLinearGradient(othervars.xPosLeft, othervars.yPosBottom, othervars.xPosRight, othervars.yPosBottom);
+			var gradientColors = data.datasets[posi].gradientColors;
+			break;
+		default : 
+			break;
+		
 	}
+	
 	var steps = gradientColors.length;
 	var currentStepValue = 0;
 	var stepValues = [];

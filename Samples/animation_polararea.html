@@ -1,0 +1,235 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=600;
+defCanvasHeight=300;
+
+var mydata2 = [
+	{
+		value : 30,
+		color: "#D97041",
+    title : "data1"
+	},
+	{
+		value : 90,
+		color: "#C7604C",
+    title : "data2"
+	},
+	{
+		value : 24,
+		color: "#21323D",
+    title : "data3"
+	},
+	{
+		value : 58,
+		color: "#9D9B7F",
+    title : "data4"
+	},
+	{
+		value : 82,
+		color: "#7D4F6D",
+    title : "data5"
+	},
+	{
+		value : 8,
+		color: "#584A5E",
+    title : "data6"
+	}
+];
+
+
+var startWithDataset =1;
+var startWithData =1;
+
+var opt1 = {
+      animationStartWithDataset : startWithDataset,
+      animationStartWithData : startWithData,
+      animateRotate : true,
+      animateScale : false,
+      animationByData : false,
+      animationSteps : 50,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "animateRotate=true - animateScale=false - animationByData=false",
+      legend : true,
+      inGraphDataShow : true,
+      animationEasing: "linear",
+      annotateDisplay : true,
+      spaceBetweenBar : 5,
+      graphTitleFontSize: 18
+
+}
+
+var opt1b = {
+      animationStartWithDataset : startWithDataset,
+      animationStartWithData : startWithData,
+      animateRotate : true,
+      animateScale : false,
+      animationByData : true,
+      animationSteps : 50,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "animateRotate=true - animateScale=false - animationByData=true",
+      legend : true,
+      inGraphDataShow : true,
+      animationEasing: "linear",
+      annotateDisplay : true,
+      spaceBetweenBar : 5,
+      graphTitleFontSize: 18
+
+}
+
+var opt1c = {
+      animationStartWithDataset : startWithDataset,
+      animationStartWithData : startWithData,
+      animateRotate : true,
+      animateScale : false,
+      animationByData : "ByArc",
+      animationSteps : 50,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "animateRotate=true - animateScale=false - animationByData='ByArc'",
+      legend : true,
+      inGraphDataShow : true,
+      animationEasing: "linear",
+      annotateDisplay : true,
+      spaceBetweenBar : 5,
+      graphTitleFontSize: 18
+
+}
+
+var opt2 = {
+      animationStartWithDataset : startWithDataset,
+      animationStartWithData : startWithData,
+      animateRotate : false,
+      animateScale : true,
+      animationByData : false,
+      animationSteps : 50,
+      animationEasing: "linear",
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "animateRotate=false - animateScale=true",
+      legend : true,
+      inGraphDataShow : true,
+      annotateDisplay : true,
+      spaceBetweenBar : 5,
+      graphTitleFontSize: 18
+
+}
+
+var opt3 = {
+      animationStartWithDataset : startWithDataset,
+      animationStartWithData : startWithData,
+      animateRotate : true,
+      animateScale : true,
+      animationByData : false,
+      animationSteps : 50,
+      animationEasing: "linear",
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "animateRotate=true - animateScale=true - animationByData=false",
+      legend : true,
+      inGraphDataShow : true,
+      annotateDisplay : true,
+      spaceBetweenBar : 5,
+      graphTitleFontSize: 18
+}
+
+var opt3b = {
+      animationStartWithDataset : startWithDataset,
+      animationStartWithData : startWithData,
+      animateRotate : true,
+      animateScale : true,
+      animationByData : true,
+      animationSteps : 50,
+      animationEasing: "linear",
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "animateRotate=true - animateScale=true - animationByData=true",
+      legend : true,
+      inGraphDataShow : true,
+      annotateDisplay : true,
+      spaceBetweenBar : 5,
+      graphTitleFontSize: 18
+}
+var opt3c = {
+      animationStartWithDataset : startWithDataset,
+      animationStartWithData : startWithData,
+      animateRotate : true,
+      animateScale : true,
+      animationByData : "ByArc",
+      animationSteps : 50,
+      animationEasing: "linear",
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "animateRotate=true - animateScale=true - animationByData='ByArc'",
+      legend : true,
+      inGraphDataShow : true,
+      annotateDisplay : true,
+      spaceBetweenBar : 5,
+      graphTitleFontSize: 18
+}
+
+
+ 	
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_PolarArea1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_PolarArea1b\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_PolarArea1c\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_PolarArea2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_PolarArea3\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_PolarArea3b\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_PolarArea3c\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+
+window.onload = function() {
+
+
+    var myPolarArea = new Chart(document.getElementById("canvas_PolarArea1").getContext("2d")).PolarArea(mydata2,opt1);
+    var myPolarArea = new Chart(document.getElementById("canvas_PolarArea1b").getContext("2d")).PolarArea(mydata2,opt1b);
+    var myPolarArea = new Chart(document.getElementById("canvas_PolarArea1c").getContext("2d")).PolarArea(mydata2,opt1c);
+    var myPolarArea = new Chart(document.getElementById("canvas_PolarArea2").getContext("2d")).PolarArea(mydata2,opt2);
+    var myPolarArea = new Chart(document.getElementById("canvas_PolarArea3").getContext("2d")).PolarArea(mydata2,opt3);
+    var myPolarArea = new Chart(document.getElementById("canvas_PolarArea3b").getContext("2d")).PolarArea(mydata2,opt3b);
+    var myPolarArea = new Chart(document.getElementById("canvas_PolarArea3c").getContext("2d")).PolarArea(mydata2,opt3c);
+
+	}
+
+    </script>
+  </body>
+</html>
