@@ -1,4 +1,4 @@
-/*              ²
+/*
  * ChartNew.js  
  *
  * Vancoppenolle Francois - January 2014
@@ -770,7 +770,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 		} else if (jsGraphAnnotate[ctx.ChartNewId][i][0] == "POINT") {
 			myStatData=jsGraphAnnotate[ctx.ChartNewId][i][3][jsGraphAnnotate[ctx.ChartNewId][i][1]][jsGraphAnnotate[ctx.ChartNewId][i][2]];
 			distance = Math.sqrt((canvas_pos.x - myStatData.posX) * (canvas_pos.x - myStatData.posX) + (canvas_pos.y - myStatData.posY) * (canvas_pos.y - myStatData.posY));
-			if (distance < 10) {
+			if (distance < config.annotatePointDistance) {
 				myStatData.graphPosX = canvas_pos.x;
 				myStatData.graphPosY = canvas_pos.y;
 				onData = true;
@@ -1067,6 +1067,7 @@ window.Chart = function(context) {
 			animationEasing: "easeOutQuart",
 			onAnimationComplete: null,
 			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3%>",
+			annotatePointDistance : 10,
 			startAngle: 90,
 			graphMaximized: false // if true, the graph will not be centered in the middle of the canvas
 		};
@@ -1213,7 +1214,8 @@ window.Chart = function(context) {
 			animationEasing: "easeOutQuart",
 			extrapolateMissingData: true,
 			onAnimationComplete: null,
-			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3%>"
+			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3%>",
+			annotatePointDistance : 10
 		};
 		// merge annotate defaults
 		chart.Line.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Line.defaults);
