@@ -4401,12 +4401,14 @@ window.Chart = function(context) {
 	};
 
 	function getDecimalPlaces(num) {
-		var numberOfDecimalPlaces;
-		if (num % 1 != 0) {
-			return num.toString().split(".")[1].length
-		} else {
-			return 0;
-		}
+		var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+        if (!match) { 
+          return 0;
+        }
+        return Math.max(
+          0,
+          (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0)
+        );
 	};
 
 	function mergeChartConfig(defaults, userDefined) {
