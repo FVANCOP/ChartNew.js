@@ -1,4 +1,4 @@
-/*
+/*              ²
  * ChartNew.js  
  *
  * Vancoppenolle Francois - January 2014
@@ -732,7 +732,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					myStatData.graphPosY = canvas_pos.y;
 					onData = true;
 					if (action == "annotate") {
-						dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,undefined,undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][12],-1,{otherVal:true}), myStatData);
+						dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][12],-1,{otherVal:true}), myStatData);
 						annotateDIV.innerHTML = dispString;
 						show = true;
 					} else {
@@ -754,7 +754,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 				myStatData.graphPosY = canvas_pos.y;
 				onData = true;
 				if (action == "annotate") {
-					dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,undefined,undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][10],jsGraphAnnotate[ctx.ChartNewId][i][11],{otherVal:true}), myStatData);
+					dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][1],jsGraphAnnotate[ctx.ChartNewId][i][2],{otherVal:true}), myStatData);
 					annotateDIV.innerHTML = dispString;
 					show = true;
 				} else {
@@ -769,13 +769,33 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 			}
 		} else if (jsGraphAnnotate[ctx.ChartNewId][i][0] == "POINT") {
 			myStatData=jsGraphAnnotate[ctx.ChartNewId][i][3][jsGraphAnnotate[ctx.ChartNewId][i][1]][jsGraphAnnotate[ctx.ChartNewId][i][2]];
-			distance = Math.sqrt((canvas_pos.x - myStatData.posX) * (canvas_pos.x - myStatData.posX) + (canvas_pos.y - myStatData.posY) * (canvas_pos.y - myStatData.posY));
-			if (distance < config.annotatePointDistance) {
+			var distance;
+			if(config.detectAnnotateOnFullLine) {
+				if(canvas_pos.x < Math.min(myStatData.annotateStartPosX,myStatData.annotateEndPosX)-config.pointHitDetectionRadius || canvas_pos.x > Math.max(myStatData.annotateStartPosX,myStatData.annotateEndPosX)+config.pointHitDetectionRadius || canvas_pos.y < Math.min(myStatData.annotateStartPosY,myStatData.annotateEndPosY)-config.pointHitDetectionRadius || canvas_pos.y > Math.max(myStatData.annotateStartPosY,myStatData.annotateEndPosY)+config.pointHitDetectionRadius) {
+					distance=config.pointHitDetectionRadius+1;
+				} else { 
+					if(typeof myStatData.D1A=="undefined") {
+						distance=Math.abs(canvas_pos.x-myStatData.posX);
+					} else if(typeof myStatData.D2A=="undefined") {
+						distance=Math.abs(canvas_pos.y-myStatData.posY);
+					} else {
+						var D2B=-myStatData.D2A*canvas_pos.x+canvas_pos.y;
+						var g=-(myStatData.D1B-D2B)/(myStatData.D1A-myStatData.D2A);
+						var h=myStatData.D2A*g+D2B;
+						distance=Math.sqrt((canvas_pos.x - g) * (canvas_pos.x - g) + (canvas_pos.y - h) * (canvas_pos.y - h));
+					}
+					
+				}
+								
+			} else {
+				distance = Math.sqrt((canvas_pos.x - myStatData.posX) * (canvas_pos.x - myStatData.posX) + (canvas_pos.y - myStatData.posY) * (canvas_pos.y - myStatData.posY));
+			}
+			if (distance < config.pointHitDetectionRadius) {
 				myStatData.graphPosX = canvas_pos.x;
 				myStatData.graphPosY = canvas_pos.y;
 				onData = true;
 				if (action == "annotate") {
-					dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,undefined,undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][10],jsGraphAnnotate[ctx.ChartNewId][i][11],{otherVal:true}), myStatData);
+					dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][1],jsGraphAnnotate[ctx.ChartNewId][i][2],{otherVal:true}), myStatData);
 					annotateDIV.innerHTML = dispString;
 					show = true;
 				} else {
@@ -1067,7 +1087,7 @@ window.Chart = function(context) {
 			animationEasing: "easeOutQuart",
 			onAnimationComplete: null,
 			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3%>",
-			annotatePointDistance : 10,
+			pointHitDetectionRadius : 10,
 			startAngle: 90,
 			graphMaximized: false // if true, the graph will not be centered in the middle of the canvas
 		};
@@ -1215,7 +1235,7 @@ window.Chart = function(context) {
 			extrapolateMissingData: true,
 			onAnimationComplete: null,
 			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3%>",
-			annotatePointDistance : 10
+			pointHitDetectionRadius : 10
 		};
 		// merge annotate defaults
 		chart.Line.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Line.defaults);
@@ -1977,7 +1997,7 @@ window.Chart = function(context) {
 					ctx.beginPath();
 					ctx.fillStyle=setOptionValue("MARKERFILLCOLOR",ctx,data,statData,data.datasets[i].pointColor,config.defaultStrokeColor,i,-1,{nullvalue: true} );
 					ctx.strokeStyle=setOptionValue("MARKERSTROKESTYLE",ctx,data,statData,data.datasets[i].pointStrokeColor,config.defaultStrokeColor,i,-1,{nullvalue: true} );
-					ctx.lineWidth=setOptionValue("MARKERLINEWIDTH",ctx,data,statData,data.datasets[i].pointDotStrokeWidth,config.defaultLineWidth,i,-1,{nullvalue: true} );
+					ctx.lineWidth=setOptionValue("MARKERLINEWIDTH",ctx,data,statData,data.datasets[i].pointDotStrokeWidth,config.pointDotStrokeWidth,i,-1,{nullvalue: true} );
 
 					for (var k = 0; k < data.datasets[i].data.length; k++) {
 						if (!(typeof(data.datasets[i].data[k]) == 'undefined')) {
@@ -2606,6 +2626,7 @@ window.Chart = function(context) {
 				logarithmic  : config.logarithmic,
 				scaleHop2: scaleHop2,
 				zeroY2: zeroY2,
+				msr : msr,
 				calculatedScale2: calculatedScale2,
 				logarithmic2: config.logarithmic2} );
 			animationLoop(config, drawScale, drawLines, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
@@ -5315,7 +5336,7 @@ window.Chart = function(context) {
 							ctx.beginPath();
 							ctx.fillStyle=setOptionValue("MARKERFILLCOLOR",ctx,data,statData,data.datasets[i].pointColor,config.defaultStrokeColor,i,j,{nullvalue: true} );
 							ctx.strokeStyle=setOptionValue("MARKERSTROKESTYLE",ctx,data,statData,data.datasets[i].pointStrokeColor,config.defaultStrokeColor,i,j,{nullvalue: true} );
-							ctx.lineWidth=setOptionValue("MARKERLINEWIDTH",ctx,data,statData,data.datasets[i].pointDotStrokeWidth,config.defaultLineWidth,i,j,{nullvalue: true} );
+							ctx.lineWidth=setOptionValue("MARKERLINEWIDTH",ctx,data,statData,data.datasets[i].pointDotStrokeWidth,config.pointDotStrokeWidth,i,j,{nullvalue: true} );
 							var markerShape=setOptionValue("MARKERSHAPE",ctx,data,statData,data.datasets[i].markerShape,config.markerShape,i,j,{nullvalue: true} );
 							var markerRadius=setOptionValue("MARKERRADIUS",ctx,data,statData,data.datasets[i].pointDotRadius,config.pointDotRadius,i,j,{nullvalue: true} );
 							drawMarker(ctx, statData[i][j].xPos , statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset, markerShape,markerRadius);							
@@ -5696,7 +5717,7 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
 						ctx.beginPath();
 				 		ctx.fillStyle=setOptionValue("LEGENDMARKERFILLCOLOR",ctx,data,undefined,data.datasets[orderi].pointColor,config.defaultStrokeColor,orderi,-1,{nullvalue: true} );
 						ctx.strokeStyle=setOptionValue("LEGENDMARKERSTROKESTYLE",ctx,data,undefined,data.datasets[orderi].pointStrokeColor,config.defaultStrokeColor,orderi,-1,{nullvalue: true} );
-						ctx.lineWidth=setOptionValue("LEGENDMARKERLINEWIDTH",ctx,data,undefined,data.datasets[orderi].pointDotStrokeWidth,config.defaultLineWidth,orderi,-1,{nullvalue: true} );
+						ctx.lineWidth=setOptionValue("LEGENDMARKERLINEWIDTH",ctx,data,undefined,data.datasets[orderi].pointDotStrokeWidth,config.pointDotStrokeWidth,orderi,-1,{nullvalue: true} );
                         	
 						var markerShape=setOptionValue("LEGENDMARKERSHAPE",ctx,data,undefined,data.datasets[orderi].markerShape,config.markerShape,orderi,-1,{nullvalue: true} );
 						var markerRadius=setOptionValue("LEGENDMARKERRADIUS",ctx,data,undefined,data.datasets[orderi].pointDotRadius,config.pointDotRadius,orderi,-1,{nullvalue: true} );
@@ -6174,6 +6195,12 @@ switch(ctx.tpchart) {
 						statData[i][j].v9= statData[i][j].xPos;
 						statData[i][j].v10=statData[i][j].posY;
 
+						statData[i][j].annotateStartPosX = statData[i][j].xPos;
+						statData[i][j].annotateEndPosX = statData[i][j].xPos;
+						statData[i][j].annotateStartPosY = othervars.xAxisPosY;
+						statData[i][j].annotateEndPosY = othervars.xAxisPosY-othervars.msr.availableHeight;
+						statData[i][j].D1A=undefined;
+						statData[i][j].D1B=undefined;
 					}
 					break;
 				case "Radar" :
@@ -6193,6 +6220,21 @@ switch(ctx.tpchart) {
 						statData[i][j].posY=statData[i][j].midPosY - statData[i][j].offsetY;
 						if(j==0)statData[i][j].calculated_offset_max=calculateOffset(config.logarithmic, statData[i][j].lmaxvalue, othervars.calculatedScale, othervars.scaleHop);
 						else    statData[i][j].calculated_offset_max=statData[0][j].calculated_offset_max;
+						statData[i][j].annotateStartPosX = othervars.midPosX;
+						statData[i][j].annotateEndPosX = othervars.midPosX+Math.cos(config.startAngle * Math.PI / 180 - j * rotationDegree) * othervars.maxSize;
+						statData[i][j].annotateStartPosY = othervars.midPosY;
+						statData[i][j].annotateEndPosY = othervars.midPosY-Math.sin(config.startAngle * Math.PI / 180 - j * rotationDegree) * othervars.maxSize;
+						if(Math.abs(statData[i][j].annotateStartPosX-statData[i][j].annotateEndPosX)<config.zeroValue) {
+							statData[i][j].D1A=undefined;
+							statData[i][j].D1B=undefined;
+							statData[i][j].D2A=0;
+						} else {
+							statData[i][j].D1A=(statData[i][j].annotateStartPosY-statData[i][j].annotateEndPosY)/(statData[i][j].annotateStartPosX-statData[i][j].annotateEndPosX);
+							statData[i][j].D1B=-statData[i][j].D1A*statData[i][j].annotateStartPosX+statData[i][j].annotateStartPosY;
+							if(Math.abs(statData[i][j].D1A)>=config.zeroValue)statData[i][j].D2A=-(1/statData[i][j].D1A);
+							else statData[i][j].D2A=undefined;
+						}
+
 				        }
 					break;
 				case "Bar" :
