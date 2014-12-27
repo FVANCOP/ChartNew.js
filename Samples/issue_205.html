@@ -32,7 +32,7 @@ defCanvasHeight=300;
 			pointColor : "rgba(151,187,205,1)",
 			pointDotStrokeWidth : 1,
 			pointStrokeColor : "#fff",
-			data : [0,1,0,2,5,0,4],
+			data : [0,1,0,2,25,0,4],
 		      title : "Bar 2"
 		}
 	]
@@ -57,6 +57,7 @@ defCanvasHeight=300;
   <canvas id="canvas_Bar1" height="300" width="400"></canvas>
   <canvas id="canvas_Bar2" height="300" width="400"></canvas>
   <canvas id="canvas_Bar3" height="300" width="400"></canvas>
+  <canvas id="canvas_Bar4" height="300" width="400"></canvas>
     <script>
     
   var opts1= {
@@ -65,6 +66,8 @@ defCanvasHeight=300;
 	inGraphDataShow : true, 
 	datasetFill : false,
 	inGraphDataYPosition: 3,
+	inGraphDataVAlign: "top",
+	inGraphDataPaddingY: -3,
 	graphTitleFontSize: 18,
 	graphTitle : "With default value for inGraphData options" 
 	};  
@@ -91,12 +94,37 @@ defCanvasHeight=300;
 	inGraphDataTmpl: "<%=(v3 > 0 ? v3 : '')%>",
 	graphTitle : "Solution 2 (0 not displayed)" 
 	};  
+	
+function computeInGraphVAlign(area, ctx, data,statData, posi,posj,othervars) {
+	if(posi==1 && 1*data.datasets[posi].data[posj]<6) return("bottom");
+	else return("top");
+}
+
+function computeInGraphPaddingY(area, ctx, data,statData, posi,posj,othervars) {
+	if(posi==1 && 1*data.datasets[posi].data[posj]<6) return(3);
+	else return(-3);
+}
+
+  var opts4= {
+  	animation : false,
+  	legend : true,
+	inGraphDataShow : true, 
+	datasetFill : false,
+	inGraphDataYPosition: 3,
+	inGraphDataVAlign: computeInGraphVAlign,
+	inGraphDataPaddingY: computeInGraphPaddingY,
+	inGraphDataTmpl: "<%=(v3 > 0 ? v3 : '')%>",
+	graphTitleFontSize: 18,
+	graphTitle : "Solution 3 - some options through a function" 
+	};  
+
 
 
 window.onload = function() {
-	var bar = new Chart(document.getElementById("canvas_Bar1").getContext("2d")).StackedBar(BarData,opts1);
-	var bar = new Chart(document.getElementById("canvas_Bar2").getContext("2d")).StackedBar(BarData,opts2);
-	var bar = new Chart(document.getElementById("canvas_Bar3").getContext("2d")).StackedBar(BarData,opts3);
+	var bar1 = new Chart(document.getElementById("canvas_Bar1").getContext("2d")).StackedBar(BarData,opts1);
+	var bar2 = new Chart(document.getElementById("canvas_Bar2").getContext("2d")).StackedBar(BarData,opts2);
+	var bar3 = new Chart(document.getElementById("canvas_Bar3").getContext("2d")).StackedBar(BarData,opts3);
+	var bar4 = new Chart(document.getElementById("canvas_Bar4").getContext("2d")).StackedBar(BarData,opts4);
 
  }
     </script>
