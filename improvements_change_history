@@ -1,6 +1,13 @@
 Change history
 --------------
 
+31/12/2014 - Matt Luedke            - Fix issue 208
+26/12/2014 - iKBAHT                 - improve function getDecimalPlaces https://github.com/FVANCOP/ChartNew.js/pull/215
+22/12/2014 - Vancoppenolle François - option pointHitDetectionRadius & detectAnnotateOnFullLine  added;
+				      (improvement proposed by Voidale)
+20/12/2014 - Vancoppenolle Francois - option spaceBetweenBa added (improvement proposed by kmuncie)
+16/12/2014 - Omar Sedki             - new marker shapes - https://github.com/FVANCOP/ChartNew.js/pull/150
+16/12/2014 - Vancoppenolle Francois - ChartNew.js version 2 !
 14/12/2014 - omerbonfil             - Fix issue 203 
 11/12/2014 - Matt Luedke            - break lines in title/subtitle
 24/11/2014 - Vancoppenolle Francois - Fix issue 185 (Bug reported by Omerbonfil)
