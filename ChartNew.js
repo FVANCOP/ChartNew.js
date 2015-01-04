@@ -259,44 +259,45 @@ function tmplbis(str, data) {
 	// Provide some basic currying to the user
 	return data ? fn(data) : fn;
 };
-/**
- * ctx.prototype
- * fillText option for canvas Multiline Support
- * @param text string \n for newline
- * @param x x position
- * @param y y position
- * @param yLevel = "bottom" => last line has this y-Pos [default], = "middle" => the middle line has this y-Pos)
- * @param lineHeight lineHeight
- */
-CanvasRenderingContext2D.prototype.fillTextMultiLine = function(text, x, y, yLevel, lineHeight,horizontal) {
-
-	var lines = ("" + text).split("\n");
-	// if its one line => in the middle 
-	// two lines one above the mid one below etc.	
-	if (yLevel == "middle") {
-		if(horizontal)y -= ((lines.length - 1) / 2) * lineHeight;
-	} else if (yLevel == "bottom") { // default
-		if(horizontal)y -= (lines.length - 1) * lineHeight;
-	}
-	for (var i = 0; i < lines.length; i++) {
-		this.fillText(lines[i], x, y);
-		y += lineHeight;
-	}	
-};
-CanvasRenderingContext2D.prototype.measureTextMultiLine = function(text, lineHeight) {
-	var textWidth = 0;
-	var lg;
-	var lines = ("" + text).split("\n");
-	var textHeight = lines.length * lineHeight;
-	// if its one line => in the middle 
-	// two lines one above the mid one below etc.	
-	for (var i = 0; i < lines.length; i++) {
-		lg = this.measureText(lines[i]).width;
-		if (lg > textWidth) textWidth = lg;
-	}
-	return {
-		textWidth: textWidth,
-		textHeight: textHeight
+if (typeof CanvasRenderingContext2D !== 'undefined') {
+	/**
+	 * ctx.prototype
+	 * fillText option for canvas Multiline Support
+	 * @param text string \n for newline
+	 * @param x x position
+	 * @param y y position
+	 * @param yLevel = "bottom" => last line has this y-Pos [default], = "middle" => the middle line has this y-Pos)
+	 * @param lineHeight lineHeight
+	 */
+	CanvasRenderingContext2D.prototype.fillTextMultiLine = function(text, x, y, yLevel, lineHeight,horizontal) {
+		var lines = ("" + text).split("\n");
+		// if its one line => in the middle 
+		// two lines one above the mid one below etc.	
+		if (yLevel == "middle") {
+			if(horizontal)y -= ((lines.length - 1) / 2) * lineHeight;
+		} else if (yLevel == "bottom") { // default
+			if(horizontal)y -= (lines.length - 1) * lineHeight;
+		}
+		for (var i = 0; i < lines.length; i++) {
+			this.fillText(lines[i], x, y);
+			y += lineHeight;
+		}	
+	};
+	CanvasRenderingContext2D.prototype.measureTextMultiLine = function(text, lineHeight) {
+		var textWidth = 0;
+		var lg;
+		var lines = ("" + text).split("\n");
+		var textHeight = lines.length * lineHeight;
+		// if its one line => in the middle 
+		// two lines one above the mid one below etc.	
+		for (var i = 0; i < lines.length; i++) {
+			lg = this.measureText(lines[i]).width;
+			if (lg > textWidth) textWidth = lg;
+		}
+		return {
+			textWidth: textWidth,
+			textHeight: textHeight
+		};
 	};
 };
 cursorDivCreated = false;
@@ -1388,11 +1389,15 @@ window.Chart = function(context) {
 			scaleSteps: null,
 			scaleStepWidth: null,
 			scaleStartValue: null,
+			scaleSteps2: null,
+			scaleStepWidth2: null,
+			scaleStartValue2: null,
 			scaleLineColor: "rgba(0,0,0,.1)",
 			scaleLineWidth: 1,
 			scaleShowLabels: true,
 			scaleShowLabels2: true,
 			scaleLabel: "<%=value%>",
+			scaleLabel2: "<%=value%>",
 			scaleFontFamily: "'Arial'",
 			scaleFontSize: 12,
 			scaleFontStyle: "normal",
@@ -1809,7 +1814,7 @@ window.Chart = function(context) {
 			}
 
 
-			if (animationDecimal >= 1) {
+			if (animationDecimal >= config.animationStopValue) {
 				for (var i = 0; i < data.length; i++) {
 					if (typeof(data[i].value) == 'undefined') continue;
 					if (setOptionValue("ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})) {
@@ -2010,7 +2015,7 @@ window.Chart = function(context) {
 				}
 			}
 			ctx.restore();
-			if (animationDecimal >= 1) {
+			if (animationDecimal >= config.animationStopValue) {
 				for (var i = 0; i < data.datasets.length; i++) {
 					for (var j = 0; j < data.datasets[i].data.length; j++) {
 						if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
@@ -2293,7 +2298,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
-			if (animationDecimal >= 1) {
+			if (animationDecimal >= config.animationStopValue) {
 				for (var i = 0; i < data.length; i++) {
 					if (typeof(data[i].value) == 'undefined' || 1*data[i].value<0) continue;
 					if (setOptionValue("ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})) {
@@ -2431,7 +2436,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
-			if (animationDecimal >= 1) {
+			if (animationDecimal >= config.animationStopValue) {
 				for (var i = 0; i < data.length; i++) {
 					if (typeof(data[i].value) == 'undefined' || 1*data[i].value<0) continue;
 					if(setOptionValue("ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})) {
@@ -2968,7 +2973,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
-			if (animPc >= 1) {
+			if (animPc >= config.animationStopValue) {
 				var 	yPos = 0,
 					xPos = 0;
 				for (var i = 0; i < data.datasets.length; i++) {
@@ -3311,7 +3316,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
-			if (animPc >= 1) {
+			if (animPc >= config.animationStopValue) {
 				var yPos = 0,
 					xPos = 0;
 				for (var i = 0; i < data.datasets.length; i++) {
@@ -3528,7 +3533,7 @@ window.Chart = function(context) {
 		};
 	};
 	var Bar = function(data, config, ctx) {
-		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
+		var maxSize, scaleHop, scaleHop2, calculatedScale, calculatedScale2, labelHeight, scaleHeight, valueBounds, labelTemplateString, labelTemplateString2, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
 	
 		ctx.tpchart="Bar";
@@ -3557,16 +3562,27 @@ window.Chart = function(context) {
 					config.logarithmic = false;
 				}
 			}
+			if (config.logarithmic2 !== false) {
+				if (valueBounds.minValue2 <= 0) {
+					config.logarithmic2 = false;
+				}
+			}
 			// Check if logarithmic is meanigful
 			var OrderOfMagnitude = calculateOrderOfMagnitude(Math.pow(10, calculateOrderOfMagnitude(valueBounds.maxValue) + 1)) - calculateOrderOfMagnitude(Math.pow(10, calculateOrderOfMagnitude(valueBounds.minValue)));
 			if ((config.logarithmic == 'fuzzy' && OrderOfMagnitude < 4) || config.scaleOverride) {
 				config.logarithmic = false;
 			}
+			// Check if logarithmic is meanigful
+			var OrderOfMagnitude2 = calculateOrderOfMagnitude(Math.pow(10, calculateOrderOfMagnitude(valueBounds.maxValue2) + 1)) - calculateOrderOfMagnitude(Math.pow(10, calculateOrderOfMagnitude(valueBounds.minValue2)));
+			if ((config.logarithmic2 == 'fuzzy' && OrderOfMagnitude2 < 4) || config.scaleOverride2) {
+				config.logarithmic2 = false;
+			}
+
 			//Check and set the scale
 			labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
+			labelTemplateString2 = (config.scaleShowLabels2) ? config.scaleLabel2 : "";
 			if (!config.scaleOverride) {
 				calculatedScale = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
-				msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true, true, "Bar");
 			} else {
 				var scaleStartValue= setOptionValue("SCALESTARTVALUE",ctx,data,statData,undefined,config.scaleStartValue,-1,-1,{nullValue : true} );
 				var scaleSteps =setOptionValue("SCALESTEPS",ctx,data,statData,undefined,config.scaleSteps,-1,-1,{nullValue : true} );
@@ -3580,16 +3596,41 @@ window.Chart = function(context) {
 					labels: []
 				}
 				populateLabels(1, config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, scaleStartValue, calculatedScale.graphMax, scaleStepWidth);
-				msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true, true, "Bar");
 			}
+			if (valueBounds.dbAxis) {
+				if (!config.scaleOverride2) {
+					calculatedScale2 = calculateScale(2, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue2, valueBounds.minValue2, labelTemplateString);
+				} else {
+					var scaleStartValue2= setOptionValue("SCALESTARTVALUE2",ctx,data,statData,undefined,config.scaleStartValue2,-1,-1,{nullValue : true} );
+					var scaleSteps2 =setOptionValue("SCALESTEPS2",ctx,data,statData,undefined,config.scaleSteps2,-1,-1,{nullValue : true} );
+					var scaleStepWidth2 = setOptionValue("SCALESTEPWIDTH2",ctx,data,statData,undefined,config.scaleStepWidth2,-1,-1,{nullValue : true} );
+
+					calculatedScale2 = {
+						steps: scaleSteps2,
+						stepValue: scaleStepWidth2,
+						graphMin: scaleStartValue2,
+						graphMax: scaleStartValue2 + scaleSteps2 * scaleStepWidth2,
+						labels: []
+					}
+					populateLabels(2, config, labelTemplateString2, calculatedScale2.labels, calculatedScale2.steps, scaleStartValue2, calculatedScale2.graphMax, scaleStepWidth2);
+				}
+			} else {
+				calculatedScale2 = {
+					steps: 0,
+					stepValue: 0,
+					graphMin: 0,
+					graphMax: 0,
+					labels: null
+				}
+			}
+			msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, calculatedScale2.labels, true, false, true, true, true, "Bar");
 
 			var prevHeight=msr.availableHeight;
-
-
 
 			msr.availableHeight = msr.availableHeight - config.scaleTickSizeBottom - config.scaleTickSizeTop;
 			msr.availableWidth = msr.availableWidth - config.scaleTickSizeLeft - config.scaleTickSizeRight;
 			scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
+			scaleHop2 = Math.floor(msr.availableHeight / calculatedScale2.steps);
 			valueHop = Math.floor(msr.availableWidth / (data.labels.length));
 			if (valueHop == 0 || config.fullWidthGraph) valueHop = (msr.availableWidth / data.labels.length);
 			msr.clrwidth = msr.clrwidth - (msr.availableWidth - ((data.labels.length) * valueHop));
@@ -3604,19 +3645,27 @@ window.Chart = function(context) {
 			if(barWidth>=0 && barWidth<=1)barWidth=1;
 			if(barWidth<0 && barWidth>=-1)barWidth=-1;
 			var zeroY = 0;
+			var zeroY2 = 0;
 			if (valueBounds.minValue < 0) {
 				var zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, scaleHop);
 			}
-			drawLabels();
+			if (valueBounds.minValue2 < 0) {
+				var zeroY2 = calculateOffset(config.logarithmic2, 0, calculatedScale2, scaleHop2);
+			}
 			initPassVariableData_part2(statData,data,config,ctx,{ 
+				msr: msr,
 				yAxisPosX : yAxisPosX,
 				xAxisPosY : xAxisPosY,
 				valueHop : valueHop,
 				barWidth : barWidth,
 				zeroY : zeroY,
+				zeroY2 : zeroY2,
 				calculatedScale : calculatedScale,
-				scaleHop : scaleHop	
+				calculatedScale2 : calculatedScale2,
+				scaleHop : scaleHop,	
+				scaleHop2 : scaleHop2	
 			});
+			drawLabels();
 			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
 		} else {
 			testRedraw(ctx,data,config);
@@ -3640,10 +3689,9 @@ window.Chart = function(context) {
 					}
 				}
 			}
-			
 			drawLinesDataset(animPc, data, config, ctx, statData,{xAxisPosY : xAxisPosY,yAxisPosX : yAxisPosX, valueHop : valueHop, nbValueHop : data.labels.length });
 
-			if (animPc >= 1) {
+			if (animPc >= config.animationStopValue) {
 
 				for (var i = 0; i < data.datasets.length; i++) {
 					for (var j = 0; j < data.datasets[i].data.length; j++) {
@@ -3799,9 +3847,17 @@ window.Chart = function(context) {
 						ctx.textAlign = "right";
 						ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (config.scaleTickSizeLeft + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, config.scaleFontSize,true);
 					}
-					if (config.yAxisRight) {
+					if (config.yAxisRight && !valueBounds.dbAxis) {
 						ctx.textAlign = "left";
 						ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, config.scaleFontSize,true);
+					}
+				}
+			}
+			if (config.yAxisRight && valueBounds.dbAxis) {
+				for (var j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale2.steps; j++) {
+					if (config.scaleShowLabels) {
+						ctx.textAlign = "left";
+						ctx.fillTextMultiLine(calculatedScale2.labels[j + 1], yAxisPosX + msr.availableWidth + (config.scaleTickSizeRight + config.yAxisSpaceRight), xAxisPosY - ((j + 1) * scaleHop2), ctx.textBaseline, config.scaleFontSize,true);
 					}
 				}
 			}
@@ -3810,6 +3866,11 @@ window.Chart = function(context) {
 		function getValueBounds() {
 			var upperValue = -Number.MAX_VALUE;
 			var lowerValue = Number.MAX_VALUE;
+			var upperValue2 = -Number.MAX_VALUE;
+			var lowerValue2 = Number.MAX_VALUE;
+			var secondAxis = false;
+			var firstAxis = false;
+			
 			for (var i = 0; i < data.datasets.length; i++) {
 				var mathFctName = data.datasets[i].drawMathDeviation;
 				var mathValueHeight = 0;
@@ -3822,12 +3883,23 @@ window.Chart = function(context) {
 				}
 				for (var j = 0; j < data.datasets[i].data.length; j++) {
 					if(typeof data.datasets[i].data[j]=="undefined")continue;
-					if (1 * data.datasets[i].data[j] + mathValueHeight > upperValue) {
-						upperValue = 1 * data.datasets[i].data[j] + mathValueHeight
-					};
-					if (1 * data.datasets[i].data[j] - mathValueHeight < lowerValue) {
-						lowerValue = 1 * data.datasets[i].data[j] - mathValueHeight
-					};
+					if (data.datasets[i].axis == 2) {
+						secondAxis = true;
+						if (1 * data.datasets[i].data[j] + mathValueHeight > upperValue2) {
+							upperValue2 = 1 * data.datasets[i].data[j] + mathValueHeight;
+						};
+						if (1 * data.datasets[i].data[j] - mathValueHeight < lowerValue2) {
+							lowerValue2 = 1 * data.datasets[i].data[j] - mathValueHeight;
+						};
+					} else {
+						firstAxis=true;
+						if (1 * data.datasets[i].data[j] + mathValueHeight > upperValue) {
+							upperValue = 1 * data.datasets[i].data[j] + mathValueHeight;
+						};
+						if (1 * data.datasets[i].data[j] - mathValueHeight < lowerValue) {
+							lowerValue = 1 * data.datasets[i].data[j] - mathValueHeight;
+						};
+					}
 				}
 			};
 			if(upperValue<lowerValue){upperValue=0;lowerValue=0;}
@@ -3841,11 +3913,33 @@ window.Chart = function(context) {
 					lowerValue=lowerValue*1.1;
 				}
 			}
-			// AJOUT CHANGEMENT
 			if(typeof config.graphMin=="function")lowerValue= setOptionValue("GRAPHMIN",ctx,data,statData,undefined,config.graphMin,-1,-1,{nullValue : true})
 			else if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
 			if(typeof config.graphMax=="function") upperValue= setOptionValue("GRAPHMAX",ctx,data,statData,undefined,config.graphMax,-1,-1,{nullValue : true})
 			else if (!isNaN(config.graphMax)) upperValue = config.graphMax;
+
+			if (secondAxis) {
+				if(upperValue2<lowerValue2){upperValue2=0;lowerValue2=0;}
+				if (Math.abs(upperValue2 - lowerValue2) < config.zeroValue) {
+					if(Math.abs(upperValue2)< config.zeroValue) upperValue2 = .9;
+					if(upperValue2>0) {
+						upperValue2=upperValue2*1.1;
+						lowerValue2=lowerValue2*0.9;
+					} else {
+						upperValue2=upperValue2*0.9;
+						lowerValue2=lowerValue2*1.1;
+					}
+				}
+				if(typeof config.graphMin2=="function")lowerValue2= setOptionValue("GRAPHMIN",ctx,data,statData,undefined,config.graphMin2,-1,-1,{nullValue : true})
+				else if (!isNaN(config.graphMin2)) lowerValue2 = config.graphMin2;
+				if(typeof config.graphMax2=="function") upperValue2= setOptionValue("GRAPHMAX",ctx,data,statData,undefined,config.graphMax2,-1,-1,{nullValue : true})
+				else if (!isNaN(config.graphMax2)) upperValue2 = config.graphMax2;
+			}
+			if (!firstAxis && secondAxis) {
+				upperValue = upperValue2;
+				lowerValue = lowerValue2;
+			}
+
 			labelHeight = config.scaleFontSize;
 			scaleHeight = msr.availableHeight;
 			var maxSteps = Math.floor((scaleHeight / (labelHeight * 0.66)));
@@ -3853,6 +3947,9 @@ window.Chart = function(context) {
 			return {
 				maxValue: upperValue,
 				minValue: lowerValue,
+				maxValue2: upperValue2,
+				minValue2: lowerValue2,
+				dbAxis: secondAxis,
 				maxSteps: maxSteps,
 				minSteps: minSteps
 			};
@@ -3946,7 +4043,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
-			if (animPc >= 1) {
+			if (animPc >= config.animationStopValue) {
 				for (var i = 0; i < data.datasets.length; i++) {
 					for (var j = 0; j < data.datasets[i].data.length; j++) {
 						if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
@@ -4402,13 +4499,13 @@ window.Chart = function(context) {
 
 	function getDecimalPlaces(num) {
 		var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-        if (!match) { 
-          return 0;
-        }
-        return Math.max(
-          0,
-          (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0)
-        );
+		if (!match) { 
+			return 0;
+		}
+		return Math.max(
+			0,
+			(match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0)
+		);
 	};
 
 	function mergeChartConfig(defaults, userDefined) {
@@ -5347,7 +5444,7 @@ window.Chart = function(context) {
 				}
 			}
 
-			if (animPc >= 1) {
+			if (animPc >= config.animationStopValue) {
 				for (var j = 0; j < data.datasets[i].data.length; j++) {
 					if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
 					if(setOptionValue("ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
@@ -6245,12 +6342,19 @@ switch(ctx.tpchart) {
 						statData[i][j].xPosRight = statData[i][j].xPosLeft + othervars.barWidth;
 						statData[i][j].yPosBottom =othervars.xAxisPosY - othervars.zeroY
 						statData[i][j].barHeight=calculateOffset(config.logarithmic, 1 * data.datasets[i].data[j], othervars.calculatedScale, othervars.scaleHop) - othervars.zeroY;
-						statData[i][j].yPosTop = othervars.xAxisPosY - statData[i][j].barHeight + othervars.zeroY + (config.barStrokeWidth / 2);
+						if (data.datasets[i].axis == 2) {
+							statData[i][j].yPosBottom =othervars.xAxisPosY - othervars.zeroY2;
+							statData[i][j].barHeight=calculateOffset(config.logarithmic2, 1 * data.datasets[i].data[j], othervars.calculatedScale2, othervars.scaleHop2) - othervars.zeroY2;
+						} else {
+							statData[i][j].yPosBottom =othervars.xAxisPosY - othervars.zeroY
+							statData[i][j].barHeight=calculateOffset(config.logarithmic, 1 * data.datasets[i].data[j], othervars.calculatedScale, othervars.scaleHop) - othervars.zeroY;
+						}
 						statData[i][j].yPosTop = statData[i][j].yPosBottom - statData[i][j].barHeight + (config.barStrokeWidth / 2);
 						statData[i][j].v7=statData[i][j].xPosLeft;
 						statData[i][j].v8=statData[i][j].yPosBottom;
 						statData[i][j].v9=statData[i][j].xPosRight;
 						statData[i][j].v10=statData[i][j].yPosTop;
+
 					}
 					realbars++;
 					break;			
