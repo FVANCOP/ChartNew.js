@@ -1,0 +1,88 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=600;
+defCanvasHeight=300;
+
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June","July"],
+	datasets : [
+		{
+			type: "Line",
+			fillColor : "rgba(0,200,0,1)",
+			strokeColor : "rgba(0,200,0,1)",
+			pointColor : "rgba(0,200,200,1)",
+			pointstrokeColor : "green",
+      axis : 2,
+			data : [95,53,99,,73,27,82,],
+
+      title : "2014"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "green",
+			pointstrokeColor : "yellow",
+			data : [35,43,59,,31,50,66,],
+      axis : 1,
+      title : "2013"
+		}
+	]
+}               
+
+var startWithDataset =1;
+var startWithData =1;
+
+var opt1 = {
+      animation: false,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "Graph Title",
+      legend : true,
+      inGraphDataShow : false,
+      graphTitleFontSize: 18,
+      yAxisRight : true
+
+}
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+
+window.onload = function() {
+
+
+    var myLine = new Chart(document.getElementById("canvas_Line1").getContext("2d")).Bar(mydata1,opt1);
+
+}
+    </script>
+  </body>
+</html>
