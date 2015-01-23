@@ -1,4 +1,4 @@
-/*              ²
+/*              
  * ChartNew.js  
  *
  * Vancoppenolle Francois - January 2014
@@ -218,7 +218,14 @@ function isNumber(n) {
 	return !isNaN(parseFloat(n)) && isFinite(n);
 };
 
-function tmplbis(str, data) {
+function tmplbis(str, data,config) {
+	newstr=str;
+	if(newstr.substr(0,config.templatesOpenTag.length)==config.templatesOpenTag)newstr="<%="+newstr.substr(config.templatesOpenTag.length,newstr.length-config.templatesOpenTag.length);
+	if(newstr.substr(newstr.length-config.templatesCloseTag.length,config.templatesCloseTag.length)==config.templatesCloseTag)newstr=newstr.substr(0,newstr.length-config.templatesCloseTag.length)+"%>";
+	return tmplter(newstr,data);
+}
+
+function tmplter(str, data) {
 	var mathFunctionList = ["mean", "varianz", "stddev", "cv", "median"];
 	var regexMath = new RegExp('<%=((?:(?:.*?)\\W)??)((?:' + mathFunctionList.join('|') + ')(?:Dif)?)\\(([0-9]*?)\\)(.*?)%>', 'g');
 	while (regexMath.test(str)) {
@@ -239,7 +246,7 @@ function tmplbis(str, data) {
 	// load the template - and be sure to cache the result.
 	// first check if it's can be an id
 	var fn = /^[A-Za-z][-A-Za-z0-9_:.]*$/.test(str) ? cachebis[str] = cachebis[str] ||
-		tmplbis(document.getElementById(str).innerHTML) :
+		tmplter(document.getElementById(str).innerHTML) :
 		// Generate a reusable function that will serve as a template
 		// generator (and which will be cached).
 		new Function("obj",
@@ -733,7 +740,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					myStatData.graphPosY = canvas_pos.y;
 					onData = true;
 					if (action == "annotate") {
-						dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][12],-1,{otherVal:true}), myStatData);
+						dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][12],-1,{otherVal:true}), myStatData,config);
 						annotateDIV.innerHTML = dispString;
 						show = true;
 					} else {
@@ -755,7 +762,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 				myStatData.graphPosY = canvas_pos.y;
 				onData = true;
 				if (action == "annotate") {
-					dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][1],jsGraphAnnotate[ctx.ChartNewId][i][2],{otherVal:true}), myStatData);
+					dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][1],jsGraphAnnotate[ctx.ChartNewId][i][2],{otherVal:true}), myStatData,config);
 					annotateDIV.innerHTML = dispString;
 					show = true;
 				} else {
@@ -796,7 +803,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 				myStatData.graphPosY = canvas_pos.y;
 				onData = true;
 				if (action == "annotate") {
-					dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][1],jsGraphAnnotate[ctx.ChartNewId][i][2],{otherVal:true}), myStatData);
+					dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][1],jsGraphAnnotate[ctx.ChartNewId][i][2],{otherVal:true}), myStatData,config);
 					annotateDIV.innerHTML = dispString;
 					show = true;
 				} else {
@@ -1608,6 +1615,8 @@ window.Chart = function(context) {
 		thousandSeparator: "",
 		roundNumber: "none",
 		roundPct: -1,
+		templatesOpenTag : "<%=",
+		templatesCloseTag : "%>",
 		fmtV1: "none",
 		fmtV2: "none",
 		fmtV3: "none",
@@ -1845,7 +1854,7 @@ window.Chart = function(context) {
 						} else ctx.textBaseline = setOptionValue("INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,-1,{nullValue : true} );
 						ctx.font = setOptionValue("INGRAPHDATAFONTSTYLE",ctx,data,statData,undefined,config.inGraphDataFontStyle,i,-1,{nullValue : true} ) + ' ' + setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ) + 'px ' + setOptionValue("INGRAPHDATAFONTFAMILY",ctx,data,statData,undefined,config.inGraphDataFontFamily,i,-1,{nullValue : true} );
 						ctx.fillStyle = setOptionValue("INGRAPHDATAFONTCOLOR",ctx,data,statData,undefined,config.inGraphDataFontColor,i,-1,{nullValue : true} );
-						var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i]);
+						var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i],config);
 						ctx.translate(midPosX + labelRadius * Math.cos(posAngle), midPosY - labelRadius * Math.sin(posAngle));
 						if (setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) == "inRadiusAxis") ctx.rotate(2 * Math.PI - posAngle);
 						else if (setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) == "inRadiusAxisRotateLabels") {
@@ -2059,7 +2068,7 @@ window.Chart = function(context) {
 								if ((j * rotationDegree + 2 * Math.PI) % (2 * Math.PI) > Math.PI / 2 && (j * rotationDegree + 2 * Math.PI) % (2 * Math.PI) < 3 * Math.PI / 2) ctx.rotate(3 * Math.PI + j * rotationDegree);
 								else ctx.rotate(2 * Math.PI + j * rotationDegree);
 							} else ctx.rotate(setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) * (Math.PI / 180));
-							var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i][j]);
+							var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i][j],config);
 							ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ),true);
 							ctx.restore();
 						}
@@ -2328,7 +2337,7 @@ window.Chart = function(context) {
 						} else ctx.textBaseline = setOptionValue("INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,-1,{nullValue : true} );
 						ctx.font = setOptionValue("INGRAPHDATAFONTSTYLE",ctx,data,statData,undefined,config.inGraphDataFontStyle,i,-1,{nullValue : true} ) + ' ' + setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ) + 'px ' + setOptionValue("INGRAPHDATAFONTFAMILY",ctx,data,statData,undefined,config.inGraphDataFontFamily,i,-1,{nullValue : true} );
 						ctx.fillStyle = setOptionValue("INGRAPHDATAFONTCOLOR",ctx,data,statData,undefined,config.inGraphDataFontColor,i,-1,{nullValue : true} );
-						var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i]);
+						var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i],config);
 						ctx.translate(midPieX + labelRadius * Math.cos(posAngle), midPieY - labelRadius * Math.sin(posAngle));
 						if (setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) == "inRadiusAxis") ctx.rotate(2 * Math.PI - posAngle);
 						else if (setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) == "inRadiusAxisRotateLabels") {
@@ -2359,7 +2368,7 @@ window.Chart = function(context) {
 						else if (setOptionValue("INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 2) posAngle = realCumulativeAngle - statData[i].segmentAngle / 2 + setOptionValue("INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
 						else if (setOptionValue("INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 3) posAngle = realCumulativeAngle - statData[i].segmentAngle + setOptionValue("INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
 						realCumulativeAngle -= statData[i].segmentAngle;
-						var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i]);
+						var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i],config);
 						var textMeasurement = ctx.measureText(dispString).width;
 						var MaxRadiusX = Math.abs((msr.availableWidth / 2 - textMeasurement) / Math.cos(posAngle)) - setOptionValue("INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} ) - 5;
 						if (MaxRadiusX < pieRadius) pieRadius = MaxRadiusX;
@@ -2466,7 +2475,7 @@ window.Chart = function(context) {
 						} else ctx.textBaseline = setOptionValue("INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,-1,{nullValue : true} );
 						ctx.font = setOptionValue("INGRAPHDATAFONTSTYLE",ctx,data,statData,undefined,config.inGraphDataFontStyle,i,-1,{nullValue : true} ) + ' ' + setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ) + 'px ' + setOptionValue("INGRAPHDATAFONTFAMILY",ctx,data,statData,undefined,config.inGraphDataFontFamily,i,-1,{nullValue : true} );
 						ctx.fillStyle = setOptionValue("INGRAPHDATAFONTCOLOR",ctx,data,statData,undefined,config.inGraphDataFontColor,i,-1,{nullValue : true} );
-						var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i]);
+						var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i],config);
 						ctx.translate(midPieX + labelRadius * Math.cos(posAngle), midPieY - labelRadius * Math.sin(posAngle));
 						if (setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) == "inRadiusAxis") ctx.rotate(2 * Math.PI - posAngle);
 						else if (setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) == "inRadiusAxisRotateLabels") {
@@ -2497,7 +2506,7 @@ window.Chart = function(context) {
 						else if (setOptionValue("INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 2) posAngle = realCumulativeAngle - statData[i].segmentAngle / 2 + setOptionValue("INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
 						else if (setOptionValue("INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 3) posAngle = realCumulativeAngle - statData[i].segmentAngle + setOptionValue("INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
 						realCumulativeAngle -= statData[i].segmentAngle;
-						var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i]);
+						var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i],config);
 						var textMeasurement = ctx.measureText(dispString).width;
 						var MaxRadiusX = Math.abs((msr.availableWidth / 2 - textMeasurement) / Math.cos(posAngle)) - setOptionValue("INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} ) - 5;
 						if (MaxRadiusX < doughnutRadius) doughnutRadius = MaxRadiusX;
@@ -2905,7 +2914,7 @@ window.Chart = function(context) {
 					if (labelTemplateString) {
 						calculatedScale.labels.push(tmpl(labelTemplateString, {
 							value: fmtChartJS(config, 1 * ((scaleStartValue + (scaleStepWidth * i)).toFixed(getDecimalPlaces(scaleStepWidth))), config.fmtYLabel)
-						}));
+						},config));
 					}
 				}
 				msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, true, true, true, "StackedBar");
@@ -2988,7 +2997,7 @@ window.Chart = function(context) {
 							ctx.textBaseline = setOptionValue("INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,j,{nullValue : true} );
 							ctx.font = setOptionValue("INGRAPHDATAFONTSTYLE",ctx,data,statData,undefined,config.inGraphDataFontStyle,i,j,{nullValue : true} ) + ' ' + setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ) + 'px ' + setOptionValue("INGRAPHDATAFONTFAMILY",ctx,data,statData,undefined,config.inGraphDataFontFamily,i,j,{nullValue : true} );
 							ctx.fillStyle = setOptionValue("INGRAPHDATAFONTCOLOR",ctx,data,statData,undefined,config.inGraphDataFontColor,i,j,{nullValue : true} );
-							var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ), statData[i][j]);
+							var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ), statData[i][j],config);
 							ctx.beginPath();
 							ctx.beginPath();
 							yPos = 0;
@@ -3243,7 +3252,7 @@ window.Chart = function(context) {
 					if (labelTemplateString) {
 						calculatedScale.labels.push(tmpl(labelTemplateString, {
 							value: fmtChartJS(config, 1 * ((scaleStartValue + (scaleStepWidth * i)).toFixed(getDecimalPlaces(scaleStepWidth))), config.fmtYLabel)
-						}));
+						},config));
 					}
 				}
 				msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, true, true, true, true, "HorizontalStackedBar");
@@ -3331,7 +3340,7 @@ window.Chart = function(context) {
 							ctx.textBaseline = setOptionValue("INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,j,{nullValue : true} );
 							ctx.font = setOptionValue("INGRAPHDATAFONTSTYLE",ctx,data,statData,undefined,config.inGraphDataFontStyle,i,j,{nullValue : true} ) + ' ' + setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ) + 'px ' + setOptionValue("INGRAPHDATAFONTFAMILY",ctx,data,statData,undefined,config.inGraphDataFontFamily,i,j,{nullValue : true} );
 							ctx.fillStyle = setOptionValue("INGRAPHDATAFONTCOLOR",ctx,data,statData,undefined,config.inGraphDataFontColor,i,j,{nullValue : true} );
-							var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ),statData[i][j]);
+							var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ),statData[i][j],config);
 							ctx.beginPath();
 							yPos = 0;
 							xPos = 0;
@@ -3725,7 +3734,7 @@ window.Chart = function(context) {
 								yPos = statData[i][j].yPosTop - setOptionValue("INGRAPHDATAPADDINGY",ctx,data,statData,undefined,config.inGraphDataPaddingY,i,j,{nullValue : true} );
 							}
 							ctx.translate(xPos, yPos);
-							var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ), statData[i][j]);
+							var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ), statData[i][j],config);
 							ctx.rotate(setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) * (Math.PI / 180));
 							ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),true);
 							ctx.restore();
@@ -4074,7 +4083,7 @@ window.Chart = function(context) {
 								xPos = statData[i][j].xPosRight + setOptionValue("INGRAPHDATAPADDINGX",ctx,data,statData,undefined,config.inGraphDataPaddingX,i,j,{nullValue : true} );
 							}
 							ctx.translate(xPos, yPos);
-							var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ), statData[i][j]);
+							var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ), statData[i][j],config);
 							ctx.rotate(setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) * (Math.PI / 180));
 							ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),true);
 							ctx.restore();
@@ -4453,14 +4462,14 @@ window.Chart = function(context) {
 				for (var i = 0; i < numberOfSteps + 1; i++) {
 					labels.push(tmpl(labelTemplateString, {
 						value: fmtChartJS(config, 1 * ((graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))), fmtYLabel)
-					}));
+					},config));
 				}
 			} else { // logarithmic scale 10,100,1000,...
 				var value = graphMin;
 				for (var i = 0; i < numberOfSteps + 1; i++) {
 					labels.push(tmpl(labelTemplateString, {
 						value: fmtChartJS(config, 1 * value.toFixed(getDecimalPlaces(value)), fmtYLabel)
-					}));
+					},config));
 					value *= 10;
 				}
 			}
@@ -4520,13 +4529,20 @@ window.Chart = function(context) {
 	};
 	//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
 	var cache = {};
+	
+	function tmpl(str, data,config) {
+		newstr=str;
+		if(newstr.substr(0,config.templatesOpenTag.length)==config.templatesOpenTag)newstr="<%="+newstr.substr(config.templatesOpenTag.length,newstr.length-config.templatesOpenTag.length);
+		if(newstr.substr(newstr.length-config.templatesCloseTag.length,config.templatesCloseTag.length)==config.templatesCloseTag)newstr=newstr.substr(0,newstr.length-config.templatesCloseTag.length)+"%>";
+		return tmplpart2(newstr,data);
+	}
 
-	function tmpl(str, data) {
+	function tmplpart2(str, data) {
 		// Figure out if we're getting a template, or if we need to
 		// load the template - and be sure to cache the result.
 		var fn = !/\W/.test(str) ?
 			cache[str] = cache[str] ||
-			tmpl(document.getElementById(str).innerHTML) :
+			tmplpart2(document.getElementById(str).innerHTML) :
 			// Generate a reusable function that will serve as a template
 			// generator (and which will be cached).
 			new Function("obj",
@@ -5458,7 +5474,7 @@ window.Chart = function(context) {
 						ctx.fillStyle = setOptionValue("INGRAPHDATAFONTCOLOR",ctx,data,statData,undefined,config.inGraphDataFontColor,i,j,{nullValue : true} );
 						var paddingTextX = setOptionValue("INGRAPHDATAPADDINGX",ctx,data,statData,undefined,config.inGraphDataPaddingX,i,j,{nullValue : true} ),
 							paddingTextY = setOptionValue("INGRAPHDATAPADDINGY",ctx,data,statData,undefined,config.inGraphDataPaddingY,i,j,{nullValue : true} );
-						var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ), statData[i][j]);
+						var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ), statData[i][j],config);
 						ctx.translate(statData[i][j].xPos + paddingTextX, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset - paddingTextY);
 						ctx.rotate(setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) * (Math.PI / 180));
 						ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),true);
