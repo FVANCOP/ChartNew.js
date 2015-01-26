@@ -6566,11 +6566,17 @@ function setOptionValue(reference,ctx,data,statData,optionvar,defaultvalue,posi,
 
 	if(typeof optionvar == "undefined") {
 		if(typeof defaultvalue=="function") return defaultvalue(reference,ctx,data,statData,posi,posj,othervars);
-		else if(typeof defaultvalue == "object") return defaultvalue[Math.min(defaultvalue.length-1,Math.max(0,posi))];
+		else if(typeof defaultvalue == "object") {
+			if(posj==-1)return defaultvalue[Math.min(defaultvalue.length-1,Math.max(0,posi))];
+			else return defaultvalue[Math.min(defaultvalue.length-1,Math.max(0,posj))];
+		}
 		else return defaultvalue;
 	}
 	if(typeof optionvar=="function") return optionvar(reference,ctx,data,statData,posi,posj,othervars);
-	else if(typeof optionvar == "object") return optionvar[Math.min(optionvar.length-1,Math.max(0,posi))];
+	else if(typeof optionvar == "object") {
+		if (posj==-1)return optionvar[Math.min(optionvar.length-1,Math.max(0,posi))];
+		else return optionvar[Math.min(optionvar.length-1,Math.max(0,posj))];
+	}
 	else return optionvar;
 };
 
