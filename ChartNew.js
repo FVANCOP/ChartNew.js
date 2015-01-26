@@ -6574,9 +6574,9 @@ function setOptionValue(reference,ctx,data,statData,optionvar,defaultvalue,posi,
 	}
 	if(typeof optionvar=="function") return optionvar(reference,ctx,data,statData,posi,posj,othervars);
 	else if(typeof optionvar == "object") {
-			if (posj==-1)return optionvar[Math.min(optionvar.length-1,Math.max(0,posi))];
-			else return optionvar[Math.min(optionvar.length-1,Math.max(0,posj))];
-		}
+		if (posj==-1)return optionvar[Math.min(optionvar.length-1,Math.max(0,posi))];
+		else return optionvar[Math.min(optionvar.length-1,Math.max(0,posj))];
+	}
 	else return optionvar;
 };
 
