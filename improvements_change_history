@@ -1,7 +1,8 @@
 Change history
 --------------
 
-04/05/2015 - Doha83                 - double Y Axis for Bar Chart
+26/01/2015 - Vancoppenolle Francois - Fix Bug
+04/01/2015 - Doha83                 - double Y Axis for Bar Chart
 31/12/2014 - Matt Luedke            - Fix issue 208
 26/12/2014 - iKBAHT                 - improve function getDecimalPlaces https://github.com/FVANCOP/ChartNew.js/pull/215
 22/12/2014 - Vancoppenolle François - option pointHitDetectionRadius & detectAnnotateOnFullLine  added;
@@ -149,6 +150,7 @@ Future Improvements
 - animate Canvas when mouse is over a piece of graph (like in http://zurb.com/playground/pizza-pie-charts)
 - dynamicDisplay defines a canvas.id when not defined; Avoid defining a canvas.id (issue 35)
 - see issue #128
+- doughnut(s) arround Pie - see issue #227
 
 Known Bugs
 ----------
