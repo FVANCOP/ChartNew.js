@@ -1623,8 +1623,10 @@ window.Chart = function(context) {
 		fmtV4: "none",
 		fmtV5: "none",
 		fmtV6: "none",
+		fmtV6T: "none",
 		fmtV7: "none",
 		fmtV8: "none",
+		fmtV8T: "none",
 		fmtV9: "none",
 		fmtV10: "none",
 		fmtV11: "none",
@@ -3358,12 +3360,12 @@ window.Chart = function(context) {
 							} else if (setOptionValue("INGRAPHDATAYPOSITION",ctx,data,statData,undefined,config.inGraphDataYPosition,i,j,{nullValue : true} ) == 3) {
 								yPos = statData[i][j].yPosTop - setOptionValue("INGRAPHDATAPADDINGY",ctx,data,statData,undefined,config.inGraphDataPaddingY,i,j,{nullValue : true} );
 							}
-							if(xPos<=msr.availableWidth+msr.leftNotUsableSize) {
+//								if(xPos<=msr.availableWidth+msr.leftNotUsableSize) {
 								ctx.translate(xPos, yPos);
 								ctx.rotate(setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) * (Math.PI / 180));
 								ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),true);
 								ctx.restore();
-							}
+//							}
 						}
 					}
 				}
@@ -6040,6 +6042,7 @@ switch(ctx.tpchart) {
 		var lastNotMissingj=[];
 		prevpos[0]=[];
 		prevpos[1]=[];
+		var grandtotal=0;
 		for (var i = 0; i < data.datasets.length; i++) {
 			// BUG when all data are missing !
 			if (typeof data.datasets[i].xPos != "undefined" && tpdraw(ctx,data.datasets[i])=="Line") {
@@ -6070,6 +6073,7 @@ switch(ctx.tpchart) {
 					mnvalue[1][j]=Number.MAX_VALUE;
 				}
 				if (!(typeof data.datasets[i].data[j] == 'undefined')) {
+					grandtotal += 1 * data.datasets[i].data[j];
 					if(firstNotMissingi[i]==-1)firstNotMissingi[i]=j;
 					lastNotMissingi[i]=j;
 					if(firstNotMissingj[j]==-1)firstNotMissingj[j]=i;
@@ -6099,14 +6103,14 @@ switch(ctx.tpchart) {
 				if (lgtxt2 == "" && !(typeof(data.labels[j]) == "undefined")) lgtxt2 = data.labels[j];
 				if (typeof lgtxt2 == "string") lgtxt2 = lgtxt2.trim();
 
-				if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
+//				if (!(typeof(data.datasets[i].data[j]) == 'undefined') && data.datasets[i].data[j] != 0) {
+				if (!(typeof(data.datasets[i].data[j]) == 'undefined') ) {
 					cumvalue[axis][j]+=1*data.datasets[i].data[j];
 					switch(tpdraw(ctx,data.datasets[i]))  {
 						case "Bar" :
 						case "StackedBar" :
 						case "HorizontalBar" :
 						case "HorizontalStackedBar" :
-
 							result[i][j]= {
 								config: config,
 								v1: fmtChartJS(config, lgtxt, config.fmtV1),
@@ -6115,6 +6119,7 @@ switch(ctx.tpchart) {
 								v4: fmtChartJS(config, cumvalue[axis][j], config.fmtV4),
 								v5: fmtChartJS(config, totvalue[axis][j], config.fmtV5),
 								v6: roundToWithThousands(config, fmtChartJS(config, 100 * data.datasets[i].data[j] / totvalue[axis][j], config.fmtV6), config.roundPct),
+								v6T: roundToWithThousands(config, fmtChartJS(config, 100 * data.datasets[i].data[j] / grandtotal, config.fmtV6T), config.roundPct),
 								v11: fmtChartJS(config, i, config.fmtV11),
 								v12: fmtChartJS(config, j, config.fmtV12),
 								lgtxt: lgtxt,
@@ -6123,10 +6128,12 @@ switch(ctx.tpchart) {
 								cumvalue: cumvalue[axis][j],
 								totvalue: totvalue[axis][j],
 								pctvalue: 100 * data.datasets[i].data[j] / totvalue[axis][j],
+								pctvalueT: 100 * data.datasets[i].data[j] / grandtotal,
 								maxvalue : mxvalue[axis][j],
 								minvalue : mnvalue[axis][j],
 								lmaxvalue : lmaxvalue[axis][i],
 								lminvalue : lminvalue[axis][i],
+								grandtotal : grandtotal,
 								firstNotMissing : firstNotMissingj[j],
 								lastNotMissing : lastNotMissingj[j],
 								prevNotMissing : prevnotemptyj,
@@ -6136,6 +6143,7 @@ switch(ctx.tpchart) {
 								i: i,
 								data: data
 							};
+							if(1 * data.datasets[i].data[j]==0 && (tpdraw(ctx,data.datasets[i])=="HorizontalStackedBar" || tpdraw(ctx,data.datasets[i])=="StackedBar"))result[i][j].v3="";
 							break;
 						case "Line" :
 						case "Radar" :
@@ -6145,9 +6153,10 @@ switch(ctx.tpchart) {
 								v2: fmtChartJS(config, lgtxt2, config.fmtV2),
 								v3: fmtChartJS(config, 1 * data.datasets[i].data[j], config.fmtV3),
 								v5: fmtChartJS(config, 1 * data.datasets[i].data[j], config.fmtV5),
-								v6: fmtChartJS(config, mxvalue[axis][j], config.fmtV7),
-								v7: fmtChartJS(config, totvalue[axis][j], config.fmtV6),
+								v6: fmtChartJS(config, mxvalue[axis][j], config.fmtV6),
+								v7: fmtChartJS(config, totvalue[axis][j], config.fmtV7),
 								v8: roundToWithThousands(config, fmtChartJS(config, 100 * data.datasets[i].data[j] / totvalue[axis][j], config.fmtV8), config.roundPct),
+								v8T: roundToWithThousands(config, fmtChartJS(config, 100 * data.datasets[i].data[j] / grandtotal, config.fmtV8T), config.roundPct),
 								v11: fmtChartJS(config, i, config.fmtV11),
 								v12: fmtChartJS(config, j, config.fmtV12),
 								lgtxt: lgtxt,
@@ -6155,6 +6164,7 @@ switch(ctx.tpchart) {
 								datavalue: 1 * data.datasets[i].data[j],
 								diffnext: 1 * data.datasets[i].data[j],
 								pctvalue: 100 * data.datasets[i].data[j] / totvalue[axis][j],
+								pctvalueT: 100 * data.datasets[i].data[j] / grandtotal,
 								totvalue : totvalue[axis][j],
 								cumvalue: cumvalue[axis][j],
 								maxvalue : mxvalue[axis][j],
@@ -6162,6 +6172,7 @@ switch(ctx.tpchart) {
 								lmaxvalue : lmaxvalue[axis][i],
 								lminvalue : lminvalue[axis][i],
 								lminvalue : lminvalue[axis][i],
+								grandtotal : grandtotal,
 								firstNotMissing : firstNotMissingi[i],
 								lastNotMissing : lastNotMissingi[i],
 								prevNotMissing : prevnotemptyj,
@@ -6204,6 +6215,7 @@ switch(ctx.tpchart) {
 								lastNotMissing : lastNotMissingj[j],
 								prevNotMissing : prevnotemptyj,
 								prevMissing : prevemptyj,
+								grandtotal : grandtotal,
 								 }; 
 							break;
 						case "Line" :
@@ -6216,6 +6228,7 @@ switch(ctx.tpchart) {
 								lastNotMissing : lastNotMissingi[i],
 								prevNotMissing : prevnotemptyj,
 								prevMissing : prevemptyj,
+								grandtotal : grandtotal,
 								 }; 
 							break;
 						}
@@ -6436,7 +6449,8 @@ switch(ctx.tpchart) {
 							tempp[j]=0;
 							tempn[j]=0;
 						}
-						if ((typeof(data.datasets[i].data[j]) == 'undefined') || 1*data.datasets[i].data[j] == 0 ) continue;
+						if (typeof(data.datasets[i].data[j]) == 'undefined')  continue;
+//						if ((typeof(data.datasets[i].data[j]) == 'undefined') || 1*data.datasets[i].data[j] == 0 ) continue;
 
 						statData[i][j].xPosLeft= othervars.yAxisPosX + config.barValueSpacing + othervars.valueHop * j;
 						if (1*data.datasets[i].data[j]<0) {
