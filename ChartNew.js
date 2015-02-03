@@ -1008,6 +1008,7 @@ window.Chart = function(context) {
 			scaleOverlay: true,
 			scaleOverride: false,
 			scaleOverride2: false,
+			scaleGridLinesStep : 1,
 			scaleSteps: null,
 			scaleStepWidth: null,
 			scaleStartValue: null,
@@ -1058,6 +1059,7 @@ window.Chart = function(context) {
 			inGraphDataFontColor: "#666",
 			inGraphDataRadiusPosition: 3,
 			yAxisMinimumInterval: "none",
+			scaleGridLinesStep : 1,
 			scaleOverlay: false,
 			scaleOverride: false,
 			scaleOverride2: false,
@@ -1096,8 +1098,7 @@ window.Chart = function(context) {
 			onAnimationComplete: null,
 			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3%>",
 			pointHitDetectionRadius : 10,
-			startAngle: 90,
-			graphMaximized: false // if true, the graph will not be centered in the middle of the canvas
+			startAngle: 90
 		};
 		// merge annotate defaults
 		chart.Radar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Radar.defaults);
@@ -1648,6 +1649,7 @@ window.Chart = function(context) {
 		defaultStrokeColor: "rgba(220,220,220,1)",
 		defaultFillColor: "rgba(220,220,220,0.5)",
 		defaultLineWidth : 2,
+		graphMaximized: false,
 		mouseDownRight: null,
 		mouseDownLeft: null,
 		mouseDownMiddle: null,
@@ -1873,7 +1875,7 @@ window.Chart = function(context) {
 
 		function drawScale() {
 			for (var i = 0; i < calculatedScale.steps; i++) {
-				if (config.scaleShowLine) {
+				if (config.scaleShowLine && (i+1) % config.scaleGridLinesStep==0) {
 					ctx.beginPath();
 					ctx.arc(midPosX, midPosY, scaleHop * (i + 1), 0, (Math.PI * 2), true);
 					ctx.strokeStyle = config.scaleLineColor;
@@ -2098,7 +2100,7 @@ window.Chart = function(context) {
 			}
 			for (var i = 0; i < calculatedScale.steps; i++) {
 				ctx.beginPath();
-				if (config.scaleShowLine) {
+				if (config.scaleShowLine && (i+1) % config.scaleGridLinesStep == 0 ) {
 					ctx.strokeStyle = config.scaleLineColor;
 					ctx.lineWidth = config.scaleLineWidth;
 					ctx.moveTo(0, -scaleHop * (i + 1));
@@ -2728,7 +2730,7 @@ window.Chart = function(context) {
 				ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY - ((j + 1) * scaleHop));
 				ctx.lineWidth = config.scaleGridLineWidth;
 				ctx.strokeStyle = config.scaleGridLineColor;
-				if (config.scaleShowGridLines && j % config.scaleYGridLinesStep == 0) {
+				if (config.scaleShowGridLines && (j+1) % config.scaleYGridLinesStep == 0) {
 					ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, xAxisPosY - ((j + 1) * scaleHop));
 				} else {
 					ctx.lineTo(yAxisPosX, xAxisPosY - ((j + 1) * scaleHop));
@@ -3064,7 +3066,7 @@ window.Chart = function(context) {
 				ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY - ((j + 1) * scaleHop));
 				ctx.lineWidth = config.scaleGridLineWidth;
 				ctx.strokeStyle = config.scaleGridLineColor;
-				if (config.scaleShowGridLines && j % config.scaleYGridLinesStep == 0) {
+				if (config.scaleShowGridLines && (j+1) % config.scaleYGridLinesStep == 0) {
 					ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, xAxisPosY - ((j + 1) * scaleHop));
 				} else {
 					ctx.lineTo(yAxisPosX, xAxisPosY - ((j + 1) * scaleHop));
@@ -3408,7 +3410,7 @@ window.Chart = function(context) {
 				ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY - ((j + 1) * scaleHop));
 				ctx.lineWidth = config.scaleGridLineWidth;
 				ctx.strokeStyle = config.scaleGridLineColor;
-				if (config.scaleShowGridLines && j % config.scaleYGridLinesStep == 0) {
+				if (config.scaleShowGridLines && (j+1) % config.scaleYGridLinesStep == 0) {
 					ctx.lineTo(yAxisPosX + msr.availableWidth, xAxisPosY - ((j + 1) * scaleHop));
 				} else {
 					ctx.lineTo(yAxisPosX, xAxisPosY - ((j + 1) * scaleHop));
@@ -3810,7 +3812,7 @@ window.Chart = function(context) {
 				ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY - ((j + 1) * scaleHop));
 				ctx.lineWidth = config.scaleGridLineWidth;
 				ctx.strokeStyle = config.scaleGridLineColor;
-				if (config.scaleShowGridLines && j % config.scaleYGridLinesStep == 0) {
+				if (config.scaleShowGridLines && (j+1) % config.scaleYGridLinesStep == 0) {
 					ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, xAxisPosY - ((j + 1) * scaleHop));
 				} else {
 					ctx.lineTo(yAxisPosX, xAxisPosY - ((j + 1) * scaleHop));
@@ -4147,7 +4149,7 @@ window.Chart = function(context) {
 				ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY - ((j + 1) * scaleHop));
 				ctx.lineWidth = config.scaleGridLineWidth;
 				ctx.strokeStyle = config.scaleGridLineColor;
-				if (config.scaleShowGridLines && j % config.scaleYGridLinesStep == 0) {
+				if (config.scaleShowGridLines && (j+1) % config.scaleYGridLinesStep == 0) {
 					ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, xAxisPosY - ((j + 1) * scaleHop));
 				} else {
 					ctx.lineTo(yAxisPosX, xAxisPosY - ((j + 1) * scaleHop));
@@ -4420,6 +4422,12 @@ window.Chart = function(context) {
 						numberOfSteps = Math.round(graphRange / stepValue);
 					}
 				}
+			}
+			if(config.graphMaximized==true || config.graphMaximized=="bottom" ) {
+				while (graphMin+stepValue < minValue && numberOfSteps>=3){graphMin+=stepValue;numberOfSteps--};
+			}
+			if(config.graphMaximized==true || config.graphMaximized=="top" ) {
+				while (graphMin+(numberOfSteps-1)*stepValue >= maxValue && numberOfSteps>=3) numberOfSteps--;
 			}
 		} else { // logarithmic scale
 			numberOfSteps = rangeOrderOfMagnitude; // so scale is 10,100,1000,...
