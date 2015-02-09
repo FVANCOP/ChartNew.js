@@ -1,0 +1,161 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+
+<SCRIPT>
+
+
+defCanvasWidth=800;
+defCanvasHeight=800;
+
+var mydata2 = [
+	{
+		value : 1,
+		color: "#9F81F7",
+    title : "data1"
+	},
+	{
+		value : 45,
+		color: "#F4FA58",
+    title : "data2"
+	},
+	{
+		value : 2,
+		color: "#E6E6E6",
+    title : "data3"
+	},
+	{
+		value : 45,
+		color: "#81F7D8",
+    title : "data4"
+	},
+	{
+		value : 1,
+		color: "#F78181",
+    title : "data5"
+	},
+	{
+		value : 2,
+		color: "#F5A9F2",
+    title : "data6"
+	},
+	{
+		value : 1,
+		color: "#58FA58",
+    title : "data7"
+	}
+];
+
+function setPosInPie1(area,ctx,data,statData,posi,posj,othervars)
+{
+  
+  if(posi%4==0)return(45);
+  else if(posi%4==1)return(15);
+  else if(posi%4==2)return(-15);
+  else if(posi%4==3)return(-45);
+}
+
+function setPosInPie2(area,ctx,data,statData,posi,posj,othervars)
+{
+	var minAngle=10;
+	var offSet=10;
+	var cntbef=0;
+	var cntaft=0;
+	if(statData[posi].segmentAngle*360/(2*Math.PI) < minAngle )
+	{
+		for(var i=posi-1;i>=0 && statData[i].segmentAngle*360/(2*Math.PI) < minAngle;i--)cntbef++;
+		if(cntbef==posi)for(var i=data.length-1;i>=0 && statData[i].segmentAngle*360/(2*Math.PI) < minAngle;i--)cntbef++;
+
+		for(var i=posi+1;i<data.length && statData[i].segmentAngle*360/(2*Math.PI) < minAngle;i++)cntaft++;
+		if(posi+cntaft==data.length-1)for(var i=0;i<data.length && statData[i].segmentAngle*360/(2*Math.PI) < minAngle;i++)cntaft++;
+		if(cntbef>=data.length)cntbef=posi-1
+		if(cntaft>=data.length)cntaft=data.length-posi;
+	} 	
+	return((cntbef+cntaft)*offSet-cntaft*2*offSet);
+}
+
+
+var opt1A = {
+      animation : false,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      inGraphDataShow : true,
+      inGraphDataFontColor : "black",
+      inGraphDataAlign : "center",
+      inGraphDataRadiusPosition : 2,
+      inGraphDataPaddingRadius : setPosInPie2
+}
+var opt1B = {
+      animation : false,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      inGraphDataShow : true,
+      inGraphDataFontColor : "black",
+      inGraphDataAlign : "center",
+      inGraphDataRadiusPosition : 2,
+      inGraphDataPaddingRadius : setPosInPie1
+}
+
+var opt1C = {
+      animation : false,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      inGraphDataShow : true,
+      inGraphDataFontColor : "black",
+      inGraphDataAlign : "center",
+      inGraphDataRadiusPosition : 2,
+      inGraphDataPaddingRadius :[-30,0,0,0,30,10,-10]
+}
+
+var opt1D = {
+      animation : false,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      inGraphDataShow : true,
+      inGraphDataFontColor : "black",
+      inGraphDataAlign : "center",
+      inGraphDataRadiusPosition : 2,
+      inGraphDataMinimumAngle : 7
+}
+
+ 	
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_PieA\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_PieB\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_PieC\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_PieD\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+
+window.onload = function() {
+
+
+    var myPie = new Chart(document.getElementById("canvas_PieA").getContext("2d")).Pie(mydata2,opt1A);
+    var myPie = new Chart(document.getElementById("canvas_PieB").getContext("2d")).Pie(mydata2,opt1B);
+    var myPie = new Chart(document.getElementById("canvas_PieC").getContext("2d")).Pie(mydata2,opt1C);
+    var myPie = new Chart(document.getElementById("canvas_PieD").getContext("2d")).Pie(mydata2,opt1D);
+
+	}
+
+    </script>
+  </body>
+</html>
