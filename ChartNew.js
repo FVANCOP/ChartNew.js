@@ -4411,22 +4411,23 @@ window.Chart = function(context) {
 			if (typeof yAxisMinimumInterval == "number") {
 				if (stepValue < yAxisMinimumInterval) {
 					stepValue = yAxisMinimumInterval;
-					numberOfSteps = Math.round(graphRange / stepValue);
+					numberOfSteps = Math.ceil(graphRange / stepValue);
 				}
 				if (stepValue % yAxisMinimumInterval > config.zeroValue && stepValue % yAxisMinimumInterval < yAxisMinimumInterval - config.zeroValue) {
 					if ((2 * stepValue) % yAxisMinimumInterval < config.zeroValue || (2 * stepValue) % yAxisMinimumInterval > yAxisMinimumInterval - config.zeroValue) {
 						stepValue = 2 * stepValue;
-						numberOfSteps = Math.round(graphRange / stepValue);
+						numberOfSteps = Math.ceil(graphRange / stepValue);
 					} else {
 						stepValue = roundScale(config, (1 + Math.floor(stepValue / yAxisMinimumInterval)) * yAxisMinimumInterval);
-						numberOfSteps = Math.round(graphRange / stepValue);
+						numberOfSteps = Math.ceil(graphRange / stepValue);
 					}
 				}
 			}
-			if(config.graphMaximized==true || config.graphMaximized=="bottom" ) {
+			if(config.graphMaximized==true || config.graphMaximized=="bottom" || typeof config.graphMin!=="undefined") {
 				while (graphMin+stepValue < minValue && numberOfSteps>=3){graphMin+=stepValue;numberOfSteps--};
 			}
-			if(config.graphMaximized==true || config.graphMaximized=="top" ) {
+			if(config.graphMaximized==true || config.graphMaximized=="top" || typeof config.graphMax!=="undefined") {
+
 				while (graphMin+(numberOfSteps-1)*stepValue >= maxValue && numberOfSteps>=3) numberOfSteps--;
 			}
 		} else { // logarithmic scale
