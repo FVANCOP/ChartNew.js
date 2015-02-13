@@ -706,6 +706,8 @@ function getMousePos(canvas, evt) {
 function doMouseAction(config, ctx, event, data, action, funct) {
 
 	var onData = false;
+	var textMsr;
+	
 	if (action == "annotate") {
 		var annotateDIV = document.getElementById('divCursor');
 		var show = false;
@@ -718,6 +720,10 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 		annotateDIV.style.fontFamily = (config.annotateClassName) ? '' : config.annotateFontFamily;
 		annotateDIV.style.fontSize = (config.annotateClassName) ? '' : config.annotateFontSize + "pt";
 		annotateDIV.style.fontStyle = (config.annotateClassName) ? '' : config.annotateFontStyle;
+		annotateDIV.style.zIndex = 999;
+		ctx.save();
+		ctx.font= annotateDIV.style.fontStyle+" "+ annotateDIV.style.fontSize+" "+annotateDIV.style.fontFamily;
+		var rect = ctx.canvas.getBoundingClientRect();
 	}
 	if (action=="annotate") {
 		show=false;
@@ -741,6 +747,8 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					onData = true;
 					if (action == "annotate") {
 						dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][12],-1,{otherVal:true}), myStatData,config);
+						textMsr=ctx.measureTextMultiLine(dispString);
+						ctx.restore();
 						annotateDIV.innerHTML = dispString;
 						show = true;
 					} else {
@@ -750,7 +758,8 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 						x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
 						y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
 						if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
-						oCursor.moveIt(x + fromLeft, y + fromTop);
+						if(x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-10) oCursor.moveIt(x + fromLeft-textMsr.textWidth, y + fromTop);
+						else oCursor.moveIt(x + fromLeft, y + fromTop);
 					}
 				}
 			}
@@ -763,6 +772,8 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 				onData = true;
 				if (action == "annotate") {
 					dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][1],jsGraphAnnotate[ctx.ChartNewId][i][2],{otherVal:true}), myStatData,config);
+					textMsr=ctx.measureTextMultiLine(dispString);
+					ctx.restore();
 					annotateDIV.innerHTML = dispString;
 					show = true;
 				} else {
@@ -772,7 +783,8 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
 					y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
 					if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
-					oCursor.moveIt(x + fromLeft, y + fromTop);
+					if(x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-10) oCursor.moveIt(x + fromLeft-textMsr.textWidth, y + fromTop);
+					else oCursor.moveIt(x + fromLeft, y + fromTop);
 				}
 			}
 		} else if (jsGraphAnnotate[ctx.ChartNewId][i][0] == "POINT") {
@@ -804,6 +816,8 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 				onData = true;
 				if (action == "annotate") {
 					dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][1],jsGraphAnnotate[ctx.ChartNewId][i][2],{otherVal:true}), myStatData,config);
+					textMsr=ctx.measureTextMultiLine(dispString);
+					ctx.restore();
 					annotateDIV.innerHTML = dispString;
 					show = true;
 				} else {
@@ -813,7 +827,8 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
 					y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
 					if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
-					oCursor.moveIt(x + fromLeft, y + fromTop);
+					if(x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-10) oCursor.moveIt(x + fromLeft-textMsr.textWidth, y + fromTop);
+					else oCursor.moveIt(x + fromLeft, y + fromTop);
 				}
 			}
 		}
