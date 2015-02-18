@@ -1,0 +1,69 @@
+<!doctype html>
+
+<style>
+#inner {
+    width: 50%;
+    margin: 0 auto;
+    background-color:#b0c4de;
+}
+</style>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+
+<SCRIPT>
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June","July"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [65,59,90,81,56,55,30],
+      title : "pFirst data"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			data : [28,48,20,19,46,27,110],
+      title : "pSecond data"
+		}
+	]
+}
+
+var newopts = {
+      inGraphDataShow : true,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      annotateDisplay : true, 
+      annotateLabel : "<%='This div tag<div id=\"inner\">This is the included div</div>'%>"
+}
+
+</SCRIPT>
+
+<html>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<head>
+<title>Demo ChartNew.js</title>
+</head>
+<body>
+   
+<center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+    <script>
+	document.write("<canvas id=\"canvas_bar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+	window.onload = function() {
+	var myCanvas = new Chart(document.getElementById("canvas_bar").getContext("2d")).Bar(mydata1,newopts);
+	}
+    </script>
+</center>
+</body>
+</html>

@@ -758,7 +758,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 						x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
 						y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
 						if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
-						if(x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-10) oCursor.moveIt(x + fromLeft-textMsr.textWidth, y + fromTop);
+						if(config.annotateRelocate && x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-10) oCursor.moveIt(x + fromLeft-textMsr.textWidth, y + fromTop);
 						else oCursor.moveIt(x + fromLeft, y + fromTop);
 					}
 				}
@@ -783,7 +783,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
 					y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
 					if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
-					if(x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-10) oCursor.moveIt(x + fromLeft-textMsr.textWidth, y + fromTop);
+					if(config.annotateRelocate && x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-10) oCursor.moveIt(x + fromLeft-textMsr.textWidth, y + fromTop);
 					else oCursor.moveIt(x + fromLeft, y + fromTop);
 				}
 			}
@@ -827,7 +827,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
 					y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
 					if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
-					if(x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-10) oCursor.moveIt(x + fromLeft-textMsr.textWidth, y + fromTop);
+					if(config.annotateRelocate && x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-10) oCursor.moveIt(x + fromLeft-textMsr.textWidth, y + fromTop);
 					else oCursor.moveIt(x + fromLeft, y + fromTop);
 				}
 			}
@@ -1584,6 +1584,7 @@ window.Chart = function(context) {
 		legendXPadding : 0,
 		legendYPadding : 0,
 		annotateDisplay: false,
+		annotateRelocate: false,
 		savePng: false,
 		savePngOutput: "NewWindow", // Allowed values : "NewWindow", "CurrentWindow", "Save"
 		savePngFunction: "mousedown right",
