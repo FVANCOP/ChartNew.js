@@ -1311,6 +1311,9 @@ window.Chart = function(context) {
 			scaleTickSizeRight: 5,
 			scaleTickSizeBottom: 5,
 			scaleTickSizeTop: 5,
+			pointDot: true,
+			pointDotRadius: 4,
+			pointDotStrokeWidth: 2,
 			barShowStroke: true,
 			barStrokeWidth: 2,
 			barValueSpacing: 5,
@@ -1320,7 +1323,8 @@ window.Chart = function(context) {
 			animationSteps: 60,
 			animationEasing: "easeOutQuart",
 			onAnimationComplete: null,
-			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + v6 + ' %)'%>"
+			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + v6 + ' %)'%>",
+			pointHitDetectionRadius : 10
 		};
 		// merge annotate defaults
 		chart.StackedBar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.StackedBar.defaults);
@@ -1444,6 +1448,9 @@ window.Chart = function(context) {
 			barValueSpacing: 5,
 			barDatasetSpacing: 1,
 			barBorderRadius: 0,
+			pointDot: true,
+			pointDotRadius: 4,
+			pointDotStrokeWidth: 2,
 			extrapolateMissingData: true,
 			animation: true,
 			animationSteps: 60,
@@ -1452,7 +1459,8 @@ window.Chart = function(context) {
 			pointDot: true,
 			bezierCurve: true,
 			bezierCurveTension : 0.4,
-			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + v6 + ' %)'%>"
+			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + v6 + ' %)'%>",
+			pointHitDetectionRadius : 10
 		};
 		// merge annotate defaults
 		chart.Bar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Bar.defaults);
@@ -5494,7 +5502,7 @@ window.Chart = function(context) {
 						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["POINT", i, j, statData];
 					}
 					if (setOptionValue("INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,j,{nullValue : true})) {
-						ctx.save();
+ 						ctx.save();
 						ctx.textAlign = setOptionValue("INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  });
 						ctx.textBaseline = setOptionValue("INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,j,{nullValue : true} );
 						ctx.font = setOptionValue("INGRAPHDATAFONTSTYLE",ctx,data,statData,undefined,config.inGraphDataFontStyle,i,j,{nullValue : true} ) + ' ' + setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ) + 'px ' + setOptionValue("INGRAPHDATAFONTFAMILY",ctx,data,statData,undefined,config.inGraphDataFontFamily,i,j,{nullValue : true} );
