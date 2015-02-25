@@ -746,7 +746,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					myStatData.graphPosY = canvas_pos.y;
 					onData = true;
 					if (action == "annotate") {
-						dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][12],-1,{otherVal:true}), myStatData,config);
+						dispString = tmplbis(setOptionValue("ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][1],-1,{otherVal:true}), myStatData,config);
 						textMsr=ctx.measureTextMultiLine(dispString);
 						ctx.restore();
 						annotateDIV.innerHTML = dispString;
