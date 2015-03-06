@@ -2552,16 +2552,18 @@ window.Chart = function(context) {
 		var zeroY2 = 0;
 		ctx.tpchart="Line";
 	        if (!init_and_start(ctx,data,config)) return;
-		var statData=initPassVariableData_part1(data,config,ctx);
 		// adapt data when length is 1;
 		var mxlgt = 0;
-		for (var i = 0; i < data.datasets.length; i++) {statData[i][0].tpchart="Line";mxlgt = Max([mxlgt, data.datasets[i].data.length]);}
+		for (var i = 0; i < data.datasets.length; i++) {mxlgt = Max([mxlgt, data.datasets[i].data.length]);}
 		if (mxlgt == 1) {
 			if (typeof(data.labels[0]) == "string") data.labels = ["", data.labels[0], ""];
 			for (var i = 0; i < data.datasets.length; i++) {
 				if (typeof(data.datasets[i].data[0] != "undefined")) data.datasets[i].data = [undefined, data.datasets[i].data[0], undefined];
 			}
+			mxlgt=3;
 		}
+		var statData=initPassVariableData_part1(data,config,ctx);
+		for (var i = 0; i < data.datasets.length; i++) statData[i][0].tpchart="Line";
 		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], false, false, true, true, config.datasetFill, "Line");
 		valueBounds = getValueBounds();
 		// true or fuzzy (error for negativ values (included 0))
@@ -6318,7 +6320,6 @@ switch(ctx.tpchart) {
 			switch(tpdraw(ctx,data.datasets[i])) {
 				case "Line" :
 					for (var j = 0; j < data.datasets[i].data.length; j++) {
-
 						statData[i][j].xAxisPosY = othervars.xAxisPosY;
 						statData[i][j].yAxisPosX = othervars.yAxisPosX;
 						statData[i][j].valueHop = othervars.valueHop;
