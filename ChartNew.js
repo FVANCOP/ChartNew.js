@@ -5882,7 +5882,7 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
 				ctx.save();
 				ctx.beginPath();
 				ctx.font = config.legendFontStyle + " " + config.legendFontSize + "px " + config.legendFontFamily;
-				ctx.fillStyle = config.legendFontColor;
+				ctx.fillStyle = setOptionValue("LEGENDFONTCOLOR",ctx,data,undefined,undefined,config.legendFontColor,orderi,-1,{nullvalue: true} );
 				ctx.textAlign = "left";
 				ctx.textBaseline = "bottom";
 				ctx.translate(xpos + config.legendBlockSize + config.legendSpaceBetweenBoxAndText, ypos);
