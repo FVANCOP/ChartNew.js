@@ -4000,12 +4000,14 @@ window.Chart = function(context) {
 			msr;
 		ctx.tpchart="HorizontalBar";
 	        if (!init_and_start(ctx,data,config)) return;
-		var statData=initPassVariableData_part1(data,config,ctx);
 
 		if (config.reverseOrder && typeof ctx.reversed == "undefined") {
 			ctx.reversed=true;
 			data = reverseData(data);
 		}
+
+		var statData=initPassVariableData_part1(data,config,ctx);
+
 		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], true, true, true, true, true, "StackedBar");
 		valueBounds = getValueBounds();
 		if(valueBounds.minValue<=0)config.logarithmic=false;
