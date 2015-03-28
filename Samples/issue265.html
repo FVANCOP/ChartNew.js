@@ -1,0 +1,86 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+<SCRIPT>
+
+defCanvasWidth=600;
+defCanvasHeight=300;
+
+
+var mydata1 = {
+	labels : ["January"],
+	datasets : [
+		{
+			fillColor : "green",
+			data : [108],
+      			title : "2014"
+		},
+		{
+			fillColor : "red",
+			data : [1],
+		      	title : "2013"
+		}
+	]
+}               
+var mydata2 = [
+	{
+		value : 7,
+		color: "green",
+	    	title : "data1"
+	},
+	{
+		value : 67,
+		color: "red",
+    		title : "data2"
+	}
+];
+             
+
+var opt1 = {
+      canvasBorders : true,
+      graphMin : 0,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      legend : true,
+      inGraphDataShow : true
+
+}
+
+var opt2 = {
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      legend : true,
+      inGraphDataShow : true
+}
+ 
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Pie\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Bar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+ 
+ window.onload = function() {
+
+
+    var myBar = new Chart(document.getElementById("canvas_Pie").getContext("2d")).Pie(mydata2,opt2);
+    var myBar = new Chart(document.getElementById("canvas_Bar").getContext("2d")).StackedBar(mydata1,opt1);
+
+}
+
+    </script>
+  </body>
+</html>
