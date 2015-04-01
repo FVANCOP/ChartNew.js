@@ -320,6 +320,11 @@ if (typeof CanvasRenderingContext2D !== 'undefined') {
 			textHeight: textHeight
 		};
 	};
+	if (typeof CanvasRenderingContext2D.prototype.setLineDash !== 'function') {
+		CanvasRenderingContext2D.prototype.setLineDash = function( listdash) {
+			return 0;
+		};
+	};	
 };
 cursorDivCreated = false;
 
