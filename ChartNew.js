@@ -30,6 +30,20 @@
  *
  */
 // non standard functions;
+
+function lineStyleFn(data)
+{
+if (data=="solid"){return []}
+if (data=="dotted"){return [1,4]}
+if (data=="shortDash"){return [2,1]}
+if (data=="dashed"){return [4,2]}
+if (data=="dashSpace"){return [4,6]}
+if (data=="longDashDot"){return [7,2,1,2]}
+if (data=="longDashShortDash"){return [10,4,4,4]}		
+if (data=="gradient"){return [1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,9,9,8,8,7,7,6,6,5,5,4,4,3,3,2,2,1]}	
+if(typeof data !=="string"){return data}	
+}
+
 if (typeof String.prototype.trim !== 'function') {
 	String.prototype.trim = function() {
 		return this.replace(/^\s+|\s+$/g, '');
@@ -1030,6 +1044,7 @@ window.Chart = function(context) {
 			scaleShowLine: true,
 			scaleLineColor: "rgba(0,0,0,.1)",
 			scaleLineWidth: 1,
+			scaleLineStyle: "solid",
 			scaleShowLabels: true,
 			scaleShowLabels2: true,
 			scaleLabel: "<%=value%>",
@@ -1043,6 +1058,7 @@ window.Chart = function(context) {
 			scaleBackdropPaddingX: 2,
 			segmentShowStroke: true,
 			segmentStrokeColor: "#fff",
+			segmentStrokeStyle: "solid",
 			segmentStrokeWidth: 2,
 			animation: true,
 			animationByData : "ByArc",
@@ -1083,6 +1099,7 @@ window.Chart = function(context) {
 			scaleStartValue: null,
 			scaleShowLine: true,
 			scaleLineColor: "rgba(0,0,0,.1)",
+			scaleLineStyle: "solid",
 			scaleLineWidth: 1,
 			scaleShowLabels: false,
 			scaleShowLabels2: true,
@@ -1097,6 +1114,7 @@ window.Chart = function(context) {
 			scaleBackdropPaddingX: 2,
 			angleShowLineOut: true,
 			angleLineColor: "rgba(0,0,0,.1)",
+			angleLineStyle: "solid",
 			angleLineWidth: 1,
 			pointLabelFontFamily: "'Arial'",
 			pointLabelFontStyle: "normal",
@@ -1105,8 +1123,10 @@ window.Chart = function(context) {
 			pointDot: true,
 			pointDotRadius: 3,
 			pointDotStrokeWidth: 1,
+			pointDotStrokeStyle:"solid",
 			datasetFill: true,
 			datasetStrokeWidth: 2,
+			datasetStrokeStyle:"solid",
 			animation: true,
 			animationSteps: 60,
 			animationEasing: "easeOutQuart",
@@ -1140,6 +1160,7 @@ window.Chart = function(context) {
 			inGraphDataMinimumAngle : 0,
 			segmentShowStroke: true,
 			segmentStrokeColor: "#fff",
+			segmentStrokeStyle: "solid",
 			segmentStrokeWidth: 2,
 			animation: true,
 			animationByData : false,
@@ -1177,6 +1198,7 @@ window.Chart = function(context) {
 		        inGraphDataMinimumAngle : 0,
 			segmentShowStroke: true,
 			segmentStrokeColor: "#fff",
+			segmentStrokeStyle: "solid",
 			segmentStrokeWidth: 2,
 			percentageInnerCutout: 50,
 			animation: true,
@@ -1224,6 +1246,7 @@ window.Chart = function(context) {
 			scaleStartValue2: null,
 			scaleLabel2 : "<%=value%>",
 			scaleLineColor: "rgba(0,0,0,.1)",
+			scaleLineStyle: "solid",
 			scaleLineWidth: 1,
 			scaleShowLabels: true,
 			scaleShowLabels2: true,
@@ -1236,6 +1259,7 @@ window.Chart = function(context) {
 			scaleXGridLinesStep: 1,
 			scaleYGridLinesStep: 1,
 			scaleGridLineColor: "rgba(0,0,0,.05)",
+			scaleGridLineStyle: "solid",
 			scaleGridLineWidth: 1,
 			showYAxisMin: true, // Show the minimum value on Y axis (in original version, this minimum is not displayed - it can overlap the X labels)
 			rotateLabels: "smart", // smart <=> 0 degre if space enough; otherwise 45 degres if space enough otherwise90 degre; 
@@ -1250,7 +1274,9 @@ window.Chart = function(context) {
 			bezierCurveTension : 0.4,
 			pointDot: true,
 			pointDotRadius: 4,
+			pointDotStrokeStyle: "solid",
 			pointDotStrokeWidth: 2,
+			datasetStrokeStyle: "solid",
 			datasetStrokeWidth: 2,
 			datasetFill: true,
 			animation: true,
@@ -1291,6 +1317,7 @@ window.Chart = function(context) {
 			scaleStepWidth: null,
 			scaleStartValue: null,
 			scaleLineColor: "rgba(0,0,0,.1)",
+			scaleLineStyle: "solid",
 			scaleLineWidth: 1,
 			scaleShowLabels: true,
 			scaleShowLabels2: true,
@@ -1303,6 +1330,7 @@ window.Chart = function(context) {
 			scaleXGridLinesStep: 1,
 			scaleYGridLinesStep: 1,
 			scaleGridLineColor: "rgba(0,0,0,.05)",
+			scaleGridLineStyle: "solid",
 			scaleGridLineWidth: 1,
 			showYAxisMin: true, // Show the minimum value on Y axis (in original version, this minimum is not displayed - it can overlap the X labels)
 			rotateLabels: "smart", // smart <=> 0 degre if space enough; otherwise 45 degres if space enough otherwise90 degre; 
@@ -1313,8 +1341,10 @@ window.Chart = function(context) {
 			scaleTickSizeTop: 5,
 			pointDot: true,
 			pointDotRadius: 4,
+			pointDotStrokeStyle: "solid",
 			pointDotStrokeWidth: 2,
 			barShowStroke: true,
+			barStrokeStyle: "solid",
 			barStrokeWidth: 2,
 			barValueSpacing: 5,
 			barDatasetSpacing: 1,
@@ -1356,6 +1386,7 @@ window.Chart = function(context) {
 			scaleStepWidth: null,
 			scaleStartValue: null,
 			scaleLineColor: "rgba(0,0,0,.1)",
+			scaleLineStyle: "solid",
 			scaleLineWidth: 1,
 			scaleShowLabels: true,
 			scaleShowLabels2: true,
@@ -1368,6 +1399,7 @@ window.Chart = function(context) {
 			scaleXGridLinesStep: 1,
 			scaleYGridLinesStep: 1,
 			scaleGridLineColor: "rgba(0,0,0,.05)",
+			scaleGridLineStyle: "solid",
 			scaleGridLineWidth: 1,
 			scaleTickSizeLeft: 5,
 			scaleTickSizeRight: 5,
@@ -1376,6 +1408,7 @@ window.Chart = function(context) {
 			showYAxisMin: true, // Show the minimum value on Y axis (in original version, this minimum is not displayed - it can overlap the X labels)
 			rotateLabels: "smart", // smart <=> 0 degre if space enough; otherwise 45 degres if space enough otherwise90 degre; 
 			barShowStroke: true,
+			barStrokeStyle: "solid",
 			barStrokeWidth: 2,
 			barValueSpacing: 5,
 			barDatasetSpacing: 1,
@@ -1420,6 +1453,7 @@ window.Chart = function(context) {
 			scaleStepWidth2: null,
 			scaleStartValue2: null,
 			scaleLineColor: "rgba(0,0,0,.1)",
+			scaleLineStyle: "solid",
 			scaleLineWidth: 1,
 			scaleShowLabels: true,
 			scaleShowLabels2: true,
@@ -1434,6 +1468,7 @@ window.Chart = function(context) {
 			scaleYGridLinesStep: 1,
 			scaleGridLineColor: "rgba(0,0,0,.05)",
 			scaleGridLineWidth: 1,
+			scaleGridLineStyle: "solid",
 			showYAxisMin: true, // Show the minimum value on Y axis (in original version, this minimum is not displayed - it can overlap the X labels)
 			rotateLabels: "smart", // smart <=> 0 degre if space enough; otherwise 45 degres if space enough otherwise90 degre; 
 			// you can force an integer value between 0 and 180 degres
@@ -1444,12 +1479,14 @@ window.Chart = function(context) {
 			scaleTickSizeBottom: 5,
 			scaleTickSizeTop: 5,
 			barShowStroke: true,
+			barStrokeStyle: "solid",
 			barStrokeWidth: 2,
 			barValueSpacing: 5,
 			barDatasetSpacing: 1,
 			barBorderRadius: 0,
 			pointDot: true,
 			pointDotRadius: 4,
+			pointDotStrokeStyle: "solid",
 			pointDotStrokeWidth: 2,
 			extrapolateMissingData: true,
 			animation: true,
@@ -1492,6 +1529,7 @@ window.Chart = function(context) {
 			scaleStepWidth: null,
 			scaleStartValue: null,
 			scaleLineColor: "rgba(0,0,0,.1)",
+			scaleLineStyle: "solid",
 			scaleLineWidth: 1,
 			scaleShowLabels: true,
 			scaleShowLabels2: true,
@@ -1504,6 +1542,7 @@ window.Chart = function(context) {
 			scaleXGridLinesStep: 1,
 			scaleYGridLinesStep: 1,
 			scaleGridLineColor: "rgba(0,0,0,.05)",
+			scaleGridLineStyle: "solid",
 			scaleGridLineWidth: 1,
 			scaleTickSizeLeft: 5,
 			scaleTickSizeRight: 5,
@@ -1512,6 +1551,7 @@ window.Chart = function(context) {
 			showYAxisMin: true, // Show the minimum value on Y axis (in original version, this minimum is not displayed - it can overlap the X labels)
 			rotateLabels: "smart", // smart <=> 0 degre if space enough; otherwise 45 degres if space enough otherwise90 degre; 
 			barShowStroke: true,
+			barStrokeStyle: "solid",
 			barStrokeWidth: 2,
 			barValueSpacing: 5,
 			barDatasetSpacing: 1,
@@ -1541,6 +1581,7 @@ window.Chart = function(context) {
 		canvasBorders: false,
 		canvasBackgroundColor: "none",
 		canvasBordersWidth: 3,
+		canvasBordersStyle: "solid",
 		canvasBordersColor: "black",
 		zeroValue : 0.0000000001,
 		graphTitle: "",
@@ -1575,6 +1616,7 @@ window.Chart = function(context) {
 		legendFontColor: "#666",
 		legendBlockSize: 15,
 		legendBorders: true,
+		legendBordersStyle: "solid",
 		legendBordersWidth: 1,
 		legendBordersColors: "#666",
 		legendBordersSpaceBefore: 5,
@@ -1673,6 +1715,7 @@ window.Chart = function(context) {
 		defaultStrokeColor: "rgba(220,220,220,1)",
 		defaultFillColor: "rgba(220,220,220,0.5)",
 		defaultLineWidth : 2,
+		defaultLineStyle: "solid",
 		graphMaximized: false,
 		mouseDownRight: null,
 		mouseDownLeft: null,
@@ -1845,7 +1888,10 @@ window.Chart = function(context) {
 					if (config.segmentShowStroke) {
 						ctx.strokeStyle = config.segmentStrokeColor;
 						ctx.lineWidth = config.segmentStrokeWidth;
+						
+						 ctx.setLineDash(lineStyleFn(config.segmentStrokeStyle));
 						ctx.stroke();
+						 ctx.setLineDash([]);
 					}
 				}
 			}
@@ -1904,7 +1950,10 @@ window.Chart = function(context) {
 					ctx.arc(midPosX, midPosY, scaleHop * (i + 1), 0, (Math.PI * 2), true);
 					ctx.strokeStyle = config.scaleLineColor;
 					ctx.lineWidth = config.scaleLineWidth;
+					 ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
+
 					ctx.stroke();
+					 ctx.setLineDash([]);
 				}
 				if (config.scaleShowLabels) {
 					ctx.textAlign = "center";
@@ -2034,7 +2083,9 @@ window.Chart = function(context) {
 
 				ctx.lineWidth = config.datasetStrokeWidth;
 				ctx.fill();
+				 ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
 				ctx.stroke();
+				 ctx.setLineDash([]);
 				if (config.pointDot && (!config.animationLeftToRight || (config.animationLeftToRight && animationDecimal >= 1))) {
 					ctx.beginPath();
 					ctx.fillStyle=setOptionValue("MARKERFILLCOLOR",ctx,data,statData,data.datasets[i].pointColor,config.defaultStrokeColor,i,-1,{nullvalue: true} );
@@ -2046,7 +2097,8 @@ window.Chart = function(context) {
 							ctx.beginPath();
 							var markerShape=setOptionValue("MARKERSHAPE",ctx,data,statData,data.datasets[i].markerShape,config.markerShape,i,j,{nullvalue: true} );
 							var markerRadius=setOptionValue("MARKERRADIUS",ctx,data,statData,data.datasets[i].pointDotRadius,config.pointDotRadius,i,j,{nullvalue: true} );
-							drawMarker(ctx,midPosX + currentAnimPc * statData[i][k].offsetX, midPosY - currentAnimPc * statData[i][k].offsetY, markerShape,markerRadius);							
+							var markerStrokeStyle=setOptionValue("MARKERSTROKESTYLE",ctx,data,statData,data.datasets[i].pointDotStrokeStyle,config.pointDotStrokeStyle,i,j,{nullvalue: true} );
+							drawMarker(ctx,midPosX + currentAnimPc * statData[i][k].offsetX, midPosY - currentAnimPc * statData[i][k].offsetY, markerShape,markerRadius,markerStrokeStyle);							
 						}
 					}
 				}
@@ -2119,7 +2171,9 @@ window.Chart = function(context) {
 					ctx.beginPath();
 					ctx.moveTo(0, 0);
 					ctx.lineTo(0, -maxSize);
+					 ctx.setLineDash(lineStyleFn(config.angleLineStyle));
 					ctx.stroke();
+                    ctx.setLineDash([]);
 				}
 			}
 			for (var i = 0; i < calculatedScale.steps; i++) {
@@ -2133,7 +2187,9 @@ window.Chart = function(context) {
 						ctx.lineTo(0, -scaleHop * (i + 1));
 					}
 					ctx.closePath();
+					 ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
 					ctx.stroke();
+					 ctx.setLineDash([]);
 				}
 			}
 			ctx.rotate(-(90 - config.startAngle) * Math.PI / 180);
@@ -2331,7 +2387,9 @@ window.Chart = function(context) {
 					if (config.segmentShowStroke) {
 						ctx.lineWidth = config.segmentStrokeWidth;
 						ctx.strokeStyle = config.segmentStrokeColor;
-						ctx.stroke();
+						ctx.setLineDash(lineStyleFn(config.segmentStrokeStyle));
+						ctx.stroke();					 
+                        ctx.setLineDash([]);
 					}
 				}
 			}
@@ -2469,7 +2527,9 @@ window.Chart = function(context) {
 					if (config.segmentShowStroke) {
 						ctx.lineWidth = config.segmentStrokeWidth;
 						ctx.strokeStyle = config.segmentStrokeColor;
-						ctx.stroke();
+						ctx.setLineDash(lineStyleFn(config.segmentStrokeStyle));
+						ctx.stroke();					 
+                        ctx.setLineDash([]);
 					}
 				}
 			}
@@ -2728,7 +2788,10 @@ window.Chart = function(context) {
 					// draw the scale line
 					ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, yPosXScale);
 					ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, yPosXScale);
+					ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
 					ctx.stroke();
+ ctx.setLineDash([]);
+ 
 				}
 			}
 			for (var i = 0; i < data.labels.length; i++) {
@@ -2742,7 +2805,9 @@ window.Chart = function(context) {
 				} else {
 					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY);
 				}
-				ctx.stroke();
+				ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
+			ctx.stroke();
+            ctx.setLineDash([]);
 			}
 			//Y axis
 			ctx.lineWidth = config.scaleLineWidth;
@@ -2750,7 +2815,9 @@ window.Chart = function(context) {
 			ctx.beginPath();
 			ctx.moveTo(yAxisPosX, xAxisPosY + config.scaleTickSizeBottom);
 			ctx.lineTo(yAxisPosX, xAxisPosY - msr.availableHeight - config.scaleTickSizeTop);
+			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
 			ctx.stroke();
+			 ctx.setLineDash([]);
 			for (var j = 0; j < calculatedScale.steps; j++) {
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY - ((j + 1) * scaleHop));
@@ -2761,7 +2828,9 @@ window.Chart = function(context) {
 				} else {
 					ctx.lineTo(yAxisPosX, xAxisPosY - ((j + 1) * scaleHop));
 				}
-				ctx.stroke();
+								ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
+			ctx.stroke();
+            ctx.setLineDash([]);
 			}
 		};
 
@@ -3006,7 +3075,7 @@ window.Chart = function(context) {
 						ctx.lineTo(statData[i][j].xPosLeft, topBar);
 						ctx.lineTo(statData[i][j].xPosRight, topBar);
 						ctx.lineTo(statData[i][j].xPosRight, botBar);
-						if (config.barShowStroke) ctx.stroke();
+					if (config.barShowStroke) { ctx.setLineDash(lineStyleFn(config.barStrokeStyle));ctx.stroke();ctx.setLineDash([]);};
 						ctx.closePath();
 						ctx.fill();
 					}
@@ -3063,10 +3132,13 @@ window.Chart = function(context) {
 			//X axis line                                                          
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
+			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
 			ctx.beginPath();
 			ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY);
 			ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, xAxisPosY);
 			ctx.stroke();
+			ctx.setLineDash([]);
+			 ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
 			for (var i = 0; i < data.labels.length; i++) {
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY + config.scaleTickSizeBottom);
@@ -3080,13 +3152,19 @@ window.Chart = function(context) {
 				}
 				ctx.stroke();
 			}
+			ctx.setLineDash([]);
+			
 			//Y axis
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
+			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
 			ctx.beginPath();
 			ctx.moveTo(yAxisPosX, xAxisPosY + config.scaleTickSizeBottom);
 			ctx.lineTo(yAxisPosX, xAxisPosY - msr.availableHeight - config.scaleTickSizeTop);
 			ctx.stroke();
+			ctx.setLineDash([]);
+			
+			ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
 			for (var j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale.steps; j++) {
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY - ((j + 1) * scaleHop));
@@ -3099,6 +3177,7 @@ window.Chart = function(context) {
 				}
 				ctx.stroke();
 			}
+			ctx.setLineDash([]);
 		};
 
 		function drawLabels() {
@@ -3349,7 +3428,7 @@ window.Chart = function(context) {
 						ctx.lineTo(rightBar, statData[i][j].yPosBottom);
 						ctx.lineTo(leftBar, statData[i][j].yPosBottom);
 						ctx.lineTo(leftBar, statData[i][j].yPosTop);
-						if (config.barShowStroke) ctx.stroke();
+						if (config.barShowStroke){  ctx.setLineDash(lineStyleFn(config.barStrokeStyle));ctx.stroke(); ctx.setLineDash([]);}
 						ctx.closePath();
 						ctx.fill();
 					}
@@ -3405,10 +3484,14 @@ window.Chart = function(context) {
 			//X axis line                                                          
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
+			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
 			ctx.beginPath();
 			ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY);
 			ctx.lineTo(yAxisPosX + msr.availableWidth, xAxisPosY);
 			ctx.stroke();
+			ctx.setLineDash([]);
+			
+			ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
 			for (var i = ((config.showYAxisMin) ? -1 : 0); i < calculatedScale.steps; i++) {
 				if (i >= 0) {
 					ctx.beginPath();
@@ -3423,14 +3506,18 @@ window.Chart = function(context) {
 					}
 					ctx.stroke();
 				}
+				ctx.setLineDash([]);
 			}
 			//Y axis
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
+			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
 			ctx.beginPath();
 			ctx.moveTo(yAxisPosX, xAxisPosY + config.scaleTickSizeBottom);
 			ctx.lineTo(yAxisPosX, xAxisPosY - msr.availableHeight - config.scaleTickSizeTop);
 			ctx.stroke();
+			ctx.setLineDash([]);
+			ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
 			for (var j = 0; j < data.labels.length; j++) {
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY - ((j + 1) * scaleHop));
@@ -3443,6 +3530,7 @@ window.Chart = function(context) {
 				}
 				ctx.stroke();
 			}
+			ctx.setLineDash([]);
 		};
 
 		function drawLabels() {
@@ -3789,6 +3877,7 @@ window.Chart = function(context) {
 
 		function roundRect(ctx, x, y, w, h, stroke, radius) {
 			ctx.beginPath();
+			ctx.setLineDash(lineStyleFn(config.barStrokeStyle));
 			ctx.moveTo(x + radius, y);
 			ctx.lineTo(x + w - radius, y);
 			ctx.quadraticCurveTo(x + w, y, x + w, y);
@@ -3801,18 +3890,22 @@ window.Chart = function(context) {
 			if (stroke) ctx.stroke();
 			ctx.closePath();
 			ctx.fill();
+			 ctx.setLineDash([]);
 		};
 
 		function drawScale() {
 			//X axis line                                                          
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
+			 ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
+
 			ctx.beginPath();
-
-
 			ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY);
 			ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, xAxisPosY);
 			ctx.stroke();
+			ctx.setLineDash([]);
+			
+			 ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
 			for (var i = 0; i < data.labels.length; i++) {
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY + config.scaleTickSizeBottom);
@@ -3826,13 +3919,19 @@ window.Chart = function(context) {
 				}
 				ctx.stroke();
 			}
+			ctx.setLineDash([]);
+			
 			//Y axis
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
+			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
 			ctx.beginPath();
 			ctx.moveTo(yAxisPosX, xAxisPosY + config.scaleTickSizeBottom);
 			ctx.lineTo(yAxisPosX, xAxisPosY - msr.availableHeight - config.scaleTickSizeTop);
 			ctx.stroke();
+			ctx.setLineDash([]);
+			
+			ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
 			for (var j = 0; j < calculatedScale.steps; j++) {
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY - ((j + 1) * scaleHop));
@@ -3845,6 +3944,7 @@ window.Chart = function(context) {
 				}
 				ctx.stroke();
 			}
+			ctx.setLineDash([]);
 		};
 
 		function drawLabels() {
@@ -4137,7 +4237,7 @@ window.Chart = function(context) {
 			ctx.quadraticCurveTo(y + h, x, y + h - radius, x);
 			ctx.lineTo(y + zeroY, x);
 			ctx.quadraticCurveTo(y + zeroY, x, y + zeroY, x + radius);
-			if (stroke) ctx.stroke();
+			if (stroke) { ctx.setLineDash(lineStyleFn(config.barStrokeStyle));ctx.stroke();ctx.setLineDash([]);};
 			ctx.closePath();
 			ctx.fill();
 		};
@@ -4146,10 +4246,14 @@ window.Chart = function(context) {
 			//X axis line                                                          
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
+			 ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
 			ctx.beginPath();
 			ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY);
 			ctx.lineTo(yAxisPosX + msr.availableWidth + config.scaleTickSizeRight, xAxisPosY);
 			ctx.stroke();
+			ctx.setLineDash([]);
+			
+			 ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
 			for (var i = ((config.showYAxisMin) ? -1 : 0); i < calculatedScale.steps; i++) {
 				if (i >= 0) {
 					ctx.beginPath();
@@ -4164,14 +4268,19 @@ window.Chart = function(context) {
 					}
 					ctx.stroke();
 				}
+
 			}
+			ctx.setLineDash([]);
 			//Y axis
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
+			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
 			ctx.beginPath();
 			ctx.moveTo(yAxisPosX, xAxisPosY + config.scaleTickSizeBottom);
 			ctx.lineTo(yAxisPosX, xAxisPosY - msr.availableHeight - config.scaleTickSizeTop);
 			ctx.stroke();
+			ctx.setLineDash([]);
+			ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
 			for (var j = 0; j < data.labels.length; j++) {
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX - config.scaleTickSizeLeft, xAxisPosY - ((j + 1) * scaleHop));
@@ -4184,6 +4293,7 @@ window.Chart = function(context) {
 				}
 				ctx.stroke();
 			}
+			ctx.setLineDash([]);
 		};
 
 		function drawLabels() {
@@ -5188,6 +5298,7 @@ window.Chart = function(context) {
 				ctx.save();
 				ctx.beginPath();
 				ctx.lineWidth = 2 * borderWidth;
+				ctx.setLineDash(lineStyleFn(config.canvasBordersStyle));
 				ctx.strokeStyle = config.canvasBordersColor;
 				ctx.moveTo(0, 0);
 				ctx.lineTo(0, height);
@@ -5195,6 +5306,7 @@ window.Chart = function(context) {
 				ctx.lineTo(width, 0);
 				ctx.lineTo(0, 0);
 				ctx.stroke();
+				ctx.setLineDash([]);
 				ctx.restore();
 			}
 			// Draw Graph Title
@@ -5356,6 +5468,7 @@ window.Chart = function(context) {
 	function drawLinesDataset(animPc, data, config, ctx, statData,vars) {
 		var y1,y2,y3,diffnb,diffnbj,fact;
 		var pts=[];
+		console.log(config.datasetStrokeStyle)
 
 		for (var i = 0; i < data.datasets.length; i++) {
 			if(statData[i][0].tpchart!="Line")continue;
@@ -5372,7 +5485,10 @@ window.Chart = function(context) {
 				if(prevAnimPc.animVal==0 && j>statData[i][0].firstNotMissing) continue;	
 				var currentAnimPc = animationCorrection(animPc, data, config, i, j, 0);
 				if (currentAnimPc.mainVal == 0  && (prevAnimPc.mainVal > 0 && firstpt !=-1)) {
+					
+					 ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
 					ctx.stroke();
+					 ctx.setLineDash([]);
 					if(config.extrapolateMissingData) {
 						y1=statData[i][statData[i][j].prevNotMissing].yAxisPos - prevAnimPc.mainVal*statData[i][statData[i][j].prevNotMissing].yPosOffset;					
 						y2=statData[i][j].yAxisPos - prevAnimPc.mainVal*statData[i][statData[i][j-1].nextNotMissing].yPosOffset;
@@ -5382,7 +5498,9 @@ window.Chart = function(context) {
 						y3=y1+fact*(y2-y1);					
 						traceLine(pts,ctx,statData[i][j-1].xPos + prevAnimPc.subVal*(statData[i][j].xPos-statData[i][j-1].xPos) , y3,config,data,statData,i);
 						closebz(pts,ctx,config,i);
-						ctx.stroke();
+					 ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
+					ctx.stroke();
+					 ctx.setLineDash([]);
 						ctx.strokeStyle = "rgba(0,0,0,0)";
 						if(config.datasetFill) {
 							ctx.lineTo(statData[i][j-1].xPos + prevAnimPc.subVal*(statData[i][j].xPos-statData[i][j-1].xPos) , statData[i][j].yAxisPos );
@@ -5395,7 +5513,9 @@ window.Chart = function(context) {
 					} else if (!(typeof statData[i][j].value == "undefined")) {
 						traceLine(pts,ctx,statData[i][j-1].xPos + prevAnimPc.subVal*(statData[i][j].xPos-statData[i][j-1].xPos) , statData[i][j].yAxisPos - prevAnimPc.mainVal*statData[i][statData[i][j-1].nextNotMissing].yPosOffset,config,data,statData,i);
 						closebz(pts,ctx,config,i);
-						ctx.stroke();
+					 ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
+					ctx.stroke();
+					 ctx.setLineDash([]);
 						ctx.strokeStyle = "rgba(0,0,0,0)";
 						if(config.datasetFill) {
 							ctx.lineTo(statData[i][j-1].xPos + prevAnimPc.subVal*(statData[i][j].xPos-statData[i][j-1].xPos) , statData[i][j].yAxisPos );
@@ -5408,10 +5528,14 @@ window.Chart = function(context) {
 					prevAnimPc = currentAnimPc;
 					continue;
 				} else if(currentAnimPc.totVal ==0) {
+					 ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
 					ctx.stroke();
+					 ctx.setLineDash([]);
 					ctx.strokeStyle = "rgba(0,0,0,0)";
 				} else {
+					 ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
 					ctx.stroke();
+					 ctx.setLineDash([]);
 					ctx.strokeStyle=setOptionValue("STROKECOLOR",ctx,data,statData,data.datasets[i].strokeColor,config.defaultStrokeColor,i,j,{nullvalue : null} );
 				}
 				
@@ -5422,7 +5546,9 @@ window.Chart = function(context) {
 							if (!config.extrapolateMissingData) {
 								if(firstpt==-1) continue;
 								closebz(pts,ctx,config,i);
-								ctx.stroke();
+					 ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
+					ctx.stroke();
+					 ctx.setLineDash([]);
 								if (config.datasetFill && firstpt != -1) {
 									lastxPos=-1;
 									ctx.strokeStyle = "rgba(0,0,0,0)";
@@ -5470,7 +5596,9 @@ window.Chart = function(context) {
 				}
 			}
 			closebz(pts,ctx,config,i);
-			ctx.stroke();
+					 ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
+					ctx.stroke();
+					 ctx.setLineDash([]);
 			if (config.datasetFill) {
 				if (firstpt>=0 ) {
 					ctx.strokeStyle = "rgba(0,0,0,0)";
@@ -5493,7 +5621,8 @@ window.Chart = function(context) {
 							ctx.lineWidth=setOptionValue("MARKERLINEWIDTH",ctx,data,statData,data.datasets[i].pointDotStrokeWidth,config.pointDotStrokeWidth,i,j,{nullvalue: true} );
 							var markerShape=setOptionValue("MARKERSHAPE",ctx,data,statData,data.datasets[i].markerShape,config.markerShape,i,j,{nullvalue: true} );
 							var markerRadius=setOptionValue("MARKERRADIUS",ctx,data,statData,data.datasets[i].pointDotRadius,config.pointDotRadius,i,j,{nullvalue: true} );
-							drawMarker(ctx, statData[i][j].xPos , statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset, markerShape,markerRadius);							
+							var markerStrokeStyle=setOptionValue("MARKERSTROKESTYLE",ctx,data,statData,data.datasets[i].pointDotStrokeStyle,config.pointDotStrokeStyle,i,j,{nullvalue: true} );
+							drawMarker(ctx, statData[i][j].xPos , statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset, markerShape,markerRadius,markerStrokeStyle);							
 						}
 					}
 				}
@@ -5600,7 +5729,8 @@ window.Chart = function(context) {
 			ctx.lineWidth = config.datasetStrokeWidth;
 			ctx.moveTo(pts[0],pts[1]);
 			ctx.quadraticCurveTo(cp[0],Math.max(Math.min(cp[1],minimumpos),maximumpos),pts[2],pts[3]);
-        	
+			
+        	 ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
 			for(var ti=2;ti<pts.length-3;ti+=2){
 				y1=Math.max(Math.min(cp[2*ti-1],minimumpos),maximumpos);
 				y2=Math.max(Math.min(cp[2*ti+1],minimumpos),maximumpos);
@@ -5609,7 +5739,7 @@ window.Chart = function(context) {
 			ctx.stroke();
 		};
 
-
+ ctx.setLineDash([]);
 	};
 
 	function log10(val) {
@@ -5780,6 +5910,7 @@ function animationCorrection(animationValue, data, config, vdata, vsubdata, addo
 function drawLegend(legendMsr,data,config,ctx,typegraph) {
 	if (config.legendBorders == true) {
 		ctx.save();
+		ctx.setLineDash(lineStyleFn(config.legendBordersStyle));
 		ctx.beginPath();
 		ctx.lineWidth = config.legendBordersWidth;
 		ctx.strokeStyle = config.legendBordersColors;
@@ -5788,11 +5919,15 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
 		ctx.lineTo(legendMsr.xLegendBorderPos + legendMsr.legendBorderWidth, legendMsr.yLegendBorderPos + legendMsr.legendBorderHeight);
 		ctx.lineTo(legendMsr.xLegendBorderPos + legendMsr.legendBorderWidth, legendMsr.yLegendBorderPos);
 		ctx.lineTo(legendMsr.xLegendBorderPos, legendMsr.yLegendBorderPos);
-		ctx.lineTo(legendMsr.xLegendBorderPos + legendMsr.legendBorderWidth, legendMsr.yLegendBorderPos);
-		ctx.lineTo(legendMsr.xLegendBorderPos, legendMsr.yLegendBorderPos);
-		ctx.lineTo(legendMsr.xLegendBorderPos, legendMsr.yLegendBorderPos + legendMsr.legendBorderHeight);
-		ctx.stroke();
-		ctx.closePath();
+		//ctx.lineTo(legendMsr.xLegendBorderPos + legendMsr.legendBorderWidth, legendMsr.yLegendBorderPos);
+		//ctx.lineTo(legendMsr.xLegendBorderPos, legendMsr.yLegendBorderPos);
+		//ctx.lineTo(legendMsr.xLegendBorderPos, legendMsr.yLegendBorderPos + legendMsr.legendBorderHeight);
+
+					
+					ctx.stroke();
+					ctx.closePath();
+					 ctx.setLineDash([]);
+		
 		ctx.fillStyle = "rgba(0,0,0,0)"; // config.legendFillColor;
 		ctx.fillStyle = config.legendFillColor;
 		ctx.fill();
@@ -5832,6 +5967,7 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
 					ctx.beginPath();
 					if (legendMsr.drawLegendOnData) {
 						ctx.strokeStyle=setOptionValue("LEGENDSTROKECOLOR",ctx,data,undefined,data.datasets[orderi].strokeColor,config.defaultFillColor,orderi,-1,{animationValue: 1, xPosLeft : xpos, yPosBottom : ypos, xPosRight : xpos + config.legendBlockSize, yPosTop : ypos - config.legendFontSize} );
+
 					} else {
 						ctx.strokeStyle=setOptionValue("LEGENDSTROKECOLOR",ctx,data,undefined,data[orderi].strokeColor,config.defaultFillColor,orderi,-1,{animationValue: 1, xPosLeft : xpos, yPosBottom : ypos, xPosRight : xpos + config.legendBlockSize, yPosTop : ypos - config.legendFontSize} );
 					}
@@ -5840,8 +5976,10 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
 					ctx.lineTo(xpos + config.legendBlockSize, ypos - config.legendFontSize);
 					ctx.lineTo(xpos, ypos - config.legendFontSize);
 					ctx.lineTo(xpos, ypos);
-					ctx.closePath();
+
 					ctx.stroke();
+					ctx.closePath();
+
 					
 					if (legendMsr.drawLegendOnData) {
 						ctx.fillStyle=setOptionValue("LEGENDFILLCOLOR",ctx,data,undefined,data.datasets[orderi].fillColor,config.defaultFillColor,orderi,-1,{animationValue: 1, xPosLeft : xpos, yPosBottom : ypos, xPosRight : xpos + config.legendBlockSize, yPosTop : ypos - config.legendFontSize} );
@@ -5863,7 +6001,9 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
 
 					ctx.moveTo(xpos + 2, ypos - (config.legendFontSize / 2));
 					ctx.lineTo(xpos + 2 + config.legendBlockSize, ypos - (config.legendFontSize / 2));
+										 ctx.setLineDash(lineStyleFn(config. legendBordersStyle));
 					ctx.stroke();
+
 					
 					ctx.fill();
 
@@ -5875,7 +6015,8 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
                         	
 						var markerShape=setOptionValue("LEGENDMARKERSHAPE",ctx,data,undefined,data.datasets[orderi].markerShape,config.markerShape,orderi,-1,{nullvalue: true} );
 						var markerRadius=setOptionValue("LEGENDMARKERRADIUS",ctx,data,undefined,data.datasets[orderi].pointDotRadius,config.pointDotRadius,orderi,-1,{nullvalue: true} );
-						drawMarker(ctx,xpos + 2 + config.legendBlockSize/2, ypos - (config.legendFontSize / 2), markerShape,markerRadius);							
+						var markerStrokeStyle=setOptionValue("LEGENDMARKERSTROKESTYLE",ctx,data,undefined,data.datasets[orderi].pointDotStrokeStyle,config.pointDotStrokeStyle,orderi,-1,{nullvalue: true} );
+						drawMarker(ctx,xpos + 2 + config.legendBlockSize/2, ypos - (config.legendFontSize / 2), markerShape,markerRadius,markerStrokeStyle);							
 					}
 					ctx.fill();
 
@@ -5895,12 +6036,14 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
 	}
 };
 
-function drawMarker(ctx,xpos,ypos,marker,markersize) {
+function drawMarker(ctx,xpos,ypos,marker,markersize,markerStrokeStyle) {
+	 ctx.setLineDash(lineStyleFn(markerStrokeStyle));
 	switch (marker) {
 		case "square":
 			ctx.rect(xpos-markersize,ypos-markersize,2*markersize,2*markersize);
 			ctx.stroke();
 			ctx.fill();
+			 ctx.setLineDash([]);
 			break;
 		case "triangle":
 			pointA_x=0;
@@ -5911,6 +6054,7 @@ function drawMarker(ctx,xpos,ypos,marker,markersize) {
 			ctx.lineTo(xpos,ypos-pointA_y);
 			ctx.stroke();
 			ctx.fill();
+			 ctx.setLineDash([]);
 			break;
 		case "diamond":
 			ctx.moveTo(xpos, ypos+markersize);
@@ -5920,6 +6064,7 @@ function drawMarker(ctx,xpos,ypos,marker,markersize) {
 			ctx.lineTo(xpos, ypos+markersize);
 			ctx.stroke();
 			ctx.fill();
+			 ctx.setLineDash([]);
 			break;
 		case "plus":
 			ctx.moveTo(xpos, ypos-markersize);
@@ -5927,6 +6072,7 @@ function drawMarker(ctx,xpos,ypos,marker,markersize) {
 			ctx.moveTo(xpos-markersize, ypos);
 			ctx.lineTo(xpos+markersize, ypos);
 			ctx.stroke();
+			 ctx.setLineDash([]);
 			break;
 		case "cross":
 			ctx.moveTo(xpos-markersize, ypos-markersize);
@@ -5934,12 +6080,14 @@ function drawMarker(ctx,xpos,ypos,marker,markersize) {
 			ctx.moveTo(xpos-markersize, ypos+markersize);
 			ctx.lineTo(xpos+markersize, ypos-markersize);
 			ctx.stroke();
+			 ctx.setLineDash([]);
 			break;
 		case "circle":
 		default:
 			ctx.arc(xpos, ypos, markersize, 0, 2*Math.PI * 1, true);
 			ctx.stroke();
 			ctx.fill();
+			 ctx.setLineDash([]);
 			break;
 	}
 };
