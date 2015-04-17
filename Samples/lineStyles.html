@@ -1,0 +1,132 @@
+<!doctype html>
+
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../chartNew.js'></script>
+
+
+<SCRIPT>
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June"],
+	datasets : [
+		{
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			datasetStrokeStyle : "gradient",
+			data : [8,9,8,9,8,9],
+      			title : "gradient"
+		},
+		{
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			datasetStrokeStyle : "longDashShortDash",
+			data : [7,8,7,8,7,8],
+      			title : "longDashShortDash"
+		},
+		{
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			datasetStrokeStyle : "longDashDot",
+			data : [6,7,6,7,6,7],
+      			title : "longDashDot"
+		},
+		{
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			datasetStrokeStyle : "dashSpace",
+			data : [5,6,5,6,5,6],
+      			title : "dashSpace"
+		},
+		{
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			datasetStrokeStyle : "dashed",
+			data : [4,5,4,5,4,5],
+      			title : "dashed"
+		},
+		{
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			datasetStrokeStyle : "shortDash",
+			data : [3,4,3,4,3,4],
+      			title : "shortDash"
+		},
+		{
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			datasetStrokeStyle : "dotted",
+			data : [2,3,2,3,2,3],
+      			title : "dotted"
+		},
+		{
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			datasetStrokeStyle : "solid",
+			data : [1,2,1,2,1,2],
+			title : "solid"
+		}
+
+
+
+
+
+
+	]
+}
+
+var newopts = {
+
+      datasetFill : false,
+      legendBlockSize : 50,
+      scaleLabel: "<%=value%>",
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      legend : true,
+      graphMin : 0,
+      graphMax : 10,
+      yAxisMinimumInterval : 1
+}
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+
+	</head>
+	<body>
+  
+  <!div id="divCursor" style="position:absolute"> <!/div>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+    
+
+      document.write("<canvas id=\"canvas_line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    setopts=newopts;
+    
+
+window.onload = function() {
+    var myLine = new Chart(document.getElementById("canvas_line").getContext("2d")).Line(mydata1,setopts);
+}
+
+    </script>
+  </body>
+</html>
