@@ -9,9 +9,19 @@
 defCanvasWidth=1200;
 defCanvasHeight=600;
 
+chartJSLineStyle["my_defined_style"]=[4,4,8,4,16,4,8,4];
+
 var mydata1 = {
 	labels : ["January","February","March","April","May","June"],
 	datasets : [
+		{
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			datasetStrokeStyle : "my_defined_style",
+			data : [9,10,9,10,9,10],
+      			title : "my_defined_style"
+		},
 		{
 			strokeColor : "rgba(151,187,205,1)",
 			pointColor : "rgba(151,187,205,1)",
@@ -48,7 +58,7 @@ var mydata1 = {
 			strokeColor : "rgba(151,187,205,1)",
 			pointColor : "rgba(151,187,205,1)",
 			pointStrokeColor : "#fff",
-			datasetStrokeStyle : "dashed",
+			datasetStrokeStyle : "mydashed",
 			data : [4,5,4,5,4,5],
       			title : "dashed"
 		},
