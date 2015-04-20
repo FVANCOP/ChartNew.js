@@ -31,18 +31,25 @@
  */
 // non standard functions;
 
+var chartJSLineStyle=[];
+
+chartJSLineStyle["solid"]=[];
+chartJSLineStyle["dotted"]=[1,4];
+chartJSLineStyle["shortDash"]=[2,1];
+chartJSLineStyle["dashed"]=[4,2];
+chartJSLineStyle["dashSpace"]=[4,6];
+chartJSLineStyle["longDashDot"]=[7,2,1,2];
+chartJSLineStyle["longDashShortDash"]=[10,4,4,4];
+chartJSLineStyle["gradient"]=[1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,9,9,8,8,7,7,6,6,5,5,4,4,3,3,2,2,1];
+
+
+
 function lineStyleFn(data)
 {
-if (data=="solid"){return []}
-if (data=="dotted"){return [1,4]}
-if (data=="shortDash"){return [2,1]}
-if (data=="dashed"){return [4,2]}
-if (data=="dashSpace"){return [4,6]}
-if (data=="longDashDot"){return [7,2,1,2]}
-if (data=="longDashShortDash"){return [10,4,4,4]}		
-if (data=="gradient"){return [1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,9,9,8,8,7,7,6,6,5,5,4,4,3,3,2,2,1]}	
-if(typeof data !=="string"){return data}	
-return "solid";	
+
+if ((typeof chartJSLineStyle[data]) === "object")return chartJSLineStyle[data];
+else return chartJSLineStyle["solid"];
+
 }
 
 if (typeof String.prototype.trim !== 'function') {
