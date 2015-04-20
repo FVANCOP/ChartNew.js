@@ -1,6 +1,7 @@
 Change history
 --------------
 
+20/04/2015 - Vancoppenolle Francois - code updated to allow user defined line styles.
 17/04/2015 - Vancoppenolle Francois - style and line styles possibilities has been expanded
 01/04/2015 - Omar Sedki             - stroke and line styles added (issue 266)
 09/02/2015 - Vancoppenolle Francois - Fix bugs/problems (issues 76 and 200)
