@@ -139,11 +139,20 @@ Distributed by Hypergurl
 ********************************************************************************/
 var cachebis = {};
 
+function abbreviateNumber(num) {
+	var suffixes = ["", "k", "m", "b","t"];
+	if (num < 1000) return num;
+	var i = parseInt(Math.floor(Math.log(num) / Math.log(1000)));
+	return ((i % 1 == 0 ) ? (num / Math.pow(1000, i)) : (num / Math.pow(1000, i)).toFixed(1)) + '' + suffixes[i];
+};
+
 function fmtChartJSPerso(config, value, fmt) {
 	switch (fmt) {
-		case "SampleJS_Format":
-			if (typeof(value) == "number") return_value = "My Format : " + value.toString() + " $";
-			else return_value = value + "XX";
+		case "abbreviateNumber":
+			if (typeof(value) == "number") {
+				var retValue = abbreviateNumber(value);
+			}
+			return retValue;
 			break;
 		case "Change_Month":
 			if (typeof(value) == "string") return_value = value.toString() + " 2014";
