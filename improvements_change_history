@@ -147,6 +147,7 @@ Change history
 
 Future Improvements
 -------------------
+- with responsive charts, texts need also to be resized (see issue 275)
 - merge Pie/Doughnut code (can be the same code : A pie = Dougnut with a hole having a radiant of 0...)
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
 - non evolutive animation in Pie/Doughnut (https://github.com/nnnick/Chart.js/issues/357)
