@@ -42,14 +42,10 @@ chartJSLineStyle["longDashDot"]=[7,2,1,2];
 chartJSLineStyle["longDashShortDash"]=[10,4,4,4];
 chartJSLineStyle["gradient"]=[1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,9,9,8,8,7,7,6,6,5,5,4,4,3,3,2,2,1];
 
-
-
 function lineStyleFn(data)
 {
-
 if ((typeof chartJSLineStyle[data]) === "object")return chartJSLineStyle[data];
 else return chartJSLineStyle["solid"];
-
 }
 
 if (typeof String.prototype.trim !== 'function') {
@@ -1604,13 +1600,27 @@ window.Chart = function(context) {
 		graphTitleFontColor: "#666",
 		graphTitleSpaceBefore: 5,
 		graphTitleSpaceAfter: 5,
-		graphSubTitle: "",
+		graphTitleBorders : false,
+		graphTitleBordersColor : "black",
+		graphTitleBordersXSpace : 3,
+		graphTitleBordersYSpace : 3,
+		graphTitleBordersWidth : 1,
+		graphTitleBordersStyle : "solid",
+		graphTitleBackgroundColor : "none",
+   		graphSubTitle: "",
 		graphSubTitleFontFamily: "'Arial'",
 		graphSubTitleFontSize: 18,
 		graphSubTitleFontStyle: "normal",
 		graphSubTitleFontColor: "#666",
 		graphSubTitleSpaceBefore: 5,
 		graphSubTitleSpaceAfter: 5,
+		graphSubTitleBorders : false,
+		graphSubTitleBordersColor : "black",
+		graphSubTitleBordersXSpace : 3,
+		graphSubTitleBordersYSpace : 3,
+		graphSubTitleBordersWidth : 1,
+		graphSubTitleBordersStyle : "solid",
+		graphSubTitleBackgroundColor : "none",
 		footNote: "",
 		footNoteFontFamily: "'Arial'",
 		footNoteFontSize: 8,
@@ -1618,6 +1628,13 @@ window.Chart = function(context) {
 		footNoteFontColor: "#666",
 		footNoteSpaceBefore: 5,
 		footNoteSpaceAfter: 5,
+		footNoteBorders : false,
+		footNoteBordersColor : "black",
+		footNoteBordersXSpace : 3,
+		footNoteBordersYSpace : 3,
+		footNoteBordersWidth : 1,
+		footNoteBordersStyle : "solid",
+		footNoteBackgroundColor : "none",
 		legend : false,
 		showSingleLegend: false,
 		maxLegendCols : 999,
@@ -1646,6 +1663,13 @@ window.Chart = function(context) {
 		legendFillColor : "rgba(0,0,0,0)",
 		legendXPadding : 0,
 		legendYPadding : 0,
+		inGraphDataBorders : false,
+		inGraphDataBordersColor : "black",
+		inGraphDataBordersXSpace : 3,
+		inGraphDataBordersYSpace : 3,
+		inGraphDataBordersWidth : 1,
+		inGraphDataBordersStyle : "solid",
+		inGraphDataBackgroundColor : "none",
 		annotateDisplay: false,
 		annotateRelocate: false,
 		savePng: false,
@@ -1677,6 +1701,13 @@ window.Chart = function(context) {
 		crossTextPosY: [0],
 		crossTextAngle: [0],
 		crossTextFunction: null,
+		crossTextBorders : [false],
+		crossTextBordersColor : ["black"],
+		crossTextBordersXSpace : [3],
+		crossTextBordersYSpace : [3],
+		crossTextBordersWidth : [1],
+		crossTextBordersStyle : ["solid"],
+		crossTextBackgroundColor : ["none"],
 		crossImage: [undefined],
 		crossImageIter: ["all"],
 		crossImageOverlay: [true],
@@ -1765,6 +1796,13 @@ window.Chart = function(context) {
 		yAxisLabelSpaceLeft: 5,
 		yAxisSpaceRight: 5,
 		yAxisSpaceLeft: 5,
+		yAxisLabelBorders : false,
+		yAxisLabelBordersColor : "black",
+		yAxisLabelBordersXSpace : 3,
+		yAxisLabelBordersYSpace : 3,
+		yAxisLabelBordersWidth : 1,
+		yAxisLabelBordersStyle : "solid",
+		yAxisLabelBackgroundColor : "none",
 		xAxisLabel: "",
 		xAxisFontFamily: "'Arial'",
 		xAxisFontSize: 16,
@@ -1774,6 +1812,13 @@ window.Chart = function(context) {
 		xAxisLabelSpaceAfter: 5,
 		xAxisSpaceBefore: 5,
 		xAxisSpaceAfter: 5,
+		xAxisLabelBorders : false,
+		xAxisLabelBordersColor : "black",
+		xAxisLabelBordersXSpace : 3,
+		xAxisLabelBordersYSpace : 3,
+		xAxisLabelBordersWidth : 1,
+		xAxisLabelBordersStyle : "solid",
+		xAxisLabelBackgroundColor : "none",
 		yAxisUnit: "",
 		yAxisUnit2: "",
 		yAxisUnitFontFamily: "'Arial'",
@@ -1781,7 +1826,14 @@ window.Chart = function(context) {
 		yAxisUnitFontStyle: "normal",
 		yAxisUnitFontColor: "#666",
 		yAxisUnitSpaceBefore: 5,
-		yAxisUnitSpaceAfter: 5
+		yAxisUnitSpaceAfter: 5,
+		yAxisUnitBorders : false,
+		yAxisUnitBordersColor : "black",
+		yAxisUnitBordersXSpace : 3,
+		yAxisUnitBordersYSpace : 3,
+		yAxisUnitBordersWidth : 1,
+		yAxisUnitBordersStyle : "solid",
+		yAxisUnitBackgroundColor : "none"
 	};
 	var clear = function(c) {
 		c.clearRect(0, 0, width, height);
@@ -1946,6 +1998,7 @@ window.Chart = function(context) {
 							if ((posAngle + 2 * Math.PI) % (2 * Math.PI) > Math.PI / 2 && (posAngle + 2 * Math.PI) % (2 * Math.PI) < 3 * Math.PI / 2) ctx.rotate(3 * Math.PI - posAngle);
 							else ctx.rotate(2 * Math.PI - posAngle);
 						} else ctx.rotate(setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) * (Math.PI / 180));
+						setTextBordersAndBackground(ctx,dispString,setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ),0,0,setOptionValue("INGRAPHDATABORDERS",ctx,data,statData,undefined,config.inGraphDataBorders,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSCOLOR",ctx,data,statData,undefined,config.inGraphDataBordersColor,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSWIDTH",ctx,data,statData,undefined,config.inGraphDataBordersWidth,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSXSPACE",ctx,data,statData,undefined,config.inGraphDataBordersXSpace,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSYSPACE",ctx,data,statData,undefined,config.inGraphDataBordersYSpace,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSSTYLE",ctx,data,statData,undefined,config.inGraphDataBordersStyle,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABACKGROUNDCOLOR",ctx,data,statData,undefined,config.inGraphDataBackgroundColor,i,-1,{nullValue : true} ),"INGRAPHDATA");
 						ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ), true);
 						ctx.restore();
 					}
@@ -2161,6 +2214,7 @@ window.Chart = function(context) {
 								else ctx.rotate(2 * Math.PI + j * rotationDegree);
 							} else ctx.rotate(setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) * (Math.PI / 180));
 							var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i][j],config);
+							setTextBordersAndBackground(ctx,dispString,setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ),0,0,setOptionValue("INGRAPHDATABORDERS",ctx,data,statData,undefined,config.inGraphDataBorders,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSCOLOR",ctx,data,statData,undefined,config.inGraphDataBordersColor,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSWIDTH",ctx,data,statData,undefined,config.inGraphDataBordersWidth,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSXSPACE",ctx,data,statData,undefined,config.inGraphDataBordersXSpace,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSYSPACE",ctx,data,statData,undefined,config.inGraphDataBordersYSpace,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSSTYLE",ctx,data,statData,undefined,config.inGraphDataBordersStyle,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABACKGROUNDCOLOR",ctx,data,statData,undefined,config.inGraphDataBackgroundColor,i,-1,{nullValue : true} ),"INGRAPHDATA");
 							ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ),true);
 							ctx.restore();
 						}
@@ -2443,6 +2497,7 @@ window.Chart = function(context) {
 							if ((posAngle + 2 * Math.PI) % (2 * Math.PI) > Math.PI / 2 && (posAngle + 2 * Math.PI) % (2 * Math.PI) < 3 * Math.PI / 2) ctx.rotate(3 * Math.PI - posAngle);
 							else ctx.rotate(2 * Math.PI - posAngle);
 						} else ctx.rotate(setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) * (Math.PI / 180));
+						setTextBordersAndBackground(ctx,dispString,setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ),0,0,setOptionValue("INGRAPHDATABORDERS",ctx,data,statData,undefined,config.inGraphDataBorders,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSCOLOR",ctx,data,statData,undefined,config.inGraphDataBordersColor,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSWIDTH",ctx,data,statData,undefined,config.inGraphDataBordersWidth,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSXSPACE",ctx,data,statData,undefined,config.inGraphDataBordersXSpace,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSYSPACE",ctx,data,statData,undefined,config.inGraphDataBordersYSpace,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSSTYLE",ctx,data,statData,undefined,config.inGraphDataBordersStyle,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABACKGROUNDCOLOR",ctx,data,statData,undefined,config.inGraphDataBackgroundColor,i,-1,{nullValue : true} ),"INGRAPHDATA");
 						ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ),true);
 						ctx.restore();
 					}
@@ -2583,6 +2638,7 @@ window.Chart = function(context) {
 							if ((posAngle + 2 * Math.PI) % (2 * Math.PI) > Math.PI / 2 && (posAngle + 2 * Math.PI) % (2 * Math.PI) < 3 * Math.PI / 2) ctx.rotate(3 * Math.PI - posAngle);
 							else ctx.rotate(2 * Math.PI - posAngle);
 						} else ctx.rotate(setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) * (Math.PI / 180));
+						setTextBordersAndBackground(ctx,dispString,setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ),0,0,setOptionValue("INGRAPHDATABORDERS",ctx,data,statData,undefined,config.inGraphDataBorders,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSCOLOR",ctx,data,statData,undefined,config.inGraphDataBordersColor,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSWIDTH",ctx,data,statData,undefined,config.inGraphDataBordersWidth,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSXSPACE",ctx,data,statData,undefined,config.inGraphDataBordersXSpace,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSYSPACE",ctx,data,statData,undefined,config.inGraphDataBordersYSpace,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSSTYLE",ctx,data,statData,undefined,config.inGraphDataBordersStyle,i,-1,{nullValue : true} ),setOptionValue("INGRAPHDATABACKGROUNDCOLOR",ctx,data,statData,undefined,config.inGraphDataBackgroundColor,i,-1,{nullValue : true} ),"INGRAPHDATA");
 						ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ),true);
 						ctx.restore();
 					}
@@ -3135,6 +3191,7 @@ window.Chart = function(context) {
 							if(yPos>msr.topNotUsableSize) {
 								ctx.translate(xPos, yPos);
 								ctx.rotate(setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) * (Math.PI / 180));
+								setTextBordersAndBackground(ctx,dispString,setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),0,0,setOptionValue("INGRAPHDATABORDERS",ctx,data,statData,undefined,config.inGraphDataBorders,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSCOLOR",ctx,data,statData,undefined,config.inGraphDataBordersColor,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSWIDTH",ctx,data,statData,undefined,config.inGraphDataBordersWidth,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSXSPACE",ctx,data,statData,undefined,config.inGraphDataBordersXSpace,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSYSPACE",ctx,data,statData,undefined,config.inGraphDataBordersYSpace,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSSTYLE",ctx,data,statData,undefined,config.inGraphDataBordersStyle,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABACKGROUNDCOLOR",ctx,data,statData,undefined,config.inGraphDataBackgroundColor,i,j,{nullValue : true} ),"INGRAPHDATA");
 								ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),true);
 							}
 							ctx.restore();
@@ -3491,6 +3548,7 @@ window.Chart = function(context) {
 //								if(xPos<=msr.availableWidth+msr.leftNotUsableSize) {
 								ctx.translate(xPos, yPos);
 								ctx.rotate(setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) * (Math.PI / 180));
+								setTextBordersAndBackground(ctx,dispString,setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),0,0,setOptionValue("INGRAPHDATABORDERS",ctx,data,statData,undefined,config.inGraphDataBorders,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSCOLOR",ctx,data,statData,undefined,config.inGraphDataBordersColor,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSWIDTH",ctx,data,statData,undefined,config.inGraphDataBordersWidth,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSXSPACE",ctx,data,statData,undefined,config.inGraphDataBordersXSpace,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSYSPACE",ctx,data,statData,undefined,config.inGraphDataBordersYSpace,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSSTYLE",ctx,data,statData,undefined,config.inGraphDataBordersStyle,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABACKGROUNDCOLOR",ctx,data,statData,undefined,config.inGraphDataBackgroundColor,i,j,{nullValue : true} ),"INGRAPHDATA");
 								ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),true);
 								ctx.restore();
 //							}
@@ -3875,6 +3933,7 @@ window.Chart = function(context) {
 							ctx.translate(xPos, yPos);
 							var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ), statData[i][j],config);
 							ctx.rotate(setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) * (Math.PI / 180));
+							setTextBordersAndBackground(ctx,dispString,setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),0,0,setOptionValue("INGRAPHDATABORDERS",ctx,data,statData,undefined,config.inGraphDataBorders,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSCOLOR",ctx,data,statData,undefined,config.inGraphDataBordersColor,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSWIDTH",ctx,data,statData,undefined,config.inGraphDataBordersWidth,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSXSPACE",ctx,data,statData,undefined,config.inGraphDataBordersXSpace,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSYSPACE",ctx,data,statData,undefined,config.inGraphDataBordersYSpace,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSSTYLE",ctx,data,statData,undefined,config.inGraphDataBordersStyle,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABACKGROUNDCOLOR",ctx,data,statData,undefined,config.inGraphDataBackgroundColor,i,j,{nullValue : true} ),"INGRAPHDATA");
 							ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),true);
 							ctx.restore();
 						}
@@ -4238,6 +4297,7 @@ window.Chart = function(context) {
 							ctx.translate(xPos, yPos);
 							var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ), statData[i][j],config);
 							ctx.rotate(setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) * (Math.PI / 180));
+							setTextBordersAndBackground(ctx,dispString,setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),0,0,setOptionValue("INGRAPHDATABORDERS",ctx,data,statData,undefined,config.inGraphDataBorders,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSCOLOR",ctx,data,statData,undefined,config.inGraphDataBordersColor,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSWIDTH",ctx,data,statData,undefined,config.inGraphDataBordersWidth,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSXSPACE",ctx,data,statData,undefined,config.inGraphDataBordersXSpace,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSYSPACE",ctx,data,statData,undefined,config.inGraphDataBordersYSpace,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSSTYLE",ctx,data,statData,undefined,config.inGraphDataBordersStyle,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABACKGROUNDCOLOR",ctx,data,statData,undefined,config.inGraphDataBackgroundColor,i,j,{nullValue : true} ),"INGRAPHDATA");
 							ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),true);
 							ctx.restore();
 						}
@@ -4814,8 +4874,9 @@ window.Chart = function(context) {
 				if (config.crossText[i].substring(0, 1) == "%") {
 					if (typeof config.crossTextFunction == "function") disptxt = config.crossTextFunction(i, config.crossText[i], ctx, config, posX, posY, borderX, borderY, overlay, data, animPC);
 				} else disptxt = config.crossText[i];
+
+				setTextBordersAndBackground(ctx,disptxt,config.crossTextFontSize[Min([i, config.crossTextFontSize.length - 1])],0,0,config.crossTextBorders[Min([i, config.crossTextBorders.length - 1])],config.crossTextBordersColor[Min([i, config.crossTextBordersColor.length - 1])],config.crossTextBordersWidth[Min([i, config.crossTextBordersWidth.length - 1])],config.crossTextBordersXSpace[Min([i, config.crossTextBordersXSpace.length - 1])],config.crossTextBordersYSpace[Min([i, config.crossTextBordersYSpace.length - 1])],config.crossTextBordersStyle[Min([i, config.crossTextBordersStyle.length - 1])],config.crossTextBackgroundColor[Min([i, config.crossTextBackgroundColor.length - 1])],"CROSSTEXT");
 				ctx.fillTextMultiLine(disptxt, 0, 0, ctx.textBaseline, config.crossTextFontSize[Min([i, config.crossTextFontSize.length - 1])],true);
-				ctx.stroke();
 				ctx.restore();
 			}
 		}
@@ -5029,14 +5090,25 @@ window.Chart = function(context) {
 					yAxisLabelPosLeft = borderWidth + config.spaceLeft + config.yAxisLabelSpaceLeft + config.yAxisFontSize;
 					yAxisLabelPosRight = width - borderWidth - config.spaceRight - config.yAxisLabelSpaceLeft - config.yAxisFontSize;
 				}
+				if(config.yAxisLabelBackgroundColor !="none" || config.yAxisLabelBorders) {
+					yAxisLabelWidth+=2*(config.yAxisLabelBordersYSpace);
+					yAxisLabelPosLeft+=config.yAxisLabelBordersYSpace;
+					yAxisLabelPosRight-=config.yAxisLabelBordersYSpace;
+				}
+
+				if(config.graphTitleBorders) {
+					yAxisLabelWidth+=2*(config.yAxisLabelBordersWidth);
+					yAxisLabelPosLeft+=config.yAxisLabelBordersWidth;
+					yAxisLabelPosRight-=config.yAxisLabelBordersWidth;
+				}
 			}
 			if (config.yAxisLeft) {
 				if (reverseAxis == false) leftNotUsableSize = borderWidth + config.spaceLeft + yAxisLabelWidth + widestYLabel + config.yAxisSpaceLeft + config.yAxisSpaceRight;
-				else leftNotUsableSize = borderWidth + config.spaceLeft + yAxisLabelWidth + widestXLabel + config.yAxisSpaceLeft + config.yAxisSpaceRight;
+				else                      leftNotUsableSize = borderWidth + config.spaceLeft + yAxisLabelWidth + widestXLabel + config.yAxisSpaceLeft + config.yAxisSpaceRight;
 			}
 			if (config.yAxisRight) {
 				if (reverseAxis == false) rightNotUsableSize = borderWidth + config.spaceRight + yAxisLabelWidth + widestYLabel2 + config.yAxisSpaceLeft + config.yAxisSpaceRight;
-				else rightNotUsableSize = borderWidth + config.spaceRight + yAxisLabelWidth + widestXLabel + config.yAxisSpaceLeft + config.yAxisSpaceRight;
+				else                      rightNotUsableSize = borderWidth + config.spaceRight + yAxisLabelWidth + widestXLabel  + config.yAxisSpaceLeft + config.yAxisSpaceRight;
 			}
 		}
 		availableWidth = width - leftNotUsableSize - rightNotUsableSize;
@@ -5044,11 +5116,29 @@ window.Chart = function(context) {
 		if (config.graphTitle.trim() != "") {
 			graphTitleHeight = config.graphTitleFontSize * (config.graphTitle.split("\n").length || 1) + config.graphTitleSpaceBefore + config.graphTitleSpaceAfter;
 			graphTitlePosY = borderWidth + config.spaceTop + graphTitleHeight - config.graphTitleSpaceAfter;
+			if(config.graphTitleBackgroundColor !="none" || config.graphTitleBorders) {
+				graphTitleHeight+=2*(config.graphTitleBordersYSpace);
+				graphTitlePosY+=config.graphTitleBordersYSpace;
+			}
+
+			if(config.graphTitleBorders) {
+				graphTitleHeight+=2*(config.graphTitleBordersWidth);
+				graphTitlePosY+=config.graphTitleBordersWidth;
+			}
 		}
 		// subTitle
 		if (config.graphSubTitle.trim() != "") {
 			graphSubTitleHeight = config.graphSubTitleFontSize * (config.graphSubTitle.split("\n").length || 1) + config.graphSubTitleSpaceBefore + config.graphSubTitleSpaceAfter;
 			graphSubTitlePosY = borderWidth + config.spaceTop + graphTitleHeight + graphSubTitleHeight - config.graphSubTitleSpaceAfter;
+			if(config.graphSubTitleBackgroundColor !="none" || config.graphSubTitleBorders) {
+				graphSubTitleHeight+=2*(config.graphSubTitleBordersYSpace);
+				graphSubTitlePosY+=config.graphSubTitleBordersYSpace;
+			}
+
+			if(config.graphSubTitleBorders) {
+				graphSubTitleHeight+=2*(config.graphSubTitleBordersWidth);
+				graphSubTitlePosY+=config.graphSubTitleBordersWidth;
+			}
 		}
 		// yAxisUnit
 		if (drawAxis) {
@@ -5056,6 +5146,17 @@ window.Chart = function(context) {
 				yAxisUnitHeight = config.yAxisUnitFontSize * (config.yAxisUnit.split("\n").length || 1) + config.yAxisUnitSpaceBefore + config.yAxisUnitSpaceAfter;
 				yAxisUnitPosY = borderWidth + config.spaceTop + graphTitleHeight + graphSubTitleHeight + yAxisUnitHeight - config.yAxisUnitSpaceAfter;
 			}
+			if(config.yAxisUnitBackgroundColor !="none" || config.yAxisUnitBorders) {
+				yAxisUnitHeight+=2*(config.yAxisUnitBordersYSpace);
+				yAxisUnitPosY+=config.yAxisUnitBordersYSpace;
+			}
+
+			if(config.yAxisUnitBorders) {
+				yAxisUnitHeight+=2*(config.yAxisUnitBordersWidth);
+				yAxisUnitPosY+=config.yAxisUnitBordersWidth;
+			}
+
+
 		}
 		topNotUsableSize = borderWidth + config.spaceTop + graphTitleHeight + graphSubTitleHeight + yAxisUnitHeight + config.graphSpaceBefore;
 		// footNote
@@ -5063,6 +5164,14 @@ window.Chart = function(context) {
 			if (config.footNote.trim() != "") {
 				footNoteHeight = config.footNoteFontSize * (config.footNote.split("\n").length || 1) + config.footNoteSpaceBefore + config.footNoteSpaceAfter;
 				footNotePosY = height - config.spaceBottom - borderWidth - config.footNoteSpaceAfter;
+				if(config.footNoteBackgroundColor !="none" || config.footNoteBorders) {
+					footNoteHeight+=2*(config.footNoteBordersYSpace);
+					footNotePosY-=config.footNoteBordersYSpace;
+				}
+				if(config.footNoteBorders) {
+					footNoteHeight+=2*(config.footNoteBordersWidth);
+					footNotePosY-=config.footNoteBordersWidth;
+				}
 			}
 		}
 		
@@ -5072,6 +5181,14 @@ window.Chart = function(context) {
 				if (config.xAxisLabel.trim() != "") {
 					xAxisLabelHeight = config.xAxisFontSize * (config.xAxisLabel.split("\n").length || 1) + config.xAxisLabelSpaceBefore + config.xAxisLabelSpaceAfter;
 					xAxisLabelPos = height - borderWidth - config.spaceBottom - footNoteHeight - config.xAxisLabelSpaceAfter;
+					if(config.xAxisLabelBackgroundColor !="none" || config.footNoteBorders) {
+						xAxisLabelHeight+=2*(config.xAxisLabelBordersYSpace);
+						xAxisLabelPos-=config.xAxisLabelBordersYSpace;
+					}
+					if(config.footNoteBorders) {
+						xAxisLabelHeight+=2*(config.xAxisLabelBordersWidth);
+						xAxisLabelPos-=config.xAxisLabelBordersWidth;
+					}
 				}
 			}
 		}
@@ -5343,8 +5460,12 @@ window.Chart = function(context) {
 				ctx.fillStyle = config.graphTitleFontColor;
 				ctx.textAlign = "center";
 				ctx.textBaseline = "bottom";
+
+				setTextBordersAndBackground(ctx,config.graphTitle,config.graphTitleFontSize,config.spaceLeft + (width - config.spaceLeft - config.spaceRight) / 2,graphTitlePosY,config.graphTitleBorders,config.graphTitleBordersColor,config.graphTitleBordersWidth,config.graphTitleBordersXSpace,config.graphTitleBordersYSpace,config.graphTitleBordersStyle,config.graphTitleBackgroundColor,"GRAPHTITLE");
+
 				ctx.translate(config.spaceLeft + (width - config.spaceLeft - config.spaceRight) / 2, graphTitlePosY);
 				ctx.fillTextMultiLine(config.graphTitle, 0, 0, ctx.textBaseline, config.graphTitleFontSize,true);
+
 				ctx.stroke();
 				ctx.restore();
 			}
@@ -5356,6 +5477,8 @@ window.Chart = function(context) {
 				ctx.fillStyle = config.graphSubTitleFontColor;
 				ctx.textAlign = "center";
 				ctx.textBaseline = "bottom";
+				setTextBordersAndBackground(ctx,config.graphSubTitle,config.graphSubTitleFontSize,config.spaceLeft + (width - config.spaceLeft - config.spaceRight) / 2,graphSubTitlePosY,config.graphSubTitleBorders,config.graphSubTitleBordersColor,config.graphSubTitleBordersWidth,config.graphSubTitleBordersXSpace,config.graphSubTitleBordersYSpace,config.graphSubTitleBordersStyle,config.graphSubTitleBackgroundColor,"GRAPHSUBTITLE");
+
 				ctx.translate(config.spaceLeft + (width - config.spaceLeft - config.spaceRight) / 2, graphSubTitlePosY);
 				ctx.fillTextMultiLine(config.graphSubTitle, 0, 0, ctx.textBaseline, config.graphSubTitleFontSize,true);
 				ctx.stroke();
@@ -5370,6 +5493,8 @@ window.Chart = function(context) {
 					ctx.fillStyle = config.yAxisUnitFontColor;
 					ctx.textAlign = "center";
 					ctx.textBaseline = "bottom";
+		
+					setTextBordersAndBackground(ctx,config.yAxisUnit,config.yAxisUnitFontSize,leftNotUsableSize, yAxisUnitPosY,config.yAxisUnitBorders,config.yAxisUnitBordersColor,config.yAxisUnitBordersWidth,config.yAxisUnitBordersXSpace,config.yAxisUnitBordersYSpace,config.yAxisUnitBordersStyle,config.yAxisUnitBackgroundColor,"YAXISUNIT");
 					ctx.translate(leftNotUsableSize, yAxisUnitPosY);
 					ctx.fillTextMultiLine(config.yAxisUnit, 0, 0, ctx.textBaseline, config.yAxisUnitFontSize,true);
 					ctx.stroke();
@@ -5383,6 +5508,7 @@ window.Chart = function(context) {
 					ctx.fillStyle = config.yAxisUnitFontColor;
 					ctx.textAlign = "center";
 					ctx.textBaseline = "bottom";
+					setTextBordersAndBackground(ctx,config.yAxisUnit2,config.yAxisUnitFontSize,width - rightNotUsableSize, yAxisUnitPosY,config.yAxisUnitBorders,config.yAxisUnitBordersColor,config.yAxisUnitBordersWidth,config.yAxisUnitBordersXSpace,config.yAxisUnitBordersYSpace,config.yAxisUnitBordersStyle,config.yAxisUnitBackgroundColor,"YAXISUNIT");
 					ctx.translate(width - rightNotUsableSize, yAxisUnitPosY);
 					ctx.fillTextMultiLine(config.yAxisUnit2, 0, 0, ctx.textBaseline, config.yAxisUnitFontSize,true);
 					ctx.stroke();
@@ -5398,8 +5524,10 @@ window.Chart = function(context) {
 					ctx.fillStyle = config.yAxisFontColor;
 					ctx.textAlign = "center";
 					ctx.textBaseline = "bottom";
+
 					ctx.translate(yAxisLabelPosLeft, topNotUsableSize + (availableHeight / 2));
 					ctx.rotate(-(90 * (Math.PI / 180)));
+					setTextBordersAndBackground(ctx,config.yAxisLabel,config.yAxisFontSize, 0,0, config.yAxisLabelBorders,config.yAxisLabelBordersColor,config.yAxisLabelBordersWidth,config.yAxisLabelBordersXSpace,config.yAxisLabelBordersYSpace,config.yAxisLabelBordersStyle,config.yAxisLabelBackgroundColor,"YAXISLABELLEFT");
 					ctx.fillTextMultiLine(config.yAxisLabel, 0, 0, ctx.textBaseline, config.yAxisFontSize,false);
 					ctx.stroke();
 					ctx.restore();
@@ -5414,6 +5542,7 @@ window.Chart = function(context) {
 					ctx.textBaseline = "bottom";
 					ctx.translate(yAxisLabelPosRight, topNotUsableSize + (availableHeight / 2));
 					ctx.rotate(+(90 * (Math.PI / 180)));
+					setTextBordersAndBackground(ctx,config.yAxisLabel2,config.yAxisFontSize, 0,0, config.yAxisLabelBorders,config.yAxisLabelBordersColor,config.yAxisLabelBordersWidth,config.yAxisLabelBordersXSpace,config.yAxisLabelBordersYSpace,config.yAxisLabelBordersStyle,config.yAxisLabelBackgroundColor,"YAXISLABELLEFT");
 					ctx.fillTextMultiLine(config.yAxisLabel2, 0, 0, ctx.textBaseline, config.yAxisFontSize,false);
 					ctx.stroke();
 					ctx.restore();
@@ -5428,6 +5557,7 @@ window.Chart = function(context) {
 					ctx.fillStyle = config.xAxisFontColor;
 					ctx.textAlign = "center";
 					ctx.textBaseline = "bottom";
+					setTextBordersAndBackground(ctx,config.xAxisLabel,config.xAxisFontSize,leftNotUsableSize + (availableWidth / 2), xAxisLabelPos,config.xAxisLabelBorders,config.xAxisLabelBordersColor,config.xAxisLabelBordersWidth,config.xAxisLabelBordersXSpace,config.xAxisLabelBordersYSpace,config.xAxisLabelBordersStyle,config.xAxisLabelBackgroundColor,"XAXISLABEL");
 					ctx.translate(leftNotUsableSize + (availableWidth / 2), xAxisLabelPos);
 					ctx.fillTextMultiLine(config.xAxisLabel, 0, 0, ctx.textBaseline, config.xAxisFontSize,true);
 					ctx.stroke();
@@ -5456,6 +5586,9 @@ window.Chart = function(context) {
 				ctx.fillStyle = config.footNoteFontColor;
 				ctx.textAlign = "center";
 				ctx.textBaseline = "bottom";
+
+				setTextBordersAndBackground(ctx,config.footNote,config.footNoteFontSize,leftNotUsableSize + (availableWidth / 2), footNotePosY,config.footNoteBorders,config.footNoteBordersColor,config.footNoteBordersWidth,config.footNoteBordersXSpace,config.footNoteBordersYSpace,config.footNoteBordersStyle,config.footNoteBackgroundColor,"FOOTNOTE");
+
 				ctx.translate(leftNotUsableSize + (availableWidth / 2), footNotePosY);
 				ctx.fillTextMultiLine(config.footNote, 0, 0, ctx.textBaseline, config.footNoteFontSize,true);
 				ctx.stroke();
@@ -5677,6 +5810,7 @@ window.Chart = function(context) {
 						var dispString = tmplbis(setOptionValue("INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ), statData[i][j],config);
 						ctx.translate(statData[i][j].xPos + paddingTextX, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset - paddingTextY);
 						ctx.rotate(setOptionValue("INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) * (Math.PI / 180));
+						setTextBordersAndBackground(ctx,dispString,setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),0,0,setOptionValue("INGRAPHDATABORDERS",ctx,data,statData,undefined,config.inGraphDataBorders,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSCOLOR",ctx,data,statData,undefined,config.inGraphDataBordersColor,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSWIDTH",ctx,data,statData,undefined,config.inGraphDataBordersWidth,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSXSPACE",ctx,data,statData,undefined,config.inGraphDataBordersXSpace,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSYSPACE",ctx,data,statData,undefined,config.inGraphDataBordersYSpace,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABORDERSSTYLE",ctx,data,statData,undefined,config.inGraphDataBordersStyle,i,j,{nullValue : true} ),setOptionValue("INGRAPHDATABACKGROUNDCOLOR",ctx,data,statData,undefined,config.inGraphDataBackgroundColor,i,j,{nullValue : true} ),"INGRAPHDATA");
 						ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue("INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),true);
 						ctx.restore();
 					}
@@ -6260,6 +6394,7 @@ switch(ctx.tpchart) {
 		prevpos[0]=[];
 		prevpos[1]=[];
 		var grandtotal=0;
+
 		for (var i = 0; i < data.datasets.length; i++) {
 			// BUG when all data are missing !
 			if (typeof data.datasets[i].xPos != "undefined" && tpdraw(ctx,data.datasets[i])=="Line") {
@@ -6746,7 +6881,8 @@ switch(ctx.tpchart) {
 			var scalingFactor = CapValue(adjustedValue / outerValue, 1, 0);
 			return (scaleHop * calculatedScale.steps) * scalingFactor;
 		} else { // logarithmic scale
-			return CapValue(log10(val) * scaleHop - calculateOrderOfMagnitude(calculatedScale.graphMin) * scaleHop, undefined, 0);
+//			return CapValue(log10(val) * scaleHop - calculateOrderOfMagnitude(calculatedScale.graphMin) * scaleHop, undefined, 0);
+			return CapValue(log10(val) * scaleHop - log10(calculatedScale.graphMin) * scaleHop, undefined, 0);
 		}
 	};
 
@@ -6822,5 +6958,73 @@ function tpdraw(ctx,dataval) {
 	}
 	return tp;
 };
+
+function setTextBordersAndBackground(ctx,text,fontsize,xpos,ypos,borders,borderscolor,borderswidth,bordersxspace,bordersyspace,bordersstyle,backgroundcolor,optiongroup) {
+	// compute text width and text height;
+	if(typeof text != "string") {
+		var txt=text.toString();
+		var textHeight= fontsize * (txt.split("\n").length || 1);
+		var textWidth = ctx.measureText(txt).width;
+	} else {
+		var textHeight= fontsize * (text.split("\n").length || 1);
+		var textWidth = ctx.measureText(text).width;
+	}
+	
+	
+	// compute xright, xleft, ytop, ybot;
+
+        var xright, xleft, ytop, ybot;
+	if(ctx.textAlign=="center") {
+		xright=-textWidth/2;
+		xleft=textWidth/2;
+	} else if(ctx.textAlign=="left") {
+		xright=0;
+		xleft=textWidth;
+	} else if(ctx.textAlign=="right") {
+		xright=-textWidth;
+		xleft=0;
+	}
+	
+	if(ctx.textBaseline=="top") {
+		ytop=0;
+		ybottom=textHeight;	
+	} else if (ctx.textBaseline=="center" || ctx.textBaseline=="middle") {
+		ytop=-textHeight/2;
+		ybottom=textHeight/2;	
+	} else if (ctx.textBaseline=="bottom") {
+		ytop=-textHeight;
+		ybottom=0;	
+	}
+
+	ctx.save();
+	ctx.beginPath();
+ 	ctx.translate(xpos,ypos);
+
+	if(backgroundcolor != "none") {
+
+		ctx.save();
+		ctx.fillStyle=backgroundcolor;
+		ctx.fillRect(xright-bordersxspace,ybottom+bordersyspace,xleft-xright+2*bordersxspace,ytop-ybottom-2*bordersyspace);
+		ctx.stroke();
+		ctx.restore();
+		ctx.fillStyle="black";
+	}	
+
+	// draw border;
+	if (borders) {
+		ctx.save();
+		ctx.lineWidth = borderswidth;	
+		ctx.strokeStyle= borderscolor;
+		ctx.fillStyle= borderscolor;
+		ctx.setLineDash(lineStyleFn(bordersstyle));
+		ctx.rect(xright-borderswidth/2-bordersxspace,ytop-borderswidth/2-bordersyspace,xleft-xright+borderswidth+2*bordersxspace,ybottom-ytop+borderswidth+2*bordersyspace); 
+		ctx.stroke();
+		ctx.setLineDash([]);
+		ctx.restore();
+	}
+	
+	ctx.restore();
+};
+
 
 
