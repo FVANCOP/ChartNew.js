@@ -4477,7 +4477,8 @@ window.Chart = function(context) {
 			var scalingFactor = CapValue(adjustedValue / outerValue, 1, 0);
 			return (scaleHop * calculatedScale.steps) * scalingFactor;
 		} else { // logarithmic scale
-			return CapValue(log10(val) * scaleHop - calculateOrderOfMagnitude(calculatedScale.graphMin) * scaleHop, undefined, 0);
+//			return CapValue(log10(val) * scaleHop - calculateOrderOfMagnitude(calculatedScale.graphMin) * scaleHop, undefined, 0);
+			return CapValue(log10(val) * scaleHop - log10(calculatedScale.graphMin) * scaleHop, undefined, 0);
 		}
 	};
 
