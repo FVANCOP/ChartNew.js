@@ -370,13 +370,18 @@ function initChartResize() {
 	}
 };
 
+var container;
 function getMaximumWidth(domNode){
-	var container = domNode.parentNode;
-	return container.clientWidth;
+    if(domNode.parentNode!=null)
+        if(domNode.parentNode!=undefined)
+            container = domNode.parentNode;
+    return container.clientWidth;
 };
 
 function getMaximumHeight(domNode){
-	var container = domNode.parentNode;
+	if(domNode.parentNode!=null)
+            if(domNode.parentNode!=undefined)
+                container = domNode.parentNode;
 	return container.clientHeight;
 };
 
@@ -6596,7 +6601,7 @@ switch(ctx.tpchart) {
 								lastNotMissing : lastNotMissingj[j],
 								prevNotMissing : prevnotemptyj,
 								prevMissing : prevemptyj,
-								grandtotal : grandtotal,
+								grandtotal : grandtotal
 								 }; 
 							break;
 						case "Line" :
@@ -6609,7 +6614,7 @@ switch(ctx.tpchart) {
 								lastNotMissing : lastNotMissingi[i],
 								prevNotMissing : prevnotemptyj,
 								prevMissing : prevemptyj,
-								grandtotal : grandtotal,
+								grandtotal : grandtotal
 								 }; 
 							break;
 						}
@@ -7061,6 +7066,3 @@ function setTextBordersAndBackground(ctx,text,fontsize,xpos,ypos,borders,borders
 	
 	ctx.restore();
 };
-
-
-
