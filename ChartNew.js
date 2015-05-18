@@ -46,13 +46,13 @@ function lineStyleFn(data)
 {
 if ((typeof chartJSLineStyle[data]) === "object")return chartJSLineStyle[data];
 else return chartJSLineStyle["solid"];
-};
+}
 
 if (typeof String.prototype.trim !== 'function') {
 	String.prototype.trim = function() {
 		return this.replace(/^\s+|\s+$/g, '');
 	}
-};
+}
 if (!Array.prototype.indexOf) {
 	Array.prototype.indexOf = function(searchElement /*, fromIndex */ ) {
 		"use strict";
@@ -84,7 +84,7 @@ if (!Array.prototype.indexOf) {
 		}
 		return -1;
 	}
-};
+}
 var charJSPersonalDefaultOptions = {};
 var charJSPersonalDefaultOptionsLine = {} ;
 var charJSPersonalDefaultOptionsRadar = {} ;
@@ -100,18 +100,19 @@ var charJSPersonalDefaultOptionsHorizontalStackedBar = {};
 function roundToWithThousands(config, num, place) {
 	var newval = 1 * unFormat(config, num);
 	if (typeof(newval) == "number" && place != "none") {
+                var roundVal;
 		if (place <= 0) {
-			var roundVal = -place;
+			roundVal = -place;
 			newval = +(Math.round(newval + "e+" + roundVal) + "e-" + roundVal);
 		} else {
-			var roundVal = place;
+			roundVal = place;
 			var divval = "1e+" + roundVal;
 			newval = +(Math.round(newval / divval)) * divval;
 		}
 	}
 	newval = fmtChartJS(config, newval, "none");
 	return (newval);
-};
+}
 
 function unFormat(config, num) {
 	if ((config.decimalSeparator != "." || config.thousandSeparator != "") && typeof(num) == "string") {
@@ -124,7 +125,7 @@ function unFormat(config, num) {
 	} else {
 		return num;
 	}
-};
+}
 ///////// ANNOTATE PART OF THE SCRIPT ///////////////////////////////////////////
 /********************************************************************************
 Copyright (C) 1999 Thomas Brattli
@@ -150,7 +151,7 @@ function fmtChartJSPerso(config, value, fmt) {
 			break;
 	}
 	return (return_value);
-};
+}
 
 function fmtChartJS(config, value, fmt) {
 	var return_value;
@@ -158,11 +159,12 @@ function fmtChartJS(config, value, fmt) {
 		return_value = value;
 	} else if (fmt == "none" && typeof(value) == "number") {
 		if (config.roundNumber != "none") {
+                        var roundVal;
 			if (config.roundNumber <= 0) {
-				var roundVal = -config.roundNumber;
+				roundVal = -config.roundNumber;
 				value = +(Math.round(value + "e+" + roundVal) + "e-" + roundVal);
 			} else {
-				var roundVal = config.roundNumber;
+				roundVal = config.roundNumber;
 				var divval = "1e+" + roundVal;
 				value = +(Math.round(value / divval)) * divval;
 			}
@@ -190,7 +192,7 @@ function fmtChartJS(config, value, fmt) {
 		return_value = value;
 	}
 	return (return_value);
-};
+}
 
 function addParameters2Function(data, fctName, fctList) {
 	var mathFunctions = {
@@ -229,12 +231,13 @@ function addParameters2Function(data, fctName, fctList) {
 		}
 		return window[fctName](parameter);
 	}
-	return;
-};
+        return null;
+        //lolololol
+}
 
 function isNumber(n) {
 	return !isNaN(parseFloat(n)) && isFinite(n);
-};
+}
 
 function tmplbis(str, data,config) {
 	newstr=str;
@@ -248,15 +251,13 @@ function tmplter(str, data) {
 	var regexMath = new RegExp('<%=((?:(?:.*?)\\W)??)((?:' + mathFunctionList.join('|') + ')(?:Dif)?)\\(([0-9]*?)\\)(.*?)%>', 'g');
 	while (regexMath.test(str)) {
 		str = str.replace(regexMath, function($0, $1, $2, $3, $4) {
-			if ($3) {
-				var rndFac = $3;
-			} else {
-				var rndFac = 2;
-			}
+                        var rndFac;
+			if($3)  rndFac = $3;
+			else    rndFac = 2;
+
 			var value = addParameters2Function(data, $2, "mathFunctions");
-			if (isNumber(value)) {
+			if (isNumber(value)) 
 				return '<%=' + $1 + '' + Math.round(Math.pow(10, rndFac) * value) / Math.pow(10, rndFac) + '' + $4 + '%>';
-			}
 			return '<%= %>';
 		});
 	}
@@ -283,7 +284,7 @@ function tmplter(str, data) {
 			.split("\r").join("\\'") + "');}return p.join('');");
 	// Provide some basic currying to the user
 	return data ? fn(data) : fn;
-};
+}
 if (typeof CanvasRenderingContext2D !== 'undefined') {
 	/**
 	 * ctx.prototype
@@ -293,6 +294,7 @@ if (typeof CanvasRenderingContext2D !== 'undefined') {
 	 * @param y y position
 	 * @param yLevel = "bottom" => last line has this y-Pos [default], = "middle" => the middle line has this y-Pos)
 	 * @param lineHeight lineHeight
+         * @param horizontal horizontal
 	 */
 	CanvasRenderingContext2D.prototype.fillTextMultiLine = function(text, x, y, yLevel, lineHeight,horizontal) {
 		var lines = ("" + text).split("\n");
@@ -328,8 +330,8 @@ if (typeof CanvasRenderingContext2D !== 'undefined') {
 		CanvasRenderingContext2D.prototype.setLineDash = function( listdash) {
 			return 0;
 		};
-	};	
-};
+	}	
+}
 cursorDivCreated = false;
 
 function createCursorDiv() {
@@ -340,7 +342,7 @@ function createCursorDiv() {
 		document.body.appendChild(div);
 		cursorDivCreated = true;
 	}
-};
+}
 
 initChartJsResize = false;
 var jsGraphResize = new Array();
@@ -358,7 +360,7 @@ function addResponsiveChart(id,ctx,data,config) {
 	ctx.prevWidth=newSize.newWidth;
 	ctx.prevHeight=newSize.newHeight;
 	jsGraphResize[jsGraphResize.length]= [id,ctx.tpchart,ctx,data,config];
-};
+}
 
 function initChartResize() {
 	if(initChartJsResize==false) {
@@ -368,7 +370,7 @@ function initChartResize() {
 			window.attachEvent("resize", chartJsResize);
 		}
 	}
-};
+}
 
 var container;
 function getMaximumWidth(domNode){
@@ -376,15 +378,14 @@ function getMaximumWidth(domNode){
         if(domNode.parentNode!=undefined)
             container = domNode.parentNode;
     return container.clientWidth;
-};
+}
 
 function getMaximumHeight(domNode){
 	if(domNode.parentNode!=null)
             if(domNode.parentNode!=undefined)
                 container = domNode.parentNode;
 	return container.clientHeight;
-};
-
+}
 
 function resizeCtx(ctx,newWidth,newHeight,config)
 {
@@ -409,11 +410,11 @@ function resizeCtx(ctx,newWidth,newHeight,config)
 			ctx.chartSpaceScale=config.chartSpaceScale*(newWidth/ctx.initialWidth);
 		}
 	}
-};
+}
 
 function resizeGraph(ctx,config) {
 	if(typeof config.maintainAspectRatio == "undefined")config.maintainAspectRatio=true;
-	if(typeof config.responiveMinWidth == "undefined")config.responsiveMinWidth=0;
+	if(typeof config.responsiveMinWidth == "undefined")config.responsiveMinWidth=0;
 	if(typeof config.responsiveMinHeight  == "undefined")config.responsiveMinHeight=0;
 	if(typeof config.responsiveMaxWidth  == "undefined")config.responsiveMaxWidth=9999999;
 	if(typeof config.responsiveMaxHeight  == "undefined")config.responsiveMaxHeight=9999999;
@@ -425,11 +426,10 @@ function resizeGraph(ctx,config) {
   	var newWidth = getMaximumWidth(canvas);
 	var newHeight = config.maintainAspectRatio ? newWidth / ctx.aspectRatio : getMaximumHeight(canvas);
 	newWidth=Math.min(config.responsiveMaxWidth,Math.max(config.responsiveMinWidth,newWidth));
+       
 	newHeight=Math.min(config.responsiveMaxHeight,Math.max(config.responsiveMinHeight,newHeight));
         return { newWidth : parseInt(newWidth), newHeight :  parseInt(newHeight)};
-};
-
-
+}
 
 function chartJsResize() {
 	for (var i=0;i<jsGraphResize.length;i++)  {
@@ -438,7 +438,7 @@ function chartJsResize() {
 		}
 		subUpdateChart(jsGraphResize[i][2],jsGraphResize[i][3],jsGraphResize[i][4]);
 	}
-};
+}
 
 function testRedraw(ctx,data,config) {
 	if (ctx.firstPass==2 || ctx.firstPass==4 || ctx.firstPass==9) {
@@ -449,7 +449,7 @@ function testRedraw(ctx,data,config) {
 		ctx.firstPass=5;
 		return false;
 	}		
-};
+}
 
 function updateChart(ctx,data,config,animation,runanimationcompletefunction) {
 	if (ctx.firstPass==5)
@@ -461,7 +461,7 @@ function updateChart(ctx,data,config,animation,runanimationcompletefunction) {
 		subUpdateChart(ctx,data,config) ;
 		
 	}
-};
+}
 
 function subUpdateChart(ctx,data,config) {
 	// ctx.firstPass==undefined => graph never drawn
@@ -474,10 +474,10 @@ function subUpdateChart(ctx,data,config) {
 	// ctx.firstPass==6 => graph is displayed but need to be redraw without animation (because of a resize);
 	// ctx.firstPass==7 => graph is displayed but need to be redraw without responsivity;
 	if(!dynamicFunction(data, config, ctx)) { return; }
-
+        var newSize;
 	if(typeof ctx.firstPass == "undefined") { 
 		ctx.firstPass=1;
-		var newSize=resizeGraph(ctx,config);
+		newSize=resizeGraph(ctx,config);
 		if(config.responsive) {
 			resizeCtx(ctx,newSize.newWidth,newSize.newHeight,config);
 			ctx.prevWidth=newSize.newWidth;
@@ -490,7 +490,7 @@ function subUpdateChart(ctx,data,config) {
 		redrawGraph(ctx,data,config);
 	} else if(ctx.firstPass == 0) { 
 		ctx.firstPass=1;
-		var newSize=resizeGraph(ctx,config);
+		newSize=resizeGraph(ctx,config);
 		if(config.responsive) {
 			resizeCtx(ctx,newSize.newWidth,newSize.newHeight,config);
 			ctx.prevWidth=newSize.newWidth;
@@ -508,7 +508,7 @@ function subUpdateChart(ctx,data,config) {
 		ctx.firstPass=1;
 		redrawGraph(ctx,data,config);
 	} else if(ctx.firstPass==6) {
-		var newSize=resizeGraph(ctx,config);
+		newSize=resizeGraph(ctx,config);
 		if (newSize.newWidth!=ctx.prevWidth || newSize.newHeight != ctx.prevHeight) {
 			ctx.firstPass=3;
 			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -523,7 +523,7 @@ function subUpdateChart(ctx,data,config) {
 			redrawGraph(ctx,data,config);
 		} else ctx.firstPass=5;
 	} else if(ctx.firstPass==7) {
-		var newSize=resizeGraph(ctx,config);
+		newSize=resizeGraph(ctx,config);
 		ctx.firstPass=3;
 		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 		if(config.responsive) {
@@ -536,7 +536,7 @@ function subUpdateChart(ctx,data,config) {
 		}
 		redrawGraph(ctx,data,config);
 	} 
-};
+}
 
 function redrawGraph(ctx,data,config) {
 	var myGraph = new Chart(ctx);	
@@ -569,8 +569,7 @@ function redrawGraph(ctx,data,config) {
 			myGraph.Line(data,config);
 			break;
 	}
-};
-
+}
 
 //Default browsercheck, added to all scripts!                                   
 function checkBrowser() {
@@ -582,7 +581,8 @@ function checkBrowser() {
 	this.ns4 = (document.layers && !this.dom) ? 1 : 0;
 	this.bw = (this.ie5 || this.ie4 || this.ns4 || this.ns5)
 	return this
-};
+}
+
 bw = new checkBrowser();
 //Set these variables:
 fromLeft = 10; // How much from the left of the cursor should the div be?
@@ -593,7 +593,8 @@ Initilizes the objects
 function cursorInit() {
 	scrolled = bw.ns4 || bw.ns5 ? "window.pageYOffset" : "document.body.scrollTop"
 	if (bw.ns4) document.captureEvents(Event.MOUSEMOVE)
-};
+}
+
 /********************************************************************
 Contructs the cursorobjects
 *********************************************************************/
@@ -604,36 +605,36 @@ function makeCursorObj(obj, nest) {
 	this.moveIt = b_moveIt;
 	cursorInit();
 	return this
-};
+}
 
 function b_moveIt(x, y) {
 	this.x = x;
 	this.y = y;
 	this.css.left = this.x + "px";
 	this.css.top = this.y + "px";
-};
+}
 
 function isIE() {
 	var myNav = navigator.userAgent.toLowerCase();
 	return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
-};
+}
 
 function mergeChartConfig(defaults, userDefined) {
 	var returnObj = {};
 	for (var attrname in defaults) {
 		returnObj[attrname] = defaults[attrname];
 	}
-	for (var attrname in userDefined) {
-		returnObj[attrname] = userDefined[attrname];
+	for (var attrnameBis in userDefined) {
+		returnObj[attrnameBis] = userDefined[attrnameBis];
 	}
 	return returnObj;
-};
+}
 
 function sleep(ms) {
 	var dt = new Date();
 	dt.setTime(dt.getTime() + ms);
-	while (new Date().getTime() < dt.getTime()) {};
-};
+	while (new Date().getTime() < dt.getTime()) {}
+}
 
 function saveCanvas(ctx, data, config) {
 	cvSave = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -648,18 +649,19 @@ function saveCanvas(ctx, data, config) {
 	/* And ink them */
 
 	redrawGraph(ctx,data,savePngConfig);
+        var image;
 	if (config.savePngOutput == "NewWindow") {
-		var image = ctx.canvas.toDataURL();
+		image = ctx.canvas.toDataURL();
 		ctx.putImageData(cvSave, 0, 0);
 		window.open(image, '_blank');
 	}
 	if (config.savePngOutput == "CurrentWindow") {
-		var image = ctx.canvas.toDataURL();
+		image = ctx.canvas.toDataURL();
 		ctx.putImageData(cvSave, 0, 0);
 		window.location.href = image;
 	}
 	if (config.savePngOutput == "Save") {
-		var image = ctx.canvas.toDataURL();
+		image = ctx.canvas.toDataURL();
 		var downloadLink = document.createElement("a");
 		downloadLink.href = image;
 		downloadLink.download = config.savePngName + ".png";
@@ -667,12 +669,12 @@ function saveCanvas(ctx, data, config) {
 		downloadLink.click();
 		document.body.removeChild(downloadLink);
 	}
-};
+}
 if (typeof String.prototype.trim !== 'function') {
 	String.prototype.trim = function() {
 		return this.replace(/^\s+|\s+$/g, '');
 	}
-};
+}
 var dynamicDisplay = new Array();
 var dynamicDisplayList = new Array();
 
@@ -701,7 +703,7 @@ function dynamicFunction(data, config, ctx) {
 		dynamicDisplay[ctx.canvas.id][2] = true;
 	}
 	return true;
-};
+}
 
 function isScrolledIntoView(element) {
 	var xPosition = 0;
@@ -718,7 +720,7 @@ function isScrolledIntoView(element) {
 		yPosition + element.height / 2 <= window.pageYOffset + window.innerHeight
 	) return (true);
 	else return false;
-};
+}
 
 function scrollFunction() {
 	for (var i = 0; i < dynamicDisplayList["length"]; i++) {
@@ -727,13 +729,13 @@ function scrollFunction() {
 			redrawGraph(dynamicDisplay[dynamicDisplayList[i]][0],dynamicDisplay[dynamicDisplayList[i]][3], dynamicDisplay[dynamicDisplayList[i]][4]);
 		}
 	}
-};
+}
 
 var jsGraphAnnotate = new Array();
 
 function clearAnnotate(ctxid) {
 	jsGraphAnnotate[ctxid] = [];
-};
+}
 
 function getMousePos(canvas, evt) {
 	var rect = canvas.getBoundingClientRect();
@@ -741,7 +743,7 @@ function getMousePos(canvas, evt) {
 		x: evt.clientX - rect.left,
 		y: evt.clientY - rect.top
 	};
-};
+}
 
 function doMouseAction(config, ctx, event, data, action, funct) {
 
@@ -879,7 +881,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 	if (onData == false && action != "annotate") {
 		funct(event, ctx, config, data, null);
 	}
-};
+}
 ///////// GRAPHICAL PART OF THE SCRIPT ///////////////////////////////////////////
 //Define the global Chart Variable as a class.
 window.Chart = function(context) {
@@ -971,8 +973,8 @@ window.Chart = function(context) {
 			if (!p) p = 1 * .3;
 			if (a < Math.abs(1)) {
 				a = 1;
-				var s = p / 4;
-			} else var s = p / (2 * Math.PI) * Math.asin(1 / a);
+				s = p / 4;
+			} else s = p / (2 * Math.PI) * Math.asin(1 / a);
 			return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p));
 		},
 		easeOutElastic: function(t) {
@@ -984,8 +986,8 @@ window.Chart = function(context) {
 			if (!p) p = 1 * .3;
 			if (a < Math.abs(1)) {
 				a = 1;
-				var s = p / 4;
-			} else var s = p / (2 * Math.PI) * Math.asin(1 / a);
+				s = p / 4;
+			} else s = p / (2 * Math.PI) * Math.asin(1 / a);
 			return a * Math.pow(2, -10 * t) * Math.sin((t * 1 - s) * (2 * Math.PI) / p) + 1;
 		},
 		easeInOutElastic: function(t) {
@@ -997,8 +999,8 @@ window.Chart = function(context) {
 			if (!p) p = 1 * (.3 * 1.5);
 			if (a < Math.abs(1)) {
 				a = 1;
-				var s = p / 4;
-			} else var s = p / (2 * Math.PI) * Math.asin(1 / a);
+				s = p / 4;
+			} else s = p / (2 * Math.PI) * Math.asin(1 / a);
 			if (t < 1) return -.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p));
 			return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p) * .5 + 1;
 		},
@@ -1044,7 +1046,7 @@ window.Chart = function(context) {
 		context.canvas.height = height * window.devicePixelRatio;
 		context.canvas.width = width * window.devicePixelRatio;
 		context.scale(window.devicePixelRatio, window.devicePixelRatio);
-	};
+	}
 	this.PolarArea = function(data, options) {
 		chart.PolarArea.defaults = {
 			inGraphDataShow: false,
@@ -1519,7 +1521,6 @@ window.Chart = function(context) {
 			animationSteps: 60,
 			animationEasing: "easeOutQuart",
 			onAnimationComplete: null,
-			pointDot: true,
 			bezierCurve: true,
 			bezierCurveTension : 0.4,
 			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + v6 + ' %)'%>",
@@ -1903,7 +1904,7 @@ window.Chart = function(context) {
 		setRect(ctx, config);
 
 		return true;
-	} ;
+	}
 
 	var PolarArea = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
@@ -1996,7 +1997,7 @@ window.Chart = function(context) {
 
 
 			if (animationDecimal >= config.animationStopValue) {
-				for (var i = 0; i < data.length; i++) {
+				for (i = 0; i < data.length; i++) {
 					if (typeof(data[i].value) == 'undefined') continue;
 					if (setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})) {
 						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", i, -1,statData];
@@ -2040,7 +2041,7 @@ window.Chart = function(context) {
 				}
 			}
 			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"PolarArea");
-		};
+		}
 
 		function drawScale() {
 			for (var i = 0; i < calculatedScale.steps; i++) {
@@ -2075,7 +2076,7 @@ window.Chart = function(context) {
 					ctx.fillTextMultiLine(label, midPosX, midPosY - (scaleHop * (i + 1)), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true);
 				}
 			}
-		};
+		}
 
 		function getValueBounds() {
 			var upperValue = -Number.MAX_VALUE;
@@ -2088,7 +2089,7 @@ window.Chart = function(context) {
 				if (1 * data[i].value < lowerValue) {
 					lowerValue = 1 * data[i].value;
 				}
-			};
+			}
 			if(upperValue<lowerValue){upperValue=0;lowerValue=0;}
 			if (Math.abs(upperValue - lowerValue) < config.zeroValue) {
 				if(Math.abs(upperValue)< config.zeroValue) upperValue = .9;
@@ -2112,7 +2113,7 @@ window.Chart = function(context) {
 				maxSteps: maxSteps,
 				minSteps: minSteps
 			};
-		};
+		}
 	};
 	var Radar = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
@@ -2204,8 +2205,8 @@ window.Chart = function(context) {
 			}
 			ctx.restore();
 			if (animationDecimal >= config.animationStopValue) {
-				for (var i = 0; i < data.datasets.length; i++) {
-					for (var j = 0; j < data.datasets[i].data.length; j++) {
+				for (i = 0; i < data.datasets.length; i++) {
+					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
 						if (setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
 							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["POINT", i,j,statData];
@@ -2256,7 +2257,7 @@ window.Chart = function(context) {
 				}
 			}
 			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"Radar");
-		};
+		}
 
 		function drawScale() {
 			var rotationDegree = (2 * Math.PI) / data.datasets[0].data.length;
@@ -2295,7 +2296,7 @@ window.Chart = function(context) {
 			}
 			ctx.rotate(-(90 - config.startAngle) * Math.PI / 180);
 			if (config.scaleShowLabels) {
-				for (var i = 0; i < calculatedScale.steps; i++) {
+				for (i = 0; i < calculatedScale.steps; i++) {
 					ctx.textAlign = 'center';
 					ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
 					ctx.textBaseline = "middle";
@@ -2334,7 +2335,7 @@ window.Chart = function(context) {
 				ctx.fillTextMultiLine(data.labels[k], opposite, -adjacent, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.pointLabelFontSize)),true);
 			}
 			ctx.restore();
-		};
+		}
 
 		function calculateDrawingSizes() {
 			var midX, mxlb, maxL, maxR, iter, nbiter, prevMaxSize, prevMidX;
@@ -2367,10 +2368,10 @@ window.Chart = function(context) {
 			midPosX = maxR + msr.rightNotUsableSize;
 			for (midX = maxR, iter = 0; iter < nbiter; ++iter, midX += (msr.availableWidth - maxL - maxR) / nbiter) {
 				maxSize = Max([midX, msr.availableWidth - midX]);
-				var rotateAngle = config.startAngle * Math.PI / 180;
+				rotateAngle = config.startAngle * Math.PI / 180;
 				mxlb = msr.available;
-				for (var i = 0; i < data.labels.length; i++) {
-					var textMeasurement = ctx.measureTextMultiLine(data.labels[i], (Math.ceil(ctx.chartTextScale*config.scaleFontSize))).textWidth + ctx.measureTextMultiLine(data.labels[i], (Math.ceil(ctx.chartTextScale*config.scaleFontSize))).textHeight;
+				for (i = 0; i < data.labels.length; i++) {
+					textMeasurement = ctx.measureTextMultiLine(data.labels[i], (Math.ceil(ctx.chartTextScale*config.scaleFontSize))).textWidth + ctx.measureTextMultiLine(data.labels[i], (Math.ceil(ctx.chartTextScale*config.scaleFontSize))).textHeight;
 					if ((rotateAngle < Math.PI / 2 && rotateAngle > -Math.PI / 2) || rotateAngle > 3 * Math.PI / 2) {
 						mxlb = ((msr.availableWidth - midX) - textMeasurement) / Math.abs(Math.cos(rotateAngle));
 					} else if (Math.cos(rotateAngle != 0)) {
@@ -2391,7 +2392,7 @@ window.Chart = function(context) {
 			maxSize = prevMaxSize - (Math.ceil(ctx.chartTextScale*config.scaleFontSize)) / 2;
 			//If the label height is less than 5, set it to 5 so we don't have lines on top of each other.
 			labelHeight = Default(labelHeight, 5);
-		};
+		}
 
 		function getValueBounds() {
 			var upperValue = -Number.MAX_VALUE;
@@ -2430,12 +2431,11 @@ window.Chart = function(context) {
 				maxSteps: maxSteps,
 				minSteps: minSteps
 			};
-		};
+		}
 	};
 
 
 	var Pie = function(data, config, ctx) {
-		var totvalue = 0;
 		var msr, midPieX, midPieY, pieRadius;
 
 		ctx.tpchart="Pie";
@@ -2495,7 +2495,7 @@ window.Chart = function(context) {
 				}
 			}
 			if (animationDecimal >= config.animationStopValue) {
-				for (var i = 0; i < data.length; i++) {
+				for (i = 0; i < data.length; i++) {
 					if (typeof(data[i].value) == 'undefined' || 1*data[i].value<0) continue;
 					if (setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})) {
 						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", i,-1,statData];
@@ -2539,7 +2539,7 @@ window.Chart = function(context) {
 
 			}
 			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"Pie");
-		};
+		}
 
 		function calculateDrawingSize() {
 			midPieX = msr.leftNotUsableSize + (msr.availableWidth / 2);
@@ -2564,7 +2564,7 @@ window.Chart = function(context) {
 				}
 			}
 			pieRadius = pieRadius * config.radiusScale;
-		};
+		}
 	};
 	var Doughnut = function(data, config, ctx) {
 		var msr, midPieX, midPieY, doughnutRadius;
@@ -2636,7 +2636,7 @@ window.Chart = function(context) {
 				}
 			}
 			if (animationDecimal >= config.animationStopValue) {
-				for (var i = 0; i < data.length; i++) {
+				for (i = 0; i < data.length; i++) {
 					if (typeof(data[i].value) == 'undefined' || 1*data[i].value<0) continue;
 					if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})) {
 						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", i,-1,statData];
@@ -2679,7 +2679,7 @@ window.Chart = function(context) {
 				}
 			}
 			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"Doughnut");
-		};
+		}
 
 		function calculateDrawingSize() {
 			midPieX = msr.leftNotUsableSize + (msr.availableWidth / 2);
@@ -2705,7 +2705,7 @@ window.Chart = function(context) {
 				}
 			}
 			doughnutRadius = doughnutRadius * config.radiusScale;
-		};
+		}
 	};
 	var Line = function(data, config, ctx) {
 		var maxSize, scaleHop, scaleHop2, calculatedScale, calculatedScale2, labelHeight, scaleHeight, valueBounds, labelTemplateString, labelTemplateString2;
@@ -2720,13 +2720,13 @@ window.Chart = function(context) {
 		for (var i = 0; i < data.datasets.length; i++) {mxlgt = Max([mxlgt, data.datasets[i].data.length]);}
 		if (mxlgt == 1) {
 			if (typeof(data.labels[0]) == "string") data.labels = ["", data.labels[0], ""];
-			for (var i = 0; i < data.datasets.length; i++) {
+			for (i = 0; i < data.datasets.length; i++) {
 				if (typeof(data.datasets[i].data[0] != "undefined")) data.datasets[i].data = [undefined, data.datasets[i].data[0], undefined];
 			}
 			mxlgt=3;
 		}
 		var statData=initPassVariableData_part1(data,config,ctx);
-		for (var i = 0; i < data.datasets.length; i++) statData[i][0].tpchart="Line";
+		for (i = 0; i < data.datasets.length; i++) statData[i][0].tpchart="Line";
 		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], false, false, true, true, config.datasetFill, "Line");
 		valueBounds = getValueBounds();
 		// true or fuzzy (error for negativ values (included 0))
@@ -2861,7 +2861,7 @@ window.Chart = function(context) {
 				}
 			}
 			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"Line");
-		};
+		}
 
 		function drawScale() {
 			//X axis line
@@ -2935,7 +2935,7 @@ window.Chart = function(context) {
 				ctx.stroke();
             			ctx.setLineDash([]);
 			}
-		};
+		}
 
 		function drawLabels() {
 			ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
@@ -2982,14 +2982,14 @@ window.Chart = function(context) {
 				}
 			}
 			if (config.yAxisRight && valueBounds.dbAxis) {
-				for (var j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale2.steps; j++) {
+				for (j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale2.steps; j++) {
 					if (config.scaleShowLabels) {
 						ctx.textAlign = "left";
 						ctx.fillTextMultiLine(calculatedScale2.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop2), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true);
 					}
 				}
 			}
-		};
+		}
 
 		function getValueBounds() {
 			var upperValue = -Number.MAX_VALUE;
@@ -3014,21 +3014,21 @@ window.Chart = function(context) {
 						secondAxis = true;
 						if (1 * data.datasets[i].data[j] + mathValueHeight > upperValue2) {
 							upperValue2 = 1 * data.datasets[i].data[j] + mathValueHeight
-						};
+						}
 						if (1 * data.datasets[i].data[j] - mathValueHeight < lowerValue2) {
 							lowerValue2 = 1 * data.datasets[i].data[j] - mathValueHeight
-						};
+						}
 					} else {
 						firstAxis = true;
 						if (1 * data.datasets[i].data[j] + mathValueHeight > upperValue) {
 							upperValue = 1 * data.datasets[i].data[j] + mathValueHeight
-						};
+						}
 						if (1 * data.datasets[i].data[j] - mathValueHeight < lowerValue) {
 							lowerValue = 1 * data.datasets[i].data[j] - mathValueHeight
-						};
+						}
 					}
 				}
-			};
+			}
 			if(upperValue<lowerValue){upperValue=0;lowerValue=0;}
 			if (Math.abs(upperValue - lowerValue) < config.zeroValue) {
 				if(Math.abs(upperValue)< config.zeroValue) upperValue = .9;
@@ -3082,8 +3082,9 @@ window.Chart = function(context) {
 				maxSteps: maxSteps,
 				minSteps: minSteps
 			};
-		};
+		}
 	};
+        
 	var StackedBar = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
@@ -3161,13 +3162,14 @@ window.Chart = function(context) {
 					var currentAnimPc = animationCorrection(animPc, data, config, i, j, 1).animVal;
 					if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
 					if ((typeof data.datasets[i].data[j] == 'undefined') || 1*data.datasets[i].data[j] == 0 ) continue;
+                                        var botBar, topBar;
 					if(config.animationByDataset) {
-						var botBar=statData[i][j].yPosBottom;
-						var topBar=statData[i][j].yPosTop;
+						botBar=statData[i][j].yPosBottom;
+						topBar=statData[i][j].yPosTop;
 						topBar=botBar+currentAnimPc*(topBar-botBar);
 					} else {
-						var botBar=statData[statData[i][j].firstNotMissing][j].yPosBottom - currentAnimPc*(statData[statData[i][j].firstNotMissing][j].yPosBottom-statData[i][j].yPosBottom);
-						var topBar=statData[statData[i][j].firstNotMissing][j].yPosBottom - currentAnimPc*(statData[statData[i][j].firstNotMissing][j].yPosBottom-statData[i][j].yPosTop);
+						botBar=statData[statData[i][j].firstNotMissing][j].yPosBottom - currentAnimPc*(statData[statData[i][j].firstNotMissing][j].yPosBottom-statData[i][j].yPosBottom);
+						topBar=statData[statData[i][j].firstNotMissing][j].yPosBottom - currentAnimPc*(statData[statData[i][j].firstNotMissing][j].yPosBottom-statData[i][j].yPosTop);
 					}
 					ctx.fillStyle=setOptionValue(1,"COLOR",ctx,data,statData,data.datasets[i].fillColor,config.defaultFillColor,i,j,{animationValue: currentAnimPc, xPosLeft : statData[i][j].xPosLeft, yPosBottom : botBar, xPosRight : statData[i][j].xPosRight, yPosTop : topBar} );
 					ctx.strokeStyle=setOptionValue(1,"STROKECOLOR",ctx,data,statData,data.datasets[i].strokeColor,config.defaultStrokeColor,i,j,{nullvalue : null} );
@@ -3182,7 +3184,7 @@ window.Chart = function(context) {
 							ctx.setLineDash(lineStyleFn(setOptionValue(1,"STROKESTYLE",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
 							ctx.stroke();
 							ctx.setLineDash([]);
-						};
+						}
 						ctx.closePath();
 						ctx.fill();
 					}
@@ -3191,8 +3193,8 @@ window.Chart = function(context) {
 			if (animPc >= config.animationStopValue) {
 				var 	yPos = 0,
 					xPos = 0;
-				for (var i = 0; i < data.datasets.length; i++) {
-					for (var j = 0; j < data.datasets[i].data.length; j++) {
+				for (i = 0; i < data.datasets.length; i++) {
+					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
 						if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
 							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i, j, statData];
@@ -3234,7 +3236,7 @@ window.Chart = function(context) {
 				}
 			}
 			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"StackedBar");
-		};
+		}
 
 		function drawScale() {
 			//X axis line                                                          
@@ -3286,7 +3288,7 @@ window.Chart = function(context) {
 				ctx.stroke();
 			}
 			ctx.setLineDash([]);
-		};
+		}
 
 		function drawLabels() {
 			ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
@@ -3332,7 +3334,7 @@ window.Chart = function(context) {
 					}
 				}
 			}
-		};
+		}
 
 		function getValueBounds() {
 			var upperValue = -Number.MAX_VALUE;
@@ -3349,18 +3351,18 @@ window.Chart = function(context) {
 							tempp += 1 * data.datasets[0].data[j];
 							if (tempp > upperValue) {
 								upperValue = tempp;
-							};
+							}
 							if (tempp < lowerValue) {
 								lowerValue = tempp;
-							};
+							}
 						} else {
 							tempn += 1 * data.datasets[0].data[j];
 							if (tempn > upperValue) {
 								upperValue = tempn;
-							};
+							}
 							if (tempn < lowerValue) {
 								lowerValue = tempn;
-							};
+							}
 						}
 					}
 					while (k > 0) { //get max of stacked data
@@ -3369,24 +3371,24 @@ window.Chart = function(context) {
 								tempp += 1 * data.datasets[k].data[j];
 								if (tempp > upperValue) {
 									upperValue = tempp;
-								};
+								}
 								if (tempp < lowerValue) {
 									lowerValue = tempp;
-								};
+								}
 							} else {
 								tempn += 1 * data.datasets[k].data[j];
 								if (tempn > upperValue) {
 									upperValue = tempn;
-								};
+								}
 								if (tempn < lowerValue) {
 									lowerValue = tempn;
-								};
+								}
 							}
 						}
 						k--;
 					}
 				}
-			};
+			}
 			if(typeof config.graphMin=="function")lowerValue= setOptionValue(1,"GRAPHMIN",ctx,data,statData,undefined,config.graphMin,-1,-1,{nullValue : true})
 			else if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
 			if(typeof config.graphMax=="function") upperValue= setOptionValue(1,"GRAPHMAX",ctx,data,statData,undefined,config.graphMax,-1,-1,{nullValue : true})
@@ -3412,7 +3414,7 @@ window.Chart = function(context) {
 				maxSteps: maxSteps,
 				minSteps: minSteps
 			};
-		};
+		}
 	};
 	/**
 	 * Reverse the data structure for horizontal charts
@@ -3430,7 +3432,7 @@ window.Chart = function(context) {
 			}
 		}
 		return data;
-	};
+	}
 	var HorizontalStackedBar = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
@@ -3508,7 +3510,7 @@ window.Chart = function(context) {
 			var adjustedValue = val - calculatedScale.graphMin;
 			var scalingFactor = CapValue(adjustedValue / outerValue, 1, 0);
 			return (scaleHop * calculatedScale.steps) * scalingFactor;
-		};
+		}
 
 		function drawBars(animPc) {
 			ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.barStrokeWidth);
@@ -3517,13 +3519,14 @@ window.Chart = function(context) {
 					var currentAnimPc = animationCorrection(animPc, data, config, i, j, 1).animVal;
 					if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
 					if ((typeof(data.datasets[i].data[j]) == 'undefined') || 1*data.datasets[i].data[j] == 0 ) continue;
+                                        var leftBar, rightBar;
 					if(config.animationByDataset) {
-						var leftBar= statData[i][j].xPosLeft;
-						var rightBar= statData[i][j].xPosRight;
+						leftBar= statData[i][j].xPosLeft;
+						rightBar= statData[i][j].xPosRight;
 						rightBar=leftBar+currentAnimPc*(rightBar-leftBar);
 					} else {
-						var leftBar=statData[statData[i][j].firstNotMissing][j].xPosLeft + currentAnimPc*(statData[i][j].xPosLeft-statData[statData[i][j].firstNotMissing][j].xPosLeft);
-						var rightBar=statData[statData[i][j].firstNotMissing][j].xPosLeft + currentAnimPc*(statData[i][j].xPosRight-statData[statData[i][j].firstNotMissing][j].xPosLeft);
+						leftBar=statData[statData[i][j].firstNotMissing][j].xPosLeft + currentAnimPc*(statData[i][j].xPosLeft-statData[statData[i][j].firstNotMissing][j].xPosLeft);
+						rightBar=statData[statData[i][j].firstNotMissing][j].xPosLeft + currentAnimPc*(statData[i][j].xPosRight-statData[statData[i][j].firstNotMissing][j].xPosLeft);
 					}
 					ctx.fillStyle=setOptionValue(1,"COLOR",ctx,data,statData,data.datasets[i].fillColor,config.defaultFillColor,i,j,{animationValue: currentAnimPc, xPosLeft : leftBar, yPosBottom : statData[i][j].yPosBottom, xPosRight : rightBar, yPosTop : statData[i][j].yPosBottom} );
 
@@ -3549,8 +3552,8 @@ window.Chart = function(context) {
 			if (animPc >= config.animationStopValue) {
 				var yPos = 0,
 					xPos = 0;
-				for (var i = 0; i < data.datasets.length; i++) {
-					for (var j = 0; j < data.datasets[i].data.length; j++) {
+				for (i = 0; i < data.datasets.length; i++) {
+					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if ((typeof(data.datasets[i].data[j]) == 'undefined')) continue;
 						if (setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
 							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i ,j, statData];
@@ -3591,7 +3594,7 @@ window.Chart = function(context) {
 				}
 			}
 			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"HorizontalStackedBar");
-		};
+		}
 
 		function drawScale() {
 			//X axis line                                                          
@@ -3644,7 +3647,7 @@ window.Chart = function(context) {
 				ctx.stroke();
 			}
 			ctx.setLineDash([]);
-		};
+		}
 
 		function drawLabels() {
 			ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
@@ -3688,7 +3691,7 @@ window.Chart = function(context) {
 					ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true);
 				}
 			}
-		};
+		}
 
 		function getValueBounds() {
 			var upperValue = -Number.MAX_VALUE;
@@ -3705,18 +3708,18 @@ window.Chart = function(context) {
 							tempp += 1 * data.datasets[0].data[j];
 							if (tempp > upperValue) {
 								upperValue = tempp;
-							};
+							}
 							if (tempp < lowerValue) {
 								lowerValue = tempp;
-							};
+							}
 						} else {
 							tempn += 1 * data.datasets[0].data[j];
 							if (tempn > upperValue) {
 								upperValue = tempn;
-							};
+							}
 							if (tempn < lowerValue) {
 								lowerValue = tempn;
-							};
+							}
 						}
 					}
 					while (k > 0) { //get max of stacked data
@@ -3725,24 +3728,24 @@ window.Chart = function(context) {
 								tempp += 1 * data.datasets[k].data[j];
 								if (tempp > upperValue) {
 									upperValue = tempp;
-								};
+								}
 								if (tempp < lowerValue) {
 									lowerValue = tempp;
-								};
+								}
 							} else {
 								tempn += 1 * data.datasets[k].data[j];
 								if (tempn > upperValue) {
 									upperValue = tempn;
-								};
+								}
 								if (tempn < lowerValue) {
 									lowerValue = tempn;
-								};
+								}
 							}
 						}
 						k--;
 					}
 				}
-			};
+			}
 			if(typeof config.graphMin=="function")lowerValue= setOptionValue(1,"GRAPHMIN",ctx,data,statData,undefined,config.graphMin,-1,-1,{nullValue : true})
 			else if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
 			if(typeof config.graphMax=="function") upperValue= setOptionValue(1,"GRAPHMAX",ctx,data,statData,undefined,config.graphMax,-1,-1,{nullValue : true})
@@ -3770,7 +3773,7 @@ window.Chart = function(context) {
 			};
 
 
-		};
+		}
 	};
 	var Bar = function(data, config, ctx) {
 		var maxSize, scaleHop, scaleHop2, calculatedScale, calculatedScale2, labelHeight, scaleHeight, valueBounds, labelTemplateString, labelTemplateString2, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
@@ -3887,10 +3890,10 @@ window.Chart = function(context) {
 			var zeroY = 0;
 			var zeroY2 = 0;
 			if (valueBounds.minValue < 0) {
-				var zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, scaleHop);
+				zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, scaleHop);
 			}
 			if (valueBounds.minValue2 < 0) {
-				var zeroY2 = calculateOffset(config.logarithmic2, 0, calculatedScale2, scaleHop2);
+				zeroY2 = calculateOffset(config.logarithmic2, 0, calculatedScale2, scaleHop2);
 			}
 			initPassVariableData_part2(statData,data,config,ctx,{ 
 				msr: msr,
@@ -3933,8 +3936,8 @@ window.Chart = function(context) {
 
 			if (animPc >= config.animationStopValue) {
 
-				for (var i = 0; i < data.datasets.length; i++) {
-					for (var j = 0; j < data.datasets[i].data.length; j++) {
+				for (i = 0; i < data.datasets.length; i++) {
+					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
 						if (data.datasets[i].type == "Line") continue;
 						if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true}))
@@ -3987,7 +3990,7 @@ window.Chart = function(context) {
 				});
 			}
 			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"Bar");
-		};
+		}
 
 		function roundRect(ctx, x, y, w, h, stroke, radius,i,j) {
 			ctx.beginPath();
@@ -4005,7 +4008,7 @@ window.Chart = function(context) {
 			ctx.closePath();
 			ctx.fill();
 			ctx.setLineDash([]);
-		};
+		}
 
 		function drawScale() {
 			//X axis line                                                          
@@ -4059,7 +4062,7 @@ window.Chart = function(context) {
 				ctx.stroke();
 			}
 			ctx.setLineDash([]);
-		};
+		}
 
 		function drawLabels() {
 			ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
@@ -4107,14 +4110,14 @@ window.Chart = function(context) {
 				}
 			}
 			if (config.yAxisRight && valueBounds.dbAxis) {
-				for (var j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale2.steps; j++) {
+				for (j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale2.steps; j++) {
 					if (config.scaleShowLabels) {
 						ctx.textAlign = "left";
 						ctx.fillTextMultiLine(calculatedScale2.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop2), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true);
 					}
 				}
 			}
-		};
+		}
 
 		function getValueBounds() {
 			var upperValue = -Number.MAX_VALUE;
@@ -4140,21 +4143,21 @@ window.Chart = function(context) {
 						secondAxis = true;
 						if (1 * data.datasets[i].data[j] + mathValueHeight > upperValue2) {
 							upperValue2 = 1 * data.datasets[i].data[j] + mathValueHeight;
-						};
+						}
 						if (1 * data.datasets[i].data[j] - mathValueHeight < lowerValue2) {
 							lowerValue2 = 1 * data.datasets[i].data[j] - mathValueHeight;
-						};
+						}
 					} else {
 						firstAxis=true;
 						if (1 * data.datasets[i].data[j] + mathValueHeight > upperValue) {
 							upperValue = 1 * data.datasets[i].data[j] + mathValueHeight;
-						};
+						}
 						if (1 * data.datasets[i].data[j] - mathValueHeight < lowerValue) {
 							lowerValue = 1 * data.datasets[i].data[j] - mathValueHeight;
-						};
+						}
 					}
 				}
-			};
+			}
 			if(upperValue<lowerValue){upperValue=0;lowerValue=0;}
 			if (Math.abs(upperValue - lowerValue) < config.zeroValue) {
 				if(Math.abs(upperValue)< config.zeroValue) upperValue = .9;
@@ -4206,7 +4209,7 @@ window.Chart = function(context) {
 				maxSteps: maxSteps,
 				minSteps: minSteps
 			};
-		};
+		}
 	};
 
 	var HorizontalBar = function(data, config, ctx) {
@@ -4266,7 +4269,7 @@ window.Chart = function(context) {
 			if(barWidth<0 && barWidth>=-1)barWidth=-1;
 			var zeroY = 0;
 			if (valueBounds.minValue < 0) {
-				var zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, valueHop);
+				zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, valueHop);
 			}
 			drawLabels();
 			initPassVariableData_part2(statData,data,config,ctx,{ 
@@ -4299,8 +4302,8 @@ window.Chart = function(context) {
 				}
 			}
 			if (animPc >= config.animationStopValue) {
-				for (var i = 0; i < data.datasets.length; i++) {
-					for (var j = 0; j < data.datasets[i].data.length; j++) {
+				for (i = 0; i < data.datasets.length; i++) {
+					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
 						if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
 							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i ,j ,statData];
@@ -4339,7 +4342,7 @@ window.Chart = function(context) {
 				}
 			}
 			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"HorizontalBar");
-		};
+		}
 
 		function roundRect(ctx, x, y, w, h, stroke, radius, zeroY,i,j) {
 			ctx.beginPath();
@@ -4356,10 +4359,10 @@ window.Chart = function(context) {
 				ctx.setLineDash(lineStyleFn(setOptionValue(1,"STROKESTYLE",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
 				ctx.stroke();
 				ctx.setLineDash([]);
-			};
+			}
 			ctx.closePath();
 			ctx.fill();
-		};
+		}
 
 		function drawScale() {
 			//X axis line                                                          
@@ -4413,7 +4416,7 @@ window.Chart = function(context) {
 				ctx.stroke();
 			}
 			ctx.setLineDash([]);
-		};
+		}
 
 		function drawLabels() {
 			ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
@@ -4457,7 +4460,7 @@ window.Chart = function(context) {
 					ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - (j * scaleHop) - scaleHop / 2, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true);
 				}
 			}
-		};
+		}
 
 		function getValueBounds() {
 			var upperValue = -Number.MAX_VALUE;
@@ -4467,12 +4470,12 @@ window.Chart = function(context) {
 					if(typeof data.datasets[i].data[j]=="undefined")continue;
 					if (1 * data.datasets[i].data[j] > upperValue) {
 						upperValue = 1 * data.datasets[i].data[j]
-					};
+					}
 					if (1 * data.datasets[i].data[j] < lowerValue) {
 						lowerValue = 1 * data.datasets[i].data[j]
-					};
+					}
 				}
-			};
+			}
 			if(upperValue<lowerValue){upperValue=0;lowerValue=0;}
 			if (Math.abs(upperValue - lowerValue) < config.zeroValue) {
 				if(Math.abs(upperValue)< config.zeroValue) upperValue = .9;
@@ -4501,7 +4504,7 @@ window.Chart = function(context) {
 				maxSteps: maxSteps,
 				minSteps: minSteps
 			};
-		};
+		}
 	};
 
 	function calculateOffset(logarithmic, val, calculatedScale, scaleHop) {
@@ -4514,7 +4517,7 @@ window.Chart = function(context) {
 //			return CapValue(log10(val) * scaleHop - calculateOrderOfMagnitude(calculatedScale.graphMin) * scaleHop, undefined, 0);
 			return CapValue(log10(val) * scaleHop - log10(calculatedScale.graphMin) * scaleHop, undefined, 0);
 		}
-	};
+	}
 
 	function animationLoop(config, drawScale, drawData, ctx, clrx, clry, clrwidth, clrheight, midPosX, midPosY, borderX, borderY, data) {
 		var cntiter = 0;
@@ -4555,7 +4558,7 @@ window.Chart = function(context) {
 			}
 			dispCrossImage(ctx, config, midPosX, midPosY, borderX, borderY, true, data, easeAdjustedAnimationPercent, cntiter);
 			dispCrossText(ctx, config, midPosX, midPosY, borderX, borderY, true, data, easeAdjustedAnimationPercent, cntiter);
-		};
+		}
 
 		function animLoop() {
 			//We need to check if the animation is incomplete (less than 1), or complete (1).
@@ -4593,8 +4596,8 @@ window.Chart = function(context) {
 				}
 				
 			}
-		};
-	};
+		}
+	}
 	//Declare global functions to be called within this namespace here.
 	// shim layer with setTimeout fallback
 	var requestAnimFrame = (function() {
@@ -4682,7 +4685,7 @@ window.Chart = function(context) {
 				}
 			}
 			if(config.graphMaximized==true || config.graphMaximized=="bottom" || typeof config.graphMin!=="undefined") {
-				while (graphMin+stepValue < minValue && numberOfSteps>=3){graphMin+=stepValue;numberOfSteps--};
+				while (graphMin+stepValue < minValue && numberOfSteps>=3){graphMin+=stepValue;numberOfSteps--}
 			}
 			if(config.graphMaximized==true || config.graphMaximized=="top" || typeof config.graphMax!=="undefined") {
 
@@ -4700,7 +4703,7 @@ window.Chart = function(context) {
 			labels: labels,
 			maxValue: maxValue
 		}
-	};
+	}
 
 	function roundScale(config, value) {
 		var scldec = 0;
@@ -4709,12 +4712,12 @@ window.Chart = function(context) {
 			scldec = sscl.substr(sscl.indexOf(".")).length;
 		}
 		return (Math.round(value * Math.pow(10, scldec)) / Math.pow(10, scldec));
-	} ;
+	}
 
 	function calculateOrderOfMagnitude(val) {
 		if (val==0)return 0;
 		return Math.floor(Math.log(val) / Math.LN10);
-	};
+	}
 	//Populate an array of all the labels by interpolating the string.
 	function populateLabels(axis, config, labelTemplateString, labels, numberOfSteps, graphMin, graphMax, stepValue) {
 		var logarithmic;
@@ -4735,7 +4738,7 @@ window.Chart = function(context) {
 				}
 			} else { // logarithmic scale 10,100,1000,...
 				var value = graphMin;
-				for (var i = 0; i < numberOfSteps + 1; i++) {
+				for (i = 0; i < numberOfSteps + 1; i++) {
 					labels.push(tmpl(labelTemplateString, {
 						value: fmtChartJS(config, 1 * value.toFixed(getDecimalPlaces(value)), fmtYLabel)
 					},config));
@@ -4743,15 +4746,15 @@ window.Chart = function(context) {
 				}
 			}
 		}
-	};
+	}
 	//Max value from array
 	function Max(array) {
 		return Math.max.apply(Math, array);
-	};
+	}
 	//Min value from array
 	function Min(array) {
 		return Math.min.apply(Math, array);
-	};
+	}
 	//Default if undefined
 	function Default(userDeclared, valueIfFalse) {
 		if (!userDeclared) {
@@ -4759,7 +4762,7 @@ window.Chart = function(context) {
 		} else {
 			return userDeclared;
 		}
-	};
+	}
 	//Apply cap a value at a high or low number
 	function CapValue(valueToCap, maxValue, minValue) {
 		if (isNumber(maxValue)) {
@@ -4773,7 +4776,7 @@ window.Chart = function(context) {
 			}
 		}
 		return valueToCap;
-	};
+	}
 
 	function getDecimalPlaces(num) {
 		var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
@@ -4784,18 +4787,18 @@ window.Chart = function(context) {
 			0,
 			(match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0)
 		);
-	};
+	}
 
 	function mergeChartConfig(defaults, userDefined) {
 		var returnObj = {};
 		for (var attrname in defaults) {
 			returnObj[attrname] = defaults[attrname];
 		}
-		for (var attrname in userDefined) {
-			returnObj[attrname] = userDefined[attrname];
+		for (var attrname2 in userDefined) {
+			returnObj[attrname2] = userDefined[attrname2];
 		}
 		return returnObj;
-	};
+	}
 	//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
 	var cache = {};
 	
@@ -4829,7 +4832,7 @@ window.Chart = function(context) {
 				.split("\r").join("\\'") + "');}return p.join('');");
 		// Provide some basic currying to the user
 		return data ? fn(data) : fn;
-	};
+	}
 
 	function dispCrossText(ctx, config, posX, posY, borderX, borderY, overlay, data, animPC, cntiter) {
 		var i, disptxt, txtposx, txtposy, textAlign, textBaseline;
@@ -4914,7 +4917,7 @@ window.Chart = function(context) {
 				ctx.restore();
 			}
 		}
-	};
+	}
 
 	function dispCrossImage(ctx, config, posX, posY, borderX, borderY, overlay, data, animPC, cntiter) {
 		var i, disptxt, imageposx, imageposy, imageAlign, imageBaseline;
@@ -5016,7 +5019,7 @@ window.Chart = function(context) {
 				ctx.restore();
 			}
 		}
-	};
+	}
 	//****************************************************************************************
 	function setMeasures(data, config, ctx, height, width, ylabels, ylabels2, reverseLegend, reverseAxis, drawAxis, drawLegendOnData, legendBox, typegraph) {
 		if (config.canvasBackgroundColor != "none") ctx.canvas.style.background = config.canvasBackgroundColor;
@@ -5063,10 +5066,11 @@ window.Chart = function(context) {
 		// Borders
 		if (config.canvasBorders) borderWidth = Math.ceil(ctx.chartLineScale*config.canvasBordersWidth);
 		// compute widest X label
+                var textMsr;
 		if (drawAxis) {
 			ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
 			for (var i = 0; i < data.labels.length; i++) {
-				var textMsr = ctx.measureTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
+				textMsr = ctx.measureTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
 				//If the text length is longer - make that equal to longest text!
 				widestXLabel = (textMsr.textWidth > widestXLabel) ? textMsr.textWidth : widestXLabel;
 				highestXLabel = (textMsr.textHeight > highestXLabel) ? textMsr.textHeight : highestXLabel;
@@ -5080,10 +5084,10 @@ window.Chart = function(context) {
 			widestYLabel = 1;
 			if (ylabels != null && ylabels != "nihil") {
 				ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
-				for (var i = ylabels.length - 1; i >= 0; i--) {
+				for (i = ylabels.length - 1; i >= 0; i--) {
 					if (typeof(ylabels[i]) == "string") {
 						if (ylabels[i].trim() != "") {
-							var textMsr = ctx.measureTextMultiLine(fmtChartJS(config, ylabels[i], config.fmtYLabel), (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
+							textMsr = ctx.measureTextMultiLine(fmtChartJS(config, ylabels[i], config.fmtYLabel), (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
 							//If the text length is longer - make that equal to longest text!
 							widestYLabel = (textMsr.textWidth > widestYLabel) ? textMsr.textWidth : widestYLabel;
 							highestYLabel = (textMsr.textHeight > highestYLabel) ? textMsr.textHeight : highestYLabel;
@@ -5097,10 +5101,10 @@ window.Chart = function(context) {
 			widestYLabel2 = 1;
 			if (ylabels2 != null && config.yAxisRight) {
 				ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
-				for (var i = ylabels2.length - 1; i >= 0; i--) {
+				for (i = ylabels2.length - 1; i >= 0; i--) {
 					if (typeof(ylabels2[i]) == "string") {
 						if (ylabels2[i].trim() != "") {
-							var textMsr = ctx.measureTextMultiLine(fmtChartJS(config, ylabels2[i], config.fmtYLabel2), (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
+							textMsr = ctx.measureTextMultiLine(fmtChartJS(config, ylabels2[i], config.fmtYLabel2), (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
 							//If the text length is longer - make that equal to longest text!
 							widestYLabel2 = (textMsr.textWidth > widestYLabel2) ? textMsr.textWidth : widestYLabel2;
 							highestYLabel2 = (textMsr.textHeight > highestYLabel2) ? textMsr.textHeight : highestYLabel2;
@@ -5233,23 +5237,24 @@ window.Chart = function(context) {
 		if (typeof(config.legend) != "undefined") {
 			if (config.legend == true) {
 				ctx.font = config.legendFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.legendFontSize)).toString() + "px " + config.legendFontFamily;
-				if (drawLegendOnData) {
-					for (var i = data.datasets.length - 1; i >= 0; i--) {
+				var textLength;
+                                if (drawLegendOnData) {
+					for (i = data.datasets.length - 1; i >= 0; i--) {
 						if (typeof(data.datasets[i].title) == "string") {
 							if (data.datasets[i].title.trim() != "") {
 								nbeltLegend++;
-								var textLength = ctx.measureText(fmtChartJS(config, data.datasets[i].title, config.fmtLegend)).width;
+								textLength = ctx.measureText(fmtChartJS(config, data.datasets[i].title, config.fmtLegend)).width;
 								//If the text length is longer - make that equal to longest text!
 								widestLegend = (textLength > widestLegend) ? textLength : widestLegend;
 							}
 						}
 					}
 				} else {
-					for (var i = data.length - 1; i >= 0; i--) {
+					for (i = data.length - 1; i >= 0; i--) {
 						if (typeof(data[i].title) == "string") {
 							if (data[i].title.trim() != "") {
 								nbeltLegend++;
-								var textLength = ctx.measureText(fmtChartJS(config, data[i].title, config.fmtLegend)).width;
+								textLength = ctx.measureText(fmtChartJS(config, data[i].title, config.fmtLegend)).width;
 								//If the text length is longer - make that equal to longest text!
 								widestLegend = (textLength > widestLegend) ? textLength : widestLegend;
 							}
@@ -5428,13 +5433,14 @@ window.Chart = function(context) {
 		xLabelWidth = 0;
 		bottomNotUsableHeightWithXLabels = bottomNotUsableHeightWithoutXLabels;
 		if (drawAxis && (config.xAxisBottom || config.xAxisTop)) {
+                    var widestLabel ,highestLabel;
 			if (reverseAxis == false) {
-				var widestLabel = widestXLabel;
-				var highestLabel = highestXLabel;
+				widestLabel = widestXLabel;
+				highestLabel = highestXLabel;
 				nblab = data.labels.length;
 			} else {
-				var widestLabel = widestYLabel;
-				var highestLabel = highestYLabel;
+				widestLabel = widestYLabel;
+				highestLabel = highestYLabel;
 				nblab = ylabels.length;
 			}
 			if (config.rotateLabels == "smart") {
@@ -5599,19 +5605,19 @@ window.Chart = function(context) {
 				}
 			}
 			// Draw Legend
-
+                        var legendMsr;
 			if (nbeltLegend > 1 || (nbeltLegend == 1 && config.showSingleLegend)) {
-				var legendMsr={dispLegend : true, xLegendBorderPos : xLegendBorderPos,
+				legendMsr={dispLegend : true, xLegendBorderPos : xLegendBorderPos,
 					   yLegendBorderPos : yLegendBorderPos, legendBorderWidth : legendBorderWidth, legendBorderHeight : legendBorderHeight, 
 					   nbLegendCols: nbLegendCols, xFirstLegendTextPos : xFirstLegendTextPos , yFirstLegendTextPos : yFirstLegendTextPos, 
 					   drawLegendOnData : drawLegendOnData, reverseLegend : reverseLegend, legendBox : legendBox, widestLegend : widestLegend };
 				if(config.legendPosY==0 || config.legendPosY==4 || config.legendPosX==0 || config.legendPosX==4) {
 
 					drawLegend(legendMsr,data,config,ctx,typegraph);
-					var legendMsr={dispLegend : false};
+					legendMsr={dispLegend : false};
 				} 
 			} else {
-				var legendMsr={dispLegend : false };
+				legendMsr={dispLegend : false };
 			}
 			// Draw FootNote
 			if (config.footNote.trim() != "") {
@@ -5654,12 +5660,12 @@ window.Chart = function(context) {
 			clrheight: clrheight,
 			legendMsr : legendMsr
 		};
-	};
+	}
 
 	// Function for drawing lines (BarLine|Line)
 
 	function drawLinesDataset(animPc, data, config, ctx, statData,vars) {
-		var y1,y2,y3,diffnb,diffnbj,fact;
+		var y1,y2,y3,diffnb,diffnbj,fact, currentAnimPc;
 		var pts=[];
 
 		for (var i = 0; i < data.datasets.length; i++) {
@@ -5675,7 +5681,7 @@ window.Chart = function(context) {
 			var lastxPos=-1;
 			for (var j = statData[i][0].firstNotMissing; j <= statData[i][0].lastNotMissing; j++) {
 				if(prevAnimPc.animVal==0 && j>statData[i][0].firstNotMissing) continue;	
-				var currentAnimPc = animationCorrection(animPc, data, config, i, j, 0);
+				currentAnimPc = animationCorrection(animPc, data, config, i, j, 0);
 				if (currentAnimPc.mainVal == 0  && (prevAnimPc.mainVal > 0 && firstpt !=-1)) {
 					
 //					ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
@@ -5766,7 +5772,7 @@ window.Chart = function(context) {
 								diffnb=statData[i][j].nextNotMissing-statData[i][j+1].prevNotMissing;
 								diffnbj=(j)-statData[i][j+1].prevNotMissing;
 								fact=(diffnbj+prevAnimPc.subVal)/diffnb;
-								var y3=y1+fact*(y2-y1);					
+								y3=y1+fact*(y2-y1);					
 								traceLine(pts,ctx,statData[i][j].xPos + currentAnimPc.subVal*(statData[i][j+1].xPos-statData[i][j].xPos), y3,config,data,statData,i);
 							}
 							break;
@@ -5785,9 +5791,9 @@ window.Chart = function(context) {
 						
 						if (currentAnimPc.subVal > 0 && statData[i][j].nextNotMissing !=-1 && (config.extrapolateMissing || statData[i][j].nextNotMissing==j+1)) {
 							lastxPos=statData[i][j].xPos + currentAnimPc.subVal*(statData[i][j+1].xPos-statData[i][j].xPos);
-							var y1=statData[i][statData[i][j+1].prevNotMissing].yAxisPos - statData[i][statData[i][j+1].prevNotMissing].yPosOffset;					
-							var y2=statData[i][statData[i][j].nextNotMissing].yAxisPos - statData[i][statData[i][j].nextNotMissing].yPosOffset;
-							var y3=y1+currentAnimPc.subVal*(y2-y1);					
+							y1=statData[i][statData[i][j+1].prevNotMissing].yAxisPos - statData[i][statData[i][j+1].prevNotMissing].yPosOffset;					
+							y2=statData[i][statData[i][j].nextNotMissing].yAxisPos - statData[i][statData[i][j].nextNotMissing].yPosOffset;
+							y3=y1+currentAnimPc.subVal*(y2-y1);					
 							traceLine(pts,ctx,statData[i][j].xPos + currentAnimPc.subVal*(statData[i][j+1].xPos-statData[i][j].xPos), y3,config,data,statData,i);
 						}
 						break
@@ -5810,9 +5816,9 @@ window.Chart = function(context) {
 			} 
 			ctx.restore();
 			if (config.pointDot && animPc >= 1) {
-				for (var j = 0; j < data.datasets[i].data.length; j++) {
+				for (j = 0; j < data.datasets[i].data.length; j++) {
 					if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
-						var currentAnimPc = animationCorrection(animPc, data, config, i, j, 0);
+						currentAnimPc = animationCorrection(animPc, data, config, i, j, 0);
 						if (currentAnimPc.mainVal > 0 || !config.animationLeftToRight) {
 							ctx.beginPath();
 							ctx.fillStyle=setOptionValue(1,"MARKERFILLCOLOR",ctx,data,statData,data.datasets[i].pointColor,config.defaultStrokeColor,i,j,{nullvalue: true} );
@@ -5828,7 +5834,7 @@ window.Chart = function(context) {
 			}
 
 			if (animPc >= config.animationStopValue) {
-				for (var j = 0; j < data.datasets[i].data.length; j++) {
+				for (j = 0; j < data.datasets[i].data.length; j++) {
 					if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
 					if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
 						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["POINT", i, j, statData];
@@ -5850,16 +5856,14 @@ window.Chart = function(context) {
 					}
 				}
 			}
-		};
+		}
 
-			 
-		
 		function initbz(pts,xpos,ypos,i) {
 			if (setOptionValue(1,"BEZIERCURVE",ctx,data,statData,undefined,config.bezierCurve,i,-1,{nullValue : true})) {
 				pts.length=0;
 				pts.push(xpos);pts.push(ypos);
 			}
-		} ;
+		}
 		
 		function traceLine(pts,ctx,xpos,ypos,config,data,statData,i) {
 			if (setOptionValue(1,"BEZIERCURVE",ctx,data,statData,undefined,config.bezierCurve,i,-1,{nullValue : true})) {
@@ -5867,7 +5871,7 @@ window.Chart = function(context) {
 			} else {
 				ctx.lineTo(xpos,ypos);
 			}
-		} ;
+		}
 		
 		function closebz(pts,ctx,config,i){
 		
@@ -5877,7 +5881,7 @@ window.Chart = function(context) {
 				drawSpline(ctx,pts,setOptionValue(1,"BEZIERCURVETENSION",ctx,data,statData,undefined,config.bezierCurveTension,i,-1,{nullValue : true}),minimumpos,maximumpos);
 				pts.length=0;			
 			}
-		};		
+		}		
 
 		//Props to Rob Spencer at scaled innovation for his post on splining between points
 		//http://scaledinnovation.com/analytics/splines/aboutSplines.html
@@ -5904,7 +5908,7 @@ window.Chart = function(context) {
 			var p2y=y1-fb*(y0-y2);  
     
 			return [p1x,p1y,p2x,p2y]
-		};
+		}
 
 		function drawSpline(ctx,pts,t,minimumpos,maximumpos){
 			var cp=[];   // array of control points, as x0,y0,x1,y1,...
@@ -5932,19 +5936,19 @@ window.Chart = function(context) {
 			
 //        		ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
 			ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
-			for(var ti=2;ti<pts.length-3;ti+=2){
+			for(ti=2;ti<pts.length-3;ti+=2){
 				y1=Math.max(Math.min(cp[2*ti-1],minimumpos),maximumpos);
 				y2=Math.max(Math.min(cp[2*ti+1],minimumpos),maximumpos);
 				ctx.bezierCurveTo(cp[2*ti-2],y1,cp[2*ti],y2,pts[ti+2],pts[ti+3]);
 			}
 			ctx.stroke();
-		};
+		}
  		ctx.setLineDash([]);
-	};
+	}
 
 	function log10(val) {
 		return Math.log(val) / Math.LN10;
-	};
+	}
 
 	function setRect(ctx, config) {
 		if (config.clearRect) {
@@ -5967,7 +5971,7 @@ window.Chart = function(context) {
 			ctx.stroke();
 			ctx.fill();
 		}
-	};
+	}
 
 	function defMouse(ctx, data, config) {
 		var todoannotate=false;
@@ -6013,8 +6017,6 @@ window.Chart = function(context) {
 			if (cursorDivCreated) document.getElementById('divCursor').style.display = 'none';
 		}, false);
 
-
-
 		function add_event_listener(type, func, chk)
 		{
 			if(typeof func != 'function')
@@ -6022,7 +6024,7 @@ window.Chart = function(context) {
 
 			function do_func(event) {
 				if (chk == null || chk(event)) doMouseAction(config,ctx,event,data,"mouseaction",func);
-			};
+			}
 
 			var hash = type+' '+func.name;
 			if(hash in ctx._eventListeners) {
@@ -6040,7 +6042,7 @@ window.Chart = function(context) {
 			} else if(ctx.canvas.attachEvent) {
 				ctx.canvas.attachEvent("on"+type, do_func);
 			}
-		};
+		}
 
 		add_event_listener("mousedown", config.mouseDownLeft, function(e) { return e.which == 1; });
 		add_event_listener("mousedown", config.mouseDownMiddle, function(e) { return e.which == 2; });
@@ -6048,7 +6050,7 @@ window.Chart = function(context) {
 		add_event_listener("mousemove", config.mouseMove);
 		add_event_listener("mouseout", config.mouseOut);
 		add_event_listener("mousewheel", config.mouseWheel);
-	};
+	}
 };
 
 
@@ -6104,8 +6106,7 @@ function animationCorrection(animationValue, data, config, vdata, vsubdata, addo
 		subVal: animSubValue,
 		animVal: animValue + animSubValue
 	};
-};
-
+}
 
 function drawLegend(legendMsr,data,config,ctx,typegraph) {
 	if (config.legendBorders == true) {
@@ -6234,7 +6235,7 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
 			}
 		}
 	}
-};
+}
 
 function drawMarker(ctx,xpos,ypos,marker,markersize,markerStrokeStyle) {
 	ctx.setLineDash(lineStyleFn(markerStrokeStyle));
@@ -6290,17 +6291,16 @@ function drawMarker(ctx,xpos,ypos,marker,markersize,markerStrokeStyle) {
 			ctx.setLineDash([]);
 			break;
 	}
-};
+}
 
 function initPassVariableData_part1(data,config,ctx) {
-
+ var result, mxvalue ,mnvalue, cumvalue, totvalue,lmaxvalue,lminvalue,lgtxt,lgtxt2,tp,prevpos,firstNotMissingi,lastNotMissingi,firstNotMissingj,lastNotMissingj,grandtotal;
 switch(ctx.tpchart) {
 	case "Pie" :
 	case "Doughnut" :
 	case "PolarArea" :
-
-		var result=[];
-		var lgtxt,totvalue,cumvalue,segmentAngle,cumulativeAngle,realCumulativeAngle;
+                result=[];
+		var segmentAngle,cumulativeAngle,realCumulativeAngle;
 
 		cumulativeAngle = (((-config.startAngle * (Math.PI / 180) + 2 * Math.PI) % (2 * Math.PI)) + 2* Math.PI) % (2* Math.PI) ; 
 		realCumulativeAngle = (((config.startAngle * (Math.PI / 180) + 2 * Math.PI) % (2 * Math.PI)) + 2* Math.PI) % (2* Math.PI) ; 
@@ -6311,8 +6311,8 @@ switch(ctx.tpchart) {
 		var firstNotMissing = -1;
 		var lastNotMissing = -1;
 		var prevNotMissing = -1;
-		var mxvalue=-Number.MAX_VALUE;
-		var mnvalue=Number.MAX_VALUE;
+		mxvalue=-Number.MAX_VALUE;
+		mnvalue=Number.MAX_VALUE;
 		for (var i = 0; i < data.length; i++) {
 			if(ctx.tpchart != "PolarArea" && 1*data[i].value<0)continue;
 			if (!(typeof(data[i].value) == 'undefined')) { 
@@ -6400,41 +6400,41 @@ switch(ctx.tpchart) {
 	case "HorizontalStackedBar" :
 	case "Radar" :
 		var axis;
-		var result=[];
-		var mxvalue=[];
+		result=[];
+		mxvalue=[];
 		mxvalue[0]=[];
 		mxvalue[1]=[];
-		var mnvalue=[];
+		mnvalue=[];
 		mnvalue[0]=[];
 		mnvalue[1]=[];
-		var cumvalue=[];
+		cumvalue=[];
 		cumvalue[0]=[];
 		cumvalue[1]=[];
-		var totvalue=[];
+		totvalue=[];
 		totvalue[0]=[];
 		totvalue[1]=[];
-		var lmaxvalue=[];
+		lmaxvalue=[];
 		lmaxvalue[0]=[];
 		lmaxvalue[1]=[];
-		var lminvalue=[];
+		lminvalue=[];
 		lminvalue[0]=[];
 		lminvalue[1]=[];
-		var lgtxt,lgtxt2,tp;
-		var prevpos=[];
-		var firstNotMissingi=[];
-		var lastNotMissingi=[];
-		var firstNotMissingj=[];
-		var lastNotMissingj=[];
+		prevpos=[];
+		firstNotMissingi=[];
+		lastNotMissingi=[];
+		firstNotMissingj=[];
+		lastNotMissingj=[];
 		prevpos[0]=[];
 		prevpos[1]=[];
-		var grandtotal=0;
+		grandtotal=0;
 
-		for (var i = 0; i < data.datasets.length; i++) {
+		for (i = 0; i < data.datasets.length; i++) {
 			// BUG when all data are missing !
+                        var j;
 			if (typeof data.datasets[i].xPos != "undefined" && tpdraw(ctx,data.datasets[i])=="Line") {
-				for(var j=data.datasets[i].data.length;j<data.datasets[i].xPos.length;j++)data.datasets[i].data.push(undefined);
+				for(j=data.datasets[i].data.length;j<data.datasets[i].xPos.length;j++)data.datasets[i].data.push(undefined);
 			} else {
-				for(var j=data.datasets[i].data.length;j<data.labels.length;j++)data.datasets[i].data.push(undefined);
+				for(j=data.datasets[i].data.length;j<data.labels.length;j++)data.datasets[i].data.push(undefined);
 			}
 				
 
@@ -6446,7 +6446,7 @@ switch(ctx.tpchart) {
 			lminvalue[1][i]=Number.MAX_VALUE;
 			firstNotMissingi[i]=-1;
 			lastNotMissingi[i]=-1;
-			for (var j = 0; j < data.datasets[i].data.length; j++) {
+			for (j = 0; j < data.datasets[i].data.length; j++) {
 
 				if(typeof firstNotMissingj[j]== "undefined"){
 					firstNotMissingj[j]=-1;
@@ -6473,13 +6473,13 @@ switch(ctx.tpchart) {
 			}
 		}
 		
-		for (var i = 0; i < data.datasets.length; i++) {
+		for (i = 0; i < data.datasets.length; i++) {
 			if(data.datasets[i].axis == 2) axis=0;else axis=1;
 			if (typeof(data.datasets[i].title) == "string") lgtxt = data.datasets[i].title.trim();
 			else lgtxt = "";
 			var prevnotemptyj=-1;
 			var prevemptyj=-1;
-			for (var j = 0; j < data.datasets[i].data.length; j++) {
+			for (j = 0; j < data.datasets[i].data.length; j++) {
 			
 				if(typeof cumvalue[0][j]== "undefined"){cumvalue[0][j] = 0; prevpos[0][j]=-1;cumvalue[1][j] = 0; prevpos[1][j]=-1; }
 				lgtxt2 = "";
@@ -6557,7 +6557,6 @@ switch(ctx.tpchart) {
 								minvalue : mnvalue[axis][j],
 								lmaxvalue : lmaxvalue[axis][i],
 								lminvalue : lminvalue[axis][i],
-								lminvalue : lminvalue[axis][i],
 								grandtotal : grandtotal,
 								firstNotMissing : firstNotMissingi[i],
 								lastNotMissing : lastNotMissingi[i],
@@ -6628,8 +6627,7 @@ switch(ctx.tpchart) {
 
 	
 return result;
-
-};
+}
 
 function initPassVariableData_part2(statData,data,config,ctx,othervars) {
 
@@ -6664,13 +6662,13 @@ switch(ctx.tpchart) {
 	case "StackedBar" :
 	case "HorizontalBar" :
 	case "HorizontalStackedBar" :
-		var tp;
 		var tempp = new Array(data.datasets.length);
 		var tempn = new Array(data.datasets.length);
 		for (var i = 0; i < data.datasets.length; i++) {
+                        var j;
 			switch(tpdraw(ctx,data.datasets[i])) {
 				case "Line" :
-					for (var j = 0; j < data.datasets[i].data.length; j++) {
+					for (j = 0; j < data.datasets[i].data.length; j++) {
 						statData[i][j].xAxisPosY = othervars.xAxisPosY;
 						statData[i][j].yAxisPosX = othervars.yAxisPosX;
 						statData[i][j].valueHop = othervars.valueHop;
@@ -6718,7 +6716,7 @@ switch(ctx.tpchart) {
 					break;
 				case "Radar" :
 					var rotationDegree = (2 * Math.PI) / data.datasets[0].data.length;
-					for (var j = 0; j < data.datasets[i].data.length; j++) {
+					for (j = 0; j < data.datasets[i].data.length; j++) {
 						statData[i][j].midPosX =  othervars.midPosX;
 						statData[i][j].midPosY =  othervars.midPosY;
 						statData[i][j].int_radius= 0;
@@ -6751,7 +6749,7 @@ switch(ctx.tpchart) {
 				        }
 					break;
 				case "Bar" :
-					for (var j = 0; j < data.datasets[i].data.length; j++) {
+					for (j = 0; j < data.datasets[i].data.length; j++) {
 						statData[i][j].xPosLeft= othervars.yAxisPosX + Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) + othervars.valueHop * j + othervars.barWidth * realbars + Math.ceil(ctx.chartSpaceScale*config.barDatasetSpacing) * realbars + Math.ceil(ctx.chartLineScale*config.barStrokeWidth) * realbars;
 						statData[i][j].xPosRight = statData[i][j].xPosLeft + othervars.barWidth;
 						statData[i][j].yPosBottom =othervars.xAxisPosY - othervars.zeroY
@@ -6773,7 +6771,7 @@ switch(ctx.tpchart) {
 					realbars++;
 					break;			
 				case "StackedBar" :
-					for (var j = 0; j < data.datasets[i].data.length; j++) {
+					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if (typeof tempp[j]=="undefined") {
 							tempp[j]=0;
 							tempn[j]=0;
@@ -6815,7 +6813,7 @@ switch(ctx.tpchart) {
 					}
 					break;			
 				case "HorizontalBar" :
-					for (var j = 0; j < data.datasets[i].data.length; j++) {
+					for (j = 0; j < data.datasets[i].data.length; j++) {
 						statData[i][j].xPosLeft= othervars.yAxisPosX + othervars.zeroY;
 						statData[i][j].yPosTop=othervars.xAxisPosY + Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) - othervars.scaleHop * (j + 1) + othervars.barWidth * i + Math.ceil(ctx.chartSpaceScale*config.barDatasetSpacing) * i + Math.ceil(ctx.chartLineScale*config.barStrokeWidth) * i;
 						statData[i][j].yPosBottom=statData[i][j].yPosTop+othervars.barWidth;
@@ -6829,7 +6827,7 @@ switch(ctx.tpchart) {
 					}
 					break;			
 				case "HorizontalStackedBar" :
-					for (var j = 0; j < data.datasets[i].data.length; j++) {
+					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if (i == 0) {
 							tempp[j]=0;
 							tempn[j]=0;
@@ -6878,7 +6876,7 @@ switch(ctx.tpchart) {
 			}
 	}
 	
-} ;
+}
 
 
 
@@ -6894,19 +6892,18 @@ switch(ctx.tpchart) {
 					var p2 = p1;
 					if (Math.abs(iteration - Math.floor(iteration + config.zeroValue)) > config.zeroValue) {
 						var tt = iteration + Math.floor(iteration + config.zeroValue);
-						var p2 = xPos(ival, Math.ceil(iteration - config.zeroValue), data);
+						p2 = xPos(ival, Math.ceil(iteration - config.zeroValue), data);
 					}
 					return p1 + (iteration - Math.floor(iteration + config.zeroValue)) * (p2 - p1);
 				}
 			}
 		}
 		return yAxisPosX + (valueHop * iteration);
-	};
-
+	}
 
 	function calculateOrderOfMagnitude(val) {
 		return Math.floor(Math.log(val) / Math.LN10);
-	};
+	}
 
 	function calculateOffset(logarithmic, val, calculatedScale, scaleHop) {
 		if (!logarithmic) { // no logarithmic scale
@@ -6918,14 +6915,14 @@ switch(ctx.tpchart) {
 //			return CapValue(log10(val) * scaleHop - calculateOrderOfMagnitude(calculatedScale.graphMin) * scaleHop, undefined, 0);
 			return CapValue(log10(val) * scaleHop - log10(calculatedScale.graphMin) * scaleHop, undefined, 0);
 		}
-	};
+	}
 
 	function HorizontalCalculateOffset(val, calculatedScale, scaleHop) {
 		var outerValue = calculatedScale.steps * calculatedScale.stepValue;
 		var adjustedValue = val - calculatedScale.graphMin;
 		var scalingFactor = CapValue(adjustedValue / outerValue, 1, 0);
 		return (scaleHop * calculatedScale.steps) * scalingFactor;
-	};
+	}
 
 	//Apply cap a value at a high or low number
 	function CapValue(valueToCap, maxValue, minValue) {
@@ -6940,27 +6937,28 @@ switch(ctx.tpchart) {
 			}
 		}
 		return valueToCap;
-	};
+	}
 	function log10(val) {
 		return Math.log(val) / Math.LN10;
-	};
-};
+	}
+}
 
 function isBooleanOptionTrue(optionVar,defaultvalue) {
+        var j;
 	if(typeof optionvar == "undefined") {
 		if(typeof defaultvalue=="function") return true;
 		else if(typeof defaultvalue == "object") { 
-			for(var j=0;j<defaultvalue.length;j++) if (defaultvalue[j])return true;
+			for(j=0;j<defaultvalue.length;j++) if (defaultvalue[j])return true;
 			return false;
 		}
 		else return defaultvalue;
 	}
 	if(typeof optionvar=="function") return true;
 	else if(typeof optionvar == "object") {
-			for(var j=0;j<optionvar.length;j++) if (optionvar[j])return true;
+			for(j=0;j<optionvar.length;j++) if (optionvar[j])return true;
 			return false;
 	} else return optionvar;
-};
+}
 
 function setOptionValue(rescale,reference,ctx,data,statData,optionvar,defaultvalue,posi,posj,othervars) {
 	var rv;
@@ -6985,7 +6983,7 @@ function setOptionValue(rescale,reference,ctx,data,statData,optionvar,defaultval
 	if(rescale!=1)rv=Math.ceil(rv*rescale);
 	return rv;
 
-};
+}
 
 function tpdraw(ctx,dataval) {
 	switch(ctx.tpchart)  {
@@ -6998,17 +6996,18 @@ function tpdraw(ctx,dataval) {
 			break;
 	}
 	return tp;
-};
+}
 
 function setTextBordersAndBackground(ctx,text,fontsize,xpos,ypos,borders,borderscolor,borderswidth,bordersxspace,bordersyspace,bordersstyle,backgroundcolor,optiongroup) {
 	// compute text width and text height;
+        var textHeight,textWidth;
 	if(typeof text != "string") {
 		var txt=text.toString();
-		var textHeight= fontsize * (txt.split("\n").length || 1);
-		var textWidth = ctx.measureText(txt).width;
+		textHeight= fontsize * (txt.split("\n").length || 1);
+		textWidth = ctx.measureText(txt).width;
 	} else {
-		var textHeight= fontsize * (text.split("\n").length || 1);
-		var textWidth = ctx.measureText(text).width;
+		textHeight= fontsize * (text.split("\n").length || 1);
+		textWidth = ctx.measureText(text).width;
 	}
 	
 	
@@ -7065,4 +7064,4 @@ function setTextBordersAndBackground(ctx,text,fontsize,xpos,ypos,borders,borders
 	}
 	
 	ctx.restore();
-};
+}
