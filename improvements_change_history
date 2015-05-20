@@ -1,6 +1,7 @@
 Change history
 --------------
 
+20/05/2015 - mehdihaddad            - fix an error + remove lot of warnings - see issue 289 & 290.
 13/05/2015 - mehdihaddad            - fix an error when we resize the window
 12/05/2015 - Vancoppenolle Francois - options responsiveScaleContent and responsiveWindowInitialWidth added
 06/05/5015 - Vancoppenolle Francois - code updated to allow borders around text and background color for text.
