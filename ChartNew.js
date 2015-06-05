@@ -3925,7 +3925,7 @@ window.Chart = function(context) {
 						var barHeight = currentAnimPc * (statData[i][j].barHeight) + (Math.ceil(ctx.chartLineScale*config.barStrokeWidth) / 2);
 						ctx.fillStyle=setOptionValue(1,"COLOR",ctx,data,statData,data.datasets[i].fillColor,config.defaultFillColor,i,j,{animationValue: currentAnimPc, xPosLeft : statData[i][j].xPosLeft, yPosBottom : statData[i][j].yPosBottom, xPosRight : statData[i][j].xPosLeft+barWidth, yPosTop : statData[i][j].yPosBottom-barHeight} );
 						ctx.strokeStyle=setOptionValue(1,"STROKECOLOR",ctx,data,statData,data.datasets[i].strokeColor,config.defaultStrokeColor,i,j,{nullvalue : null} );
-						roundRect(ctx, statData[i][j].xPosLeft, statData[i][j].yPosBottom, barWidth, barHeight, config.barShowStroke, config.barBorderRadius,i,j);
+						roundRect(ctx, statData[i][j].xPosLeft, statData[i][j].yPosBottom, barWidth, barHeight, config.barShowStroke, config.barBorderRadius,i,j,(data.datasets[i].data[j] < 0 ? -1  : 1));
 					}
 				}
 			}
@@ -3989,16 +3989,16 @@ window.Chart = function(context) {
 			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"Bar");
 		};
 
-		function roundRect(ctx, x, y, w, h, stroke, radius,i,j) {
+		function roundRect(ctx, x, y, w, h, stroke, radius,i,j,fact) {
 			ctx.beginPath();
 			ctx.setLineDash(lineStyleFn(setOptionValue(1,"STROKESTYLE",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
 			ctx.moveTo(x + radius, y);
 			ctx.lineTo(x + w - radius, y);
 			ctx.quadraticCurveTo(x + w, y, x + w, y);
-			ctx.lineTo(x + w, y - h + radius);
+			ctx.lineTo(x + w, y - h + fact*radius);
 			ctx.quadraticCurveTo(x + w, y - h, x + w - radius, y - h);
 			ctx.lineTo(x + radius, y - h);
-			ctx.quadraticCurveTo(x, y - h, x, y - h + radius);
+			ctx.quadraticCurveTo(x, y - h, x, y - h + fact*radius);
 			ctx.lineTo(x, y);
 			ctx.quadraticCurveTo(x, y, x + radius, y);
 			if (stroke) ctx.stroke();
@@ -4294,7 +4294,7 @@ window.Chart = function(context) {
 					ctx.strokeStyle=setOptionValue(1,"STROKECOLOR",ctx,data,statData,data.datasets[i].strokeColor,config.defaultStrokeColor,i,j,{nullvalue : null} );
 
 					if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
-						roundRect(ctx, statData[i][j].yPosTop, statData[i][j].xPosLeft , barWidth, barHeight, config.barShowStroke, config.barBorderRadius, 0,i,j);
+						roundRect(ctx, statData[i][j].yPosTop, statData[i][j].xPosLeft , barWidth, barHeight, config.barShowStroke, config.barBorderRadius, 0,i,j,(data.datasets[i].data[j] < 0 ? -1  : 1));
 					}
 				}
 			}
@@ -4341,15 +4341,15 @@ window.Chart = function(context) {
 			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"HorizontalBar");
 		};
 
-		function roundRect(ctx, x, y, w, h, stroke, radius, zeroY,i,j) {
+		function roundRect(ctx, x, y, w, h, stroke, radius, zeroY,i,j,fact) {
 			ctx.beginPath();
 			ctx.moveTo(y + zeroY, x + radius);
 			ctx.lineTo(y + zeroY, x + w - radius);
 			ctx.quadraticCurveTo(y + zeroY, x + w, y + zeroY, x + w);
-			ctx.lineTo(y + h - radius, x + w);
+			ctx.lineTo(y + h - fact*radius, x + w);
 			ctx.quadraticCurveTo(y + h, x + w, y + h, x + w - radius);
 			ctx.lineTo(y + h, x + radius);
-			ctx.quadraticCurveTo(y + h, x, y + h - radius, x);
+			ctx.quadraticCurveTo(y + h, x, y + h - fact*radius, x);
 			ctx.lineTo(y + zeroY, x);
 			ctx.quadraticCurveTo(y + zeroY, x, y + zeroY, x + radius);
 			if (stroke) { 
