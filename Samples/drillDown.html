@@ -1,0 +1,230 @@
+  <!doctype html>
+
+
+
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/drillDown.js'></script>
+
+<SCRIPT>
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var newopts = {
+      inGraphDataShow : true,
+      animation: false,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "drillDown example",
+      graphSubTitle : "click on a bar to drillDown - click outside or click right/middle to drillUp",
+      annotateDisplay : true, 
+      mouseDownLeft : chartDrillDown ,
+      mouseDownMiddle : chartDrillUp,
+      mouseDownRight : chartDrillUp,
+      drillOutsideUp : true
+}
+
+var newoptspos = {
+      inGraphDataShow : true,
+      animation: false,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "drillDown example",
+      graphSubTitle : "click on a bar to drillDown - click outside or click right/middle to drillUp" ,
+      annotateDisplay : true, 
+      mouseDownLeft : chartDrillDown ,
+      mouseDownMiddle : chartDrillUp,
+      mouseDownRight : chartDrillUp,
+      drillOutsideUp : true,
+      graphMin : 0
+}
+
+var newoptsneg = {
+      inGraphDataShow : true,
+      animation: false,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "drillDown example",
+      graphSubTitle : "click on a bar to drillDown - click outside or click right/middle to drillUp",
+      annotateDisplay : true, 
+      mouseDownLeft : chartDrillDown ,
+      mouseDownMiddle : chartDrillUp,
+      mouseDownRight : chartDrillUp,
+      drillOutsideUp : true,
+      graphMax: 0
+}
+
+var mydata0_0_0 = {
+	labels : ["Value"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [40],
+			drillDownData : null,
+			title : "First data - January - first third of the month"
+		}
+	]
+}
+
+var mydata0_0_1 = {
+	labels : ["Value"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [15],
+			drillDownData : null,
+			title : "First data - January - second third of the month"
+		}
+	]
+}
+var mydata0_0_2 = {
+	labels : ["Value"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [10],
+			drillDownData : null,
+			title : "First data - January - first third of the month"
+		}
+	]
+}
+
+var mydata0_0 = {
+	labels : ["First Third of the month","second Third of the month","last third of the month"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [40,15,10],
+			drillDownData : [mydata0_0_0,mydata0_0_1,mydata0_0_2],
+			drillDownConfig : [newoptspos,newoptspos,newoptspos],
+			title : "First data - January"
+		}
+	]
+}
+
+
+
+
+var mydata0_1 = {
+	labels : ["first half of the month","second half of the month"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [-10,-49],
+			drillDownData : null,
+			title : "First data - February"
+		}
+	]
+}
+
+var mydata1_0 = {
+	labels : ["first half of the month","second half of the month"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [10,18],
+			drillDownData : null,
+			title : "Second data - January"
+		}
+	]
+}
+
+var mydata1_1 = {
+	labels : ["first half of the month","second half of the month"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [-12,60],
+			drillDownData : null,
+			title : "Second data - February"
+		}
+	]
+}
+
+
+var mydata = {
+	labels : ["January","February"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [65,-59],
+			drillDownData : [mydata0_0,mydata0_1],
+			drillDownConfig : [newoptspos,newoptsneg],
+			title : "First data"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			data : [28,48],
+			drillDownData : [mydata1_0,mydata1_1],
+			drillDownConfig : [newoptspos,newopts],
+      			title : "Second data"
+		}
+	]
+}
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+
+	</head>
+	<body>
+  
+  <!div id="divCursor" style="position:absolute"> <!/div>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+      document.write("<canvas id=\"canvas_bar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+
+      setopts=newopts;
+    
+
+window.onload = function() {
+
+
+    var myLine = new Chart(document.getElementById("canvas_bar").getContext("2d")).Bar(mydata,setopts);
+}
+
+    </script>
+  </body>
+</html>
