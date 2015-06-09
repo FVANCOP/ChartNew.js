@@ -887,7 +887,6 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 				else  config.annotateFunctionIn("INANNOTATE",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],jsGraphAnnotate[ctx.ChartNewId][i][1],jsGraphAnnotate[ctx.ChartNewId][i][2],null);
 				}
 			}
-			//show=false;
 		}
 	}
 	if(show==false && action=="annotate" && annotatePrevShow >=0) {
