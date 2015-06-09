@@ -743,6 +743,8 @@ function getMousePos(canvas, evt) {
 	};
 };
 
+var annotatePrevShow=-1;
+
 function doMouseAction(config, ctx, event, data, action, funct) {
 
 	var onData = false;
@@ -770,7 +772,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 		annotateDIV.style.display = show ? '' : 'none';
 	}
 	canvas_pos = getMousePos(ctx.canvas, event);
-	for (var i = 0; i < jsGraphAnnotate[ctx.ChartNewId]["length"]; i++) {
+	for (var i = 0; i < jsGraphAnnotate[ctx.ChartNewId]["length"] && !show; i++) {
 		if (jsGraphAnnotate[ctx.ChartNewId][i][0] == "ARC") {
 			myStatData=jsGraphAnnotate[ctx.ChartNewId][i][3][jsGraphAnnotate[ctx.ChartNewId][i][1]];
 			distance = Math.sqrt((canvas_pos.x - myStatData.midPosX) * (canvas_pos.x - myStatData.midPosX) + (canvas_pos.y - myStatData.midPosY) * (canvas_pos.y - myStatData.midPosY));
@@ -874,7 +876,25 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 		}
 		if (action == "annotate") {
 			annotateDIV.style.display = show ? '' : 'none';
+			if(show && annotatePrevShow != i){
+				if(annotatePrevShow >=0 && typeof config.annotateFunctionOut=="function") {
+					if(jsGraphAnnotate[ctx.ChartNewId][annotatePrevShow][0] == "ARC") config.annotateFunctionOut("OUTANNOTATE",ctx,data,jsGraphAnnotate[ctx.ChartNewId][annotatePrevShow][3],jsGraphAnnotate[ctx.ChartNewId][annotatePrevShow][1],-1,null);
+					else config.annotateFunctionOut("OUTANNOTATE",ctx,data,jsGraphAnnotate[ctx.ChartNewId][annotatePrevShow][3],jsGraphAnnotate[ctx.ChartNewId][annotatePrevShow][1],jsGraphAnnotate[ctx.ChartNewId][annotatePrevShow][2],null);
+				}
+				annotatePrevShow=i;
+				if(typeof config.annotateFunctionIn=="function") {
+				if(jsGraphAnnotate[ctx.ChartNewId][i][0] == "ARC")config.annotateFunctionIn("INANNOTATE",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],jsGraphAnnotate[ctx.ChartNewId][i][1],-1,null);
+				else  config.annotateFunctionIn("INANNOTATE",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],jsGraphAnnotate[ctx.ChartNewId][i][1],jsGraphAnnotate[ctx.ChartNewId][i][2],null);
+				}
+			}
 		}
+	}
+	if(show==false && action=="annotate" && annotatePrevShow >=0) {
+		if(typeof config.annotateFunctionOut=="function") {
+			if(jsGraphAnnotate[ctx.ChartNewId][annotatePrevShow][0] == "ARC") config.annotateFunctionOut("OUTANNOTATE",ctx,data,jsGraphAnnotate[ctx.ChartNewId][annotatePrevShow][3],jsGraphAnnotate[ctx.ChartNewId][annotatePrevShow][1],-1,null);
+			else config.annotateFunctionOut("OUTANNOTATE",ctx,data,jsGraphAnnotate[ctx.ChartNewId][annotatePrevShow][3],jsGraphAnnotate[ctx.ChartNewId][annotatePrevShow][1],jsGraphAnnotate[ctx.ChartNewId][annotatePrevShow][2],null);
+		}
+		annotatePrevShow=-1;
 	}
 	if (onData == false && action != "annotate") {
 		funct(event, ctx, config, data, null);
@@ -1705,6 +1725,8 @@ window.Chart = function(context) {
 		annotateFontStyle: "normal",
 		annotatePadding: "3px",
 		annotateClassName: "",
+		annotateFunctionIn: null,
+		annotateFunctionOut : null,
 		crossText: [""],
 		crossTextIter: ["all"],
 		crossTextOverlay: [true],
@@ -1779,6 +1801,7 @@ window.Chart = function(context) {
 		defaultFillColor: "rgba(220,220,220,0.5)",
 		defaultLineWidth : 2,
 		graphMaximized: false,
+		contextMenu: true,
 		mouseDownRight: null,
 		mouseDownLeft: null,
 		mouseDownMiddle: null,
@@ -1896,6 +1919,13 @@ window.Chart = function(context) {
 
 		if (typeof jsGraphAnnotate[ctx.ChartNewId] == "undefined") jsGraphAnnotate[ctx.ChartNewId] = new Array();
 		else if (!config.multiGraph) clearAnnotate(ctx.ChartNewId);
+
+		if(config.contextMenu==false || typeof config.mouseDownRight == 'function'){
+			ctx.canvas.oncontextmenu = function (e) {
+    				e.preventDefault();
+			};
+		}
+
 
 		defMouse(ctx, data, config);
 
@@ -3777,6 +3807,7 @@ window.Chart = function(context) {
 			msr;
 	
 		ctx.tpchart="Bar";
+
 	        if (!init_and_start(ctx,data,config)) return;
 		var statData=initPassVariableData_part1(data,config,ctx);
 
@@ -5973,6 +6004,13 @@ window.Chart = function(context) {
 		}
 	};
 
+	function chartJsMouseDown(event,ctx,config,data,other) {
+		if (event.which==1 && typeof config.mouseDownLeft == 'function')config.mouseDownLeft(event,ctx,config,data,other);
+		else if (event.which==2 && typeof config.mouseDownMiddle == 'function')config.mouseDownMiddle(event,ctx,config,data,other);
+		else if (event.which==3 && typeof config.mouseDownRight == 'function')config.mouseDownRight(event,ctx,config,data,other);
+	};
+
+
 	function defMouse(ctx, data, config) {
 		var todoannotate=false;
 		if(typeof config.annotateDisplay=="function") { todoannotate=true;
@@ -6044,9 +6082,12 @@ window.Chart = function(context) {
 			}
 		};
 
-		add_event_listener("mousedown", config.mouseDownLeft, function(e) { return e.which == 1; });
-		add_event_listener("mousedown", config.mouseDownMiddle, function(e) { return e.which == 2; });
-		add_event_listener("mousedown", config.mouseDownRight, function(e) { return e.which == 3; });
+		if(typeof config.mouseDownRight == 'function')
+			add_event_listener("mousedown", chartJsMouseDown, function(e) { return (e.which == 1 || e.which == 2 || e.which == 3); });
+		else if(typeof config.mouseDownLeft == 'function')
+			add_event_listener("mousedown", chartJsMouseDown, function(e) { return (e.which == 1 || e.which == 2 || e.which == 3); });
+		else if(typeof config.mouseDownMiddle == 'function')
+			add_event_listener("mousedown", chartJsMouseDown, function(e) { return (e.which == 1 || e.which == 2 || e.which == 3); });
 		add_event_listener("mousemove", config.mouseMove);
 		add_event_listener("mouseout", config.mouseOut);
 		add_event_listener("mousewheel", config.mouseWheel);
