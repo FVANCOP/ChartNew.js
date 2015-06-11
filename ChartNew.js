@@ -457,6 +457,16 @@ function updateChart(ctx,data,config,animation,runanimationcompletefunction) {
 		if(animation)ctx.firstPass=0;
 		else if (config.responsive) ctx.firstPass=7;
 		else ctx.firstPass=7;
+		if(config.responsive) {
+			// update jsGraphResize;
+			for (var i=0;i<jsGraphResize.length;i++)  {
+				if(jsGraphResize[i][2].ChartNewId== ctx.ChartNewId) {
+					jsGraphResize[i][3]=data;
+					jsGraphResize[i][4]=config;
+				}
+			}
+			
+		}
 		subUpdateChart(ctx,data,config) ;
 		
 	}
@@ -887,6 +897,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 				else  config.annotateFunctionIn("INANNOTATE",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],jsGraphAnnotate[ctx.ChartNewId][i][1],jsGraphAnnotate[ctx.ChartNewId][i][2],null);
 				}
 			}
+			//show=false;
 		}
 	}
 	if(show==false && action=="annotate" && annotatePrevShow >=0) {
