@@ -1,6 +1,11 @@
 Change history
 --------------
 
+11/06/2015 - Vancoppenolle François - Fix issue 276 reported by Henry Thasler 
+09/06/2015 - Vancoppenolle François - DrillDown add-ins created
+                                    - new options annotateFunctionIn / annotateFunctionOut
+                                    - new option contextMenu
+                                    - fix a bug with mouse actions in IExplorer
 02/06/2015 - Vancoppenolle Francois - Fix issue 294 reported by Robsk
 20/05/2015 - mehdihaddad            - fix an error + remove lot of warnings - see issue 289 & 290.
 13/05/2015 - mehdihaddad            - fix an error when we resize the window
