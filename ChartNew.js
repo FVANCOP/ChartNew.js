@@ -1895,6 +1895,7 @@ window.Chart = function(context) {
 	};
 
 	function init_and_start(ctx,data,config) {
+		var i;
 	
 		if (typeof ctx.initialWidth == "undefined") {
 			ctx.initialWidth =ctx.canvas.width;
@@ -1936,6 +1937,26 @@ window.Chart = function(context) {
     				e.preventDefault();
 			};
 		}
+		
+		// convert label to title - for compatibility reasons with Chart.js;
+		switch(ctx.tpdata) {
+			case 1:
+				for(i=0;i<data.length;i++){
+					if(typeof data[i].title == "undefined" && typeof data[i].label != "undefined") {
+						data[i].title=data[i].label;
+					}
+				}
+				break;
+			case 0:
+			default:
+				for(i=0;i<data.datasets.length;i++){
+					if(typeof data.datasets[i].title == "undefined" && typeof data.datasets[i].label != "undefined") {
+						data.datasets[i].title=data.datasets[i].label;
+					}
+				}
+				break;
+		}
+		
 
 
 		defMouse(ctx, data, config);
@@ -1948,6 +1969,7 @@ window.Chart = function(context) {
 	var PolarArea = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
 		ctx.tpchart="PolarArea";
+		ctx.tpdata=1;
 		
 	        if (!init_and_start(ctx,data,config)) return;
 		var statData=initPassVariableData_part1(data,config,ctx);
@@ -2158,6 +2180,8 @@ window.Chart = function(context) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
 
 		ctx.tpchart="Radar";
+		ctx.tpdata=0;
+
 	        if (!init_and_start(ctx,data,config)) return;
 		var statData=initPassVariableData_part1(data,config,ctx);
 		valueBounds = getValueBounds();
@@ -2478,6 +2502,8 @@ window.Chart = function(context) {
 		var msr, midPieX, midPieY, pieRadius;
 
 		ctx.tpchart="Pie";
+		ctx.tpdata=1;
+
 	        if (!init_and_start(ctx,data,config)) return;
 		var statData=initPassVariableData_part1(data,config,ctx);
 		config.logarithmic = false;
@@ -2609,6 +2635,8 @@ window.Chart = function(context) {
 		var msr, midPieX, midPieY, doughnutRadius;
 
 		ctx.tpchart="Doughnut";
+		ctx.tpdata=1;
+
 	        if (!init_and_start(ctx,data,config)) return;
 		var statData=initPassVariableData_part1(data,config,ctx);
 
@@ -2753,6 +2781,8 @@ window.Chart = function(context) {
 		var zeroY = 0;
 		var zeroY2 = 0;
 		ctx.tpchart="Line";
+		ctx.tpdata=0;
+
 	        if (!init_and_start(ctx,data,config)) return;
 		// adapt data when length is 1;
 		var mxlgt = 0;
@@ -3127,6 +3157,8 @@ window.Chart = function(context) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
 		ctx.tpchart="StackedBar";
+		ctx.tpdata=0;
+
 	        if (!init_and_start(ctx,data,config)) return;
 		var statData=initPassVariableData_part1(data,config,ctx);
 
@@ -3481,6 +3513,8 @@ window.Chart = function(context) {
 		}
 
 		ctx.tpchart="HorizontalStackedBar";
+		ctx.tpdata=0;
+
 	        if (!init_and_start(ctx,data,config)) return;
 		var statData=initPassVariableData_part1(data,config,ctx);
 
@@ -3818,6 +3852,8 @@ window.Chart = function(context) {
 			msr;
 	
 		ctx.tpchart="Bar";
+		ctx.tpdata=0;
+
 
 	        if (!init_and_start(ctx,data,config)) return;
 		var statData=initPassVariableData_part1(data,config,ctx);
@@ -4255,6 +4291,8 @@ window.Chart = function(context) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
 		ctx.tpchart="HorizontalBar";
+		ctx.tpdata=0;
+
 	        if (!init_and_start(ctx,data,config)) return;
 
 		if (config.reverseOrder && typeof ctx.reversed == "undefined") {
@@ -6348,10 +6386,8 @@ function drawMarker(ctx,xpos,ypos,marker,markersize,markerStrokeStyle) {
 
 function initPassVariableData_part1(data,config,ctx) {
 var i,j,result, mxvalue ,mnvalue, cumvalue, totvalue,lmaxvalue,lminvalue,lgtxt,lgtxt2,tp,prevpos,firstNotMissingi,lastNotMissingi,firstNotMissingj,lastNotMissingj,grandtotal;
-switch(ctx.tpchart) {
-	case "Pie" :
-	case "Doughnut" :
-	case "PolarArea" :
+switch(ctx.tpdata) {
+	case 1 :
 
 		result=[];
 		var segmentAngle,cumulativeAngle,realCumulativeAngle;
@@ -6447,12 +6483,8 @@ switch(ctx.tpchart) {
 			}
 		}
 		break;
-	case "Bar" :
-	case "Line" :
-	case "HorizontalBar" :
-	case "StackedBar" :
-	case "HorizontalStackedBar" :
-	case "Radar" :
+	case 0:
+	default : 
 		var axis;
 		result=[];
 		mxvalue=[];
@@ -6674,8 +6706,6 @@ switch(ctx.tpchart) {
 			}
 		}
 		break;
-	default:	
-		break;
 	}
 
 	
@@ -6687,10 +6717,8 @@ function initPassVariableData_part2(statData,data,config,ctx,othervars) {
 
 var realbars=0;
 var i,j;
-switch(ctx.tpchart) {
-	case "Pie" :
-	case "Doughnut" :
-	case "PolarArea" :
+switch(ctx.tpdata) {
+	case 1 :
 		for(i=0;i<data.length;i++) {
 			statData[i].v7= fmtChartJS(config, othervars.midPosX, config.fmtV7);
 			statData[i].v8= fmtChartJS(config, othervars.midPosY, config.fmtV8),
@@ -6710,12 +6738,8 @@ switch(ctx.tpchart) {
 			statData[i].ext_radius= othervars.ext_radius;
 		}
 		break;
-	case "Radar" :
-	case "Line" :
-	case "Bar" :
-	case "StackedBar" :
-	case "HorizontalBar" :
-	case "HorizontalStackedBar" :
+	case 0:
+	default :
 		var tempp = new Array(data.datasets.length);
 		var tempn = new Array(data.datasets.length);
 		for (i = 0; i < data.datasets.length; i++) {
