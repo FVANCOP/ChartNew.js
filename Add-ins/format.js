@@ -5,6 +5,12 @@
 //
 function fmtChartJSPerso(config, value, fmt) {
 	switch (fmt.split(/[\s,]+/)[0].toUpperCase()) {
+		case "ABBREVIATENUMBER":
+			return_value = value;
+			if (typeof(value) == "number") {
+				return_value = abbreviateNumber(value);
+			}
+			break;
 		case "DATE":
 			spltdt = fmt.replace(/,/g, " ").replace(/:/g, " ").split(/[\s,]+/);
 			var options = new Array();
@@ -52,6 +58,15 @@ function fmtChartJSPerso(config, value, fmt) {
 	}
 	return (return_value);
 }
+
+function abbreviateNumber(num) {
+	var suffixes = ["", "k", "m", "b","t"];
+	var sign = num > 0 ? 1 : -1;
+	if (num < 1000 && num > -1000 ) return num;
+	var i = parseInt(Math.floor(Math.log(Math.abs(num)) / Math.log(1000)));
+	return ((i % 1 == 0 ) ? (num / Math.pow(1000, i)) : (num / Math.pow(1000, i)).toFixed(1)) + '' + suffixes[i];
+};
+
 String.prototype.replaceArray = function(find, replace) {
 	var replaceString = this;
 	var regex;

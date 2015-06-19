@@ -18,12 +18,12 @@ var datedata = {
                         {
                             fillColor: "rgba(220,0,0,0.5)",
                             strokeColor: "rgba(220,220,220,0.5)",
-                            data: [20,10,47,35]
+                            data: [20,56,24,35]
                         },
                         {
                             fillColor: "rgba(0,220,0,0.5)",
                             strokeColor: "rgba(220,220,220,0.5)",
-                            data: [13,43,55,33]
+                            data: [13,40,55,33]
                         },
                         {
                             fillColor: "rgba(0,0,220,0.5)",
@@ -33,6 +33,26 @@ var datedata = {
                     ]
                 }
 
+var bignumbers = {
+    labels: [new Date(2014,0,1,12,0,0), new Date(2014,1,1,12,15,0), new Date(2014,2,1,12,30,0), new Date(2014,3,1,12,45,0)],
+    datasets: [
+        {
+            fillColor: "rgba(220,0,0,0.5)",
+            strokeColor: "rgba(220,220,220,0.5)",
+            data: [-10000,-7800,-800,100]
+        },
+        {
+            fillColor: "rgba(0,220,0,0.5)",
+            strokeColor: "rgba(220,220,220,0.5)",
+            data: [0, 1000, 3000, 5000]
+        },
+        {
+            fillColor: "rgba(0,0,220,0.5)",
+            strokeColor: "rgba(220,220,220,0.5)",
+            data:[450,700,2500,2900]
+        }
+    ]
+}
 
 </SCRIPT>
 
@@ -63,7 +83,8 @@ var datedata = {
       document.write("<canvas id=\"canvas_line8\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
       document.write("<canvas id=\"canvas_line9\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
       document.write("<canvas id=\"canvas_line10\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
-    
+      document.write("<canvas id=\"canvas_line11\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+
 
 window.onload = function() {
 
@@ -78,8 +99,12 @@ window.onload = function() {
     var myLine = new Chart(document.getElementById("canvas_line8").getContext("2d")).Line(datedata,{fmtXLabel : "time",graphTitle : "Format : time",animation :false});
     var myLine = new Chart(document.getElementById("canvas_line9").getContext("2d")).Line(datedata,{fmtXLabel : "fmttime hh:mm:ss",graphTitle : "Format : fmttime hh:mm:ss",animation : false});
     var myLine = new Chart(document.getElementById("canvas_line10").getContext("2d")).Line(datedata,{fmtXLabel : "fmttime ss:mm:hh",graphTitle : "Format : fmttime ss:mm:hh",animation :false});
-
-}
+    var myLine = new Chart(document.getElementById("canvas_line11").getContext("2d")).Line(
+            bignumbers,
+            {   fmtYLabel : "abbreviatenumber",
+                fmtXLabel : "fmttime hh:mm:ss",
+                graphTitle : "Format : abbreviatenumber",
+                animation :false});}
     </script>
   </body>
 </html>
