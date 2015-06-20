@@ -1,6 +1,7 @@
 Change history
 --------------
 
+20/06/2015 - Yevdo Abramov          - abreviateNumber added in add-ins/format.js
 11/06/2015 - Vancoppenolle François - Fix issue 276 reported by Henry Thasler 
 09/06/2015 - Vancoppenolle François - DrillDown add-ins created
                                     - new options annotateFunctionIn / annotateFunctionOut
