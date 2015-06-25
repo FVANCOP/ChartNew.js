@@ -3975,6 +3975,7 @@ window.Chart = function(context) {
 				yAxisPosX : yAxisPosX,
 				xAxisPosY : xAxisPosY,
 				valueHop : valueHop,
+				nbValueHop : data.labels.length - 1,
 				barWidth : barWidth,
 				zeroY : zeroY,
 				zeroY2 : zeroY2,
