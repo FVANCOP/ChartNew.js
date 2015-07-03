@@ -1,0 +1,192 @@
+  <!doctype html>
+
+
+
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='ChartNew.js'></script>
+
+
+<SCRIPT>
+
+defCanvasWidth=600;
+defCanvasHeight=500;
+
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June","July"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [0.65,0.59,0.90,0.81,0.56,0.55,0.40],
+      title : "pFirst data"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			data : [0.28,0.48,0.40,0.19,0.96,0.27,1.00],
+      title : "pSecond data"
+		}
+	]
+}
+
+var mydata4 = [
+	{
+		value : 70,
+		color: "rgba(151,187,205,1)",
+    title : "data1"
+	},
+	{
+		value : 30,
+		color: "rgba(220,220,220,1)",
+    title : "data2"
+	}
+]
+
+function displayText(event,ctx,config,data,other)
+{
+  if(other != null) {
+	if(typeof other.type !="undefined") {
+		var text;
+		var canvas_pos = getMousePos(ctx.canvas, event);
+		text="Area : "+other.values[0];
+		text=text+"\nText you click on : "+other.values[1];
+		text=text+"\n"+"Position where you click : ("+canvas_pos.x+","+canvas_pos.y+")";
+		text=text+"\nPosition of the corners of the text : ("+other.values[2].p1+","+other.values[3].p1+");("+other.values[2].p2+","+other.values[3].p2+");("+other.values[2].p3+","+other.values[3].p3+");("+other.values[2].p4+","+other.values[3].p4+")";
+		text=text+"\nText Rotation (in radian) : "+other.values[4];
+		text=text+"\nText Width : "+other.values[5];
+		text=text+"\nText Height : "+other.values[6];
+		switch(other.values[0]) {
+			case "CROSSTEXT_TEXTMOUSE" :
+				text=text+"\nCrossText Id : "+other.values[7];
+				text=text+"\nCrossText : "+config.crossText[other.values[7]];
+				break;
+			case "INGRAPHDATA_TEXTMOUSE":
+				if(ctx.tpdata==0){
+					text=text+"\nText Id : ("+other.values[7]+","+other.values[8]+")";
+					text=text+"\nData Value : "+data.datasets[other.values[7]].data[other.values[8]];
+					text=text+"\nData associated to : "+data.labels[other.values[8]]+data.datasets[other.values[7]].title;
+				} else if(ctx.tpdata==1) {
+					text=text+"\nText Id : "+other.values[7];
+					text=text+"\nData Value : "+data[other.values[7]].value;
+					text=text+"\nData associated to : "+data[other.values[7]].title;
+				}
+				break;
+			case "YLEFTAXIS_TEXTMOUSE" :
+				text=text+"\nLabel Id : "+other.values[8];
+				break;
+			case "YRIGHTAXIS_TEXTMOUSE" :
+				text=text+"\nLabel Id : "+other.values[8];
+				break;
+			case "XSCALE_TEXTMOUSE" :
+				text=text+"\nLabel Id : "+other.values[7];
+				text=text+"\nLabel Text : "+data.labels[other.values[7]];
+				break;
+			case "XAXIS_TEXTMOUSE" :
+				text=text+"\nLabel Id : "+other.values[7];
+				text=text+"\nLabel Text : "+data.labels[other.values[7]];
+				break;
+			case "SCALE_TEXTMOUSE" :
+				text=text+"\nLabel Id : "+other.values[7];
+				break;
+			case "LEGEND_TEXTMOUSE" :
+				text=text+"\nLegend Id : "+other.values[7];
+				if(ctx.tpdata==0){
+					text=text+"\nData associated to : "+data.datasets[other.values[7]].title;
+				} else if(ctx.tpdata==1) {
+					text=text+"\nData Value : "+data[other.values[7]].value;
+					text=text+"\nData associated to : "+data[other.values[7]].title;
+				}
+				break;
+			default: break;
+		};
+			 
+		window.alert(text);
+	
+	}
+  } 
+  
+}
+
+
+
+
+var myOptions = {
+      graphTitle : "Sample Click on text",
+      graphSubTitle : "Graph Sub Title",
+      yAxisRight : true,
+      graphMin : 0,
+      footNote : "Sample Footnote",
+      yAxisUnit : "Unit",
+      yAxisLabel : "YAxisLabel",
+      xAxisLabel : "xAxisLabel",
+      legend : true,
+      inGraphDataShow : true,
+      crossText : ["Click on Text Sample"],
+      crossTextOverlay :   [true],
+      crossTextFontSize : [15],
+      crossTextFontColor : ["black"],
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      detectMouseOnText : true,
+      mouseDownLeft : displayText ,
+      crossTextAngle : [45],
+      animation : false,
+      dynamicDisplay : false
+}
+
+
+
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+
+	</head>
+	<body>
+  
+  <!div id="divCursor" style="position:absolute"> <!/div>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+    
+
+      document.write("<canvas id=\"canvas_doughnut\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_polar_area\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_bar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+
+
+
+window.onload = function() {
+
+//    var myLine = new Chart(document.getElementById("canvas_line").getContext("2d")).Line(mydata1,setopts);
+
+//    var myLine = new Chart(document.getElementById("canvas_line").getContext("2d")).Line(mydata1,setopts);
+    if(1==1) {
+
+    var myDoughNut = new Chart(document.getElementById("canvas_doughnut").getContext("2d")).Doughnut(mydata4,myOptions);
+    var myLine = new Chart(document.getElementById("canvas_line").getContext("2d")).Line(mydata1,myOptions);
+    var myPolarArea = new Chart(document.getElementById("canvas_polar_area").getContext("2d")).PolarArea(mydata4,myOptions);
+    var myBar = new Chart(document.getElementById("canvas_bar").getContext("2d")).Bar(mydata1,myOptions);
+
+   }
+
+}
+
+    </script>
+  </body>
+</html>
