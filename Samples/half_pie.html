@@ -1,0 +1,136 @@
+  <!doctype html>
+
+
+
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+
+<SCRIPT>
+
+defCanvasWidth=1200;
+defCanvasHalfWidth=400;
+defCanvasHeight=600;
+
+
+var mydata2 = [
+	{
+		value : 30,
+		color: "#D97041",
+    title : "data1"
+	},
+	{
+		value : 90,
+		color: "#C7604C",
+    title : "data2"
+	},
+	{
+		value : 24,
+		color: "#21323D",
+    title : "data3"
+	},
+	{
+		value : 58,
+		color: "#9D9B7F",
+    title : "data4"
+	},
+	{
+		value : 82,
+		color: "#7D4F6D",
+    title : "data5"
+	},
+	{
+		value : 8,
+		color: "#584A5E",
+    title : "data6"
+	}
+]
+
+
+
+var opt1 = {
+      inGraphDataShow : true,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "Graph Title",
+      startAngle : 180,
+      totalAmplitude : 180
+}
+
+var opt2 = {
+      inGraphDataShow : true,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "Graph Title",
+      startAngle : 0,
+      totalAmplitude : 180
+}
+
+var opt3 = {
+      inGraphDataShow : true,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "Graph Title",
+      startAngle : 90,
+      totalAmplitude : 180
+}
+
+var opt4 = {
+      inGraphDataShow : true,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "Graph Title",
+      startAngle : -90,
+      totalAmplitude : 180
+}
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+
+	</head>
+	<body>
+  
+  <!div id="divCursor" style="position:absolute"> <!/div>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+    
+
+      document.write("<canvas id=\"canvas_polararea\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_pie\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_doughnut\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_pie2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasHalfWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_doughnut2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasHalfWidth+"\"></canvas>");
+
+
+    
+
+window.onload = function() {
+
+
+    if(1==1) {
+    var myLine = new Chart(document.getElementById("canvas_polararea").getContext("2d")).PolarArea(mydata2,opt1);
+    var myLine = new Chart(document.getElementById("canvas_pie").getContext("2d")).Pie(mydata2,opt1);
+    var myLine = new Chart(document.getElementById("canvas_doughnut").getContext("2d")).Doughnut(mydata2,opt2);
+    var myLine = new Chart(document.getElementById("canvas_pie2").getContext("2d")).Pie(mydata2,opt3);
+    var myLine = new Chart(document.getElementById("canvas_doughnut2").getContext("2d")).Doughnut(mydata2,opt4);
+    }
+
+}
+
+    </script>
+  </body>
+</html>

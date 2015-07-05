@@ -1220,7 +1220,9 @@ window.Chart = function(context) {
 			animateScale: false,
 			onAnimationComplete: null,
 			annotateLabel: "<%=(v1 == ''? '' : v1+':')+ v2 + ' (' + v6 + ' %)'%>",
-			startAngle: 90
+			startAngle: 90,
+			totalAmplitude : 360,
+			radiusScale : 1
 		};
 		chart.PolarArea.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.PolarArea.defaults);
 		chart.PolarArea.defaults = mergeChartConfig(chart.PolarArea.defaults, charJSPersonalDefaultOptions);
@@ -1295,36 +1297,7 @@ window.Chart = function(context) {
 		return new Radar(data, config, context);
 	};
 	this.Pie = function(data, options) {
-		chart.Pie.defaults = {
-			inGraphDataShow: false,
-			inGraphDataPaddingRadius: 5,
-			inGraphDataPaddingAngle: 0,
-			inGraphDataTmpl: "<%=(v1 == ''? '' : v1+':')+ v2 + ' (' + v6 + ' %)'%>",
-			inGraphDataAlign: "off-center", // "right", "center", "left", "off-center" or "to-center"
-			inGraphDataVAlign: "off-center", // "bottom", "center", "top", "off-center" or "to-center"
-			inGraphDataRotate: 0, // rotateAngle value (0->360) , "inRadiusAxis" or "inRadiusAxisRotateLabels"
-			inGraphDataFontFamily: "'Arial'",
-			inGraphDataFontSize: 12,
-			inGraphDataFontStyle: "normal",
-			inGraphDataFontColor: "#666",
-			inGraphDataRadiusPosition: 3,
-			inGraphDataAnglePosition: 2,
-			inGraphDataMinimumAngle : 0,
-			segmentShowStroke: true,
-			segmentStrokeColor: "#fff",
-			segmentStrokeStyle: "solid",
-			segmentStrokeWidth: 2,
-			animation: true,
-			animationByData : false,
-			animationSteps: 100,
-			animationEasing: "easeOutBounce",
-			animateRotate: true,
-			animateScale: false,
-			onAnimationComplete: null,
-			annotateLabel: "<%=(v1 == ''? '' : v1+':')+ v2 + ' (' + v6 + ' %)'%>",
-			startAngle: 90,
-			radiusScale: 1
-		};
+		chart.Pie.defaults = chart.defaults.PieAndDoughnut;
 		// merge annotate defaults
 		chart.Pie.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Pie.defaults);
 		chart.Pie.defaults = mergeChartConfig(chart.Pie.defaults, charJSPersonalDefaultOptions);
@@ -1333,37 +1306,7 @@ window.Chart = function(context) {
 		return new Pie(data, config, context);
 	};
 	this.Doughnut = function(data, options) {
-		chart.Doughnut.defaults = {
-			inGraphDataShow: false,
-			inGraphDataPaddingRadius: 5,
-			inGraphDataPaddingAngle: 0,
-			inGraphDataTmpl: "<%=(v1 == ''? '' : v1+':')+ v2 + ' (' + v6 + ' %)'%>",
-			inGraphDataAlign: "off-center", // "right", "center", "left", "off-center" or "to-center"
-			inGraphDataVAlign: "off-center", // "bottom", "middle", "top", "off-center" or "to-center"
-			inGraphDataRotate: 0, // rotateAngle value (0->360) , "inRadiusAxis" or "inRadiusAxisRotateLabels"
-			inGraphDataFontFamily: "'Arial'",
-			inGraphDataFontSize: 12,
-			inGraphDataFontStyle: "normal",
-			inGraphDataFontColor: "#666",
-			inGraphDataRadiusPosition: 3,
-			inGraphDataAnglePosition: 2,
-		        inGraphDataMinimumAngle : 0,
-			segmentShowStroke: true,
-			segmentStrokeColor: "#fff",
-			segmentStrokeStyle: "solid",
-			segmentStrokeWidth: 2,
-			percentageInnerCutout: 50,
-			animation: true,
-			animationByData : false,
-			animationSteps: 100,
-			animationEasing: "easeOutBounce",
-			animateRotate: true,
-			animateScale: false,
-			onAnimationComplete: null,
-			annotateLabel: "<%=(v1 == ''? '' : v1+':')+ v2 + ' (' + v6 + ' %)'%>",
-			startAngle: 90,
-			radiusScale: 1
-		};
+		chart.Doughnut.defaults = chart.defaults.PieAndDoughnut;
 		// merge annotate defaults
 		chart.Doughnut.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Doughnut.defaults);
 		chart.Doughnut.defaults = mergeChartConfig(chart.Doughnut.defaults, charJSPersonalDefaultOptions);
@@ -1926,6 +1869,41 @@ window.Chart = function(context) {
 		responsiveWindowInitialWidth : false,
 		pointMarker : "circle"    // "circle","cross","plus","diamond","triangle","square"
 	};
+
+
+	chart.defaults.PieAndDoughnut = {
+			inGraphDataShow: false,
+			inGraphDataPaddingRadius: 5,
+			inGraphDataPaddingAngle: 0,
+			inGraphDataTmpl: "<%=(v1 == ''? '' : v1+':')+ v2 + ' (' + v6 + ' %)'%>",
+			inGraphDataAlign: "off-center", // "right", "center", "left", "off-center" or "to-center"
+			inGraphDataVAlign: "off-center", // "bottom", "middle", "top", "off-center" or "to-center"
+			inGraphDataRotate: 0, // rotateAngle value (0->360) , "inRadiusAxis" or "inRadiusAxisRotateLabels"
+			inGraphDataFontFamily: "'Arial'",
+			inGraphDataFontSize: 12,
+			inGraphDataFontStyle: "normal",
+			inGraphDataFontColor: "#666",
+			inGraphDataRadiusPosition: 3,
+			inGraphDataAnglePosition: 2,
+		        inGraphDataMinimumAngle : 0,
+			segmentShowStroke: true,
+			segmentStrokeColor: "#fff",
+			segmentStrokeStyle: "solid",
+			segmentStrokeWidth: 2,
+			percentageInnerCutout: 50,
+			animation: true,
+			animationByData : false,
+			animationSteps: 100,
+			animationEasing: "easeOutBounce",
+			animateRotate: true,
+			animateScale: false,
+			onAnimationComplete: null,
+			annotateLabel: "<%=(v1 == ''? '' : v1+':')+ v2 + ' (' + v6 + ' %)'%>",
+			startAngle: 90,
+			totalAmplitude : 360,
+			radiusScale: 1
+	};
+
 	chart.defaults.xyAxisCommonOptions = {
 		yAxisMinimumInterval: "none",
 		yAxisMinimumInterval2: "none",
@@ -2068,10 +2046,19 @@ window.Chart = function(context) {
 
 	var PolarArea = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
+
 		ctx.tpchart="PolarArea";
 		ctx.tpdata=1;
 		
 	        if (!init_and_start(ctx,data,config)) return;
+
+		var realCumulativeAngle = (((config.startAngle * (Math.PI / 180) + 2 * Math.PI) % (2 * Math.PI)) + 2* Math.PI) % (2* Math.PI) ; 
+		var realAmplitude = (((config.totalAmplitude * (Math.PI / 180) + 2 * Math.PI) % (2 * Math.PI)) + 2* Math.PI) % (2* Math.PI) ; 
+		if(realAmplitude <= config.zeroValue)realAmplitude=2*Math.PI;
+			
+		var debAngle=((realCumulativeAngle-realAmplitude)+4*Math.PI)%(2*Math.PI);
+		var finAngle=debAngle+realAmplitude;
+
 		var statData=initPassVariableData_part1(data,config,ctx);
 
 		valueBounds = getValueBounds();
@@ -2100,9 +2087,12 @@ window.Chart = function(context) {
 			msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, false, false, true, "PolarArea");
 		}
 
-		midPosX = msr.leftNotUsableSize + (msr.availableWidth / 2);
-		midPosY = msr.topNotUsableSize + (msr.availableHeight / 2);
-		scaleHop = Math.floor(((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5) / calculatedScale.steps);
+
+		var drwSize=calculatePieDrawingSize(ctx,msr,config,data,statData);
+		midPosX=drwSize.midPieX;
+		midPosY=drwSize.midPieY;
+
+		scaleHop = Math.floor(drwSize.radius / calculatedScale.steps);
 		//Wrap in an animation loop wrapper
  		if(scaleHop > 0) {
 			initPassVariableData_part2(statData,data,config,ctx,{midPosX : midPosX,midPosY : midPosY,int_radius : 0,ext_radius : scaleHop*calculatedScale.steps, calculatedScale : calculatedScale, scaleHop : scaleHop});
@@ -2210,7 +2200,7 @@ window.Chart = function(context) {
 			for (var i = 0; i < calculatedScale.steps; i++) {
 				if (config.scaleShowLine && (i+1) % config.scaleGridLinesStep==0) {
 					ctx.beginPath();
-					ctx.arc(midPosX, midPosY, scaleHop * (i + 1), 0, (Math.PI * 2), true);
+					ctx.arc(midPosX, midPosY, scaleHop * (i + 1), 4*Math.PI-debAngle, 4*Math.PI-finAngle, true);
 					ctx.strokeStyle = config.scaleLineColor;
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleLineWidth);
 					ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
@@ -2219,6 +2209,10 @@ window.Chart = function(context) {
 					ctx.setLineDash([]);
 				}
 				if (config.scaleShowLabels) {
+
+					if(Math.abs(config.totalAmplitude-360)<config.zeroValue)scaleAngle=Math.PI/2;
+					else scaleAngle=(debAngle+finAngle)/2;
+
 					ctx.textAlign = "center";
 					ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
 					var label = calculatedScale.labels[i + 1];
@@ -2227,8 +2221,8 @@ window.Chart = function(context) {
 						ctx.fillStyle = config.scaleBackdropColor;
 						ctx.beginPath();
 						ctx.rect(
-							Math.round(midPosX - textWidth / 2 - Math.ceil(ctx.chartSpaceScale*config.scaleBackdropPaddingX)), //X
-							Math.round(midPosY - (scaleHop * (i + 1)) - (Math.ceil(ctx.chartTextScale*config.scaleFontSize)) * 0.5 - Math.ceil(ctx.chartSpaceScale*config.scaleBackdropPaddingY)), //Y
+							Math.round(midPosX + Math.cos(scaleAngle)*(scaleHop*(i+1)) - textWidth / 2 - Math.ceil(ctx.chartSpaceScale*config.scaleBackdropPaddingX)), //X
+							Math.round(midPosY - Math.sin(scaleAngle)*(scaleHop * (i + 1)) - (Math.ceil(ctx.chartTextScale*config.scaleFontSize)) * 0.5 - Math.ceil(ctx.chartSpaceScale*config.scaleBackdropPaddingY)), //Y
 							Math.round(textWidth + (Math.ceil(ctx.chartSpaceScale*config.scaleBackdropPaddingX) * 2)), //Width
 							Math.round((Math.ceil(ctx.chartTextScale*config.scaleFontSize)) + (Math.ceil(ctx.chartSpaceScale*config.scaleBackdropPaddingY) * 2)) //Height
 						);
@@ -2236,7 +2230,7 @@ window.Chart = function(context) {
 					}
 					ctx.textBaseline = "middle";
 					ctx.fillStyle = config.scaleFontColor;
-					ctx.fillTextMultiLine(label, midPosX, midPosY - (scaleHop * (i + 1)), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"SCALE_TEXTMOUSE",0,0,0,i,-1);
+					ctx.fillTextMultiLine(label, midPosX + Math.cos(scaleAngle)*(scaleHop*(i+1)) , midPosY - Math.sin(scaleAngle)*(scaleHop * (i + 1)), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"SCALE_TEXTMOUSE",0,0,0,i,-1);
 				}
 			}
 		};
@@ -2610,144 +2604,16 @@ window.Chart = function(context) {
 
 	var Pie = function(data, config, ctx) {
 		var msr, midPieX, midPieY, pieRadius;
-
 		ctx.tpchart="Pie";
-		ctx.tpdata=1;
-
-	        if (!init_and_start(ctx,data,config)) return;
-		var statData=initPassVariableData_part1(data,config,ctx);
-		config.logarithmic = false;
-		config.logarithmic2 = false;
-		msr = setMeasures(data, config, ctx, height, width, "none", null, true, false, false, false, true, "Pie");
-		calculateDrawingSize();
-		if(pieRadius > 0) {
-			initPassVariableData_part2(statData,data,config,ctx,{midPosX : midPieX,midPosY : midPieY,int_radius : 0,ext_radius : pieRadius});
-			animationLoop(config, null, drawPieSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPieX, midPieY, midPieX - pieRadius, midPieY + pieRadius, data);
-		} else {
-			testRedraw(ctx,data,config);
-		}
-		function drawPieSegments(animationDecimal) {
-			for (var i = 0; i < data.length; i++) {
-				var	scaleAnimation = 1,
-					rotateAnimation = 1;
-                	
-				if (config.animation) {
-					if (config.animateScale) {
-						scaleAnimation = animationDecimal;
-					}
-					if (config.animateRotate) {
-						rotateAnimation = animationDecimal;
-					}
-				}
-				correctedRotateAnimation = animationCorrection(rotateAnimation, data, config, i, -1, 0).mainVal;
-				if (!(typeof(data[i].value) == 'undefined')&& 1*data[i].value >=0) {
-					ctx.beginPath();
-					if(config.animationByData == "ByArc") {
-						endAngle=statData[i].startAngle+correctedRotateAnimation*statData[i].segmentAngle;
-						ctx.arc(midPieX, midPieY, scaleAnimation * pieRadius, statData[i].startAngle, endAngle);
-					} else if(config.animationByData) {
-						if(statData[i].startAngle-statData[i].firstAngle < correctedRotateAnimation*2*Math.PI ) {
-							endAngle=statData[i].endAngle;
-							if((statData[i].endAngle-statData[i].firstAngle)> correctedRotateAnimation*2*Math.PI) endAngle=statData[i].firstAngle+correctedRotateAnimation*2*Math.PI;							
-							ctx.arc(midPieX, midPieY, scaleAnimation * pieRadius, statData[i].startAngle, endAngle);
-							
-						}
-						else continue;
-					} else {
-						ctx.arc(midPieX, midPieY, scaleAnimation * pieRadius, statData[i].firstAngle+correctedRotateAnimation * (statData[i].startAngle-statData[i].firstAngle), statData[i].firstAngle+correctedRotateAnimation * (statData[i].endAngle-statData[i].firstAngle));
-					}
-					ctx.lineTo(midPieX, midPieY);
-					ctx.closePath();
-					ctx.fillStyle=setOptionValue(1,"COLOR",ctx,data,statData,data[i].color,config.defaultFillColor,i,-1,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
-					ctx.fill();
-					if (config.segmentShowStroke) {
-						ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.segmentStrokeWidth);
-						ctx.strokeStyle = config.segmentStrokeColor;
-						ctx.setLineDash(lineStyleFn(setOptionValue(1,"SEGMENTSTROKESTYLE",ctx,data,statData,data[i].segmentStrokeStyle,config.segmentStrokeStyle,i,-1,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} )));
-						ctx.stroke();					 
-						ctx.setLineDash([]);
-					}
-				}
-			}
-			if (animationDecimal >= config.animationStopValue) {
-				for (i = 0; i < data.length; i++) {
-					if (typeof(data[i].value) == 'undefined' || 1*data[i].value<0) continue;
-					if (setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})) {
-						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", i,-1,statData];
-					}
-					if (setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,-1,{nullValue : true}) && statData[i]["segmentAngle"] >= (Math.PI/180) * setOptionValue(1,"INGRAPHDATAMINIMUMANGLE",ctx,data,statData,undefined,config.inGraphDataMinimumAngle,i,-1,{nullValue : true} )) {
-						if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 1) posAngle = statData[i].realStartAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
-						else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 2) posAngle = statData[i].realStartAngle - statData[i]["segmentAngle"] / 2 + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
-						else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 3) posAngle = statData[i].realStartAngle - statData[i].segmentAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
-						if (setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,i,-1,{nullValue : true} ) == 1) labelRadius = 0 + setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} );
-						else if (setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,i,-1,{nullValue : true} ) == 2) labelRadius = pieRadius / 2 + setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} );
-						else if (setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,i,-1,{nullValue : true} ) == 3) labelRadius = pieRadius + setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} );
-						ctx.save();
-						if (setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,-1,{nullValue: true  }) == "off-center") {
-							if (setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) == "inRadiusAxis" || (posAngle + 2 * Math.PI) % (2 * Math.PI) > 3 * Math.PI / 2 || (posAngle + 2 * Math.PI) % (2 * Math.PI) < Math.PI / 2) ctx.textAlign = "left";
-							else ctx.textAlign = "right";
-						} else if (setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,-1,{nullValue: true  }) == "to-center") {
-							if (setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) == "inRadiusAxis" || (posAngle + 2 * Math.PI) % (2 * Math.PI) > 3 * Math.PI / 2 || (posAngle + 2 * Math.PI) % (2 * Math.PI) < Math.PI / 2) ctx.textAlign = "right";
-							else ctx.textAlign = "left";
-						} else ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,-1,{nullValue: true  });
-						if (setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,-1,{nullValue : true} ) == "off-center") {
-							if ((posAngle + 2 * Math.PI) % (2 * Math.PI) > Math.PI) ctx.textBaseline = "top";
-							else ctx.textBaseline = "bottom";
-						} else if (setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,-1,{nullValue : true} ) == "to-center") {
-							if ((posAngle + 2 * Math.PI) % (2 * Math.PI) > Math.PI) ctx.textBaseline = "bottom";
-							else ctx.textBaseline = "top";
-						} else ctx.textBaseline = setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,-1,{nullValue : true} );
-						ctx.font = setOptionValue(1,"INGRAPHDATAFONTSTYLE",ctx,data,statData,undefined,config.inGraphDataFontStyle,i,-1,{nullValue : true} ) + ' ' + setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ) + 'px ' + setOptionValue(1,"INGRAPHDATAFONTFAMILY",ctx,data,statData,undefined,config.inGraphDataFontFamily,i,-1,{nullValue : true} );
-						ctx.fillStyle = setOptionValue(1,"INGRAPHDATAFONTCOLOR",ctx,data,statData,undefined,config.inGraphDataFontColor,i,-1,{nullValue : true} );
-						var dispString = tmplbis(setOptionValue(1,"INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i],config);
-						ctx.translate(midPieX + labelRadius * Math.cos(posAngle), midPieY - labelRadius * Math.sin(posAngle));
-						var rotateVal=0;
-						if (setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) == "inRadiusAxis") rotateVal=2 * Math.PI - posAngle;
-						else if (setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) == "inRadiusAxisRotateLabels") {
-							if ((posAngle + 2 * Math.PI) % (2 * Math.PI) > Math.PI / 2 && (posAngle + 2 * Math.PI) % (2 * Math.PI) < 3 * Math.PI / 2) rotateVal=3 * Math.PI - posAngle;
-							else rotateVal=2 * Math.PI - posAngle;
-						} else rotateVal=setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) * (Math.PI / 180);
-						ctx.rotate(rotateVal);
-						setTextBordersAndBackground(ctx,dispString,setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ),0,0,setOptionValue(1,"INGRAPHDATABORDERS",ctx,data,statData,undefined,config.inGraphDataBorders,i,-1,{nullValue : true} ),setOptionValue(1,"INGRAPHDATABORDERSCOLOR",ctx,data,statData,undefined,config.inGraphDataBordersColor,i,-1,{nullValue : true} ),setOptionValue(ctx.chartLineScale,"INGRAPHDATABORDERSWIDTH",ctx,data,statData,undefined,config.inGraphDataBordersWidth,i,-1,{nullValue : true} ),setOptionValue(ctx.chartSpaceScale,"INGRAPHDATABORDERSXSPACE",ctx,data,statData,undefined,config.inGraphDataBordersXSpace,i,-1,{nullValue : true} ),setOptionValue(ctx.chartSpaceScale,"INGRAPHDATABORDERSYSPACE",ctx,data,statData,undefined,config.inGraphDataBordersYSpace,i,-1,{nullValue : true} ),setOptionValue(1,"INGRAPHDATABORDERSSTYLE",ctx,data,statData,undefined,config.inGraphDataBordersStyle,i,-1,{nullValue : true} ),setOptionValue(1,"INGRAPHDATABACKGROUNDCOLOR",ctx,data,statData,undefined,config.inGraphDataBackgroundColor,i,-1,{nullValue : true} ),"INGRAPHDATA");
-						ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ),true,config.detectMouseOnText,ctx,"INGRAPHDATA_TEXTMOUSE",rotateVal,midPieX + labelRadius * Math.cos(posAngle), midPieY - labelRadius * Math.sin(posAngle),i,-1);
-						ctx.restore();
-					}
-				}
-
-			}
-			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"Pie");
-		};
-
-		function calculateDrawingSize() {
-			midPieX = msr.leftNotUsableSize + (msr.availableWidth / 2);
-			midPieY = msr.topNotUsableSize + (msr.availableHeight / 2);
-			pieRadius = Min([msr.availableHeight / 2, msr.availableWidth / 2]) - 5;
-			// Computerange Pie Radius
-			if (isBooleanOptionTrue(undefined,config.inGraphDataShow) && setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,0,-1,{nullValue : true} ) == 3 && setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,0,-1,{nullValue: true  }) == "off-center" && setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,0,-1,{nullValue : true} ) == 0) {
-				pieRadius = Min([msr.availableHeight / 2, msr.availableWidth / 2]) - setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,0,-1,{nullValue : true} ) - setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,0,-1,{nullValue: true} ) - 5;
-				var realCumulativeAngle = ((config.startAngle * (Math.PI / 180) + 2 * Math.PI) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
-				for (var i = 0; i < data.length; i++) {
-					if (!(typeof(data[i].value) == 'undefined') && 1*data[i].value>=0) {
-						ctx.font = setOptionValue(1,"INGRAPHDATAFONTSTYLE",ctx,data,statData,undefined,config.inGraphDataFontStyle,i,-1,{nullValue : true} ) + ' ' + setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,0,-1,{nullValue : true} ) + 'px ' + setOptionValue(1,"INGRAPHDATAFONTFAMILY",ctx,data,statData,undefined,config.inGraphDataFontFamily,i,-1,{nullValue : true} );
-						if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 1) posAngle = realCumulativeAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
-						else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 2) posAngle = realCumulativeAngle - statData[i].segmentAngle / 2 + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
-						else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 3) posAngle = realCumulativeAngle - statData[i].segmentAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
-						realCumulativeAngle -= statData[i].segmentAngle;
-						var dispString = tmplbis(setOptionValue(1,"INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i],config);
-						var textMeasurement = ctx.measureText(dispString).width;
-						var MaxRadiusX = Math.abs((msr.availableWidth / 2 - textMeasurement) / Math.cos(posAngle)) - setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} ) - 5;
-						if (MaxRadiusX < pieRadius) pieRadius = MaxRadiusX;
-					}
-				}
-			}
-			pieRadius = pieRadius * config.radiusScale;
-		};
+		return(Doughnut(data,config,ctx));
 	};
+	
 	var Doughnut = function(data, config, ctx) {
 		var msr, midPieX, midPieY, doughnutRadius;
 
-		ctx.tpchart="Doughnut";
+		if(typeof ctx.tpchart == "undefined")ctx.tpchart="Doughnut";
 		ctx.tpdata=1;
+
 
 	        if (!init_and_start(ctx,data,config)) return;
 		var statData=initPassVariableData_part1(data,config,ctx);
@@ -2756,9 +2622,15 @@ window.Chart = function(context) {
 		config.logarithmic = false;
 		config.logarithmic2 = false;
 		msr = setMeasures(data, config, ctx, height, width, "none", null, true, false, false, false, true, "Doughnut");
-		calculateDrawingSize();
-
-		var cutoutRadius = doughnutRadius * (config.percentageInnerCutout / 100);
+		var drwSize=calculatePieDrawingSize(ctx,msr,config,data,statData);
+		midPieX=drwSize.midPieX;
+		midPieY=drwSize.midPieY;
+		doughnutRadius=drwSize.radius;
+		
+		
+		var cutoutRadius;
+                if(ctx.tpchart == "Pie")cutoutRadius=0;
+		else cutoutRadius = doughnutRadius * (config.percentageInnerCutout / 100);
 		if(doughnutRadius > 0) {
 			initPassVariableData_part2(statData,data,config,ctx,{midPosX : midPieX,midPosY : midPieY ,int_radius : cutoutRadius ,ext_radius : doughnutRadius});
 			animationLoop(config, null, drawPieSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPieX, midPieY, midPieX - doughnutRadius, midPieY + doughnutRadius, data);
@@ -2862,31 +2734,6 @@ window.Chart = function(context) {
 			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"Doughnut");
 		};
 
-		function calculateDrawingSize() {
-			midPieX = msr.leftNotUsableSize + (msr.availableWidth / 2);
-			midPieY = msr.topNotUsableSize + (msr.availableHeight / 2);
-			doughnutRadius = Min([msr.availableHeight / 2, msr.availableWidth / 2]) - 5;
-			// Computerange Pie Radius
-			if (isBooleanOptionTrue(undefined,config.inGraphDataShow) && setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,0,-1,{nullValue : true} ) == 3 && setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,0,-1,{nullValue: true  }) == "off-center" && setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,0,-1,{nullValue : true} ) == 0) {
-				doughnutRadius = Min([msr.availableHeight / 2, msr.availableWidth / 2]) - setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,0,-1,{nullValue : true} ) - setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,0,-1,{nullValue: true} ) - 5;
-				var realCumulativeAngle = (((config.startAngle * (Math.PI / 180) + 2 * Math.PI) % (2 * Math.PI)) + 2* Math.PI) % (2* Math.PI) ; 
-				var posAngle;
-				for (var i = 0; i < data.length; i++) {
-					if (!(typeof(data[i].value) == 'undefined') && 1*data[i].value>=0) {
-						ctx.font = setOptionValue(1,"INGRAPHDATAFONTSTYLE",ctx,data,statData,undefined,config.inGraphDataFontStyle,i,-1,{nullValue : true} ) + ' ' + setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ) + 'px ' + setOptionValue(1,"INGRAPHDATAFONTFAMILY",ctx,data,statData,undefined,config.inGraphDataFontFamily,i,-1,{nullValue : true} );
-						if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 1) posAngle = realCumulativeAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
-						else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 2) posAngle = realCumulativeAngle - statData[i].segmentAngle / 2 + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
-						else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 3) posAngle = realCumulativeAngle - statData[i].segmentAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
-						realCumulativeAngle -= statData[i].segmentAngle;
-						var dispString = tmplbis(setOptionValue(1,"INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i],config);
-						var textMeasurement = ctx.measureText(dispString).width;
-						var MaxRadiusX = Math.abs((msr.availableWidth / 2 - textMeasurement) / Math.cos(posAngle)) - setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} ) - 5;
-						if (MaxRadiusX < doughnutRadius) doughnutRadius = MaxRadiusX;
-					}
-				}
-			}
-			doughnutRadius = doughnutRadius * config.radiusScale;
-		};
 	};
 	var Line = function(data, config, ctx) {
 		var maxSize, scaleHop, scaleHop2, calculatedScale, calculatedScale2, labelHeight, scaleHeight, valueBounds, labelTemplateString, labelTemplateString2;
@@ -6513,6 +6360,9 @@ switch(ctx.tpdata) {
 		result=[];
 		var segmentAngle,cumulativeAngle,realCumulativeAngle;
 
+		var realAmplitude = (((config.totalAmplitude * (Math.PI / 180) + 2 * Math.PI) % (2 * Math.PI)) + 2* Math.PI) % (2* Math.PI) ; 
+		if(realAmplitude <= config.zeroValue)realAmplitude=2*Math.PI;
+
 		cumulativeAngle = (((-config.startAngle * (Math.PI / 180) + 2 * Math.PI) % (2 * Math.PI)) + 2* Math.PI) % (2* Math.PI) ; 
 		realCumulativeAngle = (((config.startAngle * (Math.PI / 180) + 2 * Math.PI) % (2 * Math.PI)) + 2* Math.PI) % (2* Math.PI) ; 
 
@@ -6542,8 +6392,10 @@ switch(ctx.tpdata) {
 			if (typeof(data[i].title) == "string") lgtxt = data[i].title.trim();
 			else lgtxt = "";
 			if (!(typeof(data[i].value) == 'undefined') && (ctx.tpchart == "PolarArea" || 1*data[i].value>=0)) {
-				if(ctx.tpchart=="PolarArea") { if(notemptyval>0)segmentAngle= (Math.PI *2)/notemptyval; else segmentAngle=0; }
-				else segmentAngle = (1 * data[i].value / totvalue) * (Math.PI * 2);
+//				if(ctx.tpchart=="PolarArea") { if(notemptyval>0)segmentAngle= (Math.PI *2)/notemptyval; else segmentAngle=0; }
+//				else segmentAngle = (1 * data[i].value / totvalue) * (Math.PI * 2);
+				if(ctx.tpchart=="PolarArea") { if(notemptyval>0)segmentAngle= realAmplitude/notemptyval; else segmentAngle=0; }
+				else segmentAngle = (1 * data[i].value / totvalue) * realAmplitude;
 				if (segmentAngle >= Math.PI * 2) segmentAngle = Math.PI * 2 - 0.001; // bug on Android when segmentAngle is >= 2*PI;
 				cumvalue += 1 * data[i].value;
 				result[i]= {
@@ -7265,3 +7117,73 @@ function setTextBordersAndBackground(ctx,text,fontsize,xpos,ypos,borders,borders
 	
 	ctx.restore();
 };
+
+function calculatePieDrawingSize(ctx,msr,config,data,statData) {
+
+	var realCumulativeAngle = (((config.startAngle * (Math.PI / 180) + 2 * Math.PI) % (2 * Math.PI)) + 2* Math.PI) % (2* Math.PI) ; 
+	var realAmplitude = (((config.totalAmplitude * (Math.PI / 180) + 2 * Math.PI) % (2 * Math.PI)) + 2* Math.PI) % (2* Math.PI) ; 
+	if(realAmplitude <= config.zeroValue)realAmplitude=2*Math.PI;
+			
+	var debAngle=((realCumulativeAngle-realAmplitude)+4*Math.PI)%(2*Math.PI);
+	var finAngle=debAngle+realAmplitude;
+			
+	var qposdeb=Math.floor(((debAngle+config.zeroValue)/(Math.PI/2))%4);
+	var qposfin=Math.floor(((finAngle-config.zeroValue)/(Math.PI/2))%4);
+	var q=[0,0,0,0];
+	if(qposdeb<=qposfin)for(var i=qposdeb;i<=qposfin;i++)q[i]=1;
+	else {
+		for(var i=qposdeb;i<4;i++)q[i]=1;
+		for(var i=0;i<=qposfin;i++)q[i]=1;
+	}
+
+	if(q[0]==0 && q[1]==0) {
+		midPieY = msr.topNotUsableSize+5;
+		doughnutRadius = msr.availableHeight-5;
+	} else if(q[2]==0 && q[3]==0) {
+		midPieY = msr.topNotUsableSize + msr.availableHeight;
+		doughnutRadius = msr.availableHeight-5;
+	}else {
+		midPieY = msr.topNotUsableSize + (msr.availableHeight / 2);
+		doughnutRadius = msr.availableHeight/2-5;
+	}
+	var realAvailableWidth;
+	if(q[0]==0 && q[3]==0) {
+		midPieX = msr.leftNotUsableSize + msr.availableWidth-5 ;
+		doughnutRadius = Math.min(doughnutRadius, msr.availableWidth -5);
+		realAvailableWidth=msr.availableWidth -5
+		
+	} else if(q[1]==0 && q[2]==0) {
+		midPieX = msr.leftNotUsableSize+5 ;
+		doughnutRadius = Math.min(doughnutRadius, msr.availableWidth -5);
+		realAvailableWidth=msr.availableWidth -5
+	} else {
+		midPieX = msr.leftNotUsableSize + (msr.availableWidth / 2);
+		doughnutRadius = Math.min(doughnutRadius, (msr.availableWidth/2) -5);
+		realAvailableWidth=(msr.availableWidth/2) -5
+	}
+	// Computerange Pie Radius
+	if (isBooleanOptionTrue(undefined,config.inGraphDataShow) && setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,0,-1,{nullValue : true} ) == 3 && setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,0,-1,{nullValue: true  }) == "off-center" && setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,0,-1,{nullValue : true} ) == 0) {
+		doughnutRadius = doughnutRadius - setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,0,-1,{nullValue : true} ) - setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,0,-1,{nullValue: true} ) - 5;
+		var posAngle;
+		for (var i = 0; i < data.length; i++) {
+			if (!(typeof(data[i].value) == 'undefined') && 1*data[i].value>=0) {
+				ctx.font = setOptionValue(1,"INGRAPHDATAFONTSTYLE",ctx,data,statData,undefined,config.inGraphDataFontStyle,i,-1,{nullValue : true} ) + ' ' + setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ) + 'px ' + setOptionValue(1,"INGRAPHDATAFONTFAMILY",ctx,data,statData,undefined,config.inGraphDataFontFamily,i,-1,{nullValue : true} );
+				if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 1) posAngle = realCumulativeAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
+				else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 2) posAngle = realCumulativeAngle - statData[i].segmentAngle / 2 + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
+				else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 3) posAngle = realCumulativeAngle - statData[i].segmentAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
+				realCumulativeAngle -= statData[i].segmentAngle;
+				var dispString = tmplbis(setOptionValue(1,"INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i],config);
+				var textMeasurement = ctx.measureText(dispString).width;
+				var MaxRadiusX = Math.abs((realAvailableWidth - textMeasurement) / Math.cos(posAngle)) - setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} ) - 5;
+				if (MaxRadiusX < doughnutRadius) doughnutRadius = MaxRadiusX;
+			}
+		}
+	}
+	doughnutRadius = doughnutRadius * config.radiusScale;
+	return {
+		radius : doughnutRadius,
+		midPieX : midPieX,
+		midPieY : midPieY
+	};
+};
+
