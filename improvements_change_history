@@ -1,6 +1,9 @@
 Change history
 --------------
 
+05/07/2015 - Vancoppenolle François - option totalAmplitude added (enable to draw half Pie/Doughnut/PolarArea)
+                                    - code for Pie and for Doughnut has been merged (Pie is a case of Doughnut)
+                                    - option detectMouseOnText added
 20/06/2015 - Yevdo Abramov          - abreviateNumber added in add-ins/format.js
 11/06/2015 - Vancoppenolle François - Fix issue 276 reported by Henry Thasler 
 09/06/2015 - Vancoppenolle François - DrillDown add-ins created
@@ -160,7 +163,6 @@ Change history
 
 Future Improvements
 -------------------
-- merge Pie/Doughnut code (can be the same code : A pie = Dougnut with a hole having a radiant of 0...)
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
 - non evolutive animation in Pie/Doughnut (https://github.com/nnnick/Chart.js/issues/357)
 - code reduction
@@ -171,6 +173,7 @@ Future Improvements
 
 Known Bugs
 ----------
+- on android, Size of chart increase/decrease when updated
 - problem with inGraphData on Pie/Doughnut
 - dynamicDisplay not working on IOS 5
 - Pie not working on some devices
