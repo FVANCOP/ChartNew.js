@@ -1224,6 +1224,7 @@ window.Chart = function(context) {
 			totalAmplitude : 360,
 			radiusScale : 1
 		};
+		if(isIE()<9 && isIE() != false)chart.PolarArea.defaults = mergeChartConfig(chart.defaults.IExplorer8, chart.PolarArea.defaults);
 		chart.PolarArea.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.PolarArea.defaults);
 		chart.PolarArea.defaults = mergeChartConfig(chart.PolarArea.defaults, charJSPersonalDefaultOptions);
 		chart.PolarArea.defaults = mergeChartConfig(chart.PolarArea.defaults, charJSPersonalDefaultOptionsPolarArea);
@@ -1290,6 +1291,7 @@ window.Chart = function(context) {
 			startAngle: 90
 		};
 		// merge annotate defaults
+		if(isIE()<9 && isIE() != false)chart.Radar.defaults = mergeChartConfig(chart.defaults.IExplorer8, chart.Radar.defaults);
 		chart.Radar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Radar.defaults);
 		chart.Radar.defaults = mergeChartConfig(chart.Radar.defaults, charJSPersonalDefaultOptions);
 		chart.Radar.defaults = mergeChartConfig(chart.Radar.defaults, charJSPersonalDefaultOptionsRadar);
@@ -1299,6 +1301,7 @@ window.Chart = function(context) {
 	this.Pie = function(data, options) {
 		chart.Pie.defaults = chart.defaults.PieAndDoughnut;
 		// merge annotate defaults
+		if(isIE()<9 && isIE() != false)chart.Pie.defaults = mergeChartConfig(chart.defaults.IExplorer8, chart.Pie.defaults);
 		chart.Pie.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Pie.defaults);
 		chart.Pie.defaults = mergeChartConfig(chart.Pie.defaults, charJSPersonalDefaultOptions);
 		chart.Pie.defaults = mergeChartConfig(chart.Pie.defaults, charJSPersonalDefaultOptionsPie);
@@ -1308,6 +1311,7 @@ window.Chart = function(context) {
 	this.Doughnut = function(data, options) {
 		chart.Doughnut.defaults = chart.defaults.PieAndDoughnut;
 		// merge annotate defaults
+		if(isIE()<9 && isIE() != false)chart.Doughnut.defaults = mergeChartConfig(chart.defaults.IExplorer8, chart.Doughnut.defaults);
 		chart.Doughnut.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Doughnut.defaults);
 		chart.Doughnut.defaults = mergeChartConfig(chart.Doughnut.defaults, charJSPersonalDefaultOptions);
 		chart.Doughnut.defaults = mergeChartConfig(chart.Doughnut.defaults, charJSPersonalDefaultOptionsDoughnut);
@@ -1383,6 +1387,7 @@ window.Chart = function(context) {
 			pointHitDetectionRadius : 10
 		};
 		// merge annotate defaults
+		if(isIE()<9 && isIE() != false)chart.Line.defaults = mergeChartConfig(chart.defaults.IExplorer8, chart.Line.defaults);
 		chart.Line.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Line.defaults);
 		chart.Line.defaults = mergeChartConfig(chart.defaults.xyAxisCommonOptions, chart.Line.defaults);
 		chart.Line.defaults = mergeChartConfig(chart.Line.defaults, charJSPersonalDefaultOptions);
@@ -1452,6 +1457,7 @@ window.Chart = function(context) {
 			pointHitDetectionRadius : 10
 		};
 		// merge annotate defaults
+		if(isIE()<9 && isIE() != false)chart.StackedBar.defaults = mergeChartConfig(chart.defaults.IExplorer8, chart.StackedBar.defaults);
 		chart.StackedBar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.StackedBar.defaults);
 		chart.StackedBar.defaults = mergeChartConfig(chart.defaults.xyAxisCommonOptions, chart.StackedBar.defaults);
 		chart.StackedBar.defaults = mergeChartConfig(chart.StackedBar.defaults, charJSPersonalDefaultOptions);
@@ -1516,6 +1522,7 @@ window.Chart = function(context) {
 			reverseOrder: false
 		};
 		// merge annotate defaults
+		if(isIE()<9 && isIE() != false)chart.HorizontalStackedBar.defaults = mergeChartConfig(chart.defaults.IExplorer8, chart.HorizontalStackedBar.defaults);
 		chart.HorizontalStackedBar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.HorizontalStackedBar.defaults);
 		chart.HorizontalStackedBar.defaults = mergeChartConfig(chart.defaults.xyAxisCommonOptions, chart.HorizontalStackedBar.defaults);
 		chart.HorizontalStackedBar.defaults = mergeChartConfig(chart.HorizontalStackedBar.defaults, charJSPersonalDefaultOptions);
@@ -1594,6 +1601,7 @@ window.Chart = function(context) {
 			pointHitDetectionRadius : 10
 		};
 		// merge annotate defaults
+		if(isIE()<9 && isIE() != false)chart.Bar.defaults = mergeChartConfig(chart.defaults.IExplorer8, chart.Bar.defaults);
 		chart.Bar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.Bar.defaults);
 		chart.Bar.defaults = mergeChartConfig(chart.defaults.xyAxisCommonOptions, chart.Bar.defaults);
 		chart.Bar.defaults = mergeChartConfig(chart.Bar.defaults, charJSPersonalDefaultOptions);
@@ -1658,6 +1666,7 @@ window.Chart = function(context) {
 			reverseOrder: false
 		};
 		// merge annotate defaults
+		if(isIE()<9 && isIE() != false)chart.HorizontalBar.defaults = mergeChartConfig(chart.defaults.IExplorer8, chart.HorizontalBar.defaults);
 		chart.HorizontalBar.defaults = mergeChartConfig(chart.defaults.commonOptions, chart.HorizontalBar.defaults);
 		chart.HorizontalBar.defaults = mergeChartConfig(chart.defaults.xyAxisCommonOptions, chart.HorizontalBar.defaults);
 		chart.HorizontalBar.defaults = mergeChartConfig(chart.HorizontalBar.defaults, charJSPersonalDefaultOptions);
@@ -1666,6 +1675,11 @@ window.Chart = function(context) {
 		return new HorizontalBar(data, config, context);
 	};
 	chart.defaults = {};
+	
+	chart.defaults.IExplorer8 ={
+		annotateBackgroundColor : "black",
+		annotateFontColor: "white"
+	};
 	chart.defaults.commonOptions = {
 		chartTextScale : 1,
 		chartLineScale : 1,
@@ -5986,7 +6000,7 @@ window.Chart = function(context) {
 			
 //        		ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
 			ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
-			for(ti=2;ti<pts.length-3;ti+=2){
+			for(ti=2;ti<pts.length-4;ti+=2){
 				y1=Math.max(Math.min(cp[2*ti-1],minimumpos),maximumpos);
 				y2=Math.max(Math.min(cp[2*ti+1],minimumpos),maximumpos);
 				ctx.bezierCurveTo(cp[2*ti-2],y1,cp[2*ti],y2,pts[ti+2],pts[ti+3]);
