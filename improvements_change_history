@@ -1,6 +1,7 @@
 Change history
 --------------
 
+07/07/2015 - Vancoppenolle François - Fix for issue 308 + fix issues for IExplorer 8
 05/07/2015 - Vancoppenolle François - option totalAmplitude added (enable to draw half Pie/Doughnut/PolarArea)
                                     - code for Pie and for Doughnut has been merged (Pie is a case of Doughnut)
                                     - option detectMouseOnText added
