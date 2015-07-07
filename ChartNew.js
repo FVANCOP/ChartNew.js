@@ -439,6 +439,10 @@ function getMaximumHeight(domNode){
 
 function resizeCtx(ctx,newWidth,newHeight,config)
 {
+	if(typeof ctx.DefaultchartTextScale=="undefined")ctx.DefaultchartTextScale=config.chartTextScale;
+	if(typeof ctx.DefaultchartLineScale=="undefined")ctx.DefaultchartLineScale=config.chartLineScale;
+	if(typeof ctx.DefaultchartSpaceScale=="undefined")ctx.DefaultchartSpaceScale=config.chartSpaceScale;
+
 	if (window.devicePixelRatio) {    // Retina device
 		ctx.canvas.style.width = newWidth/window.devicePixelRatio + "px";
 		ctx.canvas.style.height = newHeight/window.devicePixelRatio + "px";
@@ -446,18 +450,18 @@ function resizeCtx(ctx,newWidth,newHeight,config)
 		ctx.canvas.width = newWidth/window.devicePixelRatio * window.devicePixelRatio;
 		ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 		if(typeof ctx.chartTextScale != "undefined" && config.responsiveScaleContent) {
-			ctx.chartTextScale=config.chartTextScale*(newWidth/ctx.initialWidth);
-			ctx.chartLineScale=config.chartLineScale*(newWidth/ctx.initialWidth);
-			ctx.chartSpaceScale=config.chartSpaceScale*(newWidth/ctx.initialWidth);
+			ctx.chartTextScale=ctx.DefaultchartTextScale*(newWidth/ctx.initialWidth);
+			ctx.chartLineScale=ctx.DefaultchartLineScale*(newWidth/ctx.initialWidth);
+			ctx.chartSpaceScale=ctx.DefaultchartSpaceScale*(newWidth/ctx.initialWidth);
 		}
 	} else {
 		ctx.canvas.height = newHeight ;
 		ctx.canvas.width = newWidth;
 		/* new ratio */
 		if(typeof ctx.chartTextScale != "undefined" && config.responsiveScaleContent) {
-			ctx.chartTextScale=config.chartTextScale*(newWidth/ctx.initialWidth);
-			ctx.chartLineScale=config.chartLineScale*(newWidth/ctx.initialWidth);
-			ctx.chartSpaceScale=config.chartSpaceScale*(newWidth/ctx.initialWidth);
+			ctx.chartTextScale=ctx.DefaultchartTextScale*(newWidth/ctx.initialWidth);
+			ctx.chartLineScale=ctx.DefaultchartLineScale*(newWidth/ctx.initialWidth);
+			ctx.chartSpaceScale=ctx.DefaultchartSpaceScale*(newWidth/ctx.initialWidth);
 		}
 	}
 };
