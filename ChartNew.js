@@ -443,26 +443,13 @@ function resizeCtx(ctx,newWidth,newHeight,config)
 	if(typeof ctx.DefaultchartLineScale=="undefined")ctx.DefaultchartLineScale=config.chartLineScale;
 	if(typeof ctx.DefaultchartSpaceScale=="undefined")ctx.DefaultchartSpaceScale=config.chartSpaceScale;
 
-	if (window.devicePixelRatio) {    // Retina device
-		ctx.canvas.style.width = newWidth/window.devicePixelRatio + "px";
-		ctx.canvas.style.height = newHeight/window.devicePixelRatio + "px";
-		ctx.canvas.height = newHeight/window.devicePixelRatio * window.devicePixelRatio;
-		ctx.canvas.width = newWidth/window.devicePixelRatio * window.devicePixelRatio;
-		ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-		if(typeof ctx.chartTextScale != "undefined" && config.responsiveScaleContent) {
-			ctx.chartTextScale=ctx.DefaultchartTextScale*(newWidth/ctx.initialWidth);
-			ctx.chartLineScale=ctx.DefaultchartLineScale*(newWidth/ctx.initialWidth);
-			ctx.chartSpaceScale=ctx.DefaultchartSpaceScale*(newWidth/ctx.initialWidth);
-		}
-	} else {
-		ctx.canvas.height = newHeight ;
-		ctx.canvas.width = newWidth;
-		/* new ratio */
-		if(typeof ctx.chartTextScale != "undefined" && config.responsiveScaleContent) {
-			ctx.chartTextScale=ctx.DefaultchartTextScale*(newWidth/ctx.initialWidth);
-			ctx.chartLineScale=ctx.DefaultchartLineScale*(newWidth/ctx.initialWidth);
-			ctx.chartSpaceScale=ctx.DefaultchartSpaceScale*(newWidth/ctx.initialWidth);
-		}
+	ctx.canvas.height = newHeight ;
+	ctx.canvas.width = newWidth;
+	/* new ratio */
+	if(typeof ctx.chartTextScale != "undefined" && config.responsiveScaleContent) {
+		ctx.chartTextScale=ctx.DefaultchartTextScale*(newWidth/ctx.initialWidth);
+		ctx.chartLineScale=ctx.DefaultchartLineScale*(newWidth/ctx.initialWidth);
+		ctx.chartSpaceScale=ctx.DefaultchartSpaceScale*(newWidth/ctx.initialWidth);
 	}
 };
 
@@ -509,6 +496,11 @@ function testRedraw(ctx,data,config) {
 function updateChart(ctx,data,config,animation,runanimationcompletefunction) {
 	if (ctx.firstPass==5)
 	{
+		if (window.devicePixelRatio) {
+			ctx.canvas.width=ctx.canvas.width/window.devicePixelRatio;
+			ctx.canvas.height=ctx.canvas.height/window.devicePixelRatio;
+			
+		}
 		ctx.runanimationcompletefunction=runanimationcompletefunction;
 		if(animation)ctx.firstPass=0;
 		else if (config.responsive) ctx.firstPass=7;
@@ -578,7 +570,7 @@ function subUpdateChart(ctx,data,config) {
 			ctx.firstPass=3;
 			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 			if(config.responsive) {
-				resizeCtx(ctx,newSize.newWidth,newSize.newHeight,config);
+                            	resizeCtx(ctx,newSize.newWidth,newSize.newHeight,config);
 				ctx.prevWidth=newSize.newWidth;
 				ctx.prevHeight=newSize.newHeight;
 			} else {
@@ -604,6 +596,7 @@ function subUpdateChart(ctx,data,config) {
 };
 
 function redrawGraph(ctx,data,config) {
+
 	var myGraph = new Chart(ctx);	
 	switch (ctx.tpchart) {
 		case "Bar":
@@ -1165,6 +1158,7 @@ window.Chart = function(context) {
 		}
 	};
 	//Variables global to the chart
+	
 	var width = context.canvas.width;
 	var height = context.canvas.height;
 	//High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
