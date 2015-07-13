@@ -170,7 +170,7 @@ Future Improvements
 - animate Canvas when mouse is over a piece of graph (like in http://zurb.com/playground/pizza-pie-charts)
 - dynamicDisplay defines a canvas.id when not defined; Avoid defining a canvas.id (issue 35)
 - see issue #128
-- doughnut(s) arround Pie - see issue #227
+- doughnut(s) around Pie - see issue #227
 
 Known Bugs
 ----------
