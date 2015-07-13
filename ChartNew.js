@@ -1960,6 +1960,10 @@ window.Chart = function(context) {
 		xAxisLabelBordersWidth : 1,
 		xAxisLabelBordersStyle : "solid",
 		xAxisLabelBackgroundColor : "none",
+		showXLabels : 1,
+		firstLabelToShow : 1,
+		showYLabels : 1,
+		firstYLabelToShow : 1,
 		yAxisUnit: "",
 		yAxisUnit2: "",
 		yAxisUnitFontFamily: "'Arial'",
@@ -2953,6 +2957,7 @@ window.Chart = function(context) {
 				ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
 				ctx.stroke();
             			ctx.setLineDash([]);
+            			
 			}
 			//Y axis
 			ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleLineWidth);
@@ -2996,15 +3001,17 @@ window.Chart = function(context) {
 				ctx.fillStyle = config.scaleFontColor;
 				if (config.xAxisBottom) {
 					for (var i = 0; i < data.labels.length; i++) {
-						ctx.save();
-						if (msr.rotateLabels > 0) {
-							ctx.translate(yAxisPosX + i * valueHop - msr.highestXLabel / 2, msr.xLabelPos);
-							ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-							ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XSCALE_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + i * valueHop - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
-						} else {
-							ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), yAxisPosX + i * valueHop, msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XSCALE_TEXTMOUSE",0,0,0,i,-1);
+						if(showLabels(ctx,data,config,i)){
+							ctx.save();
+							if (msr.rotateLabels > 0) {
+								ctx.translate(yAxisPosX + i * valueHop - msr.highestXLabel / 2, msr.xLabelPos);
+								ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
+								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XSCALE_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + i * valueHop - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
+							} else {
+								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), yAxisPosX + i * valueHop, msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XSCALE_TEXTMOUSE",0,0,0,i,-1);
+							}
+							ctx.restore();
 						}
-						ctx.restore();
 					}
 				}
 			}
@@ -3013,13 +3020,15 @@ window.Chart = function(context) {
 			ctx.textBaseline = "middle";
 			for (var j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale.steps; j++) {
 				if (config.scaleShowLabels) {
-					if (config.yAxisLeft) {
-						ctx.textAlign = "right";
-						ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
-					}
-					if (config.yAxisRight && !valueBounds.dbAxis) {
-						ctx.textAlign = "left";
-						ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+					if(showYLabels(ctx,data,config,j+1,calculatedScale.labels[j + 1])) {				
+						if (config.yAxisLeft) {
+							ctx.textAlign = "right";
+							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
+						}
+						if (config.yAxisRight && !valueBounds.dbAxis) {
+							ctx.textAlign = "left";
+							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+						}
 					}
 				}
 			}
@@ -3351,15 +3360,17 @@ window.Chart = function(context) {
 				ctx.fillStyle = config.scaleFontColor;
 				if (config.xAxisBottom) {
 					for (var i = 0; i < data.labels.length; i++) {
-						ctx.save();
-						if (msr.rotateLabels > 0) {
-							ctx.translate(yAxisPosX + Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) + i * valueHop + (barWidth / 2) - msr.highestXLabel / 2, msr.xLabelPos);
-							ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-							ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) + i * valueHop + (barWidth / 2) - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
-						} else {
-							ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), yAxisPosX + Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) + i * valueHop + (barWidth / 2), msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
+						if(showLabels(ctx,data,config,i)){
+							ctx.save();
+							if (msr.rotateLabels > 0) {
+								ctx.translate(yAxisPosX + Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) + i * valueHop + (barWidth / 2) - msr.highestXLabel / 2, msr.xLabelPos);
+								ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
+								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) + i * valueHop + (barWidth / 2) - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
+							} else {
+								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), yAxisPosX + Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) + i * valueHop + (barWidth / 2), msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
+							}
+							ctx.restore();
 						}
-						ctx.restore();
 					}
 				}
 			}
@@ -3368,13 +3379,15 @@ window.Chart = function(context) {
 			ctx.textBaseline = "middle";
 			for (var j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale.steps; j++) {
 				if (config.scaleShowLabels) {
-					if (config.yAxisLeft) {
-						ctx.textAlign = "right";
-						ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
-					}
-					if (config.yAxisRight) {
-						ctx.textAlign = "left";
-						ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+					if(showYLabels(ctx,data,config,j+1,calculatedScale.labels[j + 1])) {				
+						if (config.yAxisLeft) {
+							ctx.textAlign = "right";
+							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
+						}
+						if (config.yAxisRight) {
+							ctx.textAlign = "left";
+							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+						}
 					}
 				}
 			}
@@ -3713,15 +3726,17 @@ window.Chart = function(context) {
 				ctx.fillStyle = config.scaleFontColor;
 				if (config.xAxisBottom) {
 					for (var i = ((config.showYAxisMin) ? -1 : 0); i < calculatedScale.steps; i++) {
-						ctx.save();
-						if (msr.rotateLabels > 0) {
-							ctx.translate(yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2, msr.xLabelPos);
-							ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-							ctx.fillTextMultiLine(calculatedScale.labels[i + 1], 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
-						} else {
-							ctx.fillTextMultiLine(calculatedScale.labels[i + 1], yAxisPosX + ((i + 1) * valueHop), msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
+						if(showYLabels(ctx,data,config,i+1,calculatedScale.labels[i+ 1])) {				
+							ctx.save();
+							if (msr.rotateLabels > 0) {
+								ctx.translate(yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2, msr.xLabelPos);
+								ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
+								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
+							} else {
+								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], yAxisPosX + ((i + 1) * valueHop), msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
+							}
+							ctx.restore();
 						}
-						ctx.restore();
 					}
 				}
 			}
@@ -3729,13 +3744,15 @@ window.Chart = function(context) {
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
 			for (var j = 0; j < data.labels.length; j++) {
-				if (config.yAxisLeft) {
-					ctx.textAlign = "right";
-					ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
-				}
-				if (config.yAxisRight) {
-					ctx.textAlign = "left";
-					ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+				if(showLabels(ctx,data,config,j)){
+					if (config.yAxisLeft) {
+						ctx.textAlign = "right";
+						ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
+					}
+					if (config.yAxisRight) {
+						ctx.textAlign = "left";
+						ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop) + barWidth / 2, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+					}
 				}
 			}
 		};
@@ -4133,16 +4150,17 @@ window.Chart = function(context) {
 				ctx.fillStyle = config.scaleFontColor;
 				if (config.xAxisBottom) {
 					for (var i = 0; i < data.labels.length; i++) {
-						ctx.save();
-						if (msr.rotateLabels > 0) {
-
-							ctx.translate(yAxisPosX + i * valueHop + (valueHop / 2) - msr.highestXLabel / 2, msr.xLabelPos);
-							ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-							ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + i * valueHop + (valueHop / 2) - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
-						} else {
-							ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), yAxisPosX + i * valueHop + (valueHop / 2), msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
+						if(showLabels(ctx,data,config,i)){
+							ctx.save();
+							if (msr.rotateLabels > 0) {
+								ctx.translate(yAxisPosX + i * valueHop + (valueHop / 2) - msr.highestXLabel / 2, msr.xLabelPos);
+								ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
+								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + i * valueHop + (valueHop / 2) - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
+							} else {
+								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), yAxisPosX + i * valueHop + (valueHop / 2), msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
+							}
+							ctx.restore();
 						}
-						ctx.restore();
 					}
 				}
 			}
@@ -4151,13 +4169,15 @@ window.Chart = function(context) {
 			ctx.textBaseline = "middle";
 			for (var j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale.steps; j++) {
 				if (config.scaleShowLabels) {
-					if (config.yAxisLeft) {
-						ctx.textAlign = "right";
-						ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
-					}
-					if (config.yAxisRight && !valueBounds.dbAxis) {
-						ctx.textAlign = "left";
-						ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+					if(showYLabels(ctx,data,config,j+1,calculatedScale.labels[j+ 1])) {				
+						if (config.yAxisLeft) {
+							ctx.textAlign = "right";
+							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
+						}
+						if (config.yAxisRight && !valueBounds.dbAxis) {
+							ctx.textAlign = "left";
+							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+						}
 					}
 				}
 			}
@@ -4490,15 +4510,17 @@ window.Chart = function(context) {
 				ctx.fillStyle = config.scaleFontColor;
 				if (config.xAxisBottom) {
 					for (var i = ((config.showYAxisMin) ? -1 : 0); i < calculatedScale.steps; i++) {
-						ctx.save();
-						if (msr.rotateLabels > 0) {
-							ctx.translate(yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2, msr.xLabelPos);
-							ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
-							ctx.fillTextMultiLine(calculatedScale.labels[i + 1], 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
-						} else {
-							ctx.fillTextMultiLine(calculatedScale.labels[i + 1], yAxisPosX + (i + 1) * valueHop, msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
+						if(showYLabels(ctx,data,config,i+1,calculatedScale.labels[i+ 1])) {				
+							ctx.save();
+							if (msr.rotateLabels > 0) {
+								ctx.translate(yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2, msr.xLabelPos);
+								ctx.rotate(-(msr.rotateLabels * (Math.PI / 180)));
+								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
+							} else {
+								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], yAxisPosX + (i + 1) * valueHop, msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
+							}
+							ctx.restore();
 						}
-						ctx.restore();
 					}
 				}
 			}
@@ -4506,13 +4528,15 @@ window.Chart = function(context) {
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
 			for (var j = 0; j < data.labels.length; j++) {
-				if (config.yAxisLeft) {
-					ctx.textAlign = "right";
-					ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - (j * scaleHop) - scaleHop / 2, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
-				}
-				if (config.yAxisRight) {
-					ctx.textAlign = "left";
-					ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - (j * scaleHop) - scaleHop / 2, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+				if(showLabels(ctx,data,config,j)){
+					if (config.yAxisLeft) {
+						ctx.textAlign = "right";
+						ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - (j * scaleHop) - scaleHop / 2, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
+					}
+					if (config.yAxisRight) {
+						ctx.textAlign = "left";
+						ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - (j * scaleHop) - scaleHop / 2, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+					}
 				}
 			}
 		};
@@ -5129,14 +5153,14 @@ window.Chart = function(context) {
 		if (drawAxis) {
 			ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
 			for (i = 0; i < data.labels.length; i++) {
-				textMsr = ctx.measureTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
-				//If the text length is longer - make that equal to longest text!
-				widestXLabel = (textMsr.textWidth > widestXLabel) ? textMsr.textWidth : widestXLabel;
-				highestXLabel = (textMsr.textHeight > highestXLabel) ? textMsr.textHeight : highestXLabel;
+				if(showLabels(ctx,data,config,i) === true) {
+					textMsr = ctx.measureTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
+					//If the text length is longer - make that equal to longest text!
+					widestXLabel = (textMsr.textWidth > widestXLabel) ? textMsr.textWidth : widestXLabel;
+					highestXLabel = (textMsr.textHeight > highestXLabel) ? textMsr.textHeight : highestXLabel;
+				} 
 			}
-			if (widestXLabel < Math.ceil(ctx.chartTextScale*config.xScaleLabelsMinimumWidth)) {
-				widestXLabel = Math.ceil(ctx.chartTextScale*config.xScaleLabelsMinimumWidth);
-			}
+			if (widestXLabel < Math.ceil(ctx.chartTextScale*config.xScaleLabelsMinimumWidth)) widestXLabel = Math.ceil(ctx.chartTextScale*config.xScaleLabelsMinimumWidth);
 		}
 		// compute Y Label Width
 		if (drawAxis) {
@@ -5145,11 +5169,13 @@ window.Chart = function(context) {
 				ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
 				for (i = ylabels.length - 1; i >= 0; i--) {
 					if (typeof(ylabels[i]) == "string") {
-						if (ylabels[i].trim() != "") {
-							textMsr = ctx.measureTextMultiLine(fmtChartJS(config, ylabels[i], config.fmtYLabel), (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
-							//If the text length is longer - make that equal to longest text!
-							widestYLabel = (textMsr.textWidth > widestYLabel) ? textMsr.textWidth : widestYLabel;
-							highestYLabel = (textMsr.textHeight > highestYLabel) ? textMsr.textHeight : highestYLabel;
+						if(showYLabels(ctx,data,config,i,ylabels[i])) {
+							if (ylabels[i].trim() != "") {
+								textMsr = ctx.measureTextMultiLine(fmtChartJS(config, ylabels[i], config.fmtYLabel), (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
+								//If the text length is longer - make that equal to longest text!
+								widestYLabel = (textMsr.textWidth > widestYLabel) ? textMsr.textWidth : widestYLabel;
+								highestYLabel = (textMsr.textHeight > highestYLabel) ? textMsr.textHeight : highestYLabel;
+							}
 						}
 					}
 				}
@@ -5721,6 +5747,7 @@ window.Chart = function(context) {
 		};
 	};
 
+
 	// Function for drawing lines (BarLine|Line)
 
 	function drawLinesDataset(animPc, data, config, ctx, statData,vars) {
@@ -6173,6 +6200,24 @@ function animationCorrection(animationValue, data, config, vdata, vsubdata, addo
 		subVal: animSubValue,
 		animVal: animValue + animSubValue
 	};
+};
+
+function showLabels(ctx,data,config,i) {
+	var doShowLabels=setOptionValue(1,"SHOWLABEL",ctx,data,undefined,undefined,config.showXLabels,i,-1,undefined,{labelValue: fmtChartJS(config, data.labels[i], config.fmtXLabel), unformatedLabelValue:data.labels[i]});
+	if(typeof doShowLabels=="number") {
+		if(i>=config.firstLabelToShow-1)doShowLabels=((i+config.firstLabelToShow-1) % parseInt(doShowLabels) ==0 ? true : false);
+		else doShowLabels=false;
+	}
+	return doShowLabels;
+};
+
+function showYLabels(ctx,data,config,i,text) {
+	var doShowLabels=setOptionValue(1,"SHOWYLABEL",ctx,data,undefined,undefined,config.showYLabels,-1,i,undefined,{labelValue: text});
+	if(typeof doShowLabels=="number") {
+		if(i>=config.firstYLabelToShow-1)doShowLabels=((i+config.firstYLabelToShow-1) % parseInt(doShowLabels) ==0 ? true : false);
+		else doShowLabels=false;
+	}
+	return doShowLabels;
 };
 
 
