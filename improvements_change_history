@@ -1,6 +1,9 @@
 Change history
 --------------
 
+14/07/2015 - Vancoppenolle Francois - fix issues with option legendPosX
+13/07/2015 - Vancoppenolle Francois - option showXLabel and showYLabel added
+11/07/2015 - Vancoppenolle Francois - fix issues for retina display with updateChart function
 07/07/2015 - Vancoppenolle François - Fix for issue 308 + fix issues for IExplorer 8
 05/07/2015 - Vancoppenolle François - option totalAmplitude added (enable to draw half Pie/Doughnut/PolarArea)
                                     - code for Pie and for Doughnut has been merged (Pie is a case of Doughnut)
