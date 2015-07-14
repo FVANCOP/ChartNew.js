@@ -2548,7 +2548,7 @@ window.Chart = function(context) {
 			// compute max Radius and midPoint in that range
 			prevMaxSize = 0;
 			prevMidX = 0;
-			midPosX = maxR + msr.rightNotUsableSize;
+			midPosX = maxR + msr.leftNotUsableSize;
 			for (midX = maxR, iter = 0; iter < nbiter; ++iter, midX += (msr.availableWidth - maxL - maxR) / nbiter) {
 				maxSize = Max([midX, msr.availableWidth - midX]);
 				rotateAngle = config.startAngle * Math.PI / 180;
@@ -2569,7 +2569,7 @@ window.Chart = function(context) {
 				}
 				if (maxSize > prevMaxSize) {
 					prevMaxSize = maxSize;
-					midPosX = midX + msr.rightNotUsableSize;
+					midPosX = midX + msr.leftNotUsableSize;    
 				}
 			}
 			maxSize = prevMaxSize - (Math.ceil(ctx.chartTextScale*config.scaleFontSize)) / 2;
@@ -5457,21 +5457,15 @@ window.Chart = function(context) {
 
 					switch (config.legendPosX) {
 						case 0:
+						case 1:
 							xFirstLegendTextPos = Math.ceil(ctx.chartSpaceScale*config.spaceLeft) + config.canvasBorders * Math.ceil(ctx.chartLineScale*config.canvasBordersWidth) + Math.ceil(ctx.chartSpaceScale*config.legendSpaceLeftText);  
 							if (config.legendBorders == true) {
 								xFirstLegendTextPos += (Math.ceil(ctx.chartLineScale*config.legendBordersWidth)/2)+Math.ceil(ctx.chartSpaceScale*config.legendBordersSpaceLeft);
 								xLegendBorderPos = Math.ceil(ctx.chartSpaceScale*config.spaceLeft) + config.canvasBorders * Math.ceil(ctx.chartLineScale*config.canvasBordersWidth) + Math.ceil(ctx.chartSpaceScale*config.legendBordersSpaceLeft);
 							}
-							if((config.legendPosY>=1 && config.legendPosY <=3) || config.legendPosY==-2) {
+							if(config.legendPosX==0 && ((config.legendPosY>=1 && config.legendPosY <=3) || config.legendPosY==-2)) {
 								leftNotUsableSize+=fullLegendWidth;
 								yAxisLabelPosLeft+=fullLegendWidth;
-							}
-							break;
-						case 1:
-							xFirstLegendTextPos = leftNotUsableSize + Math.ceil(ctx.chartSpaceScale*config.legendSpaceLeftText);  
-							if (config.legendBorders == true) {
-								xLegendBorderPos = xFirstLegendTextPos;
-								xFirstLegendTextPos += (Math.ceil(ctx.chartLineScale*config.legendBordersWidth)/2) +Math.ceil(ctx.chartSpaceScale*config.legendBordersSpaceLeft);
 							}
 							break;
 						case 2:
@@ -5481,26 +5475,22 @@ window.Chart = function(context) {
 								xLegendBorderPos = xFirstLegendTextPos - Math.ceil(ctx.chartLineScale*config.legendBordersWidth)/2 - Math.ceil(ctx.chartSpaceScale*config.legendSpaceLeftText) ;
 							}
 							break;
+							if((config.legendPosY>=1 && config.legendPosY <=3) || config.legendPosY==-2) {
+								rightNotUsableSize+=fullLegendWidth;
+								yAxisLabelPosRight-=fullLegendWidth;
+							}
 						case 3:
-							
+						case 4:
 							xFirstLegendTextPos = width - rightNotUsableSize - Math.ceil(ctx.chartSpaceScale*config.legendSpaceRightText) - nbLegendCols * (widestLegend + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextHorizontal)) + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextHorizontal) / 2;  
 							if (config.legendBorders == true) {
 								xFirstLegendTextPos -= ((Math.ceil(ctx.chartLineScale*config.legendBordersWidth)/2) + Math.ceil(ctx.chartSpaceScale*config.legendBordersSpaceRight));
 								xLegendBorderPos = xFirstLegendTextPos - Math.ceil(ctx.chartLineScale*config.legendBordersWidth)/2 - Math.ceil(ctx.chartSpaceScale*config.legendSpaceLeftText) ;
 							}
-							break;
-						case 4:
-							xFirstLegendTextPos = width - Math.ceil(ctx.chartSpaceScale*config.spaceRight) - config.canvasBorders * Math.ceil(ctx.chartLineScale*config.canvasBordersWidth) - Math.ceil(ctx.chartSpaceScale*config.legendSpaceRightText) - nbLegendCols * (widestLegend + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextHorizontal)) + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextHorizontal) / 2;  
-							if (config.legendBorders == true) {
-								xFirstLegendTextPos -= ((Math.ceil(ctx.chartLineScale*config.legendBordersWidth)/2)+Math.ceil(ctx.chartSpaceScale*config.legendBordersSpaceRight));
-								xLegendBorderPos = xFirstLegendTextPos - Math.ceil(ctx.chartSpaceScale*config.legendBordersSpaceLeft) - Math.ceil(ctx.chartLineScale*config.legendBordersWidth)/2;
-							}
-							if((config.legendPosY>=1 && config.legendPosY <=3) || config.legendPosY==-2) {
+							if(config.legendPosX==4 && ((config.legendPosY>=1 && config.legendPosY <=3) || config.legendPosY==-2)) {
 								rightNotUsableSize+=fullLegendWidth;
 								yAxisLabelPosRight-=fullLegendWidth;
 							}
 							break;
-							
 						default:
 							break;
 					}
@@ -5514,6 +5504,7 @@ window.Chart = function(context) {
 					
 				}
 			}
+			
 		}
 		xLabelWidth = 0;
 		bottomNotUsableHeightWithXLabels = bottomNotUsableHeightWithoutXLabels;
