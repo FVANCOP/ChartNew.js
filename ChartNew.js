@@ -848,7 +848,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					myStatData.graphPosX = canvas_pos.x;
 					myStatData.graphPosY = canvas_pos.y;
 					onData = true;
-					if (action == "annotate") {
+					if (action == "annotate" && jsGraphAnnotate[ctx.ChartNewId][i][4]) {
 						dispString = tmplbis(setOptionValue(1,"ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][1],-1,{otherVal:true}), myStatData,config);
 						textMsr=ctx.measureTextMultiLine(dispString);
 						ctx.restore();
@@ -857,7 +857,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					} else {
 						funct(event, ctx, config, data, myStatData );
 					}
-					if (action == "annotate") {
+					if (action == "annotate"  && jsGraphAnnotate[ctx.ChartNewId][i][4]) {
 						x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
 						y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
 						if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
@@ -873,7 +873,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 				myStatData.graphPosX = canvas_pos.x;
 				myStatData.graphPosY = canvas_pos.y;
 				onData = true;
-				if (action == "annotate") {
+				if (action == "annotate"  && jsGraphAnnotate[ctx.ChartNewId][i][4]) {
 					dispString = tmplbis(setOptionValue(1,"ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][1],jsGraphAnnotate[ctx.ChartNewId][i][2],{otherVal:true}), myStatData,config);
 					textMsr=ctx.measureTextMultiLine(dispString);
 					ctx.restore();
@@ -882,7 +882,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 				} else {
 					funct(event, ctx, config, data, myStatData );
 				}
-				if (action == "annotate") {
+				if (action == "annotate"  && jsGraphAnnotate[ctx.ChartNewId][i][4]) {
 					x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
 					y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
 					if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
@@ -917,7 +917,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 				myStatData.graphPosX = canvas_pos.x;
 				myStatData.graphPosY = canvas_pos.y;
 				onData = true;
-				if (action == "annotate") {
+				if (action == "annotate"  && jsGraphAnnotate[ctx.ChartNewId][i][4]) {
 					dispString = tmplbis(setOptionValue(1,"ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][1],jsGraphAnnotate[ctx.ChartNewId][i][2],{otherVal:true}), myStatData,config);
 					textMsr=ctx.measureTextMultiLine(dispString);
 					ctx.restore();
@@ -926,7 +926,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 				} else {
 					funct(event, ctx, config, data, myStatData);
 				}
-				if (action == "annotate") {
+				if (action == "annotate"  && jsGraphAnnotate[ctx.ChartNewId][i][4]) {
 					x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
 					y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
 					if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
@@ -935,7 +935,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 				}
 			}
 		}
-		if (action == "annotate") {
+		if (action == "annotate"  && jsGraphAnnotate[ctx.ChartNewId][i][4]) {
 			annotateDIV.style.display = show ? '' : 'none';
 			if(show && annotatePrevShow != i){
 				if(annotatePrevShow >=0 && typeof config.annotateFunctionOut=="function") {
@@ -959,11 +959,11 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 		annotatePrevShow=-1;
 	}
 	
-	
+	var inRect;	
 	if (action != "annotate") {
 		if(config.detectMouseOnText) {
 			for(var i=0;i<jsTextMousePos[ctx.ChartNewId]["length"];i++){
-			        var inRect=true;
+			        inRect=true;
 				if(Math.abs(jsTextMousePos[ctx.ChartNewId][i][3].p1 - jsTextMousePos[ctx.ChartNewId][i][3].p2) < config.zeroValue) {
 					// Horizontal;
 					if(canvas_pos.x < Math.min(jsTextMousePos[ctx.ChartNewId][i][2].p1,jsTextMousePos[ctx.ChartNewId][i][2].p2))inRect=false; 
@@ -997,7 +997,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					if(canvas_pos.y < Math.min(y3,y4))inRect=false;
 					if(canvas_pos.y > Math.max(y3,y4))inRect=false;
 				}
-				if(inRect)funct(event, ctx, config, data, {type:"CLICKONTEXT",values:jsTextMousePos[ctx.ChartNewId][i]});
+				if(inRect){onData=true;funct(event, ctx, config, data, {type:"CLICKONTEXT",values:jsTextMousePos[ctx.ChartNewId][i]});}
 			}
 		}
 		if(onData==false)funct(event, ctx, config, data, null);
@@ -1879,7 +1879,10 @@ window.Chart = function(context) {
 		maintainAspectRatio: true,
 		responsiveScaleContent : false,
 		responsiveWindowInitialWidth : false,
-		pointMarker : "circle"    // "circle","cross","plus","diamond","triangle","square"
+		pointMarker : "circle",    // "circle","cross","plus","diamond","triangle","square"
+		initFunction : null,
+		endDrawDataFunction : null,
+		endDrawScaleFunction : null
 	};
 
 
@@ -2112,7 +2115,7 @@ window.Chart = function(context) {
 		//Wrap in an animation loop wrapper
  		if(scaleHop > 0) {
 			initPassVariableData_part2(statData,data,config,ctx,{midPosX : midPosX,midPosY : midPosY,int_radius : 0,ext_radius : scaleHop*calculatedScale.steps, calculatedScale : calculatedScale, scaleHop : scaleHop});
-			animationLoop(config, drawScale, drawAllSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPosX, midPosY, midPosX - ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), midPosY + ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), data);
+			animationLoop(config, drawScale, drawAllSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPosX, midPosY, midPosX - ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), midPosY + ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), data, statData);
 		} else {
 			testRedraw(ctx,data,config);
 		}
@@ -2166,9 +2169,9 @@ window.Chart = function(context) {
 			if (animationDecimal >= config.animationStopValue) {
 				for (i = 0; i < data.length; i++) {
 					if (typeof(data[i].value) == 'undefined') continue;
-					if (setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})) {
-						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", i, -1,statData];
-					}
+//					if (setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})) {
+						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", i, -1,statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})];
+//					}
 					if (setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,-1,{nullValue : true})) {
 						if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 1) posAngle = statData[i].realStartAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
 						else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 2) posAngle = (2*statData[i].realStartAngle - statData[i].segmentAngle) / 2 + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
@@ -2327,7 +2330,7 @@ window.Chart = function(context) {
 		scaleHop = maxSize / (calculatedScale.steps);
 		//Wrap in an animation loop wrapper
 		initPassVariableData_part2(statData,data,config,ctx,{midPosX : midPosX, midPosY : midPosY, calculatedScale: calculatedScale, scaleHop: scaleHop, maxSize:maxSize});
-		animationLoop(config, drawScale, drawAllDataPoints, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPosX, midPosY, midPosX - maxSize, midPosY + maxSize, data);
+		animationLoop(config, drawScale, drawAllDataPoints, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPosX, midPosY, midPosX - maxSize, midPosY + maxSize, data, statData);
 		//Radar specific functions.
 		function drawAllDataPoints(animationDecimal) {
 			var rotationDegree = (2 * Math.PI) / data.datasets[0].data.length;
@@ -2370,9 +2373,9 @@ window.Chart = function(context) {
 					for (var k = 0; k < data.datasets[i].data.length; k++) {
 						if (!(typeof(data.datasets[i].data[k]) == 'undefined')) {
 							ctx.beginPath();
-							var markerShape=setOptionValue(1,"MARKERSHAPE",ctx,data,statData,data.datasets[i].markerShape,config.markerShape,i,j,{nullvalue: true} );
-							var markerRadius=setOptionValue(ctx.chartSpaceScale,"MARKERRADIUS",ctx,data,statData,data.datasets[i].pointDotRadius,config.pointDotRadius,i,j,{nullvalue: true} );
-							var markerStrokeStyle=setOptionValue(1,"MARKERSTROKESTYLE",ctx,data,statData,data.datasets[i].pointDotStrokeStyle,config.pointDotStrokeStyle,i,j,{nullvalue: true} );
+							var markerShape=setOptionValue(1,"MARKERSHAPE",ctx,data,statData,data.datasets[i].markerShape,config.markerShape,i,k,{nullvalue: true} );
+							var markerRadius=setOptionValue(ctx.chartSpaceScale,"MARKERRADIUS",ctx,data,statData,data.datasets[i].pointDotRadius,config.pointDotRadius,i,k,{nullvalue: true} );
+							var markerStrokeStyle=setOptionValue(1,"MARKERSTROKESTYLE",ctx,data,statData,data.datasets[i].pointDotStrokeStyle,config.pointDotStrokeStyle,i,k,{nullvalue: true} );
 							drawMarker(ctx,midPosX + currentAnimPc * statData[i][k].offsetX, midPosY - currentAnimPc * statData[i][k].offsetY, markerShape,markerRadius,markerStrokeStyle);							
 						}
 					}
@@ -2383,12 +2386,10 @@ window.Chart = function(context) {
 				for (i = 0; i < data.datasets.length; i++) {
 					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
-						if (setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
-							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["POINT", i,j,statData];
-						}
+//						if (setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
+							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["POINT", i,j,statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})];
+//						}
 						if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,j,{nullValue : true})) {
-
-
 							ctx.save();
 							ctx.beginPath();
 							ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,-1,{nullValue: true  });
@@ -2649,7 +2650,7 @@ window.Chart = function(context) {
 		else cutoutRadius = doughnutRadius * (config.percentageInnerCutout / 100);
 		if(doughnutRadius > 0) {
 			initPassVariableData_part2(statData,data,config,ctx,{midPosX : midPieX,midPosY : midPieY ,int_radius : cutoutRadius ,ext_radius : doughnutRadius});
-			animationLoop(config, null, drawPieSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPieX, midPieY, midPieX - doughnutRadius, midPieY + doughnutRadius, data);
+			animationLoop(config, null, drawPieSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPieX, midPieY, midPieX - doughnutRadius, midPieY + doughnutRadius, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
 		}
@@ -2705,9 +2706,9 @@ window.Chart = function(context) {
 			if (animationDecimal >= config.animationStopValue) {
 				for (i = 0; i < data.length; i++) {
 					if (typeof(data[i].value) == 'undefined' || 1*data[i].value<0) continue;
-					if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})) {
-						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", i,-1,statData];
-					}
+//					if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})) {
+						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", i,-1,statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})];
+//					}
 					if (setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,-1,{nullValue : true}) && statData[i].segmentAngle >= (Math.PI/180) * setOptionValue(1,"INGRAPHDATAMINIMUMANGLE",ctx,data,statData,undefined,config.inGraphDataMinimumAngle,i,-1,{nullValue : true} )) {
 						if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 1) posAngle = statData[i].realStartAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
 						else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 2) posAngle = statData[i].realStartAngle- statData[i].segmentAngle / 2 + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
@@ -2882,7 +2883,7 @@ window.Chart = function(context) {
 				msr : msr,
 				calculatedScale2: calculatedScale2,
 				logarithmic2: config.logarithmic2} );
-			animationLoop(config, drawScale, drawLines, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
+			animationLoop(config, drawScale, drawLines, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
 		}
@@ -3203,7 +3204,7 @@ window.Chart = function(context) {
 				xAxisPosY : xAxisPosY,
 				barWidth : barWidth
 			 });
-			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
+			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
 		}
@@ -3248,9 +3249,9 @@ window.Chart = function(context) {
 				for (i = 0; i < data.datasets.length; i++) {
 					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
-						if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
-							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i, j, statData];
-						}
+//						if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
+							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i, j, statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})];
+//						}
 						if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,j,{nullValue : true})) {
 							ctx.save();
 							ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  });
@@ -3560,7 +3561,7 @@ window.Chart = function(context) {
 				calculatedScale : calculatedScale
 			});
 			
-			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
+			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
 		}
@@ -3614,9 +3615,9 @@ window.Chart = function(context) {
 				for (i = 0; i < data.datasets.length; i++) {
 					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if ((typeof(data.datasets[i].data[j]) == 'undefined')) continue;
-						if (setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
-							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i ,j, statData];
-						}
+//						if (setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
+							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i ,j, statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})];
+//						}
 						if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,j,{nullValue : true})) {
 							ctx.save();
 							ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  });
@@ -3977,7 +3978,7 @@ window.Chart = function(context) {
 				scaleHop2 : scaleHop2	
 			});
 			drawLabels();
-			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
+			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
 		}
@@ -4008,8 +4009,9 @@ window.Chart = function(context) {
 					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
 						if (data.datasets[i].type == "Line") continue;
-						if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true}))
-							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i , j, statData];
+//						if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
+							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i , j, statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})];
+//						}
 						if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,j,{nullValue : true})) {
 							ctx.save();
 							ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  });
@@ -4355,7 +4357,7 @@ window.Chart = function(context) {
 				valueHop : valueHop,
 				calculatedScale : calculatedScale
 			});
-			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data);
+			animationLoop(config, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
 		}
@@ -4379,9 +4381,9 @@ window.Chart = function(context) {
 				for (i = 0; i < data.datasets.length; i++) {
 					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
-						if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
-							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i ,j ,statData];
-                       				}
+//						if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
+							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i ,j ,statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})];
+//                     				}
                        				if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,j,{nullValue : true}))  {
 							ctx.save();
 							ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  });
@@ -4598,7 +4600,7 @@ window.Chart = function(context) {
 		}
 	};
 
-	function animationLoop(config, drawScale, drawData, ctx, clrx, clry, clrwidth, clrheight, midPosX, midPosY, borderX, borderY, data) {
+	function animationLoop(config, drawScale, drawData, ctx, clrx, clry, clrwidth, clrheight, midPosX, midPosY, borderX, borderY, data, statData) {
 		var cntiter = 0;
 		var animationCount = 1;
 		var multAnim = 1;
@@ -4628,12 +4630,17 @@ window.Chart = function(context) {
 			if (config.animation && !(isIE() < 9 && isIE() != false) && config.clearRect) ctx.clearRect(clrx, clry, clrwidth, clrheight);
 			dispCrossImage(ctx, config, midPosX, midPosY, borderX, borderY, false, data, easeAdjustedAnimationPercent, cntiter);
 			dispCrossText(ctx, config, midPosX, midPosY, borderX, borderY, false, data, easeAdjustedAnimationPercent, cntiter);
+			if(typeof config.initFunction == "function")config.initFunction("INITFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, config : config});
 			if (config.scaleOverlay) {
 				drawData(easeAdjustedAnimationPercent);
+				if(typeof config.endDrawDataFunction == "function")config.endDrawDataFunction("INITFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, config : config});
 				drawScale();
+				if(typeof config.endDrawScaleFunction == "function")config.endDrawScaleFunction("INITFUNCTION",ctx,datastatData,-1,-1,{animationValue : easeAdjustedAnimationPercent, config : config});
 			} else {
 				drawScale();
+				if(typeof config.endDrawScaleFunction == "function")config.endDrawScaleFunction("INITFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, config : config});
 				drawData(easeAdjustedAnimationPercent);
+				if(typeof config.endDrawDataFunction == "function")config.endDrawDataFunction("INITFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, config : config});
 			}
 			dispCrossImage(ctx, config, midPosX, midPosY, borderX, borderY, true, data, easeAdjustedAnimationPercent, cntiter);
 			dispCrossText(ctx, config, midPosX, midPosY, borderX, borderY, true, data, easeAdjustedAnimationPercent, cntiter);
@@ -5913,9 +5920,9 @@ window.Chart = function(context) {
 			if (animPc >= config.animationStopValue) {
 				for (j = 0; j < data.datasets[i].data.length; j++) {
 					if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
-					if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
-						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["POINT", i, j, statData];
-					}
+//					if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
+						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["POINT", i, j, statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})];
+//					}
 					if (setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,j,{nullValue : true})) {
  						ctx.save();
 						ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  });
@@ -7061,12 +7068,13 @@ function isBooleanOptionTrue(optionVar,defaultvalue) {
 };
 
 function setOptionValue(rescale,reference,ctx,data,statData,optionvar,defaultvalue,posi,posj,othervars) {
-	var rv;
+	var rv;     
 	if(typeof optionvar == "undefined") {
 		if(typeof defaultvalue=="function") return defaultvalue(reference,ctx,data,statData,posi,posj,othervars);
-		else if(typeof defaultvalue == "object") {
-			if(posj==-1)rv=defaultvalue[Math.min(defaultvalue.length-1,Math.max(0,posi))];
-			else rv=defaultvalue[Math.min(defaultvalue.length-1,Math.max(0,posj))];
+		else if(typeof defaultvalue == "object") {     
+//			if(posj==-1)
+				rv=defaultvalue[Math.min(defaultvalue.length-1,Math.max(0,posi))];
+//			else   rv=defaultvalue[Math.min(defaultvalue.length-1,Math.max(0,posj))];
 		}
 		else { 
 			rv=defaultvalue;
@@ -7076,7 +7084,7 @@ function setOptionValue(rescale,reference,ctx,data,statData,optionvar,defaultval
 	}
 	if(typeof optionvar=="function") rv=optionvar(reference,ctx,data,statData,posi,posj,othervars);
 	else if(typeof optionvar == "object") {
-		if (posj==-1)rv=optionvar[Math.min(optionvar.length-1,Math.max(0,posi))];
+		if (posj==-1) rv=optionvar[Math.min(optionvar.length-1,Math.max(0,posi))];
 		else rv=optionvar[Math.min(optionvar.length-1,Math.max(0,posj))];
 	}
 	else rv=optionvar;
