@@ -4,7 +4,7 @@
 
 
 <!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
-
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
 
 <SCRIPT>
 
@@ -31,14 +31,43 @@ var mydata1 = {
 			data : [0.28,0.48,0.40,0.19,0.96,0.27,1.00],
       title : "pSecond data"
 		}
-	]
+	],
+	shapesInChart : [
+			{
+				position : "RELATIVE",
+				shape : "TEXT",
+				text : "Click on Text Sample",
+				x1 : 2,
+				y1 : 2,
+				rotate : 45,
+				textAlign : "center",
+				textBaseline : "middle",
+				fontColor : "black", 
+				fontSize : 15,
+			}
+		]
+
 }
 
 var mydata4 = [
 	{
 		value : 70,
 		color: "rgba(151,187,205,1)",
-    title : "data1"
+		title : "data1",
+		shapesInChart : [
+			{
+				position : "RELATIVE",
+				shape : "TEXT",
+				text : "Click on Text Sample",
+				x1 : 2,
+				y1 : 2,
+				rotate : 45,
+				textAlign : "center",
+				textBaseline : "middle",
+				fontColor : "black", 
+				fontSize : 15,
+			}
+		]
 	},
 	{
 		value : 30,
@@ -126,16 +155,20 @@ var myOptions = {
       xAxisLabel : "xAxisLabel",
       legend : true,
       inGraphDataShow : true,
-      crossText : ["Click on Text Sample"],
-      crossTextOverlay :   [true],
-      crossTextFontSize : [15],
-      crossTextFontColor : ["black"],
+//      crossText : ["Click on Text Sample"],
+//      crossTextOverlay :   [true],
+//      crossTextFontSize : [15],
+//      crossTextFontColor : ["black"],
+//      crossTextAngle : [45],
+//					USE NEW MODULE shapesInChart.js
+	endDrawDataFunction: drawShapes,
+//
+
       canvasBorders : true,
       canvasBordersWidth : 3,
       canvasBordersColor : "black",
       detectMouseOnText : true,
       mouseDownLeft : displayText ,
-      crossTextAngle : [45],
       animation : false,
       dynamicDisplay : false
 }
