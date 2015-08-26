@@ -131,9 +131,9 @@ function PSbasic(data) {
 		data.stats.standard_deviation_estimation = Math.sqrt(data.stats.sum_square_diff_mean / (data.stats.count_not_missing - 1));
 		if (data.stats.mean > 0) data.stats.coefficient_variation = 100 * data.stats.standard_deviation_estimation / data.stats.mean;
 		if (data.stats.standard_deviation_estimation > 0) data.stats.student_t_test = data.stats.mean / (data.stats.standard_deviation_estimation / Math.sqrt(data.stats.count_not_missing));
-		console.log(data.stats.mean);
-		console.log(data.stats.standard_deviation_estimation);
-		console.log(data.stats.count_not_missing);
+//		console.log(data.stats.mean);
+//		console.log(data.stats.standard_deviation_estimation);
+//		console.log(data.stats.count_not_missing);
 	}
 	// skewness;
 	if (data.stats.count_not_missing > 2) {
@@ -163,7 +163,11 @@ function PSbasic(data) {
 	setStat = Pstats(orderStat, "one");
 	for (i = 0; i < setStat.length; i++) {
 		data.stats.minimum = setStat[i].res.minimum;
+		data.stats.minimumpi = setStat[i].res.minimumpi;
+		data.stats.minimumpj = setStat[i].res.minimumpj;
 		data.stats.maximum = setStat[i].res.maximum;
+		data.stats.maximumpi = setStat[i].res.maximumpi;
+		data.stats.maximumpj = setStat[i].res.maximumpj;
 		data.stats.Q0 = setStat[i].res.Q0;
 		data.stats.Q1 = setStat[i].res.Q1;
 		data.stats.Q5 = setStat[i].res.Q5;
@@ -196,6 +200,10 @@ function LSbasic(data) {
 	data.stats.data_with_stats = false;
 	data.stats.data_minimum = {};
 	data.stats.data_maximum = {};
+	data.stats.data_minimumpi = {};
+	data.stats.data_maximumpi = {};
+	data.stats.data_minimumpj = {};
+	data.stats.data_maximumpj = {};
 	data.stats.data_Q0 = {};
 	data.stats.data_Q1 = {};
 	data.stats.data_Q5 = {};
@@ -279,7 +287,11 @@ function LSbasic(data) {
 		}
 		if (data.datasets[i].stats.count_not_missing == 0) {
 			data.datasets[i].stats.minimum = undefined;
+			data.datasets[i].stats.minimumpi = undefined;
+			data.datasets[i].stats.minimumpj = undefined;
 			data.datasets[i].stats.maximum = undefined;
+			data.datasets[i].stats.maximumpi = undefined;
+			data.datasets[i].stats.maximumpj = undefined;
 			data.datasets[i].stats.sum = undefined;
 			data.datasets[i].stats.mean = undefined;
 		} else {
@@ -412,7 +424,11 @@ function LSbasic(data) {
 	setStat = Pstats(orderStat, "one");
 	for (i = 0; i < setStat.length; i++) {
 		data.stats.minimum = setStat[i].res.minimum;
+		data.stats.minimumpi = setStat[i].res.minimumpi;
+		data.stats.minimumpj = setStat[i].res.minimumpj;
 		data.stats.maximum = setStat[i].res.maximum;
+		data.stats.maximumpi = setStat[i].res.maximumpi;
+		data.stats.maximumpj = setStat[i].res.maximumpj;
 		data.stats.Q0 = setStat[i].res.Q0;
 		data.stats.Q1 = setStat[i].res.Q1;
 		data.stats.Q5 = setStat[i].res.Q5;
@@ -430,7 +446,11 @@ function LSbasic(data) {
 	setStat = Pstats(orderStat, "dataset");
 	for (i = 0; i < setStat.length; i++) {
 		data.datasets[setStat[i].secvalue].stats.minimum = setStat[i].res.minimum;
+		data.datasets[setStat[i].secvalue].stats.minimumpi = setStat[i].res.minimumpi;
+		data.datasets[setStat[i].secvalue].stats.minimumpj = setStat[i].res.minimumpj;
 		data.datasets[setStat[i].secvalue].stats.maximum = setStat[i].res.maximum;
+		data.datasets[setStat[i].secvalue].stats.maximumpi = setStat[i].res.maximumpi;
+		data.datasets[setStat[i].secvalue].stats.maximumpj = setStat[i].res.maximumpj;
 		data.datasets[setStat[i].secvalue].stats.Q0 = setStat[i].res.Q0;
 		data.datasets[setStat[i].secvalue].stats.Q1 = setStat[i].res.Q1;
 		data.datasets[setStat[i].secvalue].stats.Q5 = setStat[i].res.Q5;
@@ -448,7 +468,11 @@ function LSbasic(data) {
 	setStat = Pstats(orderStat, "col");
 	for (i = 0; i < setStat.length; i++) {
 		data.stats.data_minimum[setStat[i].secvalue] = setStat[i].res.minimum;
+		data.stats.data_minimumpi[setStat[i].secvalue] = setStat[i].res.minimumpi;
+		data.stats.data_minimumpj[setStat[i].secvalue] = setStat[i].res.minimumpj;
 		data.stats.data_maximum[setStat[i].secvalue] = setStat[i].res.maximum;
+		data.stats.data_maximumpi[setStat[i].secvalue] = setStat[i].res.maximumpi;
+		data.stats.data_maximumpj[setStat[i].secvalue] = setStat[i].res.maximumpj;
 		data.stats.data_Q0[setStat[i].secvalue] = setStat[i].res.Q0;
 		data.stats.data_Q1[setStat[i].secvalue] = setStat[i].res.Q1;
 		data.stats.data_Q5[setStat[i].secvalue] = setStat[i].res.Q5;
@@ -497,7 +521,11 @@ function Pstats(orderStat, secVar) {
 function P2stats(deb, fin, orderStat) {
 	return {
 		minimum: orderStat[deb].val,
+		minimumpi : orderStat[deb].dataset,
+		minimumpj : orderStat[deb].col,
 		maximum: orderStat[fin].val,
+		maximumpi : orderStat[fin].dataset,
+		maximumpj : orderStat[fin].col,
 		Q0: orderStat[deb].val,
 		Q1: Quantile(1, deb, fin, orderStat),
 		Q5: Quantile(5, deb, fin, orderStat),
@@ -533,7 +561,11 @@ function disp_stats(data) {
 	document.write("data.stats.count_missing=" + data.stats.count_missing + "<BR>");
 	document.write("data.stats.count_not_missing=" + data.stats.count_not_missing + "<BR>");
 	document.write("data.stats.minimum=" + data.stats.minimum + "<BR>");
+	document.write("data.stats.minimumpi=" + data.stats.minimumpi + "<BR>");
+	document.write("data.stats.minimumpj=" + data.stats.minimumpj + "<BR>");
 	document.write("data.stats.maximum=" + data.stats.maximum + "<BR>");
+	document.write("data.stats.maximumpi=" + data.stats.maximumpi + "<BR>");
+	document.write("data.stats.maximumpj=" + data.stats.maximumpj + "<BR>");
 	document.write("data.stats.sum=" + data.stats.sum + "<BR>");
 	document.write("data.stats.mean=" + data.stats.mean + "<BR>");
 	document.write("data.stats.sum_square_diff_mean=" + data.stats.sum_square_diff_mean + "<BR>");
@@ -567,7 +599,11 @@ function disp_stats(data) {
 			document.write("data.datasets[" + i + "].stats.count_missing=" + data.datasets[i].stats.count_missing + "<BR>");
 			document.write("data.datasets[" + i + "].stats.count_not_missing=" + data.datasets[i].stats.count_not_missing + "<BR>");
 			document.write("data.datasets[" + i + "].stats.minimum=" + data.datasets[i].stats.minimum + "<BR>");
+			document.write("data.datasets[" + i + "].stats.minimumpi=" + data.datasets[i].stats.minimumpi + "<BR>");
+			document.write("data.datasets[" + i + "].stats.minimumpj=" + data.datasets[i].stats.minimumpj + "<BR>");
 			document.write("data.datasets[" + i + "].stats.maximum=" + data.datasets[i].stats.maximum + "<BR>");
+			document.write("data.datasets[" + i + "].stats.maximumpi=" + data.datasets[i].stats.maximumpi + "<BR>");
+			document.write("data.datasets[" + i + "].stats.maximumpj=" + data.datasets[i].stats.maximumpj + "<BR>");
 			document.write("data.datasets[" + i + "].stats.sum=" + data.datasets[i].stats.sum + "<BR>");
 			document.write("data.datasets[" + i + "].stats.mean=" + data.datasets[i].stats.mean + "<BR>");
 			document.write("data.datasets[" + i + "].stats.sum_square_diff_mean=" + data.datasets[i].stats.sum_square_diff_mean + "<BR>");
@@ -601,7 +637,11 @@ function disp_stats(data) {
 			document.write("data.stats.data_count_missing[" + i + "]=" + data.stats.data_count_missing[i] + "<BR>");
 			document.write("data.stats.data_count_not_missing[" + i + "]=" + data.stats.data_count_not_missing[i] + "<BR>");
 			document.write("data.stats.data_minimum[" + i + "]=" + data.stats.data_minimum[i] + "<BR>");
+			document.write("data.stats.data_minimumpi[" + i + "]=" + data.stats.data_minimumpi[i] + "<BR>");
+			document.write("data.stats.data_minimumpj[" + i + "]=" + data.stats.data_minimumpj[i] + "<BR>");
 			document.write("data.stats.data_maximum[" + i + "]=" + data.stats.data_maximum[i] + "<BR>");
+			document.write("data.stats.data_maximumpi[" + i + "]=" + data.stats.data_maximumpi[i] + "<BR>");
+			document.write("data.stats.data_maximumpj[" + i + "]=" + data.stats.data_maximumpj[i] + "<BR>");
 			document.write("data.stats.data_sum[" + i + "]=" + data.stats.data_sum[i] + "<BR>");
 			document.write("data.stats.data_mean[" + i + "]=" + data.stats.data_mean[i] + "<BR>");
 			document.write("data.stats.data_sum_square_diff_mean[" + i + "]=" + data.stats.data_sum_square_diff_mean[i] + "<BR>");
@@ -632,6 +672,7 @@ function disp_stats(data) {
 
 function replace_stats(data, config) {
 	// replace in the data
+	var i,j;
 	if (data.stats.data_with_stats) {
 		if (typeof data.datasets == 'undefined') { // Pie structure;
 			for (i = 0; i < data.length; i++) {
@@ -644,8 +685,8 @@ function replace_stats(data, config) {
 				}
 			}
 		} else { // line structure;
-			for (var i = 0; i < data.datasets["length"]; i++) {
-				for (var j = 0; j < data.datasets[i].data["length"]; j++) {
+			for (i = 0; i < data.datasets["length"]; i++) {
+				for (j = 0; j < data.datasets[i].data["length"]; j++) {
 					if (isStat(data.datasets[i].data[j])) {
 						data.datasets[i].data[j] = replace_Stats_In(data.datasets[i].data[j], data, i, j);
 					}
@@ -683,7 +724,22 @@ function replace_stats(data, config) {
 			}
 		}
 	}
-	// replace in options
+	// replace in shapesInChart;
+	if (typeof data.datasets == 'undefined') { // Pie structure;
+		if (typeof data[0].shapesInChart == "object") {
+			for(i=0;i<data[0].shapesInChart.length;i++) {
+				replace_in_object(data[0].shapesInChart[i], data);
+			}
+		}
+	} else { // Line structure;
+		if(typeof data.shapesInChart == "object") {
+			for(i=0;i<data.shapesInChart.length;i++) {
+				replace_in_object(data.shapesInChart[i], data);
+			}
+		} 
+
+	}	
+	// replace in options;
 	replace_in_object(config, data);
 };
 
