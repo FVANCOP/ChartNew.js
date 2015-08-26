@@ -4,7 +4,6 @@
  * Vancoppenolle Francois - January 2014
  * francois.vancoppenolle@favomo.be
  *
- * Source location : http:\\www.favomo.be\graphjs
  * GitHub community : https://github.com/FVANCOP/ChartNew.js
  *
  * This file is originally an adaptation of the chart.js source developped by Nick Downie (2013)
@@ -521,15 +520,15 @@ function updateChart(ctx,data,config,animation,runanimationcompletefunction) {
 };
 
 function subUpdateChart(ctx,data,config) {
-	// ctx.firstPass==undefined => graph never drawn
-	// ctx.firstPass==0 => graph is drawn but need to be redrawn with animation
-	// ctx.firstPass==1 => graph is drawn with animation 
-	// ctx.firstPass==2 => graph is in animation but at the end the graph need perhaps to be redrawn;
-	// ctx.firstPass==3 => graph currently drawing without animation; 
-	// ctx.firstPass==4 => graph currently drawing without animationb but at the end, the graph need perhaps to be redrawn;
-	// ctx.firstPass==5 => graph is displayed ; 
-	// ctx.firstPass==6 => graph is displayed but need to be redraw without animation (because of a resize);
-	// ctx.firstPass==7 => graph is displayed but need to be redraw without responsivity;
+	// ctx.firstPass==undefined => chart never drawn
+	// ctx.firstPass==0 => chart is drawn but need to be redrawn with animation
+	// ctx.firstPass==1 => chart is drawn with animation 
+	// ctx.firstPass==2 => chart is in animation but at the end the graph need perhaps to be redrawn;
+	// ctx.firstPass==3 => chart currently drawing without animation; 
+	// ctx.firstPass==4 => chart currently drawing without animationb but at the end, the graph need perhaps to be redrawn;
+	// ctx.firstPass==5 => chart is displayed ; 
+	// ctx.firstPass==6 => chart is displayed but need to be redraw without animation (because of a resize);
+	// ctx.firstPass==7 => chart is displayed but need to be redraw without responsivity;
 	if(!dynamicFunction(data, config, ctx)) { return; }
 	var newSize;
 	if(typeof ctx.firstPass == "undefined") { 
@@ -1683,6 +1682,7 @@ window.Chart = function(context) {
 		chartLineScale : 1,
 		chartSpaceScale : 1,
 		multiGraph: false,
+		dispShapesInChart : true,
 		clearRect: true, // do not change clearRect options; for internal use only
 		dynamicDisplay: false,
 		graphSpaceBefore: 5,
@@ -2750,6 +2750,7 @@ window.Chart = function(context) {
 			}
 			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"Doughnut");
 		};
+		
 
 	};
 	var Line = function(data, config, ctx) {
@@ -3191,7 +3192,9 @@ window.Chart = function(context) {
        	
 			yAxisPosX = msr.leftNotUsableSize + Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft);
 			xAxisPosY = msr.topNotUsableSize + msr.availableHeight + Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop);
-			barWidth = (valueHop - Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth) * 2 - (Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) * 2) - (Math.ceil(ctx.chartLineScale*config.barStrokeWidth) / 2) - 1);
+
+			barWidth = (valueHop - Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth) * 2 - (Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) * 2) - (Math.ceil(ctx.chartSpaceScale*config.barDatasetSpacing) * data.datasets.length - 1) - (Math.ceil(ctx.chartLineScale*config.barStrokeWidth) / 2) - 1);
+
 			if(barWidth>=0 && barWidth<=1)barWidth=1;
 			if(barWidth<0 && barWidth>=-1)barWidth=-1;
        	
@@ -4630,17 +4633,17 @@ window.Chart = function(context) {
 			if (config.animation && !(isIE() < 9 && isIE() != false) && config.clearRect) ctx.clearRect(clrx, clry, clrwidth, clrheight);
 			dispCrossImage(ctx, config, midPosX, midPosY, borderX, borderY, false, data, easeAdjustedAnimationPercent, cntiter);
 			dispCrossText(ctx, config, midPosX, midPosY, borderX, borderY, false, data, easeAdjustedAnimationPercent, cntiter);
-			if(typeof config.initFunction == "function")config.initFunction("INITFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, config : config});
+			if(typeof config.initFunction == "function")config.initFunction("INITFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, cntiter: cntiter, config : config, borderX : borderX, borderY : borderY, midPosX : midPosX, midPosY : midPosY});
 			if (config.scaleOverlay) {
 				drawData(easeAdjustedAnimationPercent);
-				if(typeof config.endDrawDataFunction == "function")config.endDrawDataFunction("INITFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, config : config});
+				if(typeof config.endDrawDataFunction == "function")config.endDrawDataFunction("ENDDATAFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, cntiter: cntiter, config : config, borderX : borderX, borderY : borderY, midPosX : midPosX, midPosY : midPosY});
 				drawScale();
-				if(typeof config.endDrawScaleFunction == "function")config.endDrawScaleFunction("INITFUNCTION",ctx,datastatData,-1,-1,{animationValue : easeAdjustedAnimationPercent, config : config});
+				if(typeof config.endDrawScaleFunction == "function")config.endDrawScaleFunction("ENDSCALEFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, cntiter: cntiter, config : config, borderX : borderX, borderY : borderY, midPosX : midPosX, midPosY : midPosY});
 			} else {
 				drawScale();
-				if(typeof config.endDrawScaleFunction == "function")config.endDrawScaleFunction("INITFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, config : config});
+				if(typeof config.endDrawScaleFunction == "function")config.endDrawScaleFunction("ENDSCALEFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, cntiter: cntiter, config : config, borderX : borderX, borderY : borderY, midPosX : midPosX, midPosY : midPosY});
 				drawData(easeAdjustedAnimationPercent);
-				if(typeof config.endDrawDataFunction == "function")config.endDrawDataFunction("INITFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, config : config});
+				if(typeof config.endDrawDataFunction == "function")config.endDrawDataFunction("ENDDATAFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, cntiter: cntiter, config : config, borderX : borderX, borderY : borderY, midPosX : midPosX, midPosY : midPosY});
 			}
 			dispCrossImage(ctx, config, midPosX, midPosY, borderX, borderY, true, data, easeAdjustedAnimationPercent, cntiter);
 			dispCrossText(ctx, config, midPosX, midPosY, borderX, borderY, true, data, easeAdjustedAnimationPercent, cntiter);
@@ -6762,6 +6765,8 @@ switch(ctx.tpdata) {
 			}
 			statData[i].midPosX= othervars.midPosX;
 			statData[i].midPosY= othervars.midPosY;
+			statData[i].calculatedScale=othervars.calculatedScale;
+			statData[i].scaleHop=othervars.scaleHop;
 			statData[i].int_radius= othervars.int_radius;
 			statData[i].ext_radius= othervars.ext_radius;
 		}
@@ -6827,6 +6832,8 @@ switch(ctx.tpdata) {
 						statData[i][j].int_radius= 0;
 						statData[i][j].ext_radius= othervars.maxSize;
 						statData[i][j].radiusOffset= othervars.maxSize;
+						statData[i][j].calculatedScale= othervars.calculatedScale;
+						statData[i][j].scaleHop= othervars.scaleHop;
 						statData[i][j].calculated_offset= calculateOffset(config.logarithmic, data.datasets[i].data[j], othervars.calculatedScale, othervars.scaleHop);
 						statData[i][j].offsetX=Math.cos(config.startAngle * Math.PI / 180 - j * rotationDegree) * statData[i][j].calculated_offset;
 						statData[i][j].offsetY=Math.sin(config.startAngle * Math.PI / 180 - j * rotationDegree) * statData[i][j].calculated_offset;
@@ -6855,6 +6862,15 @@ switch(ctx.tpdata) {
 					break;
 				case "Bar" :
 					for (j = 0; j < data.datasets[i].data.length; j++) {
+
+						statData[i][j].xAxisPosY = othervars.xAxisPosY;
+						statData[i][j].yAxisPosX = othervars.yAxisPosX;
+						statData[i][j].valueHop = othervars.valueHop;
+						statData[i][j].barWidth = othervars.barWidth;
+						statData[i][j].nbValueHop = othervars.nbValueHop;
+						statData[i][j].calculatedScale = othervars.calculatedScale;
+						statData[i][j].scaleHop = othervars.scaleHop;
+			
 						statData[i][j].xPosLeft= othervars.yAxisPosX + Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) + othervars.valueHop * j + othervars.barWidth * realbars + Math.ceil(ctx.chartSpaceScale*config.barDatasetSpacing) * realbars + Math.ceil(ctx.chartLineScale*config.barStrokeWidth) * realbars;
 						statData[i][j].xPosRight = statData[i][j].xPosLeft + othervars.barWidth;
 						statData[i][j].yPosBottom =othervars.xAxisPosY - othervars.zeroY
@@ -6877,6 +6893,15 @@ switch(ctx.tpdata) {
 					break;			
 				case "StackedBar" :
 					for (j = 0; j < data.datasets[i].data.length; j++) {
+						statData[i][j].xAxisPosY = othervars.xAxisPosY;
+						statData[i][j].yAxisPosX = othervars.yAxisPosX;
+						statData[i][j].valueHop = othervars.valueHop;
+						statData[i][j].barWidth = othervars.barWidth;
+						statData[i][j].nbValueHop = othervars.nbValueHop;
+						statData[i][j].calculatedScale = othervars.calculatedScale;
+						statData[i][j].scaleHop = othervars.scaleHop;
+//						statData[i][j].nbValueHop = othervars.nbValueHop;
+			
 						if (typeof tempp[j]=="undefined") {
 							tempp[j]=0;
 							tempn[j]=0;
@@ -6919,6 +6944,16 @@ switch(ctx.tpdata) {
 					break;			
 				case "HorizontalBar" :
 					for (j = 0; j < data.datasets[i].data.length; j++) {
+
+						statData[i][j].xAxisPosY = othervars.xAxisPosY;
+						statData[i][j].yAxisPosX = othervars.yAxisPosX;
+						statData[i][j].valueHop = othervars.valueHop;
+						statData[i][j].barWidth = othervars.barWidth;
+						statData[i][j].nbValueHop = othervars.nbValueHop;
+						statData[i][j].calculatedScale = othervars.calculatedScale;
+						statData[i][j].scaleHop = othervars.scaleHop;
+
+
 						statData[i][j].xPosLeft= othervars.yAxisPosX + othervars.zeroY;
 						statData[i][j].yPosTop=othervars.xAxisPosY + Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) - othervars.scaleHop * (j + 1) + othervars.barWidth * i + Math.ceil(ctx.chartSpaceScale*config.barDatasetSpacing) * i + Math.ceil(ctx.chartLineScale*config.barStrokeWidth) * i;
 						statData[i][j].yPosBottom=statData[i][j].yPosTop+othervars.barWidth;
@@ -6933,6 +6968,14 @@ switch(ctx.tpdata) {
 					break;			
 				case "HorizontalStackedBar" :
 					for (j = 0; j < data.datasets[i].data.length; j++) {
+						statData[i][j].xAxisPosY = othervars.xAxisPosY;
+						statData[i][j].yAxisPosX = othervars.yAxisPosX;
+						statData[i][j].valueHop = othervars.valueHop;
+						statData[i][j].barWidth = othervars.barWidth;
+						statData[i][j].nbValueHop = othervars.nbValueHop;
+						statData[i][j].calculatedScale = othervars.calculatedScale;
+						statData[i][j].scaleHop = othervars.scaleHop;
+
 						if (i == 0) {
 							tempp[j]=0;
 							tempn[j]=0;
