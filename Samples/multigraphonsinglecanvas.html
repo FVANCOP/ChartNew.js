@@ -1,5 +1,7 @@
  <!doctype html>
  <SCRIPT src='../ChartNew.js'></script>
+ <SCRIPT src='../Add-ins/shapesInChart.js'></script>
+
  <SCRIPT>
  defCanvasWidth=1400;
  defCanvasHeight=800;
@@ -22,13 +24,29 @@ datasets : [
         data : [0.28,0.48,0.40,0.19,0.96,0.27,1.00],
                     title : "pSecond data"
     }
-]
+    ]
  }
  var mydata2 = [
 {
     value : 30,
     color: "#D97041",
-            title : "data1"
+    title : "data1",
+    shapesInChart : [
+			{
+				position : "RELATIVE",
+				shape : "TEXT",
+				iter : "first",
+				text : "Multiple graph in a single Canvas",
+				x1 : -2,
+				y1 : 0,
+				paddingY1 : 20,
+				textAlign : "center",
+				textBaseline : "top",
+				fontColor : "black", 
+				fontSize : 20
+			}
+		]
+
 },
 {
     value : 90,
@@ -69,13 +87,17 @@ datasets : [
   spaceTop : 30,
   spaceBottom : (defCanvasHeight-30)/2,
   spaceRight : defCanvasWidth/2,
-  crossText : ["Multiple graph in a single Canvas"],
-  crossTextIter : ["first"],
-  crossTextRelativePosX : [-2],
-  crossTextRelativePosY : [0],
-  crossTextPosY : [20],
-  crossTextFontSize : [20],
-  crossTextFontColor : ["black"]
+//  crossText : ["Multiple graph in a single Canvas"],
+//  crossTextIter : ["first"],
+//  crossTextRelativePosX : [-2],
+//  crossTextRelativePosY : [0],
+//  crossTextPosY : [20],
+//  crossTextFontSize : [20],
+//  crossTextFontColor : ["black"],
+//					USE NEW MODULE shapesInChart.js
+	endDrawDataFunction: drawShapes
+//
+  
  }
  var opt2 = {
   multiGraph : true,
