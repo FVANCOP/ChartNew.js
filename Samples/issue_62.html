@@ -5,6 +5,8 @@
   <meta name="generator" content="PSPad editor, www.pspad.com">
   <title></title>
   <!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+  <SCRIPT src='../Add-ins/shapesInChart.js'></script>
+
   </head>
   <body>
   <canvas id="mycanvas" height="600" width="1000"></canvas>
@@ -13,7 +15,21 @@ var DoughnutData = [
 {
     value : 30,
     color: "#D97041",
-    title : "January"
+    title : "January",
+    shapesInChart : [
+			{
+				position : "RELATIVE",
+				shape : "TEXT",
+				text : "text\nin\ncenter",
+				x1 : 2,
+				y1 : 2,
+				textAlign : "center",
+				textBaseline : "middle",
+				fontColor : "black", 
+				fontSize : 50
+			}
+		]
+
 },
 {
     value : 90,
@@ -43,17 +59,22 @@ var DoughnutData = [
 ]
 
 var opts= {legend : true,
-   crossText : ["text\nin\ncenter"],
-   crossTextIter: ["all"],
-   crossTextOverlay :   [true],
-   crossTextFontSize : [50],
-   crossTextFontColor : ["black"],
-   crossTextRelativePosX : [2],
-   crossTextRelativePosY : [2],
-   crossTextPosX : [0],
-   crossTextPosY : [0],
-   crossTextAlign : ["center"],
-   crossTextBaseline : ["middle"],
+//   crossText : ["text\nin\ncenter"],
+//   crossTextIter: ["all"],
+//   crossTextOverlay :   [true],
+//   crossTextFontSize : [50],
+//   crossTextFontColor : ["black"],
+//   crossTextRelativePosX : [2],
+//   crossTextRelativePosY : [2],
+//   crossTextPosX : [0],
+//   crossTextPosY : [0],
+//   crossTextAlign : ["center"],
+//   crossTextBaseline : ["middle"],
+
+//					USE NEW MODULE shapesInChart.js
+	endDrawDataFunction: drawShapes,
+//
+
    canvasBorders : true,
    graphTitle : "Issue 62"
 };
