@@ -68,7 +68,24 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 
 	
 	if(typeof shapesInChart == "object") {
+	
+		//      preload all images first;
 		for(var i=0;i<shapesInChart.length;i++) {
+			if(typeof shapesInChart[i].shape == "string")shape=shapesInChart[i].shape.toUpperCase()
+			else shape= drawShape_default.shape.toUpperCase();
+			if (shape=="IMAGE"){
+				if(typeof shapesInChart[i].loadImage == "undefined") {
+					shapesInChart[i].loadImage=new Image();
+					var imagesrc = drawShapeSetValue(shapesInChart[i].imagesrc,drawShape_default.imagesrc);
+					if (imagesrc=="") shapesInChart[i].loadImage='data:image/gif;base64,R0lGODlhCwALAIAAAAAA3pn/ZiH5BAEAAAEALAAAAAALAAsAAAIUhA+hkcuO4lmNVindo7qyrIXiGBYAOw==';
+					else shapesInChart[i].loadImage.src=imagesrc;
+				}
+			}
+
+		}	
+	
+		for(var i=0;i<shapesInChart.length;i++) {
+
 			if(typeof othervars.config.dispShapesInChart == "object") {
 				if (othervars.config.dispShapesInChart.indexOf(i)<0) continue;
 			} else if (othervars.config.dispShapesInChart == false) {continue;}
@@ -84,7 +101,6 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 
 			if(othervars.config.animation && drawShapeSetValue(shapesInChart[i].animate,drawShape_default.animate)) realAnimation=othervars.animationValue;
 			else realAnimation=1;
-
 			ctx.save();
 			switch(shape) {
 				case "LINE" :
@@ -255,19 +271,14 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 				case "IMAGE" :
 					var imageAlign = drawShapeSetValue(shapesInChart[i].imageAlign,drawShape_default.imageAlign);
 					var imageBaseline = drawShapeSetValue(shapesInChart[i].imageBaseline,drawShape_default.imageBaseline);
-					var image=new Image();
-					var imagesrc = drawShapeSetValue(shapesInChart[i].imagesrc,drawShape_default.imagesrc);
-					if (imagesrc=="") image.src='data:image/gif;base64,R0lGODlhCwALAIAAAAAA3pn/ZiH5BAEAAAEALAAAAAALAAsAAAIUhA+hkcuO4lmNVindo7qyrIXiGBYAOw==';
-					else image.src=imagesrc;
 					var vx, vy, text;
 					vx= 1*drawShapeSetValue(shapesInChart[i].x1,drawShape_default.x1);
 					vy= 1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1);
-					var xypos1=setXYpos(shape,imageAlign,imageBaseline,image,ctx,data,statData,othervars,vx,vy,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+					var xypos1=setXYpos(shape,imageAlign,imageBaseline,shapesInChart[i].loadImage,ctx,data,statData,othervars,vx,vy,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					ctx.translate(xypos1.xpos, xypos1.ypos);
 					var rotateVal=Math.PI * 1*drawShapeSetValue(shapesInChart[i].rotate,drawShape_default.rotate) / 180;
 					ctx.rotate(rotateVal);
-					ctx.drawImage(image, 0, 0);
-
+					ctx.drawImage(shapesInChart[i].loadImage, 0, 0);
 					break;
 				case "STAR" :
 				case "PLUS" :
