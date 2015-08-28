@@ -1881,6 +1881,7 @@ window.Chart = function(context) {
 		responsiveWindowInitialWidth : false,
 		pointMarker : "circle",    // "circle","cross","plus","diamond","triangle","square"
 		initFunction : null,
+		beforeDrawFunction : null,
 		endDrawDataFunction : null,
 		endDrawScaleFunction : null
 	};
@@ -4633,7 +4634,7 @@ window.Chart = function(context) {
 			if (config.animation && !(isIE() < 9 && isIE() != false) && config.clearRect) ctx.clearRect(clrx, clry, clrwidth, clrheight);
 			dispCrossImage(ctx, config, midPosX, midPosY, borderX, borderY, false, data, easeAdjustedAnimationPercent, cntiter);
 			dispCrossText(ctx, config, midPosX, midPosY, borderX, borderY, false, data, easeAdjustedAnimationPercent, cntiter);
-			if(typeof config.initFunction == "function")config.initFunction("INITFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, cntiter: cntiter, config : config, borderX : borderX, borderY : borderY, midPosX : midPosX, midPosY : midPosY});
+			if(typeof config.beforeDrawFunction == "function") config.beforeDrawFunction("BEFOREDRAWFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, cntiter: cntiter, config : config, borderX : borderX, borderY : borderY, midPosX : midPosX, midPosY : midPosY});
 			if (config.scaleOverlay) {
 				drawData(easeAdjustedAnimationPercent);
 				if(typeof config.endDrawDataFunction == "function")config.endDrawDataFunction("ENDDATAFUNCTION",ctx,data,statData,-1,-1,{animationValue : easeAdjustedAnimationPercent, cntiter: cntiter, config : config, borderX : borderX, borderY : borderY, midPosX : midPosX, midPosY : midPosY});
@@ -5561,7 +5562,11 @@ window.Chart = function(context) {
 
 		// ----------------------- DRAW EXTERNAL ELEMENTS -------------------------------------------------
 		dispCrossImage(ctx, config, width / 2, height / 2, width / 2, height / 2, false, data, -1, -1);
- 		if (ylabels != "nihil") {
+
+		if(typeof config.initFunction == "function") config.initFunction("INITFUNCTION",ctx,data,null,-1,-1,{animationValue : 0, cntiter: 0, config : config, borderX : 0, borderY : 0, midPosX : 0, midPosY : 0});
+
+ 		
+		 if (ylabels != "nihil") {
 			// Draw Borders
 			if (borderWidth > 0) {
 				ctx.save();
