@@ -58,13 +58,11 @@ var drawShape_default= {
 	textBackgroundColor : "none"
 };
 
-function drawShapes(area, ctx, data,statData, posi,posj,othervars){
+function shapeLoadImages(data) {
+	var shape,shapesInChart;
 
-	var shape,whendrw,iter,realAnimation;
-
-
-	if(typeof data.shapesInChart == "object") var shapesInChart=data.shapesInChart;
-	if(typeof data[0]=="object") if (typeof data[0].shapesInChart == "object") var shapesInChart=data[0].shapesInChart;
+	if(typeof data.shapesInChart == "object") shapesInChart=data.shapesInChart;
+	if(typeof data[0]=="object") if (typeof data[0].shapesInChart == "object") shapesInChart=data[0].shapesInChart;
 
 	
 	if(typeof shapesInChart == "object") {
@@ -83,12 +81,37 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 			}
 
 		}	
+	}
+	function drawShapeSetValue(dataval,defval) {
+		if(typeof dataval != "undefined") return dataval;
+		else return defval;
+	};	
+
+}
+
+
+function drawShapes(area, ctx, data,statData, posi,posj,othervars){
+
+	var shape,whendrw,iter,realAnimation,shapesInChart;
+
+
+	if(typeof data.shapesInChart == "object") var shapesInChart=data.shapesInChart;
+	if(typeof data[0]=="object") if (typeof data[0].shapesInChart == "object") var shapesInChart=data[0].shapesInChart;
+
+	
+	if(typeof shapesInChart == "object") {
+	
+		//      preload all images first;
+		shapeLoadImages(data);
 	
 		for(var i=0;i<shapesInChart.length;i++) {
 
 			if(typeof othervars.config.dispShapesInChart == "object") {
 				if (othervars.config.dispShapesInChart.indexOf(i)<0) continue;
-			} else if (othervars.config.dispShapesInChart == false) {continue;}
+			} else if (typeof othervars.config.dispShapesInChart != "undefined") {
+				if (typeof othervars.config.dispShapesInChart == false)continue;
+			}
+
 			whendrw=drawShapeSetValue(shapesInChart[i].when,drawShape_default.when).toUpperCase();
 			if (whendrw != "ALWAYS" && whendrw != area) { continue;}
 			iter=drawShapeSetValue(shapesInChart[i].iter,drawShape_default.iter.toUpperCase());
@@ -424,7 +447,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					ctx.setLineDash([]);
 					break;
 				case "MYSHAPE" :
-					var xpos,ypos,xypos1;
+					var xpos,ypos,xypos1,paddingX,paddingY;
 					ctx.beginPath();
 
 					if(typeof shapesInChart[i].shapePoints !== "object") break;
@@ -433,7 +456,9 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					for(var j=0;j<shapesInChart[i].shapePoints.length;j++) {
 						xpos=drawShapeSetValue(shapesInChart[i].shapePoints[j][0],drawShape_default.x1);
 						ypos=drawShapeSetValue(shapesInChart[i].shapePoints[j][1],drawShape_default.y1);
-						xypos1=setXYpos(shape,"","","",ctx,data,statData,othervars,xpos,ypos,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						paddingX=drawShapeSetValue(shapesInChart[i].shapePadding[j][0],drawShape_default.paddingX1);
+						paddingY=drawShapeSetValue(shapesInChart[i].shapePadding[j][1],drawShape_default.paddingY1);
+						xypos1=setXYpos(shape,"","","",ctx,data,statData,othervars,xpos,ypos,1*paddingX,1*paddingY,drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 						if(j==0) ctx.moveTo(xypos1.xpos,xypos1.ypos);
 						else ctx.lineTo(xypos1.xpos,xypos1.ypos);
 					} 					
