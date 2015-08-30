@@ -1,0 +1,151 @@
+  <!doctype html>
+
+
+
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+
+
+<SCRIPT>
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata3 = [
+	{
+		value : 70,
+		color: "rgba(151,187,205,1)",
+		title : "data1",
+		shapesInChart : [
+			{
+				position : "RELATIVE",
+				shape : "TEXT",
+				text : dispPct,
+				x1 : 2,
+				y1 : 2,
+				textAlign : "center",
+				textBaseline : "middle",
+				fontColor : "black", 
+				fontSize : 50
+			}
+		]
+
+	},
+	{
+		value : 30,
+		color: "rgba(220,220,220,1)",
+		title : "data1"
+	}
+]
+
+var mydata4 = [
+	{
+		value : 70,
+		color: "rgba(151,187,205,1)",
+		title : "data1",
+		shapesInChart : [
+			{
+				position : "RELATIVE",
+				shape : "TEXT",
+				text : dispPct2,
+				x1 : 2,
+				y1 : 2,
+				textAlign : "center",
+				textBaseline : "middle",
+				fontColor : "black", 
+				fontSize : 50
+			}
+		]
+
+	},
+	{
+		value : 30,
+		color: "rgba(220,220,220,1)",
+		title : "data1"
+	}
+]
+
+
+
+function dispPct(numtxt,valtxt,ctx,config,posX,posY,borderX,borderY,overlay,data,animPC){
+	//  alert("INIT");
+        return(Math.round(100*animPC));
+} 
+
+var crosstxt3 = {
+	animationEasing : "linear",
+	endDrawDataFunction: drawShapes,
+	graphTitle : "Draw text through the graph",
+	graphTitleFontFamily : "'Arial'",
+	graphTitleFontSize : 24,
+	graphTitleFontStyle : "bold",
+	graphTitleFontColor : "#666",
+	canvasBorders : true,
+	canvasBordersWidth : 3,
+	canvasBordersColor : "black",
+	spaceTop : 30,
+	spaceBottom : 30,
+	spaceLeft : 30,
+	spaceRight : 30,
+	startAngle : 180,
+	dynamicDisplay : true                
+}
+
+function dispPct2(numtxt,valtxt,ctx,config,posX,posY,borderX,borderY,overlay,data,animPC){
+        return(Math.round(animPC*data[0].value));
+} 
+
+var crosstxt4 = {
+	animationEasing : "linear",
+	endDrawDataFunction: drawShapes,
+	canvasBorders : true,
+	canvasBordersWidth : 3,
+	canvasBordersColor : "black",
+	graphTitle : "Draw text through the graph",
+	graphTitleFontFamily : "'Arial'",
+	graphTitleFontSize : 24,
+	graphTitleFontStyle : "bold",
+	graphTitleFontColor : "#666",
+	spaceTop : 30,
+	spaceBottom : 30,
+	spaceLeft : 30,
+	spaceRight : 30,
+	startAngle : 180,  
+	dynamicDisplay : true                
+}
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+  
+  <!div id="divCursor" style="position:absolute"> <!/div>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+    
+      document.write("<canvas id=\"canvas_doughnut2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_doughnut3\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    
+
+window.onload = function() {
+
+    var myLine = new Chart(document.getElementById("canvas_doughnut2").getContext("2d")).Doughnut(mydata3,crosstxt3);
+    var myLine = new Chart(document.getElementById("canvas_doughnut3").getContext("2d")).Doughnut(mydata4,crosstxt4);
+
+}
+
+    </script>
+  </body>
+</html>
