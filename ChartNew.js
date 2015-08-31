@@ -1682,7 +1682,6 @@ window.Chart = function(context) {
 		chartLineScale : 1,
 		chartSpaceScale : 1,
 		multiGraph: false,
-		dispShapesInChart : true,
 		clearRect: true, // do not change clearRect options; for internal use only
 		dynamicDisplay: false,
 		graphSpaceBefore: 5,
