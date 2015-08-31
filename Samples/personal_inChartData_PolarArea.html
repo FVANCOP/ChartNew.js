@@ -1,0 +1,198 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June","July"],
+//	labels : ["January"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointstrokeColor : "yellow",
+			data : [95,53,99,,73,27,82],
+			title : "2014",
+      			myInGraphData : ["smiley_75x75.jpg",,"99 (max)",,,"27 (min)"]
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "green",
+			pointstrokeColor : "yellow",
+			data : [35,43,59,,31,50,66],
+      			title : "2013",
+      			myInGraphData : [,,"smiley_small.gif",,"smiley_big.gif"]
+		}
+	]
+} ;
+var mydata2 = [
+	{
+		value : 30,
+		color: "#D97041",
+		title : "data1",
+		myInGraphData : "smiley_small.gif"
+	},
+	{
+		value : 90,
+		color: "#C7604C",
+    		title : "data2",
+    		myInGraphData : "90 (max)"
+	},
+	{
+		value : 24,
+		color: "#21323D",
+    		title : "data3"
+	},
+	{
+		value : 58,
+		color: "#9D9B7F",
+    		title : "data4",
+		myInGraphData : "smiley_big.gif"
+	},
+	{
+		value : 82,
+		color: "#7D4F6D",
+    		title : "data5"
+	},
+	{
+		value : 8,
+		color: "#584A5E",
+    		title : "data6",  
+    		myInGraphData : "8 (min)"
+	}
+];
+    
+
+
+mydata2[0].shapesInChart=[];
+var cntshapes=0;
+var paddingval=3;
+
+var angleStep=360/mydata2.length;
+var startAngle=90-angleStep/2;
+var align, baseline;
+for(var i=0;i<mydata2.length;i++) {
+	if (startAngle==90 || startAngle==-90 || startAngle==-270)align="center";
+	else if (startAngle < -90)align="right";
+	else align="left"
+	if (startAngle==0 || startAngle==-180)baseline="middle";
+	else if (startAngle <0 && startAngle > -180)baseline="top";
+	else baseline="bottom";
+	startAngle-=angleStep;
+	if(typeof mydata2[i].myInGraphData == "string") {
+			if(mydata2[i].myInGraphData.toUpperCase().indexOf(".JPG")>=0 || mydata2[i].myInGraphData.toUpperCase().indexOf(".GIF")>=0) {
+				mydata2[0].shapesInChart[cntshapes] = {
+				position : "INCHART",
+				shape: "IMAGE",
+				imagesrc : "" + mydata2[i].myInGraphData,
+				x1:  i,
+				y1:  mydata2[i].value+paddingval,
+				paddingX1 : 0,
+				paddingY1 : 0,
+				imageAlign : align,
+				imageBaseline : baseline,
+				imageWidth : 50,
+				imageHeight : 50,
+				iter : "last"
+				};
+			} else {
+				mydata2[0].shapesInChart[cntshapes] = {
+				position : "INCHART",
+				shape: "Text",
+				text : "" + mydata2[i].myInGraphData,
+				x1:  i,
+				y1:  mydata2[i].value+paddingval,
+				paddingX1 : 0,
+				paddingY1 : 0,
+				textAlign : align,
+				textBaseline : baseline,
+				fontColor : "black", 
+				fontStyle : "normal",
+				fontSize : 12,
+				fontFamily : "'Arial'",
+				iter : "last"
+				};
+			}
+			cntshapes++;
+			
+		} else if(typeof mydata2[i].value != "undefined") {
+			mydata2[0].shapesInChart[cntshapes] = {
+			position : "INCHART",
+			shape: "Text",
+			text : "" + mydata2[i].value,
+			x1:  i,
+			y1:  mydata2[i].value+paddingval,
+			paddingX1 : 0,
+			paddingY1 : 0,
+			textAlign : align,
+			textBaseline : baseline,
+			fontColor : "black", 
+			fontStyle : "normal",
+			fontSize : 12,
+			fontFamily : "'Arial'",
+			iter : "last"
+			};
+			cntshapes++;
+			
+		}	
+	
+}
+
+var startWithDataset =1;
+var startWithData =1;
+
+var opt = {
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "my inGraphData",
+      graphMin : 0,
+      legend : true,
+      inGraphDataShow : false,    // -> ingraphData are written through shapes in the chart
+      annotateDisplay : true,
+      graphTitleFontSize: 18,
+      endDrawDataFunction: drawShapes
+
+}
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_PolarArea\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine = new Chart(document.getElementById("canvas_PolarArea").getContext("2d")).PolarArea(mydata2,opt);
+}
+    </script>
+  </body>
+</html>

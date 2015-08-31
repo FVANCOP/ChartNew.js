@@ -1,0 +1,154 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June","July"],
+//	labels : ["January"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointstrokeColor : "yellow",
+			data : [95,53,99,,73,27,82],
+			title : "2014",
+      			myInGraphData : ["smiley_75x75.jpg",,"99 (max)",,,"27 (min)"]
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "green",
+			pointstrokeColor : "yellow",
+			data : [35,43,59,,31,50,66],
+      			title : "2013",
+      			myInGraphData : [,,"smiley_small.gif",,"smiley_big.gif"]
+		}
+	]
+} ;
+    
+
+
+mydata1.shapesInChart=[];
+var cntshapes=0;
+var tot=[];
+for(var i=0;i<mydata1.datasets.length;i++) {
+	for(var j=0;j<mydata1.datasets[i].data.length;j++) {
+		if (typeof tot[j]=="undefined")tot[j]=0;
+		if(typeof mydata1.datasets[i].data[j] != "undefined") tot[j]+=1*mydata1.datasets[i].data[j];
+		if(typeof mydata1.datasets[i].myInGraphData[j] == "string") {
+			if(mydata1.datasets[i].myInGraphData[j].toUpperCase().indexOf(".JPG")>=0 || mydata1.datasets[i].myInGraphData[j].toUpperCase().indexOf(".GIF")>=0) {
+				mydata1.shapesInChart[cntshapes] = {
+				position : "INCHART",
+				shape: "IMAGE",
+				imagesrc : "" + mydata1.datasets[i].myInGraphData[j],
+				y1:  j,
+				x1:  tot[j],
+				paddingX1 : 8,
+				paddingY1 : 0,
+				imageAlign : "left",
+				imageBaseline : "middle",
+				imageWidth : 50,
+				imageHeight : 50,
+				iter : "last"
+				};
+			} else {
+				mydata1.shapesInChart[cntshapes] = {
+				position : "INCHART",
+				shape: "Text",
+				text : "" + mydata1.datasets[i].myInGraphData[j],
+				y1:  j,
+				x1:  tot[j],
+				paddingX1 : 8,
+				paddingY1 : 0,
+				textAlign : "left",
+				textBaseline : "middle",
+				fontColor : "black", 
+				fontStyle : "normal",
+				fontSize : 12,
+				fontFamily : "'Arial'",
+				iter : "last"
+				};
+			}
+			cntshapes++;
+			
+		} else if(typeof mydata1.datasets[i].data[j] != "undefined") {
+			mydata1.shapesInChart[cntshapes] = {
+			position : "INCHART",
+			shape: "Text",
+			text : "" + mydata1.datasets[i].data[j],
+			y1:  j,
+			x1:  tot[j],
+			paddingX1 : 8,
+			paddingY1 : 0,
+			textAlign : "left",
+			textBaseline : "middle",
+			fontColor : "black", 
+			fontStyle : "normal",
+			fontSize : 12,
+			fontFamily : "'Arial'",
+			iter : "last"
+			};
+			cntshapes++;
+			
+		}	
+	}
+}
+
+var startWithDataset =1;
+var startWithData =1;
+
+var opt = {
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "my inGraphData",
+      legend : true,
+      inGraphDataShow : false,    // -> ingraphData are written through shapes in the chart
+      annotateDisplay : true,
+      graphTitleFontSize: 18,
+      endDrawDataFunction: drawShapes
+
+}
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_HorizontalStackedBar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+
+window.onload = function() {
+    var myStackedBar = new Chart(document.getElementById("canvas_HorizontalStackedBar").getContext("2d")).HorizontalStackedBar(mydata1,opt);
+}
+    </script>
+  </body>
+</html>
