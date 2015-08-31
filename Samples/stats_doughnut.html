@@ -2,6 +2,7 @@
   
   <SCRIPT src='..\ChartNew.js'></script>
   <SCRIPT src='..\Add-ins\stats.js'></script>
+  <SCRIPT src='../Add-ins/shapesInChart.js'></script>
   
   <SCRIPT>
   
@@ -12,7 +13,20 @@
     {
   		value : 30,
   		color: "#D97041",
-      title : "data1"
+      title : "data1",
+          shapesInChart : [
+			{
+				position : "RELATIVE",
+				shape : "TEXT",
+				text : "Total:\n#sum#",
+				x1 : 2,
+				y1 : 2,
+				textAlign : "center",
+				textBaseline : "middle",
+				fontColor : "black", 
+				fontSize : 50
+			}
+		]
   	},
   	{
   		value : 90,
@@ -45,15 +59,18 @@
   var varcrosstxt = {
       canvasBordersWidth : 3,
       canvasBordersColor : "black",
-      crossText : ["Total:\n#sum#"],
-      crossTextIter: ["all"],
-      crossTextOverlay :   [true],
-      crossTextFontSize : [50],
-      crossTextFontColor : ["black"],
-      crossTextRelativePosX : [2],
-      crossTextRelativePosY : [2],
-      crossTextAlign : ["center"],
-      crossTextBaseline : ["middle"],
+//    crossText : ["Total:\n#sum#"],
+//    crossTextIter: ["all"],
+//    crossTextOverlay :   [true],
+//    crossTextFontSize : [50],
+//    crossTextFontColor : ["black"],
+//    crossTextRelativePosX : [2],
+//    crossTextRelativePosY : [2],
+//    crossTextAlign : ["center"],
+//    crossTextBaseline : ["middle"],
+//					USE NEW MODULE shapesInChart.js
+      endDrawDataFunction: drawShapes,
+//
       inGraphDataShow : true,
       legend : true,
       canvasBorders : true,

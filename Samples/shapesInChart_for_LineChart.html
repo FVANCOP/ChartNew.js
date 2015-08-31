@@ -1,0 +1,429 @@
+  <!doctype html>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]-->
+<SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='..\Add-ins\stats.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June","July"],
+//	labels : ["January"],
+	datasets : [
+		{
+			strokeColor : "black",
+			pointColor : "black",
+			pointstrokeColor : "black",
+			data : [16,20,13,21,23,18,15],
+			title : "2015"
+		},
+		{
+			strokeColor : "blue",
+			pointColor : "blue",
+			pointstrokeColor : "blue",
+			data : [13,11,15,17,15,11,10],
+      			title : "2014"
+		}
+	],
+	shapesInChart : [
+		{
+			position : "INCHART",
+			shape: "RECTANGLE",
+			fillColor: "rgba(220,0,100,0.2)",
+			strokeColor : "rgba(0,0,0,0)",
+			animate : false,
+			x1: -999,
+			y1: "<%=#mean#-#standard_deviation#%>",
+			x2: +999	,
+			y2: -999
+		},
+		{
+			position : "INCHART",
+			shape: "RECTANGLE",
+			fillColor: "rgba(220,100,200,0.2)",
+			strokeColor : "rgba(0,0,0,0)",
+			animate : false,
+			x1: -999,
+			y1: "<%=#mean#%>",
+			x2: +999	,
+			y2: "<%=#mean#-#standard_deviation#%>"
+		},
+		{
+			position : "INCHART",
+			shape: "RECTANGLE",
+			fillColor: "rgba(120,0,100,0.2)",
+			strokeColor : "rgba(0,0,0,0)",
+			animate : false,
+			x1: -999,
+			y1: "<%=#mean#%>",
+			x2: +999	,
+			y2: "<%=#mean#+#standard_deviation#%>"
+		},
+		{
+			position : "INCHART",
+			shape: "RECTANGLE",
+			fillColor: "rgba(120,100,200,0.2)",
+			strokeColor : "rgba(0,0,0,0)",
+			animate : false,
+			x1: -999,
+			y1: "<%=#mean#+#standard_deviation#%>",
+			x2: +999	,
+			y2: +999
+		},
+		{
+			position : "INCHART",
+			shape: "LINE",
+			strokeStyle : "dashSpace",
+			animate : false,
+			x1: -999,
+			y1: "<%=#mean#%>",
+			x2: +999	,
+			y2: "<%=#mean#%>"
+		},
+		{
+			position : "INCHART",
+			shape: "TEXT",
+			text : "<%='Mean : '+roundToNumber(#mean#,-2)%>",
+			textAlign : "left",
+			textBaseline : "middle",
+			fontColor : "black", 
+			fontStyle : "italic",
+			animate : false,
+			x1: "<%=#COUNT_ALL#%>",
+			iter : "first",
+			y1: "<%=#mean#%>",
+			paddingX1 : 20, 
+			paddingY1 : 0
+		},
+		{
+			position : "INCHART",
+			shape: "TEXT",
+			text : "<%='Mean+St.Dev:\n'+roundToNumber(#mean#+#standard_deviation#,-2)%>",
+			textAlign : "left",
+			textBaseline : "middle",
+			fontColor : "black", 
+			fontStyle : "italic",
+			animate : false,
+			x1: "<%=#COUNT_ALL#%>",
+			iter : "first",
+			y1: "<%=#mean#+#standard_deviation#%>",
+			paddingX1 : 20, 
+			paddingY1 : 0
+		},
+		{
+			position : "INCHART",
+			shape: "TEXT",
+			text : "<%='Mean-St.Dev.:\n'+roundToNumber(#mean#-#standard_deviation#,-2)%>",
+			textAlign : "left",
+			textBaseline : "middle",
+			fontColor : "black", 
+			fontStyle : "italic",
+			animate : false,
+			x1: "<%=#COUNT_ALL#%>",
+			iter : "first",
+			y1: "<%=#mean#-#standard_deviation#%>",
+			paddingX1 : 20, 
+			paddingY1 : 0
+		},
+		{
+			position : "INCHART",
+			shape: "ARROW",
+			x1: "<%=#MAXIMUMPJ#%>", 
+			y1 : "<%=#MAXIMUM#%>",
+			x2: "<%=#MAXIMUMPJ#%>", 
+			y2 : "<%=#MAXIMUM#%>",
+			paddingX1 : -60,
+			paddingY1 : -60,
+			paddingX2 : -5,
+			paddingY2 : -5,
+			iter : "last"
+		},
+		{
+			position : "INCHART",
+			shape: "TEXT",
+			text : "Max.",
+			textAlign : "left",
+			textBaseline : "bottom",
+			fontColor : "black", 
+			fontSize : 18,
+			animate : false,
+			x1: "<%=#MAXIMUMPJ#%>", 
+			y1 : "<%=#MAXIMUM#%>",
+			rotate : 45,
+			paddingX1 : -50,
+			paddingY1 : -50,
+			iter : "last"
+		},
+		{
+			position : "INCHART",
+			shape: "TEXT",
+			text : "All lines",
+			textAlign : "left",
+			textBaseline : "bottom",
+			fontColor : "black", 
+			fontSize : 18,
+			animate : false,
+			x1: "<%=#MAXIMUMPJ#%>", 
+			y1 : "<%=#MAXIMUM#%>",
+			rotate : 45,
+			paddingX1 : -78,
+			paddingY1 : -50,
+			iter : "last"
+		},
+		{
+			position : "INCHART",
+			shape: "ARROW",
+			x1: "<%=#MINIMUMPJ#%>", 
+			y1 : "<%=#MINIMUM#%>",
+			x2: "<%=#MINIMUMPJ#%>", 
+			y2 : "<%=#MINIMUM#%>",
+			paddingX1 : -60,
+			paddingY1 : +60,
+			paddingX2 : -5,
+			paddingY2 : +5,
+			iter : "last"
+		},
+		{
+			position : "INCHART",
+			shape: "TEXT",
+			text : "Min.",
+			textAlign : "left",
+			textBaseline : "bottom",
+			fontColor : "black", 
+			fontSize : 18,
+			animate : false,
+			x1: "<%=#MINIMUMPJ#%>", 
+			y1 : "<%=#MINIMUM#%>",
+			rotate : -45,
+			paddingX1 : -50,
+			paddingY1 : +50,
+			iter : "last"
+		},
+		{
+			position : "INCHART",
+			shape: "TEXT",
+			text : "All lines",
+			textAlign : "left",
+			textBaseline : "bottom",
+			fontColor : "black", 
+			fontSize : 18,
+			animate : false,
+			x1: "<%=#MINIMUMPJ#%>", 
+			y1 : "<%=#MINIMUM#%>",
+			rotate : -45,
+			paddingX1 : -50,
+			paddingY1 : +78,
+			iter : "last"
+		},
+		{
+			position : "RELATIVE",
+			shape: "ELLIPSE",
+			ellipseWidth : 500,
+			ellipseHeight : 100,
+			fillColor: "lightblue",
+			strokeColor : "black",
+			animate : false,
+			x1: 2,
+			y1: 3,
+			paddingX1 : 0,
+			paddingY1 : -70
+		},
+		{
+			position : "RELATIVE",
+			shape: "TEXT",
+			text : "Demo ShapesInChart.js",
+			textAlign : "center",
+			textBaseline : "middle",
+			fontColor : "black", 
+			fontSize : 25,
+			animate : false,
+			x1: 2, 
+			y1 : 3,
+			paddingX1 : 0,
+			paddingY1 : -70
+		},
+		{
+			position : "INCHART",
+			shape: "RECTANGLE",
+			fillColor: "lightgreen",
+			strokeColor : "black",
+			animate : false,
+			x1: 0,
+			y1: 999,
+			paddingX1 : 10,
+			paddingY1 : 10,
+			x2: 0,
+			y2: 999 ,
+			paddingX2 : 220,
+			paddingY2 : 70
+		},
+		{
+			position : "INCHART",
+			shape: "REGULARSHAPE",
+			sideCount : 6,
+			strokeColor : "black", 
+			fillColor : "black", 
+			radius : 10, 
+			animate : false,
+			x1: 0, 
+			y1 : 999,
+			paddingX1 : 30,
+			paddingY1 : 25, 
+			iter : "ALL"
+		},
+		{
+			position : "INCHART",
+			shape: "TEXT",
+			text : "Maximum for the line",
+			textAlign : "left",
+			textBaseline : "middle",
+			fontColor : "black", 
+			fontSize : 18,
+			animate : false,
+			x1: 0, 
+			y1 : 999,
+			paddingX1 : 45,
+			paddingY1 : 25
+		},
+		{
+			position : "INCHART",
+			shape: "STAR",
+			lineCount : 3,
+			strokeColor : "black", 
+			animate : false,
+			x1: 0, 
+			y1 : 999,
+			paddingX1 : 30,
+			paddingY1 : 50, 
+			iter : "ALL"
+		},
+		{
+			position : "INCHART",
+			shape: "TEXT",
+			text : "Minimum for the line",
+			textAlign : "left",
+			textBaseline : "middle",
+			fontColor : "black", 
+			fontSize : 18,
+			animate : false,
+			x1: 0, 
+			y1 : 999,
+			paddingX1 : 45,
+			paddingY1 : 50 
+		},
+		{
+			position : "INCHART",
+			shape: "REGULARSHAPE",
+			sideCount : 6,
+			strokeColor : "black", 
+			fillColor : "black", 
+			radius : 10, 
+			animate : false,
+			x1: "<%=#DS_MAXIMUMPJ(0)#%>", 
+			y1 : "<%=#DS_MAXIMUM(0)#%>",
+			iter : "ALL"
+		},
+		{
+			position : "INCHART",
+			shape: "REGULARSHAPE",
+			sideCount : 6,
+			strokeColor : "blue", 
+			fillColor : "blue",
+			radius : 10, 
+			animate : false,
+			x1: "<%=#DS_MAXIMUMPJ(1)#%>", 
+			y1 : "<%=#DS_MAXIMUM(1)#%>",
+			iter : "ALL"
+		},
+		{
+			position : "INCHART",
+			shape: "STAR",
+			lineCount : 3,
+			strokeColor : "black", 
+			animate : false,
+			x1: "<%=#DS_MINIMUMPJ(0)#%>", 
+			y1 : "<%=#DS_MINIMUM(0)#%>",
+			iter : "ALL"
+		},
+		{
+			position : "INCHART",
+			shape: "STAR",
+			lineCount : 3,
+			strokeColor : "blue", 
+			animate : false,
+			x1: "<%=#DS_MINIMUMPJ(1)#%>", 
+			y1 : "<%=#DS_MINIMUM(1)#%>",
+			iter : "ALL"
+		}
+	]
+}     ;
+
+var opt1 = {
+	datasetFill : false,
+	graphMin : 0,
+	spaceRight : 110,
+	barValueSpacing : 20,
+	canvasBorders : true,
+	legend : true,
+	inGraphDataShow : true,
+	endDrawScaleFunction: drawShapes
+
+}
+
+function roundToNumber(num, place) {
+    var newval=1*num;
+
+    if(typeof(newval)=="number"){
+      if(place<=0){
+        var roundVal=-place;
+        newval= +(Math.round(newval + "e+" + roundVal) + "e-" + roundVal);
+      }
+      else {
+        var roundVal=place;
+        var divval= "1e+"+roundVal;
+        newval= +(Math.round(newval/divval))*divval;
+      }
+    }
+    return(newval);
+} ;
+stats(mydata1,opt1);
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine = new Chart(document.getElementById("canvas_Line").getContext("2d")).Line(mydata1,opt1);
+}
+    </script>
+  </body>
+</html>

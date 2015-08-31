@@ -1,0 +1,186 @@
+  <!doctype html>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]-->
+<SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = [
+	{
+		value : 0,
+		color: "rgba(220,0,220,0.2)",
+		title : "data0_1"
+	},
+	{
+		value : 30,
+		color: "rgba(220,0,220,0.2)",
+		title : "data1"
+	},
+	{
+		value : 90,
+		color: "rgba(0,0,220,0.2)",
+    		title : "data2"
+	},
+	{
+		value : 0,
+		color: "rgba(220,0,220,0.2)",
+		title : "data0_2"
+	},
+	{
+		value : 0,
+		color: "rgba(220,0,220,0.2)",
+		title : "data0_3"
+	},
+	{
+		value : 24,
+		color: "rgba(220,0,0,0.2)",
+    		title : "data3"
+	},
+	{
+		value : 58,
+		color: "rgba(0,220,220,0.2)",
+    		title : "data4"
+	},
+	{
+		value : 82,
+		color: "rgba(0,220,0,0.2)",
+    		title : "data5"
+	},
+	{
+		value : 8,
+		color: "rgba(50,100,150,0.2)",
+    		title : "data6"
+	}
+];
+
+function myShapeFunction(area, ctx, data,statData, posi,posj,othervars){
+
+// line to label;
+	ctx.beginPath();
+	ctx.moveTo(othervars.xypos1.xpos, othervars.xypos1.ypos);
+	ctx.quadraticCurveTo(othervars.xypos3.xpos, othervars.xypos3.ypos,othervars.xypos2.xpos+othervars.shapesInChart.paddingX2, othervars.xypos2.ypos+othervars.shapesInChart.paddingY2);
+	ctx.lineWidth = othervars.shapesInChart.strokeSize;
+	ctx.strokeStyle = othervars.shapesInChart.strokeColor;
+	ctx.setLineDash(lineStyleFn(othervars.shapesInChart.strokeStyle));	
+	ctx.stroke();
+
+
+// Label;
+	var paddingX, paddingY;
+	var paddingValX=4;
+	var paddingValY=0;
+	ctx.beginPath();
+	if(othervars.xypos2.xpos>othervars.xypos1.xpos) {
+		paddingX=paddingValX;
+		ctx.textAlign="left";
+	} else {
+		paddingX=-paddingValX;
+		ctx.textAlign="right";
+	}
+	if(othervars.xypos2.ypos>othervars.xypos1.ypos) {
+		paddingY=1*paddingValY;
+		ctx.textBaseline="top";
+	} else {
+		paddingY=-paddingValY;
+		ctx.textBaseline="bottom";
+	}
+	ctx.translate(othervars.xypos2.xpos+paddingX+othervars.shapesInChart.paddingX2, othervars.xypos2.ypos+paddingY+othervars.shapesInChart.paddingY2);
+	var fontSize=othervars.shapesInChart.fontSize;
+	ctx.font = othervars.shapesInChart.fontStyle + " " + othervars.shapesInChart.fontSize.toString() + "px " + othervars.shapesInChart.fontFamily;
+	ctx.fillStyle = othervars.shapesInChart.fontColor;
+	if (othervars.shapesInChart.iter !=="all" || (othervars.shapesInChart.iter === "all" && othervars.cntiter != othervars.config.animationSteps) || othervars.config.animation==false) {
+		ctx.fillTextMultiLine(othervars.shapesInChart.text, 0, 0, ctx.textBaseline, Math.ceil(ctx.chartTextScale*fontSize),true,othervars.config.detectMouseOnText,ctx,"SHAPESINCHART_TEXTMOUSE",0,othervars.xypos2.xpos+paddingX, othervars.xypos2.ypos+paddingY,-1,-1);
+	} else ctx.fillTextMultiLine(othervars.shapesInChart.text, 0, 0, ctx.textBaseline, Math.ceil(ctx.chartTextScale*fontSize),true,false,ctx,"SHAPESINCHART_TEXTMOUSE",0,othervars.xypos1.xpos+paddingX, othervars.xypos1.ypos+paddingY,-1,-1);
+
+
+};
+
+mydata1[0].shapesInChart=[];
+var last0=1.1;
+for(i=0;i<mydata1.length;i++){
+		mydata1[0].shapesInChart[i]={
+			position : "INCHART",
+			shape: myShapeFunction,
+//			shape: "ARROW",
+			text : mydata1[i].title+" ("+mydata1[i].value.toString()+")",
+			x1:  i,
+			y1: 1,
+			x2: i+0.2,
+			y2 : 1.1,
+			x3: i,
+			y3 : 1.05,
+			paddingX2 : 0,
+			paddingY2 : 0,
+			strokeColor : "grey",
+//			strokeStyle: "dashed",
+			strokeStyle: "solid",
+			strokeSize: 2,
+			limitToChart : false,
+			fontColor : "black", 
+			fontStyle : "normal",
+			fontSize : 12,
+			fontFamily : "'Arial'",
+			iter : "last"
+			}
+		if(mydata1[i].value==0){last0=last0+0.1;mydata1[0].shapesInChart[i].y2=last0;mydata1[0].shapesInChart[i].paddingX2=40;}
+		else last0=1.1;
+			
+
+};
+
+
+
+
+var opt1 = {
+//	datasetFill : false,
+	animation : false,
+//	graphMin : 0,
+	canvasBorders : true,
+//	legend : true,
+//	inGraphDataShow : true,
+	spaceBottom : 40,
+	spaceTop : 55,
+	endDrawDataFunction: drawShapes
+
+}
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine = new Chart(document.getElementById("canvas_Line").getContext("2d")).Pie(mydata1,opt1);
+}
+    </script>
+  </body>
+</html>

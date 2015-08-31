@@ -4,6 +4,7 @@
 
 
 <!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
 
 
 <SCRIPT>
@@ -16,7 +17,74 @@ var mydata2 = [
 	{
 		value : 30,
 		color: "#D97041",
-    title : "data1"
+    		title : "data1",
+//      crossImage : [smyley_1,smyley_2,smyley_2,smyley_2,smyley_2],
+//      crossImageRelativePosX : [2,0,0,4,4],
+//      crossImageRelativePosY : [2,0,4,0,4],
+//      crossImageAlign : ["center","left","left","right","right"],
+//      crossImageBaseline : ["middle","top","bottom","top","bottom"],
+//      crossImageIter : ["all"],
+//      crossImageOverlay : [false]
+//                        use new module shapesInChart.js
+	shapesInChart : [
+		{
+			position : "RELATIVE",
+			shape: "IMAGE",
+			imagesrc : "smiley_150x150.jpg",
+			x1:  2,
+			y1: 2,
+			imageAlign : "center",
+			imageBaseline : "middle"
+		},	
+		{
+			position : "RELATIVE",
+			shape: "IMAGE",
+			imagesrc : "smiley_75x75.jpg",
+			x1:  0,
+			y1: 0,
+			imageAlign : "left",
+			imageBaseline : "top"
+		},	
+		{
+			position : "RELATIVE",
+			shape: "IMAGE",
+			imagesrc : "smiley_75x75.jpg",
+			x1:  0,
+			y1: 4,
+			imageAlign : "left",
+			imageBaseline : "bottom"
+		},	
+		{
+			position : "RELATIVE",
+			shape: "IMAGE",
+			imagesrc : "smiley_75x75.jpg",
+			x1:  4,
+			y1: 0,
+			imageAlign : "right",
+			imageBaseline : "top"
+		},	
+		{
+			position : "RELATIVE",
+			shape: "IMAGE",
+			imagesrc : "smiley_75x75.jpg",
+			x1:  4,
+			y1: 4,
+			imageAlign : "right",
+			imageBaseline : "bottom"
+		},
+		{
+			position : "RELATIVE",
+			shape: "IMAGE",
+			imagesrc : "background_800x600.jpg",
+			x1:  0,
+			y1: 0,
+			when : "INITFUNCTION",
+			imageAlign : "left",
+			imageBaseline : "top"
+		}	
+			
+	]
+    		
 	},
 	{
 		value : 90,
@@ -45,10 +113,10 @@ var mydata2 = [
 	}
 ]
 
-var smyley_1=new Image();
-smyley_1.src="smiley_150x150.jpg";
-var smyley_2=new Image();
-smyley_2.src="smiley_75x75.jpg";
+//var smyley_1=new Image();
+//smyley_1.src="smiley_150x150.jpg";
+//var smyley_2=new Image();
+//smyley_2.src="smiley_75x75.jpg";
 
 
 var crossImage1 = {
@@ -57,19 +125,20 @@ var crossImage1 = {
       graphSubTitle : "Graph Sub Title",
       footNote : "Footnote for the graph",
       legend : true,
-      crossImage : [smyley_1,smyley_2,smyley_2,smyley_2,smyley_2],
-      crossImageRelativePosX : [2,0,0,4,4],
-      crossImageRelativePosY : [2,0,4,0,4],
-      crossImageAlign : ["center","left","left","right","right"],
-      crossImageBaseline : ["middle","top","bottom","top","bottom"],
-      
-      
-      crossImageIter : ["all"],
-      crossImageOverlay : [false]
+//      crossImage : [smyley_1,smyley_2,smyley_2,smyley_2,smyley_2],
+//      crossImageRelativePosX : [2,0,0,4,4],
+//      crossImageRelativePosY : [2,0,4,0,4],
+//      crossImageAlign : ["center","left","left","right","right"],
+//      crossImageBaseline : ["middle","top","bottom","top","bottom"],
+//      crossImageIter : ["all"],
+//      crossImageOverlay : [false]
+//                        use new module shapesInChart.js
+	endDrawDataFunction: drawShapes,
+	dispShapesInChart : [0,1,2,3,4]
 }
 
-var background_img=new Image();
-background_img.src="background_800x600.jpg";
+//var background_img=new Image();
+//background_img.src="background_800x600.jpg";
 
 var crossImage2 = {
       inGraphDataShow : true,
@@ -81,9 +150,13 @@ var crossImage2 = {
       footNote : "Footnote for the graph",
       legend : true,
       animation : false,
-      crossImage : [background_img],
-      crossImageIter : ["background"],
-      crossImageOverlay : [false]
+//      crossImage : [background_img],
+//      crossImageIter : ["background"],
+//      crossImageOverlay : [false]
+//                        use new module shapesInChart.js
+	initFunction: drawShapes,
+	dispShapesInChart : [5]
+
 }
 
                      
@@ -114,11 +187,8 @@ var crossImage2 = {
     
 
 window.onload = function() {
-
-
     var myLine = new Chart(document.getElementById("canvas_doughnut1").getContext("2d")).Doughnut(mydata2,crossImage1);
     var myLine = new Chart(document.getElementById("canvas_doughnut2").getContext("2d")).Doughnut(mydata2,crossImage2);
-
 }
 
     </script>
