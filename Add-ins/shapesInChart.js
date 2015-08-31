@@ -61,12 +61,11 @@ var drawShape_default= {
 function shapeLoadImages(data) {
 	var shape,shapesInChart;
 
+
 	if(typeof data.shapesInChart == "object") shapesInChart=data.shapesInChart;
 	if(typeof data[0]=="object") if (typeof data[0].shapesInChart == "object") shapesInChart=data[0].shapesInChart;
-
 	
 	if(typeof shapesInChart == "object") {
-	
 		//      preload all images first;
 		for(var i=0;i<shapesInChart.length;i++) {
 			if(typeof shapesInChart[i].shape == "string")shape=shapesInChart[i].shape.toUpperCase()
@@ -75,7 +74,7 @@ function shapeLoadImages(data) {
 				if(typeof shapesInChart[i].loadImage == "undefined") {
 					shapesInChart[i].loadImage=new Image();
 					var imagesrc = drawShapeSetValue(shapesInChart[i].imagesrc,drawShape_default.imagesrc);
-					if (imagesrc=="") shapesInChart[i].loadImage='data:image/gif;base64,R0lGODlhCwALAIAAAAAA3pn/ZiH5BAEAAAEALAAAAAALAAsAAAIUhA+hkcuO4lmNVindo7qyrIXiGBYAOw==';
+					if (imagesrc=="") shapesInChart[i].loadImage.src='data:image/gif;base64,R0lGODlhCwALAIAAAAAA3pn/ZiH5BAEAAAEALAAAAAALAAsAAAIUhA+hkcuO4lmNVindo7qyrIXiGBYAOw==';
 					else shapesInChart[i].loadImage.src=imagesrc;
 				}
 			}
@@ -136,10 +135,10 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 						tmp=vright;vright=vleft;vleft=tmp;
 						tmp=vtop;vtop=vbottom;vbottom=tmp;
 					}
-
+  
 					ctx.beginPath();
-					var xypos1=setXYpos(shape,"","","",ctx,data,statData,othervars,vright,vtop,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
-					var xypos2=setXYpos(shape,"","","",ctx,data,statData,othervars,vleft,vbottom,1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+					var xypos1=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,vright,vtop,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+					var xypos2=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,vleft,vbottom,1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					if(Math.abs(xypos1.xpos-xypos2.xpos) < othervars.config.zeroValue) { // vertical line;
 						vright=xypos1.xpos;
 						vleft=xypos2.xpos;
@@ -172,8 +171,8 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					vbottom= 1*drawShapeSetValue(shapesInChart[i].y2,drawShape_default.y2);
 
 					ctx.beginPath();
-					var xypos1=setXYpos(shape,"","","",ctx,data,statData,othervars,vright,vtop,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
-					var xypos2=setXYpos(shape,"","","",ctx,data,statData,othervars,vleft,vbottom,1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+					var xypos1=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,vright,vtop,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+					var xypos2=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,vleft,vbottom,1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					var arrowWidth=realAnimation*1*drawShapeSetValue(shapesInChart[i].arrowWidth,drawShape_default.arrowWidth) ;
 					var arrowHeight=realAnimation*1*drawShapeSetValue(shapesInChart[i].arrowHeight,drawShape_default.arrowHeight);
 
@@ -277,7 +276,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					if(typeof text=="function") {
 						text=text(i, null, ctx, othervars.config, vx, vy, othervars.borderX, othervars.borderY, true, data, othervars.animationValue,othervars);
 					}
-					var xypos1=setXYpos(shape,"","","",ctx,data,statData,othervars,vx,vy,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+					var xypos1=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,vx,vy,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					ctx.translate(xypos1.xpos, xypos1.ypos);
 					var fontSize=realAnimation*drawShapeSetValue(shapesInChart[i].fontSize,drawShape_default.fontSize);
 					ctx.font = drawShapeSetValue(shapesInChart[i].fontStyle,drawShape_default.fontStyle) + " " + (Math.ceil(ctx.chartTextScale*fontSize)).toString() + "px " + drawShapeSetValue(shapesInChart[i].fontFamily,drawShape_default.fontFamily);
@@ -297,11 +296,13 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					var vx, vy, text;
 					vx= 1*drawShapeSetValue(shapesInChart[i].x1,drawShape_default.x1);
 					vy= 1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1);
-					var xypos1=setXYpos(shape,imageAlign,imageBaseline,shapesInChart[i].loadImage,ctx,data,statData,othervars,vx,vy,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+					var xypos1=setXYpos(shape,shapesInChart[i],imageAlign,imageBaseline,shapesInChart[i].loadImage,ctx,data,statData,othervars,vx,vy,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					ctx.translate(xypos1.xpos, xypos1.ypos);
 					var rotateVal=Math.PI * 1*drawShapeSetValue(shapesInChart[i].rotate,drawShape_default.rotate) / 180;
 					ctx.rotate(rotateVal);
-					ctx.drawImage(shapesInChart[i].loadImage, 0, 0);
+					var imageWidth=drawShapeSetValue(shapesInChart[i].imageWidth,shapesInChart[i].loadImage.width);
+					var imageHeight=drawShapeSetValue(shapesInChart[i].imageHeight,shapesInChart[i].loadImage.height);
+					ctx.drawImage(shapesInChart[i].loadImage, 0, 0,shapesInChart[i].loadImage.width,shapesInChart[i].loadImage.height,0, 0,imageWidth,imageHeight);
 					break;
 				case "STAR" :
 				case "PLUS" :
@@ -326,10 +327,10 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					vy= 1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1);
 					var radius    = realAnimation*1*drawShapeSetValue(shapesInChart[i].radius,drawShape_default.radius);
 					if (radius < 0) {
-						var xypos2=setXYpos(shape,"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x2,drawShape_default.x2),1*drawShapeSetValue(shapesInChart[i].y2,drawShape_default.y2),1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						var xypos2=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x2,drawShape_default.x2),1*drawShapeSetValue(shapesInChart[i].y2,drawShape_default.y2),1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 						radius=Math.sqrt(((xypos.xpos-xypos2.xpos)*(xypos.xpos-xypos2.xpos))+((xypos.ypos-xypos2.ypos)*(xypos.ypos-xypos2.ypos)));
 					}
-					var xypos1=setXYpos(shape,"","","",ctx,data,statData,othervars,vx,vy,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+					var xypos1=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,vx,vy,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					ctx.beginPath();
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*drawShapeSetValue(shapesInChart[i].strokeSize,drawShape_default.strokeSize));
 					ctx.strokeStyle = drawShapeSetValue(shapesInChart[i].strokeColor,drawShape_default.strokeColor);
@@ -371,10 +372,10 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					var angleplus = 2*Math.PI/sideCount;
 					vx= 1*drawShapeSetValue(shapesInChart[i].x1,drawShape_default.x1);
 					vy= 1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1);
-					var xypos1=setXYpos(shape,"","","",ctx,data,statData,othervars,vx,vy,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+					var xypos1=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,vx,vy,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					var radius    = realAnimation*1*drawShapeSetValue(shapesInChart[i].radius,drawShape_default.radius);
 					if (radius < 0) {
-						var xypos2=setXYpos(shape,"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x2,drawShape_default.x2),1*drawShapeSetValue(shapesInChart[i].y2,drawShape_default.y2),1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						var xypos2=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x2,drawShape_default.x2),1*drawShapeSetValue(shapesInChart[i].y2,drawShape_default.y2),1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 						radius=Math.sqrt(((xypos.xpos-xypos2.xpos)*(xypos.xpos-xypos2.xpos))+((xypos.ypos-xypos2.ypos)*(xypos.ypos-xypos2.ypos)));
 					}
 					ctx.beginPath();
@@ -396,7 +397,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					break;					
 				case "ELLIPSE" :
 					ctx.beginPath();
-					var xypos=setXYpos(shape,"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x1,drawShape_default.x1),1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1),1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+					var xypos=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x1,drawShape_default.x1),1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1),1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					var height=realAnimation*1*drawShapeSetValue(shapesInChart[i].ellipseHeight,drawShape_default.ellipseHeight);
 					var width= realAnimation*1*drawShapeSetValue(shapesInChart[i].ellipseWidth,drawShape_default.ellipseWidth);
 					ctx.moveTo(xypos.xpos, xypos.ypos - height/2); // A1
@@ -426,8 +427,8 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					vbottom= 1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1);
 					ctx.beginPath();
 
-					var xypos1=setXYpos(shape,"","","",ctx,data,statData,othervars,vleft,vtop,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
-					var xypos2=setXYpos(shape,"","","",ctx,data,statData,othervars,vright,vbottom,1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+					var xypos1=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,vleft,vtop,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+					var xypos2=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,vright,vbottom,1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 
 					if (xypos2.xpos<xypos1.xpos){tmp=xypos2.xpos;xypos2.xpos=xypos1.xpos;xypos1.xpos=tmp;}
 					if (xypos2.ypos<xypos1.ypos){tmp=xypos2.ypos;xypos2.ypos=xypos1.ypos;xypos1.ypos=tmp;}
@@ -458,7 +459,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 						ypos=drawShapeSetValue(shapesInChart[i].shapePoints[j][1],drawShape_default.y1);
 						paddingX=drawShapeSetValue(shapesInChart[i].shapePadding[j][0],drawShape_default.paddingX1);
 						paddingY=drawShapeSetValue(shapesInChart[i].shapePadding[j][1],drawShape_default.paddingY1);
-						xypos1=setXYpos(shape,"","","",ctx,data,statData,othervars,xpos,ypos,1*paddingX,1*paddingY,drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						xypos1=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,xpos,ypos,1*paddingX,1*paddingY,drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 						if(j==0) ctx.moveTo(xypos1.xpos,xypos1.ypos);
 						else ctx.lineTo(xypos1.xpos,xypos1.ypos);
 					} 					
@@ -473,13 +474,13 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					break;
 				case "CIRCLE" :
 					ctx.beginPath();
-					var xypos=setXYpos(shape,"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x1,drawShape_default.x1),1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1),1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+					var xypos=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x1,drawShape_default.x1),1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1),1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					var radius    = realAnimation*1*drawShapeSetValue(shapesInChart[i].radius,drawShape_default.radius);
 					if (radius < 0) {
-						var xypos2=setXYpos(shape,"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x2,drawShape_default.x2),1*drawShapeSetValue(shapesInChart[i].y2,drawShape_default.y2),1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						var xypos2=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x2,drawShape_default.x2),1*drawShapeSetValue(shapesInChart[i].y2,drawShape_default.y2),1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 						radius=Math.sqrt(((xypos.xpos-xypos2.xpos)*(xypos.xpos-xypos2.xpos))+((xypos.ypos-xypos2.ypos)*(xypos.ypos-xypos2.ypos)));
 					}
-					var xypos=setXYpos(shape,"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x1,drawShape_default.x1),1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1),1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+					var xypos=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x1,drawShape_default.x1),1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1),1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					if (1*drawShapeSetValue(shapesInChart[i].endAngle,drawShape_default.endAngle)-1*drawShapeSetValue(shapesInChart[i].startAngle,drawShape_default.startAngle) !=  360)
 						ctx.arc(xypos.xpos,xypos.ypos, 0, (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].startAngle,drawShape_default.startAngle), (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].endAngle,drawShape_default.endAngle),false);
 					ctx.arc(xypos.xpos,xypos.ypos, realAnimation*1*radius, (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].startAngle,drawShape_default.startAngle), (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].endAngle,drawShape_default.endAngle),true);
@@ -496,10 +497,10 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					if(typeof shapesInChart[i].shape == "function"){
 						othervars.currentShape=i;
 						othervars.shapesInChart=shapesInChart[i];
-						othervars.xypos1=setXYpos(shape,"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x1,drawShape_default.x1),1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1),1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
-						othervars.xypos2=setXYpos(shape,"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x2,drawShape_default.x2),1*drawShapeSetValue(shapesInChart[i].y2,drawShape_default.y2),1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
-						othervars.xypos3=setXYpos(shape,"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x3,drawShape_default.x3),1*drawShapeSetValue(shapesInChart[i].y3,drawShape_default.y3),1*drawShapeSetValue(shapesInChart[i].paddingX3,drawShape_default.paddingX3),1*drawShapeSetValue(shapesInChart[i].paddingY3,drawShape_default.paddingY3),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
-						othervars.xypos4=setXYpos(shape,"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x4,drawShape_default.x4),1*drawShapeSetValue(shapesInChart[i].y4,drawShape_default.y4),1*drawShapeSetValue(shapesInChart[i].paddingX4,drawShape_default.paddingX4),1*drawShapeSetValue(shapesInChart[i].paddingY4,drawShape_default.paddingY4),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						othervars.xypos1=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x1,drawShape_default.x1),1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1),1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						othervars.xypos2=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x2,drawShape_default.x2),1*drawShapeSetValue(shapesInChart[i].y2,drawShape_default.y2),1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						othervars.xypos3=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x3,drawShape_default.x3),1*drawShapeSetValue(shapesInChart[i].y3,drawShape_default.y3),1*drawShapeSetValue(shapesInChart[i].paddingX3,drawShape_default.paddingX3),1*drawShapeSetValue(shapesInChart[i].paddingY3,drawShape_default.paddingY3),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						othervars.xypos4=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x4,drawShape_default.x4),1*drawShapeSetValue(shapesInChart[i].y4,drawShape_default.y4),1*drawShapeSetValue(shapesInChart[i].paddingX4,drawShape_default.paddingX4),1*drawShapeSetValue(shapesInChart[i].paddingY4,drawShape_default.paddingY4),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 						shapesInChart[i].shape(area, ctx, data,statData, posi,posj,othervars);
 					}
 					break;
@@ -508,10 +509,10 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 		}
 	}
 	
-	function setXYpos(shape,imageAlign,imageBaseline,image,ctx,data,statData,othervars,xposval,yposval,paddingX1,paddingY1,limitToChart) {
+	function setXYpos(shape,shapesInChart,imageAlign,imageBaseline,image,ctx,data,statData,othervars,xposval,yposval,paddingX1,paddingY1,limitToChart) {
 		var xpos, ypos, position;
-		if(typeof shapesInChart[i].position != "string")position= drawShape_default.position.toUpperCase();
-		else position=shapesInChart[i].position.toUpperCase();
+		if(typeof shapesInChart.position != "string")position= drawShape_default.position.toUpperCase();
+		else position=shapesInChart.position.toUpperCase();
 		switch(position) {
 			case "RELATIVE" :
 				xpos = paddingX1;
@@ -574,7 +575,6 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 								ypos=statData[0][0].midPosY - ypos+paddingY1;
 								break;
 							case "Line" :
-
 								ypos= calculateOffset(statData[0][0].logarithmic, yposval, statData[0][0].calculatedScale, statData[0][0].scaleHop,limitToChart) - statData[0][0].zeroY;
 								ypos=statData[0][0].yAxisPos - ypos+paddingY1;
 								var xposval_wk=xposval;
@@ -658,8 +658,9 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 				break;
 
 		}
-		if(shape="IMAGE") {
-			var imageWidth = image.width;
+		if(shape=="IMAGE") {
+			var imageWidth=drawShapeSetValue(shapesInChart.imageWidth,image.width);
+			var imageHeight=drawShapeSetValue(shapesInChart.imageHeight,image.height);
 			switch (imageAlign) {
 				case "left":
 					break;
@@ -672,7 +673,6 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 				default:
 					break;
 			}
-			var imageHeight = image.height;
 			switch (imageBaseline) {
 				case "top":
 					break;
