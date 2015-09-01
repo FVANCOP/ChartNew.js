@@ -3051,6 +3051,7 @@ window.Chart = function(context) {
 			var lowerValue2 = Number.MAX_VALUE;
 			var secondAxis = false;
 			var firstAxis = false;
+			var mathValueHeight;
 			for (var i = 0; i < data.datasets.length; i++) {
 				var mathFctName = data.datasets[i].drawMathDeviation;
 				var mathValueHeight = 0;
@@ -3059,9 +3060,12 @@ window.Chart = function(context) {
 						data: data,
 						datasetNr: i
 					};
-					mathValueHeight = window[mathFctName](parameter);
+					mathValueHeightVal = window[mathFctName](parameter);
 				}
 				for (var j = 0; j < data.datasets[i].data.length; j++) {
+					if(typeof mathValueHeightVal=="object") mathValueHeight=mathValueHeightVal[Math.min(mathValueHeightVal.length,j)];
+					else mathValueHeight=mathValueHeightVal;
+					
 					if(typeof data.datasets[i].data[j] == "undefined") continue;
 					if (data.datasets[i].axis == 2) {
 						secondAxis = true;
@@ -3116,12 +3120,10 @@ window.Chart = function(context) {
 				if(typeof config.graphMax2=="function") upperValue2= setOptionValue(1,"GRAPHMAX",ctx,data,statData,undefined,config.graphMax2,-1,-1,{nullValue : true})
 				else if (!isNaN(config.graphMax2)) upperValue2 = config.graphMax2;
 			}
-
 			if (!firstAxis && secondAxis) {
 				upperValue = upperValue2;
 				lowerValue = lowerValue2;
 			}
-			
 			labelHeight = (Math.ceil(ctx.chartTextScale*config.scaleFontSize));
 			scaleHeight = msr.availableHeight;
 			var maxSteps = Math.floor((scaleHeight / (labelHeight * 0.66)));
@@ -4203,7 +4205,7 @@ window.Chart = function(context) {
 			var lowerValue2 = Number.MAX_VALUE;
 			var secondAxis = false;
 			var firstAxis = false;
-			
+			var mathValueHeight;			
 			for (var i = 0; i < data.datasets.length; i++) {
 				var mathFctName = data.datasets[i].drawMathDeviation;
 				var mathValueHeight = 0;
@@ -4212,9 +4214,11 @@ window.Chart = function(context) {
 						data: data,
 						datasetNr: i
 					};
-					mathValueHeight = window[mathFctName](parameter);
+					mathValueHeightVal = window[mathFctName](parameter);
 				}
 				for (var j = 0; j < data.datasets[i].data.length; j++) {
+					if(typeof mathValueHeightVal=="object") mathValueHeight=mathValueHeightVal[Math.min(mathValueHeightVal.length,j)];
+					else mathValueHeight=mathValueHeightVal;
 					if(typeof data.datasets[i].data[j]=="undefined")continue;
 					if (data.datasets[i].axis == 2) {
 						secondAxis = true;
