@@ -92,17 +92,21 @@ function drawMath(ctx,config,data,msr,vars) {
 	 * @param deviationFct {string} math function name
 	 */
 	function drawMathDeviation(i,deviationFct) {
-		var deviation = 0;
+		var deviationVal = 0;
 		// check if the math function exists
 		if (typeof eval(deviationFct) == "function") {
 			var parameter = {data:data,datasetNr: i};
-			deviation = window[deviationFct](parameter);
+			deviationVal = window[deviationFct](parameter);
 		 }
-		if (isNumber(deviation)) {
-			ctx.strokeStyle= data.datasets[i].deviationStrokeColor ? data.datasets[i].deviationStrokeColor : config.defaultStrokeColor;
-			ctx.lineWidth = config.datasetStrokeWidth;
-			ctx.beginPath();
-			for (var j = 0; j < data.datasets[i].data.length; j++) {
+		for (var j = 0; j < data.datasets[i].data.length; j++) {
+			
+			if(typeof deviationVal=="object") deviation=deviationVal[Math.min(deviationVal.length,j)];
+			else deviation=deviationVal;
+			
+			if (isNumber(deviation)) {
+				ctx.strokeStyle= data.datasets[i].deviationStrokeColor ? data.datasets[i].deviationStrokeColor : config.defaultStrokeColor;
+				ctx.lineWidth = config.datasetStrokeWidth;
+				ctx.beginPath();
 				// important to check because missing values are possible
 				if (!(typeof(data.datasets[i].data[j])=='undefined')) {
 					var deviationWidth = data.datasets[i].deviationWidth;
@@ -117,9 +121,9 @@ function drawMath(ctx,config,data,msr,vars) {
 					ctx.moveTo(xPos(j,i,barWidth,barBool),yPos(i,j,-deviation,true));
 					ctx.lineTo(xPos(j,i,barWidth,barBool),yPos(i,j,deviation,true));
 				}
+				ctx.stroke();
+				ctx.closePath();
 			}
-			ctx.stroke();
-			ctx.closePath();
 		}
 	}
 
