@@ -1,6 +1,8 @@
 Change history
 --------------
 
+01/09/2015 - Vancoppenolle Francois - Solution for issue #349
+31/08/2015 - Vancoppenolle Francois - New Add-ins shapesInChart.js
 14/07/2015 - Vancoppenolle Francois - fix issues with option legendPosX
 13/07/2015 - Vancoppenolle Francois - option showXLabel and showYLabel added
 11/07/2015 - Vancoppenolle Francois - fix issues for retina display with updateChart function
@@ -177,7 +179,6 @@ Future Improvements
 
 Known Bugs
 ----------
-- on android, Size of chart increase/decrease when updated
 - problem with inGraphData on Pie/Doughnut
 - dynamicDisplay not working on IOS 5
 - Pie not working on some devices
