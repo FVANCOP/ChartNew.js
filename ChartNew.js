@@ -3061,7 +3061,7 @@ window.Chart = function(context) {
 						datasetNr: i
 					};
 					mathValueHeightVal = window[mathFctName](parameter);
-				}
+				} else mathValueHeightVal=0;
 				for (var j = 0; j < data.datasets[i].data.length; j++) {
 					if(typeof mathValueHeightVal=="object") mathValueHeight=mathValueHeightVal[Math.min(mathValueHeightVal.length,j)];
 					else mathValueHeight=mathValueHeightVal;
@@ -4215,7 +4215,7 @@ window.Chart = function(context) {
 						datasetNr: i
 					};
 					mathValueHeightVal = window[mathFctName](parameter);
-				}
+				} else mathValueHeightVal=0;
 				for (var j = 0; j < data.datasets[i].data.length; j++) {
 					if(typeof mathValueHeightVal=="object") mathValueHeight=mathValueHeightVal[Math.min(mathValueHeightVal.length,j)];
 					else mathValueHeight=mathValueHeightVal;
