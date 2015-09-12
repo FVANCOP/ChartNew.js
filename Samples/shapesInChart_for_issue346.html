@@ -1,0 +1,210 @@
+  <!doctype html>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]-->
+<SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = [
+	{
+		value : 30,
+		color: "rgba(220,0,220,0.2)",
+		title : "data1"
+	},
+	{
+		value : 90,
+		color: "rgba(0,0,220,0.2)",
+    		title : "data2"
+	},
+	{
+		value : 24,
+		color: "rgba(220,0,0,0.2)",
+    		title : "data3"
+	},
+	{
+		value : 58,
+		color: "rgba(0,220,220,0.2)",
+    		title : "data4"
+	},
+	{
+		value : 50,
+		color: "rgba(0,220,0,0.2)",
+    		title : "data5"
+	},
+	{
+		value : 0,
+		color: "rgba(50,100,150,0.2)",
+    		title : "data6"
+	}
+];
+
+function myShapeFunction(area, ctx, data,statData, posi,posj,othervars){
+
+// line to label;
+	ctx.beginPath();
+	if(othervars.xypos1.xpos==othervars.xypos3.xpos && othervars.xypos1.ypos==othervars.xypos3.ypos) {
+		ctx.strokeStyle = othervars.shapesInChart.fillColor;
+		ctx.lineWidth = 2;
+		ctx.moveTo(othervars.xypos1.xpos, othervars.xypos1.ypos);
+		ctx.lineTo(othervars.xypos2.xpos, othervars.xypos2.ypos);
+	} else {	
+		ctx.moveTo(othervars.xypos1.xpos, othervars.xypos1.ypos);
+		ctx.lineWidth = 0;
+		ctx.strokeStyle = "rgba(0,0,0,0)";
+		ctx.lineTo(othervars.xypos2.xpos, othervars.xypos2.ypos);
+		ctx.lineTo(othervars.xypos3.xpos, othervars.xypos3.ypos);
+		ctx.closePath();
+		ctx.fillStyle=othervars.shapesInChart.fillColor;
+		ctx.fill();
+	}
+	ctx.stroke();
+
+
+
+// Label;
+	var paddingX, paddingY;
+	var paddingValX=4;
+	var paddingValY=-16;
+	var textPaddingX=0;
+	var imageAfterPaddingX=0;
+	var imageAfterPaddingY=0;
+
+	ctx.beginPath();
+	if(othervars.xypos4.xpos>othervars.xypos2.xpos) {
+		paddingX=paddingValX;
+		ctx.textAlign="left";
+	} else {
+		paddingX=-paddingValX;
+		imageAfterPaddingX= -othervars.shapesInChart.imageAfterWidth;
+		textPaddingX= othervars.shapesInChart.imageAfterWidth+othervars.shapesInChart.SpaceBetweenTextAndImageAfter;
+		ctx.textAlign="right";
+	}
+	
+	if(othervars.xypos3.ypos>othervars.xypos2.ypos) {
+		paddingY=1*paddingValY;
+		imageAfterPaddingY=othervars.shapesInChart.fontSize;
+		ctx.textBaseline="top";
+	} else {
+		paddingY=-paddingValY;
+		ctx.textBaseline="bottom";
+	}
+	
+
+	ctx.save();
+	ctx.translate(othervars.xypos4.xpos+paddingX-textPaddingX, othervars.xypos4.ypos+paddingY);
+	var fontSize=othervars.shapesInChart.fontSize;
+	ctx.font = othervars.shapesInChart.fontStyle + " " + othervars.shapesInChart.fontSize.toString() + "px " + othervars.shapesInChart.fontFamily;
+	ctx.fillStyle = othervars.shapesInChart.fontColor;
+	ctx.fillTextMultiLine(othervars.shapesInChart.text, 0, 0, ctx.textBaseline, Math.ceil(ctx.chartTextScale*fontSize),true,false,ctx,"SHAPESINCHART_TEXTMOUSE",0,othervars.xypos4.xpos+paddingX, othervars.xypos4.ypos+paddingY,-1,-1);
+//	ctx.fillTextMultiLine(ctx.textBaseline+" "+ctx.textAlign, 0, 0, ctx.textBaseline, Math.ceil(ctx.chartTextScale*fontSize),true,false,ctx,"SHAPESINCHART_TEXTMOUSE",0,othervars.xypos4.xpos+paddingX, othervars.xypos4.ypos+paddingY,-1,-1);
+	if(ctx.textAlign=="left") {
+		var txtSize=ctx.measureTextMultiLine(othervars.shapesInChart.text,fontSize);
+		imageAfterPaddingX=txtSize.textWidth+othervars.shapesInChart.SpaceBetweenTextAndImageAfter;
+	}
+	ctx.restore();
+
+	ctx.save();
+	ctx.translate(othervars.xypos4.xpos+paddingX+imageAfterPaddingX, othervars.xypos4.ypos+paddingY-(othervars.shapesInChart.fontSize/2)+imageAfterPaddingY-(othervars.shapesInChart.imageAfterHeight/2));
+	ctx.drawImage(othervars.shapesInChart.imageAfterLoad, 0, 0,othervars.shapesInChart.imageAfterLoad.width,othervars.shapesInChart.imageAfterLoad.height,0, 0,othervars.shapesInChart.imageAfterWidth,othervars.shapesInChart.imageAfterHeight);
+	ctx.restore();
+
+
+
+};
+
+var arrowWidth=2;
+
+var image=new Image();
+image.src="plus_sign.jpg";
+
+
+mydata1[0].shapesInChart=[];
+
+for(i=0;i<mydata1.length;i++){
+		mydata1[0].shapesInChart[i]={
+			position : "INCHART",
+			shape: myShapeFunction,
+			text : mydata1[i].title,
+			imageAfterLoad : image,
+			imageAfterWidth : 20,
+			imageAfterHeight: 20,
+			SpaceBetweenTextAndImageAfter : 5,
+			x1:  (mydata1[i]==0 ? i : Math.max(i-0.5,i-(arrowWidth/mydata1[i].value))),
+			y1: 0.99,
+			x2: i,
+			y2 : 1.1,
+			x3: (mydata1[i]==0 ? i : Math.min(i+0.5,i+(arrowWidth/mydata1[i].value))),
+			y3 : 0.99,
+			x4 : i,
+			y4 : 1.2,
+			fillColor : mydata1[i].color,
+//			strokeStyle: "dashed",
+			strokeStyle: "solid",
+			strokeSize: 2,
+			limitToChart : false,
+			fontColor : "black", 
+			fontStyle : "bold",
+			fontSize : 25,
+			fontFamily : "'Arial'",
+			iter : "last"
+			}
+			
+
+};
+
+
+
+
+var opt1 = {
+//	datasetFill : false,
+	animation : false,
+//	graphMin : 0,
+	canvasBorders : true,
+//	legend : true,
+//	inGraphDataShow : true,
+	spaceBottom : 40,
+	spaceTop : 55,
+	endDrawDataFunction: drawShapes
+
+}
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine = new Chart(document.getElementById("canvas_Line").getContext("2d")).Doughnut(mydata1,opt1);
+}
+    </script>
+  </body>
+</html>
