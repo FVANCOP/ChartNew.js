@@ -1,0 +1,107 @@
+  <!doctype html>
+
+
+
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+
+<SCRIPT>
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = {
+	labels : ["Jan","Feb","Mar","Apr","May","June","Jul","Aug","Sep","Oct","Nov","Dec"],
+	datasets : [
+		{
+			fillColor : "blue",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [100,200,400,2000,4000,16000,20000,32000,45000,85000,95000,115000],
+      			title : "previous Month"
+		},
+		{
+			fillColor : "red",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [100,200,1600,2000,12000,4000,12000,13000,40000,10000,20000,17000],
+      			title : "current month"
+		},
+		{
+			type : "Line",
+//			fillColor : "rgba(0,0,0,0)",
+			strokeColor : "green",
+			pointColor : "green",
+			pointStrokeColor : "green",
+			data : [200,400,2000,4000,16000,20000,32000,45000,85000,95000,115000,132000],
+			title : "total"
+		}
+	]
+}
+
+
+
+
+var newopts = {
+	animation : false,
+	datasetFill : false,
+	
+	canvasBorders : true,
+	canvasBordersWidth : 3,
+	canvasBordersColor : "black",
+	graphTitle : "Graph Title",
+	graphTitleFontFamily : "'Arial'",
+	graphTitleFontSize : 24,
+	graphTitleFontStyle : "bold",
+	graphTitleFontColor : "#666",
+	legend : true,
+	legendBlockSize : 30,
+	bezierCurveTension : 0.2 ,
+	legendPosX : 2,
+	legendPosY : 0,
+	graphMax : 160000,
+	yAxisMinimumInterval : 40000,
+	scaleXGridLinesStep : 9999
+}
+
+
+                     
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+  
+  <!div id="divCursor" style="position:absolute"> <!/div>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+    
+
+      document.write("<canvas id=\"canvas_stackedbar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    
+
+window.onload = function() {
+
+
+    if(1==1) {
+    var myLine = new Chart(document.getElementById("canvas_stackedbar").getContext("2d")).StackedBar(mydata1,newopts);
+    }
+
+}
+
+    </script>
+  </body>
+</html>
