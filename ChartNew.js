@@ -1450,6 +1450,8 @@ window.Chart = function(context) {
 			animationSteps: 60,
 			animationEasing: "easeOutQuart",
 			onAnimationComplete: null,
+			bezierCurve: true,
+			bezierCurveTension : 0.4,
 			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + v6 + ' %)'%>",
 			pointHitDetectionRadius : 10
 		};
@@ -3143,16 +3145,23 @@ window.Chart = function(context) {
 	var StackedBar = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
+
 		ctx.tpchart="StackedBar";
 		ctx.tpdata=0;
 
 	        if (!init_and_start(ctx,data,config)) return;
 		var statData=initPassVariableData_part1(data,config,ctx);
 
+		var nrOfBars = data.datasets.length;
+		for (var i = 0; i < data.datasets.length; i++) {
+			if (data.datasets[i].type == "Line") { statData[i][0].tpchart="Line";nrOfBars--;}
+			else statData[i][0].tpchart="Bar";	
+		}                               
+
 		config.logarithmic = false;
 		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], true, false, true, true, true, "StackedBar");
 		valueBounds = getValueBounds();
-		
+
 		if(valueBounds.maxSteps>0 && valueBounds.minSteps>0) {
 			//Check and set the scale
 			labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
@@ -3170,6 +3179,7 @@ window.Chart = function(context) {
 					graphMin: scaleStartValue,
 					labels: []
 				}
+
 				for (var i = 0; i <= calculatedScale.steps; i++) {
 					if (labelTemplateString) {
 						calculatedScale.labels.push(tmpl(labelTemplateString, {
@@ -3205,9 +3215,19 @@ window.Chart = function(context) {
 				additionalSpaceBetweenBars=(barWidth-1*config.maxBarWidth)/2;
 				barWidth=1*config.maxBarWidth;
 			} else additionalSpaceBetweenBars=0;
+
+			var zeroY = 0;
+			var zeroY2 = 0;
+			if (valueBounds.minValue < 0) 	zeroY = calculateOffset(false, 0, calculatedScale, scaleHop);
+			if (valueBounds.minValue2 < 0) zeroY2 = calculateOffset(config.logarithmic2, 0, calculatedScale2, scaleHop2);
        	
 			drawLabels();
 			initPassVariableData_part2(statData,data,config,ctx,{ 
+				msr: msr,
+				zeroY : zeroY,
+				zeroY2 : zeroY2,
+				logarithmic  : false,
+				logarithmic2 : false,
 				calculatedScale : calculatedScale,
 				additionalSpaceBetweenBars : additionalSpaceBetweenBars,
 				scaleHop : scaleHop,
@@ -3223,6 +3243,7 @@ window.Chart = function(context) {
 		function drawBars(animPc) {
 			ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.barStrokeWidth);
 			for (var i = 0; i < data.datasets.length; i++) {
+				if(data.datasets[i].type=="Line") continue;
 				for (var j = 0; j < data.datasets[i].data.length; j++) {
 					var currentAnimPc = animationCorrection(animPc, data, config, i, j, 1).animVal;
 					if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
@@ -3255,6 +3276,8 @@ window.Chart = function(context) {
 					}
 				}
 			}
+			drawLinesDataset(animPc, data, config, ctx, statData,{xAxisPosY : xAxisPosY,yAxisPosX : yAxisPosX, valueHop : valueHop, nbValueHop : data.labels.length });
+
 			if (animPc >= config.animationStopValue) {
 				var 	yPos = 0,
 					xPos = 0;
@@ -3407,62 +3430,47 @@ window.Chart = function(context) {
 		};
 
 		function getValueBounds() {
-			var upperValue = -Number.MAX_VALUE;
-			var lowerValue = Number.MAX_VALUE;
-			var minvl = new Array(data.datasets.length);
-			var maxvl = new Array(data.datasets.length);
+			var maxValp = -Number.MAX_VALUE;
+			var minValp = Number.MAX_VALUE;
+			var maxValn = -Number.MAX_VALUE;
+			var minValn = Number.MAX_VALUE;
+
+			var tempp=[];
+			var tempn=[];
+			var inp=0;
+			var inn=0;
+
 			for (var i = 0; i < data.datasets.length; i++) {
 				for (var j = 0; j < data.datasets[i].data.length; j++) {
-					var k = i;
-					var tempp = 0;
-					var tempn = 0;
-					if (!(typeof(data.datasets[0].data[j]) == 'undefined')) {
-						if(1 * data.datasets[0].data[j] > 0) {
-							tempp += 1 * data.datasets[0].data[j];
-							if (tempp > upperValue) {
-								upperValue = tempp;
-							};
-							if (tempp < lowerValue) {
-								lowerValue = tempp;
-							};
-						} else {
-							tempn += 1 * data.datasets[0].data[j];
-							if (tempn > upperValue) {
-								upperValue = tempn;
-							};
-							if (tempn < lowerValue) {
-								lowerValue = tempn;
-							};
-						}
-					}
-					while (k > 0) { //get max of stacked data
-						if (!(typeof(data.datasets[k].data[j]) == 'undefined')) {
-							if(1 * data.datasets[k].data[j] > 0) {
-								tempp += 1 * data.datasets[k].data[j];
-								if (tempp > upperValue) {
-									upperValue = tempp;
-								};
-								if (tempp < lowerValue) {
-									lowerValue = tempp;
-								};
-							} else {
-								tempn += 1 * data.datasets[k].data[j];
-								if (tempn > upperValue) {
-									upperValue = tempn;
-								};
-								if (tempn < lowerValue) {
-									lowerValue = tempn;
-								};
-							}
-						}
-						k--;
+					if(1 * data.datasets[i].data[j] > 0) {
+						if(statData[i][0].tpchart=="Bar") {
+							if(typeof tempp[j] == "undefined") tempp[j]=0;
+							tempp[j] += 1 * data.datasets[i].data[j];
+							maxValp=Math.max(maxValp,tempp[j]);
+						} else maxValp=Math.max(maxValp,1 * data.datasets[i].data[j]);
+						minValp=Math.min(minValp,1 * data.datasets[i].data[j]);
+						inp=1;
+					} else if(typeof (1 * data.datasets[i].data[j])=="number") {
+						if(statData[i][0].tpchart=="Bar") {
+							if(typeof tempn[j] == "undefined") tempn[j]=0;
+							tempn[j] += 1 * data.datasets[0].data[j];
+							minValn=Math.min(minValn,tempn[j]);
+						} else minValn=Math.min(minValn,1 * data.datasets[i].data[j]);
+						maxValn=Math.max(maxValn,1 * data.datasets[i].data[j]);
+						inn=1;
 					}
 				}
 			};
+			var upperValue, lowerValue;
+			if (inp==0){upperValue=maxValn;lowerValue=minValn;}
+			else if(inn==0) { upperValue=maxValp;lowerValue=minValp;}
+			else { upperValue=maxValp;lowerValue=minValn; }
+
 			if(typeof config.graphMin=="function")lowerValue= setOptionValue(1,"GRAPHMIN",ctx,data,statData,undefined,config.graphMin,-1,-1,{nullValue : true})
 			else if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
 			if(typeof config.graphMax=="function") upperValue= setOptionValue(1,"GRAPHMAX",ctx,data,statData,undefined,config.graphMax,-1,-1,{nullValue : true})
 			else if (!isNaN(config.graphMax)) upperValue = config.graphMax;
+
 			if(upperValue<lowerValue){upperValue=0;lowerValue=0;}
 			if (Math.abs(upperValue - lowerValue) < config.zeroValue) {
 				if(Math.abs(upperValue)< config.zeroValue) upperValue = .9;
@@ -3474,6 +3482,7 @@ window.Chart = function(context) {
 					lowerValue=lowerValue*1.1;
 				}
 			}
+
 			labelHeight = (Math.ceil(ctx.chartTextScale*config.scaleFontSize));
 			scaleHeight = msr.availableHeight;
 			var maxSteps = Math.floor((scaleHeight / (labelHeight * 0.66)));
@@ -3976,7 +3985,7 @@ window.Chart = function(context) {
 			if(barWidth<0 && barWidth>=-1)barWidth=-1;
 			var additionalSpaceBetweenBars;
 			if(1*config.maxBarWidth >0 && barWidth > 1*config.maxBarWidth) {
-				additionalSpaceBetweenBars=data.datasets.length*(barWidth-1*config.maxBarWidth)/2;
+				additionalSpaceBetweenBars=nrOfBars*(barWidth-1*config.maxBarWidth)/2;
 				barWidth=1*config.maxBarWidth;
 			} else additionalSpaceBetweenBars=0;
 
@@ -4779,10 +4788,13 @@ window.Chart = function(context) {
 			while (!stopLoop && (numberOfSteps < minSteps || numberOfSteps > maxSteps)) {
 				if (numberOfSteps < minSteps) {
 					if (typeof yAxisMinimumInterval == "number") {
-						if (stepValue / 2 < yAxisMinimumInterval) stopLoop = true;
+						if (stepValue / 2 < yAxisMinimumInterval) {
+							stopLoop = true;
+							stepValue=yAxisMinimumInterval;
+						}
 					}
 					if (!stopLoop) {
-						stepValue /= 2;
+						stepValue /=2;
 						numberOfSteps = Math.round(graphRange / stepValue);
 					}
 				} else {
@@ -5791,7 +5803,6 @@ window.Chart = function(context) {
 	function drawLinesDataset(animPc, data, config, ctx, statData,vars) {
 		var y1,y2,y3,diffnb,diffnbj,fact, currentAnimPc;
 		var pts=[];
-
 		for (var i = 0; i < data.datasets.length; i++) {
 			if(statData[i][0].tpchart!="Line")continue;
 			if (statData[i].length == 0) continue;
@@ -6314,7 +6325,7 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
 				ctx.save();
 				ctx.beginPath();
 				var lgdbox=legendMsr.legendBox;
-				if(ctx.tpchart=="Bar") if (data.datasets[orderi].type=="Line" && !config.datasetFill) lgdbox=false;
+				if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") if (data.datasets[orderi].type=="Line" && !config.datasetFill) lgdbox=false;
 				if (lgdbox) {
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.datasetStrokeWidth);
 					ctx.beginPath();
@@ -6833,7 +6844,7 @@ switch(ctx.tpdata) {
 						}
 						statData[i][j].xPos=xPos(i,j,data,othervars.yAxisPosX,othervars.valueHop,othervars.nbValueHop);
 						statData[i][j].yAxisPos=othervars.xAxisPosY - statData[i][j].zeroY;
-						if(ctx.tpchart=="Bar") {
+						if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") {
 							statData[i][j].xPos+=(othervars.valueHop/2);
 							statData[i][j].yAxisPosX += (othervars.valueHop/2);
 						}			
@@ -6850,6 +6861,7 @@ switch(ctx.tpdata) {
 							statData[i][j].posY=statData[i][j].yAxisPos - statData[i][j].yPosOffset;
 						}
 						statData[i][j].posX=statData[i][j].xPos;
+						
 						statData[i][j].v9= statData[i][j].xPos;
 						statData[i][j].v10=statData[i][j].posY;
 
@@ -7180,6 +7192,7 @@ function setOptionValue(rescale,reference,ctx,data,statData,optionvar,defaultval
 function tpdraw(ctx,dataval) {
 	switch(ctx.tpchart)  {
 		case "Bar" :
+		case "StackedBar" :
 			if (dataval.type=="Line") { tp="Line";} 	
 			else {tp=ctx.tpchart;}
 			break;
