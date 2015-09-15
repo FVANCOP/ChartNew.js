@@ -4,7 +4,40 @@
 // see https://github.com/FVANCOP/ChartNew.js/wiki/900_010_format.js
 //
 function fmtChartJSPerso(config, value, fmt) {
+	var return_value, spltdt; 
 	switch (fmt.split(/[\s,]+/)[0].toUpperCase()) {
+		case "FIXEDDECIMAL":
+		case "DECIMAL":
+			var spltdt = Math.round(fmt.split(/[\s,]+/)[1]);
+			var roundVal;
+			if (spltdt <= 0) {
+				roundVal = -spltdt;
+				return_value = +(Math.round(value + "e+" + roundVal) + "e-" + roundVal);
+				// Force number of decimals;
+				if(fmt.split(/[\s,]+/)[0].toUpperCase()=="FIXEDDECIMAL") return_value=return_value.toFixed(Math.abs(spltdt));
+			} else {
+				roundVal = spltdt;
+				var divval = "1e+" + roundVal;
+				return_value = +(Math.round(value / divval)) * divval;
+			}
+			if (config.decimalSeparator != "." || config.thousandSeparator != "") {
+				return_value = value.toString().replace(/\./g, config.decimalSeparator);
+				if (config.thousandSeparator != "") {
+					var part1 = return_value;
+					var part2 = "";
+					var posdec = part1.indexOf(config.decimalSeparator);
+					if (posdec >= 0) {
+						part2 = part1.substring(posdec + 1, part1.length);
+						part2 = part2.split('').reverse().join(''); // reverse string
+						part1 = part1.substring(0, posdec);
+					}
+					part1 = part1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, config.thousandSeparator);
+					part2 = part2.split('').reverse().join(''); // reverse string
+					return_value = part1
+					if (part2 != "") return_value = return_value + config.decimalSeparator + part2;
+				}
+			}
+			break;
 		case "ABBREVIATENUMBER":
 			return_value = value;
 			if (typeof(value) == "number") {
