@@ -68,11 +68,11 @@ function annotateAllX(area,ctx,data,statData,posi,posj,othervars) {
 	retstring=statData[posi][posj].v2+'<BR>';
 	retstring=retstring+'<BR><U>Bar Data:</U><BR>';
 	for(var i=0;i<data.datasets.length;i++){
-		if(typeof statData[i][posj].v3!="undefined" && data.datasets[i].type != "Line")retstring=retstring+statData[i][posj].v1+"="+statData[i][posj].v3+"<BR>";
+		if(typeof statData[i][posj].datavalue!="undefined" && data.datasets[i].type != "Line")retstring=retstring+statData[i][posj].v1+"="+statData[i][posj].datavalue+"<BR>";
 	}
 	retstring=retstring+'<BR><U>Line Data:</U><BR>';
 	for(var i=0;i<data.datasets.length;i++){
-		if(typeof statData[i][posj].v3!="undefined" && data.datasets[i].type == "Line")retstring=retstring+statData[i][posj].v1+"="+statData[i][posj].v3+"<BR>";
+		if(typeof statData[i][posj].datavalue!="undefined" && data.datasets[i].type == "Line")retstring=retstring+statData[i][posj].v1+"="+statData[i][posj].datavalue+"<BR>";
 	}
 	return "<%='"+retstring+"'%>";
 }
