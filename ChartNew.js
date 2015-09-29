@@ -362,7 +362,7 @@ if (typeof CanvasRenderingContext2D !== 'undefined') {
 	CanvasRenderingContext2D.prototype.measureTextMultiLine = function(text, lineHeight) {
 		var textWidth = 0;
 		var lg;
-		var lines = ("" + text).split("\n");
+		var lines = ("" + text).replace(/<BR>/g, "\n").split("\n");
 		var textHeight = lines.length * lineHeight;
 		// if its one line => in the middle 
 		// two lines one above the mid one below etc.	
@@ -372,7 +372,7 @@ if (typeof CanvasRenderingContext2D !== 'undefined') {
 		}
 		return {
 			textWidth: textWidth,
-			textHeight: textHeight
+			textHeight: 1.5*textHeight
 		};
 	};
 	if (typeof CanvasRenderingContext2D.prototype.setLineDash !== 'function') {
@@ -849,7 +849,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					onData = true;
 					if (action == "annotate" && jsGraphAnnotate[ctx.ChartNewId][i][4]) {
 						dispString = tmplbis(setOptionValue(1,"ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][1],-1,{otherVal:true}), myStatData,config);
-						textMsr=ctx.measureTextMultiLine(dispString);
+						textMsr=ctx.measureTextMultiLine(dispString,1*annotateDIV.style.fontSize.replace("pt",""));
 						ctx.restore();
 						annotateDIV.innerHTML = dispString;
 						show = true;
@@ -860,9 +860,15 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 						x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
 						y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
 						if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
-						if(config.annotateRelocate && x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-10) oCursor.moveIt(x + fromLeft-textMsr.textWidth, y + fromTop);
+						if(config.annotateRelocate===true) {
+							var relocateX, relocateY;
+							relocateX=0;relocateY=0;
+						 	if(x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-fromLeft)relocateX=-textMsr.textWidth;
+						 	if(y+fromTop+textMsr.textHeight > 1*window.innerHeight-1*rect.top+fromTop)relocateY-=(textMsr.textHeight+2*fromTop);
+						 	oCursor.moveIt(Math.max(8-rect.left,x + fromLeft+relocateX), Math.max(8-rect.top,y + fromTop + relocateY));
+						}
 						else oCursor.moveIt(x + fromLeft, y + fromTop);
-					}
+						}
 				}
 			}
 		} else if (jsGraphAnnotate[ctx.ChartNewId][i][0] == "RECT") {
@@ -874,7 +880,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 				onData = true;
 				if (action == "annotate"  && jsGraphAnnotate[ctx.ChartNewId][i][4]) {
 					dispString = tmplbis(setOptionValue(1,"ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][1],jsGraphAnnotate[ctx.ChartNewId][i][2],{otherVal:true}), myStatData,config);
-					textMsr=ctx.measureTextMultiLine(dispString);
+					textMsr=ctx.measureTextMultiLine(dispString,1*annotateDIV.style.fontSize.replace("pt",""));
 					ctx.restore();
 					annotateDIV.innerHTML = dispString;
 					show = true;
@@ -885,8 +891,13 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
 					y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
 					if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
-					if(config.annotateRelocate && x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-10) oCursor.moveIt(x + fromLeft-textMsr.textWidth, y + fromTop);
-					else oCursor.moveIt(x + fromLeft, y + fromTop);
+					if(config.annotateRelocate===true) {
+						var relocateX, relocateY;
+						relocateX=0;relocateY=0;
+					 	if(x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-fromLeft)relocateX=-textMsr.textWidth;
+					 	if(y+fromTop+textMsr.textHeight > 1*window.innerHeight-1*rect.top+fromTop)relocateY-=(textMsr.textHeight+2*fromTop);
+					 	oCursor.moveIt(Math.max(8-rect.left,x + fromLeft+relocateX), Math.max(8-rect.top,y + fromTop + relocateY));
+					} else oCursor.moveIt(x + fromLeft, y + fromTop);
 				}
 			}
 		} else if (jsGraphAnnotate[ctx.ChartNewId][i][0] == "POINT") {
@@ -918,7 +929,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 				onData = true;
 				if (action == "annotate"  && jsGraphAnnotate[ctx.ChartNewId][i][4]) {
 					dispString = tmplbis(setOptionValue(1,"ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][i][3],undefined,config.annotateLabel,jsGraphAnnotate[ctx.ChartNewId][i][1],jsGraphAnnotate[ctx.ChartNewId][i][2],{otherVal:true}), myStatData,config);
-					textMsr=ctx.measureTextMultiLine(dispString);
+					textMsr=ctx.measureTextMultiLine(dispString,1*annotateDIV.style.fontSize.replace("pt",""));
 					ctx.restore();
 					annotateDIV.innerHTML = dispString;
 					show = true;
@@ -929,7 +940,13 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
 					y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
 					if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
-					if(config.annotateRelocate && x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-10) oCursor.moveIt(x + fromLeft-textMsr.textWidth, y + fromTop);
+					if(config.annotateRelocate===true) {
+						var relocateX, relocateY;
+						relocateX=0;relocateY=0;
+					 	if(x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-fromLeft)relocateX=-textMsr.textWidth;
+					 	if(y+fromTop+textMsr.textHeight > 1*window.innerHeight-1*rect.top+fromTop)relocateY-=(textMsr.textHeight+2*fromTop);
+					 	oCursor.moveIt(Math.max(8-rect.left,x + fromLeft+relocateX), Math.max(8-rect.top,y + fromTop + relocateY));
+					}
 					else oCursor.moveIt(x + fromLeft, y + fromTop);
 				}
 			}
