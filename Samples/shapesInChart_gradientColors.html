@@ -1,0 +1,95 @@
+  <!doctype html>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]-->
+<SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/gradientcolor.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June","July"],
+//	labels : ["January"],
+	datasets : [
+		{
+			strokeColor : "black",
+			pointColor : "black",
+			pointstrokeColor : "black",
+			data : [16,20,13,21,23,18,15],
+			title : "2015"
+		},
+		{
+			strokeColor : "blue",
+			pointColor : "blue",
+			pointstrokeColor : "blue",
+			data : [13,11,15,17,15,11,10],
+      			title : "2014"
+		}
+	],
+	shapesInChart : [
+		{
+			position : "INCHART",
+			shape: "RECTANGLE",
+//			fillColor: "rgba(220,0,100,0.2)",
+        		fillColor : gradientColor,
+        		gradientColors : ["green","yellow"],			
+			strokeColor : "rgba(0,0,0,0)",
+			animate : false,
+			x1: -999,
+			y1: 999,
+			x2: +999	,
+			y2: -999
+		}
+	]
+}     ;
+
+var opt1 = {
+	datasetFill : false,
+	graphMin : 0,
+	spaceRight : 110,
+	barValueSpacing : 20,
+	canvasBorders : true,
+	legend : true,
+	inGraphDataShow : true,
+	endDrawScaleFunction: drawShapes
+}
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine = new Chart(document.getElementById("canvas_Line").getContext("2d")).Line(mydata1,opt1);
+}
+    </script>
+  </body>
+</html>

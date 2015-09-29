@@ -12,10 +12,22 @@ var drawShape_default= {
 	x2:0,
 	x3:0,
 	x4:0,
+	x5:0,
+	x6:0,
+	x7:0,
+	x8:0,
+	x9:0,
+	x10:0,
 	y1:0,
 	y2:0,
 	y3:0,
 	y4:0,
+	y5:0,
+	y6:0,
+	y7:0,
+	y8:0,
+	y9:0,
+	y10:0,
 	strokeStyle: "solid",
 	strokeSize:2, 
 	strokeColor : "black", 
@@ -31,6 +43,19 @@ var drawShape_default= {
 	paddingY3: 0,
 	paddingX4: 0,
 	paddingY4: 0,
+       	paddingX5: 0,
+	paddingY5: 0,
+	paddingX6: 0,
+	paddingY6: 0,
+	paddingX7: 0,
+	paddingY7: 0,
+	paddingX8: 0,
+	paddingY8: 0,
+	paddingX9: 0,
+	paddingY9: 0,
+	paddingX10: 0,
+	paddingY10: 0,
+
 	when : "always",    // "initFunction", "enddatafunction", "endscalefunction" or "always"
 	iter : "all",        // "first", "last", "all" or a number
 	animate : false,
@@ -390,7 +415,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 						else     ctx.lineTo(vxs,vys);
 					}					
 					ctx.closePath();
-					ctx.fillStyle=drawShapeSetValue(shapesInChart[i].fillColor,drawShape_default.fillColor);
+					ctx.fillStyle=setOptionValue(1,"SHAPESINCHART_REGULARSHAPE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos1.xpos, midPosY : xypos1.ypos, radius : radius });
 					ctx.fill();
 					ctx.stroke();
 					ctx.setLineDash([]);
@@ -410,7 +435,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 						xypos.xpos - width/2, xypos.ypos - height/2, // C4
 						xypos.xpos, xypos.ypos - height/2); // A1
 					ctx.closePath();
-					ctx.fillStyle=drawShapeSetValue(shapesInChart[i].fillColor,drawShape_default.fillColor);
+					ctx.fillStyle=setOptionValue(1,"SHAPESINCHART_ELLIPSE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos.xpos, midPosY : xypos.ypos, radius : Math.max(width/2,height/2) });
 					ctx.fill();
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*drawShapeSetValue(shapesInChart[i].strokeSize,drawShape_default.strokeSize));
 					ctx.strokeStyle = drawShapeSetValue(shapesInChart[i].strokeColor,drawShape_default.strokeColor);
@@ -439,7 +464,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					ctx.lineTo(xypos2.xpos-(1-realAnimation)*((xypos2.xpos-xypos1.xpos)/2), xypos1.ypos+(1-realAnimation)*((xypos2.ypos-xypos1.ypos)/2));
 	
 					ctx.closePath();
-					ctx.fillStyle=drawShapeSetValue(shapesInChart[i].fillColor,drawShape_default.fillColor);
+					ctx.fillStyle=setOptionValue(1,"SHAPESINCHART_RECT",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, xPosLeft : xypos1.xpos+(1-realAnimation)*((xypos2.xpos-xypos1.xpos)/2), yPosBottom : xypos1.ypos+(1-realAnimation)*((xypos2.ypos-xypos1.ypos)/2), yPosTop :xypos2.ypos-(1-realAnimation)*((xypos2.ypos-xypos1.ypos)/2) });
 					ctx.fill();
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*drawShapeSetValue(shapesInChart[i].strokeSize,drawShape_default.strokeSize));
 					ctx.strokeStyle = drawShapeSetValue(shapesInChart[i].strokeColor,drawShape_default.strokeColor);
@@ -485,7 +510,8 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 						ctx.arc(xypos.xpos,xypos.ypos, 0, (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].startAngle,drawShape_default.startAngle), (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].endAngle,drawShape_default.endAngle),false);
 					ctx.arc(xypos.xpos,xypos.ypos, realAnimation*1*radius, (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].startAngle,drawShape_default.startAngle), (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].endAngle,drawShape_default.endAngle),true);
 					ctx.closePath();
-					ctx.fillStyle=drawShapeSetValue(shapesInChart[i].fillColor,drawShape_default.fillColor);
+					ctx.fillStyle=setOptionValue(1,"SHAPESINCHART_CIRCLE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos.xpos, midPosY : xypos.ypos, radius : radius  });
+//					ctx.fillStyle=drawShapeSetValue(shapesInChart[i].fillColor,drawShape_default.fillColor);
 					ctx.fill();
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*drawShapeSetValue(shapesInChart[i].strokeSize,drawShape_default.strokeSize));
 					ctx.strokeStyle = drawShapeSetValue(shapesInChart[i].strokeColor,drawShape_default.strokeColor);
@@ -501,6 +527,12 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 						othervars.xypos2=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x2,drawShape_default.x2),1*drawShapeSetValue(shapesInChart[i].y2,drawShape_default.y2),1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 						othervars.xypos3=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x3,drawShape_default.x3),1*drawShapeSetValue(shapesInChart[i].y3,drawShape_default.y3),1*drawShapeSetValue(shapesInChart[i].paddingX3,drawShape_default.paddingX3),1*drawShapeSetValue(shapesInChart[i].paddingY3,drawShape_default.paddingY3),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 						othervars.xypos4=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x4,drawShape_default.x4),1*drawShapeSetValue(shapesInChart[i].y4,drawShape_default.y4),1*drawShapeSetValue(shapesInChart[i].paddingX4,drawShape_default.paddingX4),1*drawShapeSetValue(shapesInChart[i].paddingY4,drawShape_default.paddingY4),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						othervars.xypos5=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x5,drawShape_default.x5),1*drawShapeSetValue(shapesInChart[i].y5,drawShape_default.y5),1*drawShapeSetValue(shapesInChart[i].paddingX5,drawShape_default.paddingX5),1*drawShapeSetValue(shapesInChart[i].paddingY5,drawShape_default.paddingY5),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						othervars.xypos6=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x6,drawShape_default.x6),1*drawShapeSetValue(shapesInChart[i].y6,drawShape_default.y6),1*drawShapeSetValue(shapesInChart[i].paddingX6,drawShape_default.paddingX6),1*drawShapeSetValue(shapesInChart[i].paddingY6,drawShape_default.paddingY6),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						othervars.xypos7=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x7,drawShape_default.x7),1*drawShapeSetValue(shapesInChart[i].y7,drawShape_default.y7),1*drawShapeSetValue(shapesInChart[i].paddingX7,drawShape_default.paddingX7),1*drawShapeSetValue(shapesInChart[i].paddingY7,drawShape_default.paddingY7),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						othervars.xypos8=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x8,drawShape_default.x8),1*drawShapeSetValue(shapesInChart[i].y8,drawShape_default.y8),1*drawShapeSetValue(shapesInChart[i].paddingX8,drawShape_default.paddingX8),1*drawShapeSetValue(shapesInChart[i].paddingY8,drawShape_default.paddingY8),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						othervars.xypos9=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x9,drawShape_default.x9),1*drawShapeSetValue(shapesInChart[i].y9,drawShape_default.y9),1*drawShapeSetValue(shapesInChart[i].paddingX9,drawShape_default.paddingX9),1*drawShapeSetValue(shapesInChart[i].paddingY9,drawShape_default.paddingY9),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						othervars.xypos10=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x10,drawShape_default.x10),1*drawShapeSetValue(shapesInChart[i].y10,drawShape_default.y10),1*drawShapeSetValue(shapesInChart[i].paddingX10,drawShape_default.paddingX10),1*drawShapeSetValue(shapesInChart[i].paddingY10,drawShape_default.paddingY10),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 						shapesInChart[i].shape(area, ctx, data,statData, posi,posj,othervars);
 					}
 					break;
