@@ -2801,7 +2801,6 @@ window.Chart = function(context) {
 		for (i = 0; i < data.datasets.length; i++) statData[i][0].tpchart="Line";
 		msr = setMeasures(data, config, ctx, height, width, "nihil", [""], false, false, true, true, config.datasetFill, "Line");
 		valueBounds = getValueBounds();
-console.log("BOUNDS:"+valueBounds.maxValue+" "+valueBounds.minValue);
 		// true or fuzzy (error for negativ values (included 0))
 		if (config.logarithmic !== false) {
 			if (valueBounds.minValue <= 0) {
