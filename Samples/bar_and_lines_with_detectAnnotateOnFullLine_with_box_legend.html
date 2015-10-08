@@ -1,0 +1,152 @@
+<!doctype html>
+
+<SCRIPT src='..\ChartNew.js'></script>
+
+<SCRIPT>
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June"],
+	datasets : [
+		{
+			fillColor : "rgb(220,220,220)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [7,10,15,15,13,8],
+      title : "Europe"
+		},
+		{
+			fillColor : "rgb(151,187,205)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			data : [0,13,12,15,8,15],
+      title : "North-America"
+		},
+		{
+			fillColor : "rgb(187,151,205)",
+			strokeColor : "rgba(187,151,205,1)",
+			pointColor : "rgba(187,151,205,1)",
+			pointStrokeColor : "#fff",
+			data : [11,14,13,12,15,18],
+      title : "South-America"
+		},
+		{
+			fillColor : "rgb(151,187,151)",
+			strokeColor : "rgba(151,187,151,1)",
+			pointColor : "rgba(151,187,151,1)",
+			pointStrokeColor : "#fff",
+			data : [12,16,10,5,7,11],
+      title : "Asia"
+		}
+	]
+};
+
+var mydata2 = {
+	labels : ["January","February","March","April","May","June"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,1)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [7,10,15,15,13,8],
+      title : "Europe"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.4)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			data : [0,13,12,15,8,15],
+      title : "North-America"
+		},
+		{
+			fillColor : "rgba(187,151,205,0.3)",
+			strokeColor : "rgba(187,151,205,1)",
+			pointColor : "rgba(187,151,205,1)",
+			pointStrokeColor : "#fff",
+			data : [11,14,13,12,15,18],
+      title : "South-America"
+		},
+		{
+			fillColor : "rgba(151,187,151,0.2)",
+			strokeColor : "rgba(151,187,151,1)",
+			pointColor : "rgba(151,187,151,1)",
+			pointStrokeColor : "#fff",
+			data : [12,16,10,5,7,11],
+      title : "Asia"
+		}
+	]
+}
+
+function annotateAllX(area,ctx,data,statData,posi,posj,othervars) {
+	retstring='<B><U>'+statData[posi][posj].v2+'</U></B><BR>';
+	for(var i=data.datasets.length-1;i>=0;i--){
+		if(typeof statData[i][posj].datavalue!="undefined" && data.datasets[i].type != "Line"){
+			var boxLegend="<canvas id=\"canvas_Line"+posi+"_"+posj+"\" height=\"10\" width=\"30\" style=\"border:1px solid black; background : "+data.datasets[i].fillColor+"\"></canvas>";
+			retstring=retstring+boxLegend+" "+statData[i][posj].v1+"="+statData[i][posj].datavalue+"<BR>";
+		}
+	}
+	return "<%='"+retstring+"'%>".replace(/<BR>/g," ");
+
+}
+
+
+
+var statOptions1 = {
+//	annotateRelocate : true,
+      graphTitle : "No RGBA colors for fillColor parameters",
+      canvasBorders : true,
+      yAxisMinimumInterval : 1,
+      annotateDisplay : true,
+      annotateLabel: annotateAllX,
+      canvasBackgroundColor: "rgba(0,100,0,0.05)",
+//      annotateBackgroundColor: "rgb(0,100,10)",
+      legend : true,
+//      annotateBackgroundColor : "white",
+//      annotateFontColor : "black"
+};
+
+var statOptions2 = {
+//	annotateRelocate : true,
+      graphTitle : "With RGBA colors for the fillColor parameter",
+      canvasBorders : true,
+      yAxisMinimumInterval : 1,
+      annotateDisplay : true,
+      annotateLabel: annotateAllX,
+//      canvasBackgroundColor: "rgba(0,150,10,0.3)",
+      annotateBackgroundColor : "white",
+//      annotateFontColor : "rgba(0,150,10,0.3)",
+      annotateFontColor : "black",
+      legend : true
+};
+
+
+</SCRIPT>
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+
+	</head>
+	<body>
+
+<script>
+
+
+document.write("<canvas id=\"canvas_bar1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+document.write("<canvas id=\"canvas_bar2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+
+window.onload = function() {
+    var myBar = new Chart(document.getElementById("canvas_bar1").getContext("2d")).StackedBar(mydata1,statOptions1);
+    var myBar = new Chart(document.getElementById("canvas_bar2").getContext("2d")).StackedBar(mydata2,statOptions2);
+}      
+</script>
+  </body>
+</html>
+
