@@ -3242,7 +3242,7 @@ window.Chart = function(context) {
        	
 			yAxisPosX = msr.leftNotUsableSize + Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft);
 			xAxisPosY = msr.topNotUsableSize + msr.availableHeight + Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop);
-			barWidth = (valueHop - Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth) * 2 - (Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) * 2) - (Math.ceil(ctx.chartSpaceScale*config.barDatasetSpacing) * data.datasets.length - 1) - (Math.ceil(ctx.chartLineScale*config.barStrokeWidth) / 2) - 1);
+			barWidth = (valueHop - Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth) * 2 - (Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) * 2) - (Math.ceil(ctx.chartSpaceScale*config.barDatasetSpacing) * 1 - 1) - (Math.ceil(ctx.chartLineScale*config.barStrokeWidth) / 2) - 1);
 
 			if(barWidth>=0 && barWidth<=1)barWidth=1;
 			if(barWidth<0 && barWidth>=-1)barWidth=-1;
@@ -3604,7 +3604,7 @@ window.Chart = function(context) {
 			msr.availableHeight = (data.labels.length) * scaleHop;
 			yAxisPosX = msr.leftNotUsableSize + Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft);
 			xAxisPosY = msr.topNotUsableSize + msr.availableHeight + Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop);
-			barWidth = (scaleHop - Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth) * 2 - (Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) * 2) - (Math.ceil(ctx.chartSpaceScale*config.barDatasetSpacing) * data.datasets.length - 1) - (Math.ceil(ctx.chartLineScale*config.barStrokeWidth) / 2) - 1);
+			barWidth = (scaleHop - Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth) * 2 - (Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) * 2) - (Math.ceil(ctx.chartSpaceScale*config.barDatasetSpacing) * 1 - 1) - (Math.ceil(ctx.chartLineScale*config.barStrokeWidth) / 2) - 1);
 			if(barWidth>=0 && barWidth<=1)barWidth=1;
 			if(barWidth<0 && barWidth>=-1)barWidth=-1;
 			var additionalSpaceBetweenBars;
