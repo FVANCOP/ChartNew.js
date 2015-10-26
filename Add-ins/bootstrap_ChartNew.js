@@ -4,7 +4,7 @@
 var tag_canvas_suffix="_Tag_Canvas";
 var count_tag_canvas=0;
 var first_tag="not_yet_defined";
-var current_tag="not_yes_defined";
+var current_tag="not_yet_defined";
 var tag_canvas_list=[];
 var tag_def_height=400;
 var tag_def_width=800;
