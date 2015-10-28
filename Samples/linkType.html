@@ -1,0 +1,102 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+<SCRIPT>
+
+var charJSPersonalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none" };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = {
+  labels : ["0","100","200","300","400","500","600","700","800"],
+  xBegin : 0,
+  xEnd :  800,   
+	datasets : [
+		{
+			strokeColor : "rgba(220,220,220,1)",
+      data : [],
+      xPos : [],
+      title : "data"
+		}
+	]
+}               
+var nbiter=50;
+for(var i=0;i<nbiter;i++)
+{
+  mydata1.datasets[0].xPos[i]=mydata1.xBegin+i*(mydata1.xEnd-mydata1.xBegin)/nbiter;
+  mydata1.datasets[0].data[i]=-100+200*Math.random();
+}
+
+var opt0 = {
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "linkType = 0 ",
+      datasetFill : true,
+      linkType : 0,
+      legend : true,
+      annotateDisplay : true,
+      yAxisMinimumInterval : 1,
+      graphTitleFontSize: 18
+
+}
+
+var opt1 = {
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "linkType = 1",
+      datasetFill : true,
+      linkType : 1,
+      pointDot : false,
+      legend : true,
+      annotateDisplay : true,
+      yAxisMinimumInterval : 1,
+      graphTitleFontSize: 18
+
+}
+
+var opt2 = {
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "linkType = 2",
+      datasetFill : true,
+      linkType : 2,
+      legend : true,
+      annotateDisplay : true,
+      yAxisMinimumInterval : 1,
+      graphTitleFontSize: 18
+
+}
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line0\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Line1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Line2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine0 = new Chart(document.getElementById("canvas_Line0").getContext("2d")).Line(mydata1,opt0);
+    var myLine1 = new Chart(document.getElementById("canvas_Line1").getContext("2d")).Line(mydata1,opt1);
+    var myLine2 = new Chart(document.getElementById("canvas_Line2").getContext("2d")).Line(mydata1,opt2);
+}
+    </script>
+  </body>
+</html>
