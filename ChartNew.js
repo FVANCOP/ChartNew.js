@@ -1398,6 +1398,7 @@ window.Chart = function(context) {
 			scaleTickSizeBottom: 5,
 			scaleTickSizeTop: 5,
 			bezierCurve: true,
+			linkType : 0,   //0 : direct point to point; 1 = vertical lines; 2=angular link;
 			bezierCurveTension : 0.4,
 			pointDot: true,
 			pointDotRadius: 4,
@@ -1483,6 +1484,7 @@ window.Chart = function(context) {
 			animationEasing: "easeOutQuart",
 			onAnimationComplete: null,
 			bezierCurve: true,
+			linkType : 0,   //0 : direct point to point; 1 = vertical lines; 2=angular link;
 			bezierCurveTension : 0.4,
 			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + v6 + ' %)'%>",
 			pointHitDetectionRadius : 10
@@ -1629,6 +1631,7 @@ window.Chart = function(context) {
 			animationEasing: "easeOutQuart",
 			onAnimationComplete: null,
 			bezierCurve: true,
+			linkType : 0,   //0 : direct point to point; 1 = vertical lines; 2=angular link;
 			bezierCurveTension : 0.4,
 			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + v6 + ' %)'%>",
 			pointHitDetectionRadius : 10
@@ -3143,7 +3146,6 @@ window.Chart = function(context) {
 			else if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
 			if(typeof config.graphMax=="function") upperValue= setOptionValue(1,"GRAPHMAX",ctx,data,statData,undefined,config.graphMax,-1,-1,{nullValue : true})
 			else if (!isNaN(config.graphMax)) upperValue = config.graphMax;
-
 			if (secondAxis) {
 				if(upperValue2<lowerValue2){upperValue2=0;lowerValue2=0;}
 				if (Math.abs(upperValue2 - lowerValue2) < config.zeroValue) {
@@ -3236,6 +3238,7 @@ window.Chart = function(context) {
 			if (valueHop == 0 || config.fullWidthGraph) valueHop = (msr.availableWidth / data.labels.length);
 			msr.clrwidth = msr.clrwidth - (msr.availableWidth - ((data.labels.length) * valueHop));
 			msr.availableWidth = (data.labels.length) * valueHop;
+
 			msr.availableHeight = (calculatedScale.steps) * scaleHop;
 			msr.xLabelPos+=(Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom) + Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop) - (prevHeight-msr.availableHeight));
 			msr.clrheight+=(Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom) + Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop) - (prevHeight-msr.availableHeight));
@@ -3243,7 +3246,6 @@ window.Chart = function(context) {
 			yAxisPosX = msr.leftNotUsableSize + Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft);
 			xAxisPosY = msr.topNotUsableSize + msr.availableHeight + Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop);
 			barWidth = (valueHop - Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth) * 2 - (Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) * 2) - (Math.ceil(ctx.chartSpaceScale*config.barDatasetSpacing) * 1 - 1) - (Math.ceil(ctx.chartLineScale*config.barStrokeWidth) / 2) - 1);
-
 			if(barWidth>=0 && barWidth<=1)barWidth=1;
 			if(barWidth<0 && barWidth>=-1)barWidth=-1;
 			var additionalSpaceBetweenBars;
@@ -4832,6 +4834,7 @@ window.Chart = function(context) {
 						if (stepValue / 2 < yAxisMinimumInterval) {
 							stopLoop = true;
 							stepValue=yAxisMinimumInterval;
+							numberOfSteps=Math.ceil(graphRange / stepValue);
 						}
 					}
 					if (!stopLoop) {
@@ -4849,7 +4852,7 @@ window.Chart = function(context) {
 				if (stepValue < yAxisMinimumInterval) {
 					stepValue = yAxisMinimumInterval;
 					numberOfSteps = Math.ceil(graphRange / stepValue);
-				}
+				} 
 				if (stepValue % yAxisMinimumInterval > config.zeroValue && stepValue % yAxisMinimumInterval < yAxisMinimumInterval - config.zeroValue) {
 					if ((2 * stepValue) % yAxisMinimumInterval < config.zeroValue || (2 * stepValue) % yAxisMinimumInterval > yAxisMinimumInterval - config.zeroValue) {
 						stepValue = 2 * stepValue;
@@ -4859,8 +4862,6 @@ window.Chart = function(context) {
 						numberOfSteps = Math.ceil(graphRange / stepValue);
 					}
 				}
-
-
 			}
 			if(config.graphMaximized==true || config.graphMaximized=="bottom" || typeof config.graphMin!=="undefined") {
 				while (graphMin+stepValue < minValue && numberOfSteps>=3){graphMin+=stepValue;numberOfSteps--};
@@ -5846,8 +5847,10 @@ window.Chart = function(context) {
 
 	function drawLinesDataset(animPc, data, config, ctx, statData,vars) {
 		var y1,y2,y3,diffnb,diffnbj,fact, currentAnimPc;
+		var prevypos;
 		var pts=[];
 		for (var i = 0; i < data.datasets.length; i++) {
+			prevypos="undefined";
 			if(statData[i][0].tpchart!="Line")continue;
 			if (statData[i].length == 0) continue;
 			if (statData[i][0].firstNotMissing == -1) continue;
@@ -5881,7 +5884,7 @@ window.Chart = function(context) {
 						ctx.stroke();
 						ctx.setLineDash([]);
 						ctx.strokeStyle = "rgba(0,0,0,0)";
-						if(config.datasetFill) {
+						if(config.datasetFill && config.linkType!=1) {
 							ctx.lineTo(statData[i][j-1].xPos + prevAnimPc.subVal*(statData[i][j].xPos-statData[i][j-1].xPos) , statData[i][j].yAxisPos );
 							ctx.lineTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY-statData[i][0].zeroY);
 							ctx.closePath();
@@ -5897,7 +5900,7 @@ window.Chart = function(context) {
 						ctx.stroke();
 						ctx.setLineDash([]);
 						ctx.strokeStyle = "rgba(0,0,0,0)";
-						if(config.datasetFill) {
+						if(config.datasetFill && config.linkType!=1) {
 							ctx.lineTo(statData[i][j-1].xPos + prevAnimPc.subVal*(statData[i][j].xPos-statData[i][j-1].xPos) , statData[i][j].yAxisPos );
 							ctx.lineTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY-statData[i][0].zeroY);
 							ctx.closePath();
@@ -5932,7 +5935,7 @@ window.Chart = function(context) {
 								ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
 								ctx.stroke();
 								ctx.setLineDash([]);
-								if (config.datasetFill && firstpt != -1) {
+								if (config.datasetFill && firstpt != -1 && config.linkType!=1) {
 									lastxPos=-1;
 									ctx.strokeStyle = "rgba(0,0,0,0)";
 									ctx.lineTo(statData[i][j-1].xPos, statData[i][j-1].yAxisPos);
@@ -5960,7 +5963,10 @@ window.Chart = function(context) {
 						if (firstpt==-1) {
 							firstpt=j;
 							ctx.beginPath();
-							ctx.moveTo(statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset);
+							if(config.linkType==1) {
+								ctx.moveTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY-statData[i][0].zeroY);
+								ctx.lineTo(statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset);											
+							} else ctx.moveTo(statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset);
 							initbz(pts,statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset,i);							
 							lastxPos=statData[i][j].xPos;
 						} else {
@@ -5983,7 +5989,7 @@ window.Chart = function(context) {
 			ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
 			ctx.stroke();
 			ctx.setLineDash([]);
-			if (config.datasetFill) {
+			if (config.datasetFill  && config.linkType!=1) {
 				if (firstpt>=0 ) {
 					ctx.strokeStyle = "rgba(0,0,0,0)";
 					ctx.lineTo(lastxPos, statData[i][0].xAxisPosY-statData[i][0].zeroY);
@@ -6038,26 +6044,34 @@ window.Chart = function(context) {
 			}
 		};
 
-			 
 		
 		function initbz(pts,xpos,ypos,i) {
-			if (setOptionValue(1,"BEZIERCURVE",ctx,data,statData,undefined,config.bezierCurve,i,-1,{nullValue : true})) {
+			if (config.linkType==0 && setOptionValue(1,"BEZIERCURVE",ctx,data,statData,undefined,config.bezierCurve,i,-1,{nullValue : true})) {
 				pts.length=0;
 				pts.push(xpos);pts.push(ypos);
 			}
+			prevypos=ypos;
 		} ;
 		
 		function traceLine(pts,ctx,xpos,ypos,config,data,statData,i) {
-			if (setOptionValue(1,"BEZIERCURVE",ctx,data,statData,undefined,config.bezierCurve,i,-1,{nullValue : true})) {
+			if (config.linkType==0 && setOptionValue(1,"BEZIERCURVE",ctx,data,statData,undefined,config.bezierCurve,i,-1,{nullValue : true})) {
 				pts.push(xpos);	pts.push(ypos);
 			} else {
-				ctx.lineTo(xpos,ypos);
+				if(config.linkType==0)ctx.lineTo(xpos,ypos);
+				else if(config.linkType==1){
+					ctx.moveTo(xpos, statData[i][0].xAxisPosY-statData[i][0].zeroY);
+					ctx.lineTo(xpos,ypos);
+				} else if (config.linkType==2){
+					ctx.lineTo(xpos,prevypos);
+					ctx.lineTo(xpos,ypos);
+					prevypos=ypos;
+				}
 			}
 		} ;
 		
 		function closebz(pts,ctx,config,i){
 		
-			if(setOptionValue(1,"BEZIERCURVE",ctx,data,statData,undefined,config.bezierCurve,i,-1,{nullValue : true})) {
+			if(config.linkType==0 && setOptionValue(1,"BEZIERCURVE",ctx,data,statData,undefined,config.bezierCurve,i,-1,{nullValue : true})) {
 				minimumpos= statData[i][0].xAxisPosY;
 				maximumpos= statData[i][0].xAxisPosY - statData[i][0].calculatedScale.steps*statData[i][0].scaleHop;
 				drawSpline(ctx,pts,setOptionValue(1,"BEZIERCURVETENSION",ctx,data,statData,undefined,config.bezierCurveTension,i,-1,{nullValue : true}),minimumpos,maximumpos);
@@ -6369,7 +6383,7 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
 				ctx.save();
 				ctx.beginPath();
 				var lgdbox=legendMsr.legendBox;
-				if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") if (data.datasets[orderi].type=="Line" && !config.datasetFill) lgdbox=false;
+				if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") if (data.datasets[orderi].type=="Line" && (!config.datasetFill || config.linkType==1)) lgdbox=false;
 				if (lgdbox) {
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.datasetStrokeWidth);
 					ctx.beginPath();
