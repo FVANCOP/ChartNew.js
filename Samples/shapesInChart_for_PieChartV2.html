@@ -1,0 +1,103 @@
+  <!doctype html>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]-->
+<SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+<SCRIPT src='../Add-ins/specialInChartData.js'></script>
+
+
+<SCRIPT>
+
+
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = [
+	{
+		value : 0,
+		color: "rgba(220,0,220,0.2)",
+		title : "data0_1"
+	},
+	{
+		value : 30,
+		color: "rgba(220,0,220,0.2)",
+		title : "data1"
+	},
+	{
+		value : 90,
+		color: "rgba(0,0,220,0.2)",
+    		title : "data2"
+	},
+	{
+		value : 0,
+		color: "rgba(220,0,220,0.2)",
+		title : "data0_2"
+	},
+	{
+		value : 0,
+		color: "rgba(220,0,220,0.2)",
+		title : "data0_3"
+	},
+	{
+		value : 24,
+		color: "rgba(220,0,0,0.2)",
+    		title : "data3"
+	},
+	{
+		value : 58,
+		color: "rgba(0,220,220,0.2)",
+    		title : "data4"
+	},
+	{
+		value : 82,
+		color: "rgba(0,220,0,0.2)",
+    		title : "data5"
+	},
+	{
+		value : 8,
+		color: "rgba(50,100,150,0.2)",
+    		title : "data6"
+	}
+];
+
+
+var opt1 = {
+	animation : false,
+	canvasBorders : true,
+	spaceBottom : 65,
+	spaceTop : 55,
+	endDrawDataFunction: drawShapes
+
+};
+
+pushInGraphData("Pie",mydata1,opt1,{avoidOverwrite : true, text : "<Title> (<Value>)"});
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine = new Chart(document.getElementById("canvas_Line").getContext("2d")).Pie(mydata1,opt1);
+}
+    </script>
+  </body>
+</html>
