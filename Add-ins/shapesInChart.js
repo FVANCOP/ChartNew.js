@@ -118,7 +118,6 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 
 	var shape,whendrw,iter,realAnimation,shapesInChart;
 
-
 	if(typeof data.shapesInChart == "object") var shapesInChart=data.shapesInChart;
 	if(typeof data[0]=="object") if (typeof data[0].shapesInChart == "object") var shapesInChart=data[0].shapesInChart;
 
@@ -129,7 +128,6 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 		shapeLoadImages(data);
 	
 		for(var i=0;i<shapesInChart.length;i++) {
-
 			if(typeof othervars.config.dispShapesInChart == "object") {
 				if (othervars.config.dispShapesInChart.indexOf(i)<0) continue;
 			} else if (typeof othervars.config.dispShapesInChart != "undefined") {
