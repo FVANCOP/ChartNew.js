@@ -87,7 +87,7 @@ var moreInChartData_default= {
 	paddingY10 : null,
 	
 	// Special values;
-	avoidOverwrite : true	
+	avoidOverwrite : false	
 	
 	
 };
