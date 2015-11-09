@@ -2122,7 +2122,6 @@ window.Chart = function(context) {
 		var statData=initPassVariableData_part1(data,config,ctx);
 
 		valueBounds = getValueBounds();
-console.log("MAX VALUE : "+valueBounds.maxValue);
 		config.logarithmic = false;
 		config.logarithmic2 = false;
 
