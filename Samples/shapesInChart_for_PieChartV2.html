@@ -9,12 +9,7 @@
 
 <SCRIPT>
 
-function setColor(area,data,config,i,j,animPct,value)
-{
-  if(value > 35)return("rgba(220,0,0,"+animPct);
-  else return("rgba(0,220,0,"+animPct);
-  
-}
+
 
 var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
 
@@ -24,56 +19,63 @@ defCanvasHeight=600;
 
 var mydata1 = [
 	{
-		value : 40,
+		value : 0,
 		color: "rgba(220,0,220,0.2)",
 		title : "data1"
 	},
 	{
-		value : 80,
+		value : 30,
+		color: "rgba(220,0,220,0.2)",
+		title : "data2"
+	},
+	{
+		value : 90,
 		color: "rgba(0,0,220,0.2)",
-    		title : "data2" ,
-    		fontStyle : "bold",
-    		fontSize : 35,
-    		expandInRadius : 0.1,
-    		expandOutRadius : 0.1
+    		title : "data3"
+	},
+	{
+		value : 0,
+		color: "rgba(220,0,220,0.2)",
+		title : "data4"
+	},
+	{
+		value : 0,
+		color: "rgba(220,0,220,0.2)",
+		title : "data5"
 	},
 	{
 		value : 24,
 		color: "rgba(220,0,0,0.2)",
-    		title : "data3"
+    		title : "data6"
 	},
 	{
 		value : 58,
 		color: "rgba(0,220,220,0.2)",
-    		title : "data4"
-	},
-	{
-		value : 50,
-		color: "rgba(0,220,0,0.2)",
-    		title : "data5"
-	},
-	{
-		value : 0,
-		color: "rgba(50,100,150,0.2)",
     		title : "data7"
+	},
+	{
+		value : 82,
+		color: "rgba(0,220,0,0.2)",
+    		title : "data8"
+	},
+	{
+		value : 8,
+		color: "rgba(50,100,150,0.2)",
+    		title : "data9"
 	}
 ];
-
-
-var image=new Image();
-image.src="plus_sign.jpg";
 
 
 var opt1 = {
 	animation : false,
 	canvasBorders : true,
-	spaceBottom : 40,
+	spaceBottom : 65,
 	spaceTop : 55,
 	endDrawDataFunction: drawShapes
+
 };
 
-pushInGraphData("Doughnut",mydata1,opt1,{text: "<Title> (<Value>)", imageLoad : image,imageWidth : 30, imageHeight : 30, avoidOverwrite : true,link : "triangle"});
-
+pushInGraphData("Pie",mydata1,opt1,{text : "<Title> (<Value>)"});
 
 
 
@@ -92,9 +94,9 @@ pushInGraphData("Doughnut",mydata1,opt1,{text: "<Title> (<Value>)", imageLoad : 
 
     <script>
 
-    document.write("<canvas id=\"canvas\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
 window.onload = function() {
-    var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Doughnut(mydata1,opt1);
+    var myLine = new Chart(document.getElementById("canvas_Line").getContext("2d")).Pie(mydata1,opt1);
 }
     </script>
   </body>

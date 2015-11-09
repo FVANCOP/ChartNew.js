@@ -2122,7 +2122,6 @@ window.Chart = function(context) {
 		var statData=initPassVariableData_part1(data,config,ctx);
 
 		valueBounds = getValueBounds();
-
 		config.logarithmic = false;
 		config.logarithmic2 = false;
 
@@ -2147,6 +2146,7 @@ window.Chart = function(context) {
 			msr = setMeasures(data, config, ctx, height, width, calculatedScale.labels, null, true, false, false, false, true, "PolarArea");
 		}
 
+		var outerVal=calculatedScale.graphMin+calculatedScale.steps*calculatedScale.stepValue;
 
 		var drwSize=calculatePieDrawingSize(ctx,msr,config,data,statData);
 		midPosX=drwSize.midPieX;
@@ -2155,7 +2155,7 @@ window.Chart = function(context) {
 		scaleHop = Math.floor(drwSize.radius / calculatedScale.steps);
 		//Wrap in an animation loop wrapper
  		if(scaleHop > 0) {
-			initPassVariableData_part2(statData,data,config,ctx,{midPosX : midPosX,midPosY : midPosY,int_radius : 0,ext_radius : scaleHop*calculatedScale.steps, calculatedScale : calculatedScale, scaleHop : scaleHop});
+			initPassVariableData_part2(statData,data,config,ctx,{midPosX : midPosX,midPosY : midPosY,int_radius : 0,ext_radius : scaleHop*calculatedScale.steps, calculatedScale : calculatedScale, scaleHop : scaleHop,outerVal : outerVal});
 			animationLoop(config, drawScale, drawAllSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPosX, midPosY, midPosX - ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), midPosY + ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), data, statData);
 		} else {
 			testRedraw(ctx,data,config);
@@ -2372,7 +2372,7 @@ window.Chart = function(context) {
 		midPosY = msr.topNotUsableSize + (msr.availableHeight / 2);
 		scaleHop = maxSize / (calculatedScale.steps);
 		//Wrap in an animation loop wrapper
-		initPassVariableData_part2(statData,data,config,ctx,{midPosX : midPosX, midPosY : midPosY, calculatedScale: calculatedScale, scaleHop: scaleHop, maxSize:maxSize});
+		initPassVariableData_part2(statData,data,config,ctx,{midPosX : midPosX, midPosY : midPosY, calculatedScale: calculatedScale, scaleHop: scaleHop, maxSize:maxSize,outerVal : -1});
 		animationLoop(config, drawScale, drawAllDataPoints, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPosX, midPosY, midPosX - maxSize, midPosY + maxSize, data, statData);
 		//Radar specific functions.
 		function drawAllDataPoints(animationDecimal) {
@@ -2693,7 +2693,7 @@ window.Chart = function(context) {
                 if(ctx.tpchart == "Pie")cutoutRadius=0;
 		else cutoutRadius = doughnutRadius * (config.percentageInnerCutout / 100);
 		if(doughnutRadius > 0) {
-			initPassVariableData_part2(statData,data,config,ctx,{midPosX : midPieX,midPosY : midPieY ,int_radius : cutoutRadius ,ext_radius : doughnutRadius});
+			initPassVariableData_part2(statData,data,config,ctx,{midPosX : midPieX,midPosY : midPieY ,int_radius : cutoutRadius ,ext_radius : doughnutRadius,outerVal : -1});
 			animationLoop(config, null, drawPieSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPieX, midPieY, midPieX - doughnutRadius, midPieY + doughnutRadius, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
@@ -2703,10 +2703,14 @@ window.Chart = function(context) {
 		function drawPieSegments(animationDecimal) {
 			var cumulativeAngle = (((-config.startAngle * (Math.PI / 180) + 2 * Math.PI) % (2 * Math.PI)) + 2* Math.PI) % (2* Math.PI) ; 
 
+			var dataCutoutRadius, dataDoughnutRadius;
+			
 			for (var i = 0; i < data.length; i++) {
 				var	scaleAnimation = 1,
 					rotateAnimation = 1;
-                	
+				if (ctx.tpchart=="Pie")dataCutoutRadius=cutoutRadius;
+				else dataCutoutRadius=cutoutRadius-(doughnutRadius-cutoutRadius)*setOptionValue(1,"EXPANDINRADIUS",ctx,data,statData,data[i].expandInRadius,0,i,-1,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
+                	        dataDoughnutRadius=doughnutRadius+(doughnutRadius-cutoutRadius)*setOptionValue(1,"EXPANDOUTRADIUS",ctx,data,statData,data[i].expandOutRadius,0,i,-1,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
 				if (config.animation) {
 					if (config.animateScale) {
 						scaleAnimation = animationDecimal;
@@ -2720,20 +2724,20 @@ window.Chart = function(context) {
 					ctx.beginPath();
 					if (config.animationByData == "ByArc") {
 						endAngle=statData[i].startAngle+correctedRotateAnimation*statData[i].segmentAngle;
-						ctx.arc(midPieX, midPieY, scaleAnimation * doughnutRadius, statData[i].startAngle, endAngle,false);
-						ctx.arc(midPieX, midPieY, scaleAnimation * cutoutRadius, endAngle,statData[i].startAngle, true);
+						ctx.arc(midPieX, midPieY, scaleAnimation * dataDoughnutRadius, statData[i].startAngle, endAngle,false);
+						ctx.arc(midPieX, midPieY, scaleAnimation * dataCutoutRadius, endAngle,statData[i].startAngle, true);
 					} else if(config.animationByData) {
 						if(statData[i].startAngle-statData[i].firstAngle < correctedRotateAnimation*2*Math.PI ) {
 							endAngle=statData[i].endAngle;
 							if((statData[i].endAngle-statData[i].firstAngle)> correctedRotateAnimation*2*Math.PI) endAngle=statData[i].firstAngle+correctedRotateAnimation*2*Math.PI;							
-							ctx.arc(midPieX, midPieY, scaleAnimation * doughnutRadius, statData[i].startAngle, endAngle,false);
-							ctx.arc(midPieX, midPieY, scaleAnimation * cutoutRadius, endAngle,statData[i].startAngle, true);
+							ctx.arc(midPieX, midPieY, scaleAnimation * dataDoughnutRadius, statData[i].startAngle, endAngle,false);
+							ctx.arc(midPieX, midPieY, scaleAnimation * dataCutoutRadius, endAngle,statData[i].startAngle, true);
 							
 						}
 						else continue;
 					} else {
-						ctx.arc(midPieX, midPieY, scaleAnimation * doughnutRadius, statData[i].firstAngle+correctedRotateAnimation * (statData[i].startAngle-statData[i].firstAngle), statData[i].firstAngle+correctedRotateAnimation * (statData[i].endAngle-statData[i].firstAngle),false);
-						ctx.arc(midPieX, midPieY, scaleAnimation * cutoutRadius, statData[i].firstAngle+correctedRotateAnimation * (statData[i].endAngle-statData[i].firstAngle), statData[i].firstAngle+correctedRotateAnimation * (statData[i].startAngle-statData[i].firstAngle), true);
+						ctx.arc(midPieX, midPieY, scaleAnimation * dataDoughnutRadius, statData[i].firstAngle+correctedRotateAnimation * (statData[i].startAngle-statData[i].firstAngle), statData[i].firstAngle+correctedRotateAnimation * (statData[i].endAngle-statData[i].firstAngle),false);
+						ctx.arc(midPieX, midPieY, scaleAnimation * dataCutoutRadius, statData[i].firstAngle+correctedRotateAnimation * (statData[i].endAngle-statData[i].firstAngle), statData[i].firstAngle+correctedRotateAnimation * (statData[i].startAngle-statData[i].firstAngle), true);
 					}
 					ctx.closePath();
 					ctx.fillStyle=setOptionValue(1,"COLOR",ctx,data,statData,data[i].color,config.defaultFillColor,i,-1,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
@@ -2749,17 +2753,18 @@ window.Chart = function(context) {
 			}
 			if (animationDecimal >= config.animationStopValue) {
 				for (i = 0; i < data.length; i++) {
+					if (ctx.tpchart=="Pie")dataCutOutRadius=cutoutRadius;
+					else dataCutoutRadius=cutoutRadius-(doughnutRadius-cutoutRadius)*setOptionValue(1,"EXPANDINRADIUS",ctx,data,statData,data[i].expandInRadius,0,i,-1,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
+        	        	        dataDoughnutRadius=doughnutRadius+(doughnutRadius-cutoutRadius)*setOptionValue(1,"EXPANDOUTRADIUS",ctx,data,statData,data[i].expandOutRadius,0,i,-1,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
 					if (typeof(data[i].value) == 'undefined' || 1*data[i].value<0) continue;
-//					if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})) {
-						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", i,-1,statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})];
-//					}
+					jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", i,-1,statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})];
 					if (setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,-1,{nullValue : true}) && statData[i].segmentAngle >= (Math.PI/180) * setOptionValue(1,"INGRAPHDATAMINIMUMANGLE",ctx,data,statData,undefined,config.inGraphDataMinimumAngle,i,-1,{nullValue : true} )) {
 						if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 1) posAngle = statData[i].realStartAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
 						else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 2) posAngle = statData[i].realStartAngle- statData[i].segmentAngle / 2 + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
 						else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 3) posAngle = statData[i].realStartAngle - statData[i].segmentAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
-						if (setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,i,-1,{nullValue : true} ) == 1) labelRadius = cutoutRadius + setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} );
-						else if (setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,i,-1,{nullValue : true} ) == 2) labelRadius = cutoutRadius + (doughnutRadius - cutoutRadius) / 2 + setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} );
-						else if (setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,i,-1,{nullValue : true} ) == 3) labelRadius = doughnutRadius + setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} );
+						if (setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,i,-1,{nullValue : true} ) == 1) labelRadius = dataCutoutRadius + setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} );
+						else if (setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,i,-1,{nullValue : true} ) == 2) labelRadius = dataCutoutRadius + (dataDoughnutRadius - dataCutoutRadius) / 2 + setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} );
+						else if (setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,i,-1,{nullValue : true} ) == 3) labelRadius = dataDoughnutRadius + setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} );
 						ctx.save();
 						if (setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,-1,{nullValue: true  }) == "off-center") {
 							if (setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) == "inRadiusAxis" || (posAngle + 2 * Math.PI) % (2 * Math.PI) > 3 * Math.PI / 2 || (posAngle + 2 * Math.PI) % (2 * Math.PI) < Math.PI / 2) ctx.textAlign = "left";
@@ -5884,7 +5889,7 @@ window.Chart = function(context) {
 						ctx.stroke();
 						ctx.setLineDash([]);
 						ctx.strokeStyle = "rgba(0,0,0,0)";
-						if(config.datasetFill && config.linkType!=1) {
+						if(config.datasetFill && setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )!=1) {
 							ctx.lineTo(statData[i][j-1].xPos + prevAnimPc.subVal*(statData[i][j].xPos-statData[i][j-1].xPos) , statData[i][j].yAxisPos );
 							ctx.lineTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY-statData[i][0].zeroY);
 							ctx.closePath();
@@ -5900,7 +5905,7 @@ window.Chart = function(context) {
 						ctx.stroke();
 						ctx.setLineDash([]);
 						ctx.strokeStyle = "rgba(0,0,0,0)";
-						if(config.datasetFill && config.linkType!=1) {
+						if(config.datasetFill && setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )!=1) {
 							ctx.lineTo(statData[i][j-1].xPos + prevAnimPc.subVal*(statData[i][j].xPos-statData[i][j-1].xPos) , statData[i][j].yAxisPos );
 							ctx.lineTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY-statData[i][0].zeroY);
 							ctx.closePath();
@@ -5935,7 +5940,7 @@ window.Chart = function(context) {
 								ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
 								ctx.stroke();
 								ctx.setLineDash([]);
-								if (config.datasetFill && firstpt != -1 && config.linkType!=1) {
+								if (config.datasetFill && firstpt != -1 && setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )!=1) {
 									lastxPos=-1;
 									ctx.strokeStyle = "rgba(0,0,0,0)";
 									ctx.lineTo(statData[i][j-1].xPos, statData[i][j-1].yAxisPos);
@@ -5963,7 +5968,7 @@ window.Chart = function(context) {
 						if (firstpt==-1) {
 							firstpt=j;
 							ctx.beginPath();
-							if(config.linkType==1) {
+							if(setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==1) {
 								ctx.moveTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY-statData[i][0].zeroY);
 								ctx.lineTo(statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset);											
 							} else ctx.moveTo(statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset);
@@ -5989,7 +5994,7 @@ window.Chart = function(context) {
 			ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
 			ctx.stroke();
 			ctx.setLineDash([]);
-			if (config.datasetFill  && config.linkType!=1) {
+			if (config.datasetFill  && setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )!=1) {
 				if (firstpt>=0 ) {
 					ctx.strokeStyle = "rgba(0,0,0,0)";
 					ctx.lineTo(lastxPos, statData[i][0].xAxisPosY-statData[i][0].zeroY);
@@ -6046,7 +6051,7 @@ window.Chart = function(context) {
 
 		
 		function initbz(pts,xpos,ypos,i) {
-			if (config.linkType==0 && setOptionValue(1,"BEZIERCURVE",ctx,data,statData,undefined,config.bezierCurve,i,-1,{nullValue : true})) {
+			if (setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==0 && setOptionValue(1,"BEZIERCURVE",ctx,data,statData,undefined,config.bezierCurve,i,-1,{nullValue : true})) {
 				pts.length=0;
 				pts.push(xpos);pts.push(ypos);
 			}
@@ -6054,14 +6059,14 @@ window.Chart = function(context) {
 		} ;
 		
 		function traceLine(pts,ctx,xpos,ypos,config,data,statData,i) {
-			if (config.linkType==0 && setOptionValue(1,"BEZIERCURVE",ctx,data,statData,undefined,config.bezierCurve,i,-1,{nullValue : true})) {
+			if (setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==0 && setOptionValue(1,"BEZIERCURVE",ctx,data,statData,undefined,config.bezierCurve,i,-1,{nullValue : true})) {
 				pts.push(xpos);	pts.push(ypos);
 			} else {
-				if(config.linkType==0)ctx.lineTo(xpos,ypos);
-				else if(config.linkType==1){
+				if(setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==0)ctx.lineTo(xpos,ypos);
+				else if(setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==1){
 					ctx.moveTo(xpos, statData[i][0].xAxisPosY-statData[i][0].zeroY);
 					ctx.lineTo(xpos,ypos);
-				} else if (config.linkType==2){
+				} else if (setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==2){
 					ctx.lineTo(xpos,prevypos);
 					ctx.lineTo(xpos,ypos);
 					prevypos=ypos;
@@ -6071,7 +6076,7 @@ window.Chart = function(context) {
 		
 		function closebz(pts,ctx,config,i){
 		
-			if(config.linkType==0 && setOptionValue(1,"BEZIERCURVE",ctx,data,statData,undefined,config.bezierCurve,i,-1,{nullValue : true})) {
+			if(setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==0 && setOptionValue(1,"BEZIERCURVE",ctx,data,statData,undefined,config.bezierCurve,i,-1,{nullValue : true})) {
 				minimumpos= statData[i][0].xAxisPosY;
 				maximumpos= statData[i][0].xAxisPosY - statData[i][0].calculatedScale.steps*statData[i][0].scaleHop;
 				drawSpline(ctx,pts,setOptionValue(1,"BEZIERCURVETENSION",ctx,data,statData,undefined,config.bezierCurveTension,i,-1,{nullValue : true}),minimumpos,maximumpos);
@@ -6383,7 +6388,7 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
 				ctx.save();
 				ctx.beginPath();
 				var lgdbox=legendMsr.legendBox;
-				if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") if (data.datasets[orderi].type=="Line" && (!config.datasetFill || config.linkType==1)) lgdbox=false;
+				if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") if (data.datasets[orderi].type=="Line" && (!config.datasetFill || setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==1)) lgdbox=false;
 				if (lgdbox) {
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.datasetStrokeWidth);
 					ctx.beginPath();
@@ -6869,6 +6874,7 @@ switch(ctx.tpdata) {
 				statData[i].v10= fmtChartJS(config, othervars.ext_radius, config.fmtV10); 
 				statData[i].radiusOffset=othervars.ext_radius;
 			}
+			statData[i].outerVal= othervars.outerVal;
 			statData[i].midPosX= othervars.midPosX;
 			statData[i].midPosY= othervars.midPosY;
 			statData[i].calculatedScale=othervars.calculatedScale;

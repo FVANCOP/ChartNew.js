@@ -1,0 +1,183 @@
+  <!doctype html>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]-->
+<SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+<SCRIPT src='../Add-ins/specialInChartData.js'></script>
+
+
+<SCRIPT>
+
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+
+var mydata1 = [
+    {
+        value : 30,
+        color: "#D97041",
+        title : "January"
+    },
+    {
+        value : 90,
+        color: "#C7604C",
+        title : "February"
+    },
+    {
+        value : 24,
+        color: "#21323D",
+        title : "March"
+    },
+    {
+        value : 58,
+        color: "#9D9B7F",
+        title : "April"
+    },
+    {
+        value : 82,
+        color: "#7D4F6D",
+        title : "May"
+    },
+    {
+        value : 8,
+        color: "#584A5E",
+        title : "June"
+    }
+    ]
+;
+
+var mydata2 = [
+    {
+        value : 30,
+        color: "#D97041",
+        title : "January"
+    },
+    {
+        value : 90,
+        color: "#C7604C",
+        title : "February"
+    },
+    {
+        value : 24,
+        color: "#21323D",
+        title : "March"
+    },
+    {
+        value : 58,
+        color: "#9D9B7F",
+        title : "April"
+    },
+    {
+        value : 82,
+        color: "#7D4F6D",
+        title : "May"
+    },
+    {
+        value : 8,
+        color: "#584A5E",
+        title : "June"
+    }
+    ]
+;
+
+var image=new Image();
+image.src="plus_sign.jpg";
+
+var mydata3 = [
+    {
+    	link : "line",
+    	imageLoad : image,
+        value : 30,
+        color: "#D97041",
+        title : "January"
+    },
+    {
+    	link : "line",
+        value : 90,
+        imagePos: 0,
+        color: "#C7604C",
+        title : "February"
+    },
+    {
+    	link : "line",
+        value : 24,
+        color: "#21323D",
+        title : "March"
+    },
+    {
+    	link : "triangle",
+        value : 58,
+        color: "#9D9B7F",
+        title : "April"
+    },
+    {
+    	link : "triangle",
+    	imageLoad : image,
+	imagePos : 0,
+	imageHeight : 40,
+	imageWidth : 40,
+	fontSize: 25,
+	fontStyle : "italic bold",
+    	text : "My own text in Italic Bold",
+        value : 82,
+        color: "#7D4F6D",
+        title : "May"
+    },
+    {
+    	link : "triangle",
+    	imagePos : 0,
+    	imageHeight : 40,
+    	imageWidth : 40,
+        value : 8,
+        color: "#584A5E",
+        title : "June"
+    }
+    ]
+;
+
+var myopt = {
+	animation : false,
+	canvasBorders : true,
+	inGraphDataShow : false,
+	spaceTop : 55,
+	spaceBottom : 40,
+	endDrawDataFunction: drawShapes 
+
+}
+
+
+
+pushInGraphData("Doughnut",mydata1,myopt,{text: "<Title> (<Value>)",fontSize : 12,linkStrokeColorLine: "grey",piePaddingY :0.1, avoidOverwrite :true, imagePos: 1, link : "line"});
+pushInGraphData("Doughnut",mydata2,myopt,{text: "<Title> (<Value>)",fontSize : 12,linkStrokeColorLine: "grey",piePaddingY :0.1, avoidOverwrite :true, imagePos: 1, link : "triangle"});
+pushInGraphData("Doughnut",mydata3,myopt,{text: "<Title> (<Value>)",fontSize : 12,linkStrokeColorLine: "grey",piePaddingY :0.1, avoidOverwrite :true, imagePos: 1, link : "triangle"});
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas3\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myCanvas1 = new Chart(document.getElementById("canvas1").getContext("2d")).Doughnut(mydata1,myopt);
+    var myCanvas2 = new Chart(document.getElementById("canvas2").getContext("2d")).Doughnut(mydata2,myopt);
+    var myCanvas3 = new Chart(document.getElementById("canvas3").getContext("2d")).Doughnut(mydata3,myopt);
+}
+    </script>
+  </body>
+</html>
