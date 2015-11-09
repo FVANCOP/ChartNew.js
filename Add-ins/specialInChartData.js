@@ -87,7 +87,7 @@ var moreInChartData_default= {
 	paddingY10 : null,
 	
 	// Special values;
-	avoidOverwrite : false	
+	avoidOverwrite : true	
 	
 	
 };
@@ -239,6 +239,7 @@ function pushInGraphData(type_chart,data,config,pushInfoDefault) {
 
 function annotateLineFunction(area, ctx, data, statData, posi,posj,othervars){
 
+	if (typeof ctx.specialInChartData=="undefined")ctx.specialInChartData=[];
 	/* compute radius */
 	var radius= (Math.sqrt(Math.pow(othervars.xypos2.xpos-othervars.xypos10.xpos,2)+ Math.pow(othervars.xypos2.ypos-othervars.xypos10.ypos,2)));
 
@@ -270,14 +271,14 @@ function annotateLineFunction(area, ctx, data, statData, posi,posj,othervars){
 
 	if(data[0].shapesInChart[0].avoidOverwrite) {
 	
-		if (typeof ctx.prevYln!="undefined") {
-			if(Math.abs(ctx.prevXln-xln)<0.001) {
-				if(othervars.xypos10.xpos<othervars.xypos2.xpos) yln=Math.max(yln,ctx.prevYln+1.5*othervars.shapesInChart.fontSize);
-				else yln=Math.min(yln,ctx.prevYln-1.5*othervars.shapesInChart.fontSize);
+		if (typeof ctx.specialInChartData.prevYln!="undefined") {
+			if(Math.abs(ctx.specialInChartData.prevXln-xln)<0.001) {
+				if(othervars.xypos10.xpos<othervars.xypos2.xpos) yln=Math.max(yln,ctx.specialInChartData.prevYln+1.5*othervars.shapesInChart.fontSize);
+				else yln=Math.min(yln,ctx.specialInChartData.prevYln-1.5*othervars.shapesInChart.fontSize);
 			}
 		};
-		ctx.prevXln=xln;
-		ctx.prevYln=yln;
+		ctx.specialInChartData.prevXln=xln;
+		ctx.specialInChartData.prevYln=yln;
 	};
 
 	ctx.beginPath();
@@ -305,6 +306,8 @@ function annotateLineFunction(area, ctx, data, statData, posi,posj,othervars){
 
 
 function annotateTriangleFunction(area, ctx, data,statData, posi,posj,othervars){
+
+	if (typeof ctx.specialInChartData=="undefined")ctx.specialInChartData=[];
 
 // triangle to label;
 	ctx.beginPath();
@@ -336,32 +339,36 @@ function annotateTriangleFunction(area, ctx, data,statData, posi,posj,othervars)
 	var yln=othervars.xypos4.ypos;
 
 	ctx.beginPath();
-	if(othervars.xypos4.xpos<othervars.xypos2.xpos) {
-		paddingX=-paddingValX;
-		ctx.textAlign="right";
-	} else {
+	if(othervars.xypos4.xpos>=othervars.xypos2.xpos) {
 		paddingX=paddingValX;
 		ctx.textAlign="left";
+	} else {
+		paddingX=-paddingValX;
+		ctx.textAlign="right";
 	}
 	
 	ctx.textBaseline="middle";
 
 	if(data[0].shapesInChart[0].avoidOverwrite) {
 	
-		if (typeof ctx.prevYln!="undefined") {
+		if (typeof ctx.specialInChartData.prevYln!="undefined" && ctx.textAlign==ctx.specialInChartData.textAlign) {
 				if(othervars.xypos4.xpos>=othervars.xypos2.xpos) { 
-					yln=Math.max(yln,ctx.prevYln+1.5*othervars.shapesInChart.fontSize);
+					
+				
+					yln=Math.max(yln,ctx.specialInChartData.prevYln+1.5*othervars.shapesInChart.fontSize);
 				} else {
-					yln=Math.min(yln,ctx.prevYln-1.5*othervars.shapesInChart.fontSize);
+					yln=Math.min(yln,ctx.specialInChartData.prevYln-1.5*othervars.shapesInChart.fontSize);
 				}
 		}
-		ctx.prevXln=xln;
-		ctx.prevYln=yln;
+		ctx.specialInChartData.prevXln=xln;
+		ctx.specialInChartData.prevYln=yln;
 	};
 
 // draw labels/images;
-	drawTextAndImage(area, ctx, data,statData, posi,posj,othervars,xln+paddingX, yln+paddingY);
-
+	ctx.specialInChartData.prevMsr=drawTextAndImage(area, ctx, data,statData, posi,posj,othervars,xln+paddingX, yln+paddingY);
+        ctx.specialInChartData.textAlign=ctx.textAlign;
+        ctx.specialInChartData.textBaseline=ctx.textBaseline;
+        
 };
 
 function drawTextAndImage(area, ctx, data,statData, posi,posj,othervars,xpos,ypos) {
@@ -370,6 +377,9 @@ function drawTextAndImage(area, ctx, data,statData, posi,posj,othervars,xpos,ypo
 	var paddingTextY=0;
 	var paddingImageX=0;
 	var paddingImageY=0;
+	var lgt=0;
+	var hgt=0;
+	var txtSize=0;
 	
 	// compute padding values;
 	if(othervars.shapesInChart.imageLoad != null && othervars.shapesInChart.text != "") {
@@ -377,7 +387,7 @@ function drawTextAndImage(area, ctx, data,statData, posi,posj,othervars,xpos,ypo
 		var fontSize=othervars.shapesInChart.fontSize;
 		ctx.font = othervars.shapesInChart.fontStyle + " " + othervars.shapesInChart.fontSize.toString() + "px " + othervars.shapesInChart.fontFamily;
 		ctx.fillStyle = othervars.shapesInChart.fontColor;
-		var txtSize=ctx.measureTextMultiLine(othervars.shapesInChart.text,othervars.shapesInChart.fontSize);
+		txtSize=ctx.measureTextMultiLine(othervars.shapesInChart.text,othervars.shapesInChart.fontSize);
 
 		if(othervars.shapesInChart.imagePos==1 && ctx.textAlign=="right") {
 			paddingTextX=-(othervars.shapesInChart.imageWidth+othervars.shapesInChart.spaceBetweenTextAndImage);
@@ -390,6 +400,7 @@ function drawTextAndImage(area, ctx, data,statData, posi,posj,othervars,xpos,ypo
 			paddingImageX=txtSize.textWidth+othervars.shapesInChart.spaceBetweenTextAndImage;
 		}
 		ctx.restore();
+		lgt=othervars.shapesInChart.spaceBetweenTextAndImage;
 	};
 
 	// draw text;
@@ -403,6 +414,8 @@ function drawTextAndImage(area, ctx, data,statData, posi,posj,othervars,xpos,ypo
 			ctx.fillTextMultiLine(othervars.shapesInChart.text, 0, 0, ctx.textBaseline, Math.ceil(ctx.chartTextScale*fontSize),true,othervars.config.detectMouseOnText,ctx,"SHAPESINCHART_TEXTMOUSE",0,xpos+paddingTextX,ypos+paddingTextY,-1,-1);
 		} else ctx.fillTextMultiLine(othervars.shapesInChart.text, 0, 0, ctx.textBaseline, Math.ceil(ctx.chartTextScale*fontSize),true,false,ctx,"SHAPESINCHART_TEXTMOUSE",0,xpos+paddingTextX,ypos+paddingTextY,-1,-1);
 		ctx.restore();
+		lgt+=txtSize;
+		hgt=Math.max(hgt,1.5* othervars.shapesInChart.fontSize);
 	}
 	// draw image;
 	if(othervars.shapesInChart.imageLoad != null) {
@@ -413,7 +426,11 @@ function drawTextAndImage(area, ctx, data,statData, posi,posj,othervars,xpos,ypo
 		ctx.translate(xpos+paddingImageX, ypos+paddingImageY);
 		ctx.drawImage(othervars.shapesInChart.imageLoad, 0, 0,othervars.shapesInChart.imageLoad.width,othervars.shapesInChart.imageLoad.height,0, 0,othervars.shapesInChart.imageWidth,othervars.shapesInChart.imageHeight);
 		ctx.restore();
+		lgt+=othervars.shapesInChart.imageWidth;
+		hgt=Math.max(hgt,othervars.shapesInChart.imageWidth.imageHeight);
 	}
+	
+	return {height : hgt,width : lgt};
 
 
 
