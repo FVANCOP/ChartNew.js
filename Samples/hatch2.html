@@ -1,0 +1,103 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/hatch.js'></script>
+
+<SCRIPT>
+
+var charJSPersonalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none" };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata3 = {
+  labels : ["0","100","200","300","400","500","600","700","800"],
+  xBegin : 0,
+  xEnd :  800,   
+	datasets : [
+		{
+			strokeColor : "rgba(0,220,220,1)",
+			data : [],
+      			xPos : [],
+      			title : "data1"
+		},
+		{
+			strokeColor : "rgba(220,0,220,1)",
+      			data : [],
+      			xPos : [],
+      			title : "data2"
+		}
+	]
+}           
+
+    
+
+var nbiter=7;
+for(var i=0;i<nbiter+1;i++)
+{
+  mydata3.datasets[0].xPos[i]=mydata3.xBegin+i*(mydata3.xEnd-mydata3.xBegin)/nbiter;
+  mydata3.datasets[0].data[i]=-100+200*Math.random();
+}
+
+var nbiter=15;
+for(var i=0;i<nbiter+1;i++)
+{
+  mydata3.datasets[1].xPos[i]=mydata3.xBegin+i*(mydata3.xEnd-mydata3.xBegin)/nbiter;
+  mydata3.datasets[1].data[i]=-100+200*Math.random();
+}
+
+
+
+addHatch(mydata3,{nb_hatch_lines : 450, animation : false});
+
+
+
+var myoptions = {
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "hatch.js Add-ins",
+      // change some options to obtain a better result;
+      pointDot : false,
+      animation : true,
+      animationSteps : 10,
+      legend : true,
+      annotateDisplay : true,
+      inGraphDataShow: false,
+      yAxisMinimumInterval : 1,
+
+      // change options default values for producing the good result;
+      
+      datasetFill : false,
+      bezierCurve : false
+
+
+
+}
+
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas3\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine2 = new Chart(document.getElementById("canvas3").getContext("2d")).Line(mydata3,myoptions);
+}
+    </script>
+  </body>
+</html>
