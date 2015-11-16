@@ -6391,7 +6391,11 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
 				var lgdbox=legendMsr.legendBox;
 				if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") if (data.datasets[orderi].type=="Line" && (!config.datasetFill || setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[orderi].linkType,config.linkType,orderi,-1,{nullvalue : null} )==1)) lgdbox=false;
 				if (lgdbox) {
-					ctx.lineWidth = Math.ceil(ctx.chartLineScale*setOptionValue(1,"LINEWIDTH",ctx,data,undefined,data.datasets[orderi].datasetStrokeWidth,config.datasetStrokeWidth,orderi,-1,{nullvalue : null} ));
+					if (legendMsr.drawLegendOnData) {
+	 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*setOptionValue(1,"LINEWIDTH",ctx,data,undefined,data.datasets[orderi].datasetStrokeWidth,config.datasetStrokeWidth,orderi,-1,{nullvalue : null} ));
+					} else {
+						ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.datasetStrokeWidth);
+					}
 					ctx.beginPath();
 					if (legendMsr.drawLegendOnData) {
 						ctx.strokeStyle=setOptionValue(1,"LEGENDSTROKECOLOR",ctx,data,undefined,data.datasets[orderi].strokeColor,config.defaultFillColor,orderi,-1,{animationValue: 1, xPosLeft : xpos, yPosBottom : ypos, xPosRight : xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), yPosTop : ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize))} );
