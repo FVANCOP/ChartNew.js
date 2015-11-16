@@ -855,7 +855,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 						ctx.restore();
 						annotateDIV.innerHTML = dispString;
 						show = true;
-					} else {
+					} else if(typeof funct=="function") {
 						funct(event, ctx, config, data, myStatData );
 					}
 					if (action == "annotate"  && jsGraphAnnotate[ctx.ChartNewId][i][4]) {
@@ -897,7 +897,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					ctx.restore();
 					annotateDIV.innerHTML = dispString;
 					show = true;
-				} else {
+				} else if(typeof funct=="function") {
 					funct(event, ctx, config, data, myStatData );
 				}
 				if (action == "annotate"  && jsGraphAnnotate[ctx.ChartNewId][i][4]) {
@@ -947,7 +947,7 @@ function doMouseAction(config, ctx, event, data, action, funct) {
 					ctx.restore();
 					annotateDIV.innerHTML = dispString;
 					show = true;
-				} else {
+				} else if(typeof funct=="function"){
 					funct(event, ctx, config, data, myStatData);
 				}
 				if (action == "annotate"  && jsGraphAnnotate[ctx.ChartNewId][i][4]) {
@@ -2211,9 +2211,9 @@ window.Chart = function(context) {
 				for (i = 0; i < data.length; i++) {
 					if (typeof(data[i].value) == 'undefined') continue;
 //					if (setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})) {
-						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", i, -1,statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})];
+						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", i, -1,statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,data[i].annotateDisplay,config.annotateDisplay,i,-1,{nullValue : true})];
 //					}
-					if (setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,-1,{nullValue : true})) {
+					if (setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,data[i].inGraphDataShow,config.inGraphDataShow,i,-1,{nullValue : true})) {
 						if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 1) posAngle = statData[i].realStartAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
 						else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 2) posAngle = (2*statData[i].realStartAngle - statData[i].segmentAngle) / 2 + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
 						else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 3) posAngle = statData[i].realStartAngle - statData[i].segmentAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
@@ -2400,8 +2400,7 @@ window.Chart = function(context) {
 				} else ctx.fillStyle = "rgba(0,0,0,0)";
 
 				ctx.strokeStyle=setOptionValue(1,"STROKECOLOR",ctx,data,statData,data.datasets[i].strokeColor,config.defaultStrokeColor,i,-1,{nullvalue : null} );
-
-				ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.datasetStrokeWidth);
+				ctx.lineWidth = Math.ceil(ctx.chartLineScale*setOptionValue(1,"LINEWIDTH",ctx,data,statData,data.datasets[i].datasetStrokeWidth,config.datasetStrokeWidth,i,-1,{nullvalue : null} ));
 				ctx.fill();
 //				ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
 				ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
@@ -2430,9 +2429,9 @@ window.Chart = function(context) {
 					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
 //						if (setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
-							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["POINT", i,j,statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})];
+							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["POINT", i,j,statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,data.datasets[i].annotateDisplay,config.annotateDisplay,i,j,{nullValue : true})];
 //						}
-						if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,j,{nullValue : true})) {
+						if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,data.datasets[i].inGraphDataShow,config.inGraphDataShow,i,j,{nullValue : true})) {
 							ctx.save();
 							ctx.beginPath();
 							ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,-1,{nullValue: true  });
@@ -2757,8 +2756,8 @@ window.Chart = function(context) {
 					else dataCutoutRadius=cutoutRadius-(doughnutRadius-cutoutRadius)*setOptionValue(1,"EXPANDINRADIUS",ctx,data,statData,data[i].expandInRadius,0,i,-1,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
         	        	        dataDoughnutRadius=doughnutRadius+(doughnutRadius-cutoutRadius)*setOptionValue(1,"EXPANDOUTRADIUS",ctx,data,statData,data[i].expandOutRadius,0,i,-1,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
 					if (typeof(data[i].value) == 'undefined' || 1*data[i].value<0) continue;
-					jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", i,-1,statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,-1,{nullValue : true})];
-					if (setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,-1,{nullValue : true}) && statData[i].segmentAngle >= (Math.PI/180) * setOptionValue(1,"INGRAPHDATAMINIMUMANGLE",ctx,data,statData,undefined,config.inGraphDataMinimumAngle,i,-1,{nullValue : true} )) {
+					jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["ARC", i,-1,statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,data[i].annotateDisplay,config.annotateDisplay,i,-1,{nullValue : true})];
+					if (setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,data[i].inGraphDataShow,config.inGraphDataShow,i,-1,{nullValue : true}) && statData[i].segmentAngle >= (Math.PI/180) * setOptionValue(1,"INGRAPHDATAMINIMUMANGLE",ctx,data,statData,undefined,config.inGraphDataMinimumAngle,i,-1,{nullValue : true} )) {
 						if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 1) posAngle = statData[i].realStartAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
 						else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 2) posAngle = statData[i].realStartAngle- statData[i].segmentAngle / 2 + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
 						else if (setOptionValue(1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,i,-1,{nullValue : true} ) == 3) posAngle = statData[i].realStartAngle - statData[i].segmentAngle + setOptionValue(1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,i,-1,{nullValue: true  }) * (Math.PI / 180);
@@ -3327,9 +3326,9 @@ window.Chart = function(context) {
 					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
 //						if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
-							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i, j, statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})];
+							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i, j, statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,data.datasets[i].annotateDisplay,config.annotateDisplay,i,j,{nullValue : true})];
 //						}
-						if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,j,{nullValue : true})) {
+						if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,data.datasets[i].inGraphDataShow,config.inGraphDataShow,i,j,{nullValue : true})) {
 							ctx.save();
 							ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  });
 							ctx.textBaseline = setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,j,{nullValue : true} );
@@ -3688,9 +3687,9 @@ window.Chart = function(context) {
 					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if ((typeof(data.datasets[i].data[j]) == 'undefined')) continue;
 //						if (setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
-							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i ,j, statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})];
+							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i ,j, statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,data.datasets[i].annotateDisplay,config.annotateDisplay,i,j,{nullValue : true})];
 //						}
-						if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,j,{nullValue : true})) {
+						if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,data.datasets[i].inGraphDataShow,config.inGraphDataShow,i,j,{nullValue : true})) {
 							ctx.save();
 							ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  });
 							ctx.textBaseline = setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,j,{nullValue : true} );
@@ -4090,9 +4089,9 @@ window.Chart = function(context) {
 						if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
 						if (data.datasets[i].type == "Line") continue;
 //						if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
-							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i , j, statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})];
+							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i , j, statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,data.datasets[i].annotateDisplay,config.annotateDisplay,i,j,{nullValue : true})];
 //						}
-						if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,j,{nullValue : true})) {
+						if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,data.datasets[i].inGraphDataShow,config.inGraphDataShow,i,j,{nullValue : true})) {
 							ctx.save();
 							ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  });
 							ctx.textBaseline = setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,j,{nullValue : true} );
@@ -4474,9 +4473,9 @@ window.Chart = function(context) {
 					for (j = 0; j < data.datasets[i].data.length; j++) {
 						if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
 //						if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
-							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i ,j ,statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})];
+							jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i ,j ,statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,data.datasets[i].annotateDisplay,config.annotateDisplay,i,j,{nullValue : true})];
 //                     				}
-                       				if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,j,{nullValue : true}))  {
+                       				if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,data.datasets[i].inGraphDataShow,config.inGraphDataShow,i,j,{nullValue : true}))  {
 							ctx.save();
 							ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  });
 							ctx.textBaseline = setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,j,{nullValue : true} );
@@ -5855,88 +5854,81 @@ window.Chart = function(context) {
 		var prevypos;
 		var pts=[];
 		for (var i = 0; i < data.datasets.length; i++) {
-			prevypos="undefined";
-			if(statData[i][0].tpchart!="Line")continue;
-			if (statData[i].length == 0) continue;
-			if (statData[i][0].firstNotMissing == -1) continue;
+			if(setOptionValue(1,"ANIMATION",ctx,data,statData,data.datasets[i].animation,config.animation,i,-1,{nullvalue : null} )==true || animPc >= 1) {
+				prevypos="undefined";
+				if(statData[i][0].tpchart!="Line")continue;
+				if (statData[i].length == 0) continue;
+				if (statData[i][0].firstNotMissing == -1) continue;
 
-			ctx.save();
-			ctx.beginPath();
+				ctx.save();
+				ctx.beginPath();
 
-			prevAnimPc={ mainVal:0 , subVal : 0,animVal : 0 };
-			var firstpt=-1;
-			var lastxPos=-1;
-			for (var j = statData[i][0].firstNotMissing; j <= statData[i][0].lastNotMissing; j++) {
-				if(prevAnimPc.animVal==0 && j>statData[i][0].firstNotMissing) continue;	
-				currentAnimPc = animationCorrection(animPc, data, config, i, j, 0);
-				if (currentAnimPc.mainVal == 0  && (prevAnimPc.mainVal > 0 && firstpt !=-1)) {
-					
-//					ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
-					ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
-					ctx.stroke();
-					ctx.setLineDash([]);
-					if(config.extrapolateMissingData) {
-						y1=statData[i][statData[i][j].prevNotMissing].yAxisPos - prevAnimPc.mainVal*statData[i][statData[i][j].prevNotMissing].yPosOffset;					
-						y2=statData[i][j].yAxisPos - prevAnimPc.mainVal*statData[i][statData[i][j-1].nextNotMissing].yPosOffset;
-						diffnb=statData[i][j-1].nextNotMissing-statData[i][j].prevNotMissing;
-						diffnbj=(j-1)-statData[i][j].prevNotMissing;
-						fact=(diffnbj+prevAnimPc.subVal)/diffnb;
-						y3=y1+fact*(y2-y1);					
-						traceLine(pts,ctx,statData[i][j-1].xPos + prevAnimPc.subVal*(statData[i][j].xPos-statData[i][j-1].xPos) , y3,config,data,statData,i);
-						closebz(pts,ctx,config,i);
-//						ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
+				prevAnimPc={ mainVal:0 , subVal : 0,animVal : 0 };
+				var firstpt=-1;
+				var lastxPos=-1;
+				for (var j = statData[i][0].firstNotMissing; j <= statData[i][0].lastNotMissing; j++) {
+					if(prevAnimPc.animVal==0 && j>statData[i][0].firstNotMissing) continue;	
+					currentAnimPc = animationCorrection(animPc, data, config, i, j, 0);
+					if (currentAnimPc.mainVal == 0  && (prevAnimPc.mainVal > 0 && firstpt !=-1)) {
+						ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
+						ctx.stroke();
+						ctx.setLineDash([]);
+						if(config.extrapolateMissingData) {
+							y1=statData[i][statData[i][j].prevNotMissing].yAxisPos - prevAnimPc.mainVal*statData[i][statData[i][j].prevNotMissing].yPosOffset;					
+							y2=statData[i][j].yAxisPos - prevAnimPc.mainVal*statData[i][statData[i][j-1].nextNotMissing].yPosOffset;
+							diffnb=statData[i][j-1].nextNotMissing-statData[i][j].prevNotMissing;
+							diffnbj=(j-1)-statData[i][j].prevNotMissing;
+							fact=(diffnbj+prevAnimPc.subVal)/diffnb;
+							y3=y1+fact*(y2-y1);					
+							traceLine(pts,ctx,statData[i][statData[i][j].prevNotMissing].xPos + fact*(statData[i][statData[i][j-1].nextNotMissing].xPos-statData[i][statData[i][j].prevNotMissing].xPos) , y3,config,data,statData,i,setYposOrigin(i,j,data,statData));
+							closebz(pts,ctx,config,i);
+							ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
+							ctx.stroke();
+							ctx.setLineDash([]);
+							ctx.strokeStyle = "rgba(0,0,0,0)";
+							if(config.datasetFill && setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )!=1) {
+								ctx.lineTo(statData[i][statData[i][j].prevNotMissing].xPos + fact*(statData[i][statData[i][j-1].nextNotMissing].xPos-statData[i][statData[i][j].prevNotMissing].xPos) , statData[i][j].yAxisPos );
+								ctx.lineTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY-statData[i][0].zeroY);
+								ctx.closePath();
+								ctx.fillStyle=setOptionValue(1,"COLOR",ctx,data,statData,data.datasets[i].fillColor,config.defaultFillColor,i,j,{animationValue: currentAnimPc.mainVal, xPosLeft : statData[i][0].xPos, yPosBottom : Math.max(statData[i][0].yAxisPos,statData[i][0].yAxisPos- ((config.animationLeftToRight) ? 1 : 1*currentAnimPc.mainVal) * statData[i][0].lminvalue_offset), xPosRight : statData[i][data.datasets[i].data.length-1].xPos, yPosTop : Math.min(statData[i][0].yAxisPos, statData[i][0].yAxisPos - ((config.animationLeftToRight) ? 1 : 1*currentAnimPc.mainVal) * statData[i][0].lmaxvalue_offset)} );
+								ctx.fill();
+								firstpt=-1;
+							}
+						} else if (!(typeof statData[i][j].value == "undefined")) {
+							traceLine(pts,ctx,statData[i][j-1].xPos + prevAnimPc.subVal*(statData[i][j].xPos-statData[i][j-1].xPos) , statData[i][j].yAxisPos - prevAnimPc.mainVal*statData[i][statData[i][j-1].nextNotMissing].yPosOffset,config,data,statData,i,setYposOrigin(i,j,data,statData));
+							closebz(pts,ctx,config,i);
+							ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
+							ctx.stroke();
+							ctx.setLineDash([]);
+							ctx.strokeStyle = "rgba(0,0,0,0)";
+							if(config.datasetFill && setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )!=1) {
+								ctx.lineTo(statData[i][j-1].xPos + prevAnimPc.subVal*(statData[i][j].xPos-statData[i][j-1].xPos) , statData[i][j].yAxisPos );
+								ctx.lineTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY-statData[i][0].zeroY);
+								ctx.closePath();
+								ctx.fillStyle=setOptionValue(1,"COLOR",ctx,data,statData,data.datasets[i].fillColor,config.defaultFillColor,i,j,{animationValue: currentAnimPc.mainVal, xPosLeft : statData[i][0].xPos, yPosBottom : Math.max(statData[i][0].yAxisPos,statData[i][0].yAxisPos- ((config.animationLeftToRight) ? 1 : 1*currentAnimPc.mainVal) * statData[i][0].lminvalue_offset), xPosRight : statData[i][data.datasets[i].data.length-1].xPos, yPosTop : Math.min(statData[i][0].yAxisPos, statData[i][0].yAxisPos - ((config.animationLeftToRight) ? 1 : 1*currentAnimPc.mainVal) * statData[i][0].lmaxvalue_offset)} );
+								ctx.fill();
+							}
+						}
+						prevAnimPc = currentAnimPc;
+						continue;
+					} else if(currentAnimPc.totVal ==0) {
 						ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
 						ctx.stroke();
 						ctx.setLineDash([]);
 						ctx.strokeStyle = "rgba(0,0,0,0)";
-						if(config.datasetFill && setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )!=1) {
-							ctx.lineTo(statData[i][j-1].xPos + prevAnimPc.subVal*(statData[i][j].xPos-statData[i][j-1].xPos) , statData[i][j].yAxisPos );
-							ctx.lineTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY-statData[i][0].zeroY);
-							ctx.closePath();
-							ctx.fillStyle=setOptionValue(1,"COLOR",ctx,data,statData,data.datasets[i].fillColor,config.defaultFillColor,i,j,{animationValue: currentAnimPc.mainVal, xPosLeft : statData[i][0].xPos, yPosBottom : Math.max(statData[i][0].yAxisPos,statData[i][0].yAxisPos- ((config.animationLeftToRight) ? 1 : 1*currentAnimPc.mainVal) * statData[i][0].lminvalue_offset), xPosRight : statData[i][data.datasets[i].data.length-1].xPos, yPosTop : Math.min(statData[i][0].yAxisPos, statData[i][0].yAxisPos - ((config.animationLeftToRight) ? 1 : 1*currentAnimPc.mainVal) * statData[i][0].lmaxvalue_offset)} );
-							ctx.fill();
-							firstpt=-1;
-						}
-					} else if (!(typeof statData[i][j].value == "undefined")) {
-						traceLine(pts,ctx,statData[i][j-1].xPos + prevAnimPc.subVal*(statData[i][j].xPos-statData[i][j-1].xPos) , statData[i][j].yAxisPos - prevAnimPc.mainVal*statData[i][statData[i][j-1].nextNotMissing].yPosOffset,config,data,statData,i);
-						closebz(pts,ctx,config,i);
-//						ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
+					} else {
 						ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
 						ctx.stroke();
 						ctx.setLineDash([]);
-						ctx.strokeStyle = "rgba(0,0,0,0)";
-						if(config.datasetFill && setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )!=1) {
-							ctx.lineTo(statData[i][j-1].xPos + prevAnimPc.subVal*(statData[i][j].xPos-statData[i][j-1].xPos) , statData[i][j].yAxisPos );
-							ctx.lineTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY-statData[i][0].zeroY);
-							ctx.closePath();
-							ctx.fillStyle=setOptionValue(1,"COLOR",ctx,data,statData,data.datasets[i].fillColor,config.defaultFillColor,i,j,{animationValue: currentAnimPc.mainVal, xPosLeft : statData[i][0].xPos, yPosBottom : Math.max(statData[i][0].yAxisPos,statData[i][0].yAxisPos- ((config.animationLeftToRight) ? 1 : 1*currentAnimPc.mainVal) * statData[i][0].lminvalue_offset), xPosRight : statData[i][data.datasets[i].data.length-1].xPos, yPosTop : Math.min(statData[i][0].yAxisPos, statData[i][0].yAxisPos - ((config.animationLeftToRight) ? 1 : 1*currentAnimPc.mainVal) * statData[i][0].lmaxvalue_offset)} );
-							ctx.fill();
-						}
+						ctx.strokeStyle=setOptionValue(1,"STROKECOLOR",ctx,data,statData,data.datasets[i].strokeColor,config.defaultStrokeColor,i,j,{nullvalue : null} );
 					}
 					prevAnimPc = currentAnimPc;
-					continue;
-				} else if(currentAnimPc.totVal ==0) {
-//					ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
-					ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
-					ctx.stroke();
-					ctx.setLineDash([]);
-					ctx.strokeStyle = "rgba(0,0,0,0)";
-				} else {
-//					ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
-					ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
-					ctx.stroke();
-					ctx.setLineDash([]);
-					ctx.strokeStyle=setOptionValue(1,"STROKECOLOR",ctx,data,statData,data.datasets[i].strokeColor,config.defaultStrokeColor,i,j,{nullvalue : null} );
-				}
-				
-				prevAnimPc = currentAnimPc;
 
-				switch(typeof data.datasets[i].data[j]) {
-					case "undefined" :
+					switch(typeof data.datasets[i].data[j]) {
+						case "undefined" :
 							if (!config.extrapolateMissingData) {
 								if(firstpt==-1) continue;
 								closebz(pts,ctx,config,i);
-//								ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
 								ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
 								ctx.stroke();
 								ctx.setLineDash([]);
@@ -5960,90 +5952,89 @@ window.Chart = function(context) {
 								diffnbj=(j)-statData[i][j+1].prevNotMissing;
 								fact=(diffnbj+prevAnimPc.subVal)/diffnb;
 								y3=y1+fact*(y2-y1);					
-								traceLine(pts,ctx,statData[i][j].xPos + currentAnimPc.subVal*(statData[i][j+1].xPos-statData[i][j].xPos), y3,config,data,statData,i);
+//								traceLine(pts,ctx,statData[i][j].xPos + currentAnimPc.subVal*(statData[i][j+1].xPos-statData[i][j].xPos), y3,config,data,statData,i);
+								traceLine(pts,ctx,statData[i][statData[i][j].prevNotMissing].xPos + fact*(statData[i][statData[i][j-1].nextNotMissing].xPos-statData[i][statData[i][j].prevNotMissing].xPos) , y3,config,data,statData,i,setYposOrigin(i,j,data,statData));
 							}
 							break;
-					default : 
-						ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.datasetStrokeWidth);
-						if (firstpt==-1) {
-							firstpt=j;
-							ctx.beginPath();
-							if(setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==1) {
-								ctx.moveTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY-statData[i][0].zeroY);
-								ctx.lineTo(statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset);											
-							} else ctx.moveTo(statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset);
-							initbz(pts,statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset,i);							
-							lastxPos=statData[i][j].xPos;
-						} else {
-							lastxPos=statData[i][j].xPos;
-							traceLine(pts,ctx,statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset,config,data,statData,i);
-						}
-						
-						if (currentAnimPc.subVal > 0 && statData[i][j].nextNotMissing !=-1 && (config.extrapolateMissing || statData[i][j].nextNotMissing==j+1)) {
-							lastxPos=statData[i][j].xPos + currentAnimPc.subVal*(statData[i][j+1].xPos-statData[i][j].xPos);
-							y1=statData[i][statData[i][j+1].prevNotMissing].yAxisPos - statData[i][statData[i][j+1].prevNotMissing].yPosOffset;					
-							y2=statData[i][statData[i][j].nextNotMissing].yAxisPos - statData[i][statData[i][j].nextNotMissing].yPosOffset;
-							y3=y1+currentAnimPc.subVal*(y2-y1);					
-							traceLine(pts,ctx,statData[i][j].xPos + currentAnimPc.subVal*(statData[i][j+1].xPos-statData[i][j].xPos), y3,config,data,statData,i);
-						}
-						break
+						default : 
+							ctx.lineWidth = Math.ceil(ctx.chartLineScale*setOptionValue(1,"LINEWIDTH",ctx,data,statData,data.datasets[i].datasetStrokeWidth,config.datasetStrokeWidth,i,j,{nullvalue : null} ));
+							if (firstpt==-1) {
+								firstpt=j;
+								ctx.beginPath();
+								if(setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==1) {
+									if(typeof statData[i][j].yPosOffsetOrigin != "undefined")ctx.moveTo(statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffsetOrigin);
+									else ctx.moveTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY-statData[i][0].zeroY);
+									ctx.lineTo(statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset);											
+								} else ctx.moveTo(statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset);
+								initbz(pts,statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset,i);							
+								lastxPos=statData[i][j].xPos;
+							} else {
+								lastxPos=statData[i][j].xPos;
+								traceLine(pts,ctx,statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset,config,data,statData,i,setYposOrigin(i,j,data,statData));
+							}	
+							if (currentAnimPc.subVal > 0 && statData[i][j].nextNotMissing !=-1 && (config.extrapolateMissing || statData[i][j].nextNotMissing==j+1)) {
+								lastxPos=statData[i][j].xPos + currentAnimPc.subVal*(statData[i][j+1].xPos-statData[i][j].xPos);
+								y1=statData[i][statData[i][j+1].prevNotMissing].yAxisPos - statData[i][statData[i][j+1].prevNotMissing].yPosOffset;					
+								y2=statData[i][statData[i][j].nextNotMissing].yAxisPos - statData[i][statData[i][j].nextNotMissing].yPosOffset;
+								y3=y1+currentAnimPc.subVal*(y2-y1);					
+								traceLine(pts,ctx,statData[i][j].xPos + currentAnimPc.subVal*(statData[i][statData[i][j].nextNotMissing].xPos-statData[i][j].xPos) , y3,config,data,statData,i,setYposOrigin(i,j,data,statData));
+							}
+							break
+					}
 				}
-			}
-			closebz(pts,ctx,config,i);
-//			ctx.setLineDash(lineStyleFn(config.datasetStrokeStyle));
-			ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
-			ctx.stroke();
-			ctx.setLineDash([]);
-			if (config.datasetFill  && setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )!=1) {
-				if (firstpt>=0 ) {
-					ctx.strokeStyle = "rgba(0,0,0,0)";
-					ctx.lineTo(lastxPos, statData[i][0].xAxisPosY-statData[i][0].zeroY);
-					ctx.lineTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY-statData[i][0].zeroY);
-					ctx.closePath();
-					ctx.fillStyle=setOptionValue(1,"COLOR",ctx,data,statData,data.datasets[i].fillColor,config.defaultFillColor,i,-1,{animationValue: currentAnimPc.mainVal, xPosLeft : statData[i][0].xPos, yPosBottom : Math.max(statData[i][0].yAxisPos,statData[i][0].yAxisPos- ((config.animationLeftToRight) ? 1 : 1*currentAnimPc.mainVal) * statData[i][0].lminvalue_offset), xPosRight : statData[i][data.datasets[i].data.length-1].xPos, yPosTop : Math.min(statData[i][0].yAxisPos, statData[i][0].yAxisPos - ((config.animationLeftToRight) ? 1 : 1*currentAnimPc.mainVal) * statData[i][0].lmaxvalue_offset)} );
-					ctx.fill();
-				}
-			} 
-			ctx.restore();
-			if (config.pointDot && animPc >= 1) {
-				for (j = 0; j < data.datasets[i].data.length; j++) {
-					if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
-						currentAnimPc = animationCorrection(animPc, data, config, i, j, 0);
-						if (currentAnimPc.mainVal > 0 || !config.animationLeftToRight) {
-							ctx.beginPath();
-							ctx.fillStyle=setOptionValue(1,"MARKERFILLCOLOR",ctx,data,statData,data.datasets[i].pointColor,config.defaultStrokeColor,i,j,{nullvalue: true} );
-							ctx.strokeStyle=setOptionValue(1,"MARKERSTROKESTYLE",ctx,data,statData,data.datasets[i].pointStrokeColor,config.defaultStrokeColor,i,j,{nullvalue: true} );
-							ctx.lineWidth=setOptionValue(ctx.chartLineScale,"MARKERLINEWIDTH",ctx,data,statData,data.datasets[i].pointDotStrokeWidth,config.pointDotStrokeWidth,i,j,{nullvalue: true} );
-							var markerShape=setOptionValue(1,"MARKERSHAPE",ctx,data,statData,data.datasets[i].markerShape,config.markerShape,i,j,{nullvalue: true} );
-							var markerRadius=setOptionValue(ctx.chartSpaceScale,"MARKERRADIUS",ctx,data,statData,data.datasets[i].pointDotRadius,config.pointDotRadius,i,j,{nullvalue: true} );
-							var markerStrokeStyle=setOptionValue(1,"MARKERSTROKESTYLE",ctx,data,statData,data.datasets[i].pointDotStrokeStyle,config.pointDotStrokeStyle,i,j,{nullvalue: true} );
-							drawMarker(ctx, statData[i][j].xPos , statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset, markerShape,markerRadius,markerStrokeStyle);							
+				closebz(pts,ctx,config,i);
+				ctx.setLineDash(lineStyleFn(setOptionValue(1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
+				ctx.stroke();
+				ctx.setLineDash([]);
+				if (config.datasetFill  && setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )!=1) {
+					if (firstpt>=0 ) {
+						ctx.strokeStyle = "rgba(0,0,0,0)";
+						ctx.lineTo(lastxPos, statData[i][0].xAxisPosY-statData[i][0].zeroY);
+						ctx.lineTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY-statData[i][0].zeroY);
+						ctx.closePath();
+						ctx.fillStyle=setOptionValue(1,"COLOR",ctx,data,statData,data.datasets[i].fillColor,config.defaultFillColor,i,-1,{animationValue: currentAnimPc.mainVal, xPosLeft : statData[i][0].xPos, yPosBottom : Math.max(statData[i][0].yAxisPos,statData[i][0].yAxisPos- ((config.animationLeftToRight) ? 1 : 1*currentAnimPc.mainVal) * statData[i][0].lminvalue_offset), xPosRight : statData[i][data.datasets[i].data.length-1].xPos, yPosTop : Math.min(statData[i][0].yAxisPos, statData[i][0].yAxisPos - ((config.animationLeftToRight) ? 1 : 1*currentAnimPc.mainVal) * statData[i][0].lmaxvalue_offset)} );
+						ctx.fill();
+					}
+				} 
+				ctx.restore();
+				if (config.pointDot && animPc >= 1) {
+					for (j = 0; j < data.datasets[i].data.length; j++) {
+						if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
+							currentAnimPc = animationCorrection(animPc, data, config, i, j, 0);
+							if (currentAnimPc.mainVal > 0 || !config.animationLeftToRight) {
+								ctx.beginPath();
+								ctx.fillStyle=setOptionValue(1,"MARKERFILLCOLOR",ctx,data,statData,data.datasets[i].pointColor,config.defaultStrokeColor,i,j,{nullvalue: true} );
+								ctx.strokeStyle=setOptionValue(1,"MARKERSTROKESTYLE",ctx,data,statData,data.datasets[i].pointStrokeColor,config.defaultStrokeColor,i,j,{nullvalue: true} );
+								ctx.lineWidth=setOptionValue(ctx.chartLineScale,"MARKERLINEWIDTH",ctx,data,statData,data.datasets[i].pointDotStrokeWidth,config.pointDotStrokeWidth,i,j,{nullvalue: true} );
+								var markerShape=setOptionValue(1,"MARKERSHAPE",ctx,data,statData,data.datasets[i].markerShape,config.markerShape,i,j,{nullvalue: true} );
+								var markerRadius=setOptionValue(ctx.chartSpaceScale,"MARKERRADIUS",ctx,data,statData,data.datasets[i].pointDotRadius,config.pointDotRadius,i,j,{nullvalue: true} );
+								var markerStrokeStyle=setOptionValue(1,"MARKERSTROKESTYLE",ctx,data,statData,data.datasets[i].pointDotStrokeStyle,config.pointDotStrokeStyle,i,j,{nullvalue: true} );
+								drawMarker(ctx, statData[i][j].xPos , statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset, markerShape,markerRadius,markerStrokeStyle);							
+							}
 						}
 					}
 				}
-			}
 
-			if (animPc >= config.animationStopValue) {
-				for (j = 0; j < data.datasets[i].data.length; j++) {
-					if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
-//					if(setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})) {
-						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["POINT", i, j, statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,undefined,config.annotateDisplay,i,j,{nullValue : true})];
-//					}
-					if (setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,undefined,config.inGraphDataShow,i,j,{nullValue : true})) {
- 						ctx.save();
-						ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  });
-						ctx.textBaseline = setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,j,{nullValue : true} );
-						ctx.font = setOptionValue(1,"INGRAPHDATAFONTSTYLE",ctx,data,statData,undefined,config.inGraphDataFontStyle,i,j,{nullValue : true} ) + ' ' + setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ) + 'px ' + setOptionValue(1,"INGRAPHDATAFONTFAMILY",ctx,data,statData,undefined,config.inGraphDataFontFamily,i,j,{nullValue : true} );
-						ctx.fillStyle = setOptionValue(1,"INGRAPHDATAFONTCOLOR",ctx,data,statData,undefined,config.inGraphDataFontColor,i,j,{nullValue : true} );
-						var paddingTextX = setOptionValue(ctx.chartSpaceScale,"INGRAPHDATAPADDINGX",ctx,data,statData,undefined,config.inGraphDataPaddingX,i,j,{nullValue : true} ),
-						    paddingTextY = setOptionValue(ctx.chartSpaceScale,"INGRAPHDATAPADDINGY",ctx,data,statData,undefined,config.inGraphDataPaddingY,i,j,{nullValue : true} );
-						var dispString = tmplbis(setOptionValue(1,"INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ), statData[i][j],config);
-						ctx.translate(statData[i][j].xPos + paddingTextX, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset - paddingTextY);
-						var rotateVal=setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) * (Math.PI / 180);
-						ctx.rotate(rotateVal);
-						setTextBordersAndBackground(ctx,dispString,setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),0,0,setOptionValue(1,"INGRAPHDATABORDERS",ctx,data,statData,undefined,config.inGraphDataBorders,i,j,{nullValue : true} ),setOptionValue(1,"INGRAPHDATABORDERSCOLOR",ctx,data,statData,undefined,config.inGraphDataBordersColor,i,j,{nullValue : true} ),setOptionValue(ctx.chartLineScale,"INGRAPHDATABORDERSWIDTH",ctx,data,statData,undefined,config.inGraphDataBordersWidth,i,j,{nullValue : true} ),setOptionValue(ctx.chartSpaceScale,"INGRAPHDATABORDERSXSPACE",ctx,data,statData,undefined,config.inGraphDataBordersXSpace,i,j,{nullValue : true} ),setOptionValue(ctx.chartSpaceScale,"INGRAPHDATABORDERSYSPACE",ctx,data,statData,undefined,config.inGraphDataBordersYSpace,i,j,{nullValue : true} ),setOptionValue(1,"INGRAPHDATABORDERSSTYLE",ctx,data,statData,undefined,config.inGraphDataBordersStyle,i,j,{nullValue : true} ),setOptionValue(1,"INGRAPHDATABACKGROUNDCOLOR",ctx,data,statData,undefined,config.inGraphDataBackgroundColor,i,j,{nullValue : true} ),"INGRAPHDATA");
-						ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),true,config.detectMouseOnText,ctx,"INGRAPHDATA_TEXTMOUSE",rotateVal,statData[i][j].xPos + paddingTextX, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset - paddingTextY,i,j);
-						ctx.restore();
+				if (animPc >= config.animationStopValue) {
+					for (j = 0; j < data.datasets[i].data.length; j++) {
+						if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
+						jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["POINT", i, j, statData,setOptionValue(1,"ANNOTATEDISPLAY",ctx,data,statData,data.datasets[i].annotateDisplay,config.annotateDisplay,i,j,{nullValue : true})];
+						if (setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,data.datasets[i].inGraphDataShow,config.inGraphDataShow,i,j,{nullValue : true})) {
+	 						ctx.save();
+							ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  });
+							ctx.textBaseline = setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,j,{nullValue : true} );
+							ctx.font = setOptionValue(1,"INGRAPHDATAFONTSTYLE",ctx,data,statData,undefined,config.inGraphDataFontStyle,i,j,{nullValue : true} ) + ' ' + setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ) + 'px ' + setOptionValue(1,"INGRAPHDATAFONTFAMILY",ctx,data,statData,undefined,config.inGraphDataFontFamily,i,j,{nullValue : true} );
+							ctx.fillStyle = setOptionValue(1,"INGRAPHDATAFONTCOLOR",ctx,data,statData,undefined,config.inGraphDataFontColor,i,j,{nullValue : true} );
+							var paddingTextX = setOptionValue(ctx.chartSpaceScale,"INGRAPHDATAPADDINGX",ctx,data,statData,undefined,config.inGraphDataPaddingX,i,j,{nullValue : true} ),
+							    paddingTextY = setOptionValue(ctx.chartSpaceScale,"INGRAPHDATAPADDINGY",ctx,data,statData,undefined,config.inGraphDataPaddingY,i,j,{nullValue : true} );
+							var dispString = tmplbis(setOptionValue(1,"INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ), statData[i][j],config);
+							ctx.translate(statData[i][j].xPos + paddingTextX, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset - paddingTextY);
+							var rotateVal=setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) * (Math.PI / 180);
+							ctx.rotate(rotateVal);
+							setTextBordersAndBackground(ctx,dispString,setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),0,0,setOptionValue(1,"INGRAPHDATABORDERS",ctx,data,statData,undefined,config.inGraphDataBorders,i,j,{nullValue : true} ),setOptionValue(1,"INGRAPHDATABORDERSCOLOR",ctx,data,statData,undefined,config.inGraphDataBordersColor,i,j,{nullValue : true} ),setOptionValue(ctx.chartLineScale,"INGRAPHDATABORDERSWIDTH",ctx,data,statData,undefined,config.inGraphDataBordersWidth,i,j,{nullValue : true} ),setOptionValue(ctx.chartSpaceScale,"INGRAPHDATABORDERSXSPACE",ctx,data,statData,undefined,config.inGraphDataBordersXSpace,i,j,{nullValue : true} ),setOptionValue(ctx.chartSpaceScale,"INGRAPHDATABORDERSYSPACE",ctx,data,statData,undefined,config.inGraphDataBordersYSpace,i,j,{nullValue : true} ),setOptionValue(1,"INGRAPHDATABORDERSSTYLE",ctx,data,statData,undefined,config.inGraphDataBordersStyle,i,j,{nullValue : true} ),setOptionValue(1,"INGRAPHDATABACKGROUNDCOLOR",ctx,data,statData,undefined,config.inGraphDataBackgroundColor,i,j,{nullValue : true} ),"INGRAPHDATA");
+							ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),true,config.detectMouseOnText,ctx,"INGRAPHDATA_TEXTMOUSE",rotateVal,statData[i][j].xPos + paddingTextX, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset - paddingTextY,i,j);
+							ctx.restore();
+						}
 					}
 				}
 			}
@@ -6058,15 +6049,24 @@ window.Chart = function(context) {
 			prevypos=ypos;
 		} ;
 		
-		function traceLine(pts,ctx,xpos,ypos,config,data,statData,i) {
+		function setYposOrigin(i,j,data,statData) {
+			yposOrigin="undefined";
+			if(typeof statData[i][j].yPosOffsetOrigin != "undefined")yposOrigin= statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffsetOrigin;
+			return(yposOrigin);
+		};
+		
+		
+		function traceLine(pts,ctx,xpos,ypos,config,data,statData,i,yposOrigin) {
 			if (setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==0 && setOptionValue(1,"BEZIERCURVE",ctx,data,statData,undefined,config.bezierCurve,i,-1,{nullValue : true})) {
 				pts.push(xpos);	pts.push(ypos);
 			} else {
 				if(setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==0)ctx.lineTo(xpos,ypos);
 				else if(setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==1){
-					ctx.moveTo(xpos, statData[i][0].xAxisPosY-statData[i][0].zeroY);
+					if(yposOrigin != "undefined")ctx.moveTo(xpos, yposOrigin);
+					else ctx.moveTo(xpos, statData[i][0].xAxisPosY-statData[i][0].zeroY);
+//					ctx.moveTo(xpos, statData[i][0].xAxisPosY-statData[i][0].zeroY);
 					ctx.lineTo(xpos,ypos);
-				} else if (setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==2){
+				} else if (setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==2 && typeof prevypos!="undefined"){
 					ctx.lineTo(xpos,prevypos);
 					ctx.lineTo(xpos,ypos);
 					prevypos=ypos;
@@ -6082,6 +6082,7 @@ window.Chart = function(context) {
 				drawSpline(ctx,pts,setOptionValue(1,"BEZIERCURVETENSION",ctx,data,statData,undefined,config.bezierCurveTension,i,-1,{nullValue : true}),minimumpos,maximumpos);
 				pts.length=0;			
 			}
+			prevypos=undefined;
 		};		
 
 		//Props to Rob Spencer at scaled innovation for his post on splining between points
@@ -6131,7 +6132,7 @@ window.Chart = function(context) {
 
 			ctx.beginPath();
 			ctx.strokeStyle=setOptionValue(1,"STROKECOLOR",ctx,data,statData,data.datasets[i].strokeColor,config.defaultStrokeColor,i,j,{nullvalue : null} );
-			ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.datasetStrokeWidth);
+			ctx.lineWidth = Math.ceil(ctx.chartLineScale*setOptionValue(1,"LINEWIDTH",ctx,data,statData,data.datasets[i].datasetStrokeWidth,config.datasetStrokeWidth,i,j,{nullvalue : null} ));
 			ctx.moveTo(pts[0],pts[1]);
 			ctx.quadraticCurveTo(cp[0],Math.max(Math.min(cp[1],minimumpos),maximumpos),pts[2],pts[3]);
 			
@@ -6388,9 +6389,9 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
 				ctx.save();
 				ctx.beginPath();
 				var lgdbox=legendMsr.legendBox;
-				if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") if (data.datasets[orderi].type=="Line" && (!config.datasetFill || setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[i].linkType,config.linkType,i,j,{nullvalue : null} )==1)) lgdbox=false;
+				if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") if (data.datasets[orderi].type=="Line" && (!config.datasetFill || setOptionValue(1,"LINKTYPE",ctx,data,statData,data.datasets[orderi].linkType,config.linkType,orderi,-1,{nullvalue : null} )==1)) lgdbox=false;
 				if (lgdbox) {
-					ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.datasetStrokeWidth);
+					ctx.lineWidth = Math.ceil(ctx.chartLineScale*setOptionValue(1,"LINEWIDTH",ctx,data,undefined,data.datasets[orderi].datasetStrokeWidth,config.datasetStrokeWidth,orderi,-1,{nullvalue : null} ));
 					ctx.beginPath();
 					if (legendMsr.drawLegendOnData) {
 						ctx.strokeStyle=setOptionValue(1,"LEGENDSTROKECOLOR",ctx,data,undefined,data.datasets[orderi].strokeColor,config.defaultFillColor,orderi,-1,{animationValue: 1, xPosLeft : xpos, yPosBottom : ypos, xPosRight : xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), yPosTop : ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize))} );
@@ -6415,7 +6416,7 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
 					ctx.fill();
 				} else {
 					ctx.lineWidth = config.legendColorIndicatorStrokeWidth ?
-						config.legendColorIndicatorStrokeWidth : Math.ceil(ctx.chartLineScale*config.datasetStrokeWidth);
+						config.legendColorIndicatorStrokeWidth : Math.ceil(ctx.chartLineScale*setOptionValue(1,"LINEWIDTH",ctx,data,undefined,data.datasets[orderi].datasetStrokeWidth,config.datasetStrokeWidth,orderi,-1,{nullvalue : null} ));
 					if (config.legendColorIndicatorStrokeWidth && config.legendColorIndicatorStrokeWidth > (Math.ceil(ctx.chartTextScale*config.legendFontSize))) {
 						ctx.lineWidth = (Math.ceil(ctx.chartTextScale*config.legendFontSize));
 					}
@@ -6923,6 +6924,12 @@ switch(ctx.tpdata) {
 						if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
 							statData[i][j].yPosOffset= calculateOffset(statData[i][j].logarithmic, data.datasets[i].data[j], statData[i][j].calculatedScale, statData[i][j].scaleHop) - statData[i][j].zeroY;
 							statData[i][j].posY=statData[i][j].yAxisPos - statData[i][j].yPosOffset;
+						}
+						if (typeof(data.datasets[i].origin) == 'object') {
+							if (!(typeof(data.datasets[i].origin[j]) == 'undefined')) {
+								statData[i][j].yPosOffsetOrigin= calculateOffset(statData[i][j].logarithmic, data.datasets[i].origin[j], statData[i][j].calculatedScale, statData[i][j].scaleHop) - statData[i][j].zeroY;
+								statData[i][j].posYOrigin=statData[i][j].yAxisPos - statData[i][j].yPosOffsetOrigin;
+							}
 						}
 						statData[i][j].posX=statData[i][j].xPos;
 						
