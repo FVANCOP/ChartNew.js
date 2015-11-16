@@ -1,0 +1,122 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/hatch.js'></script>
+
+<SCRIPT>
+
+var charJSPersonalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none" };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+var mydata1 = {
+	labels : ["Jan","Feb","Mar","Apr","Mai","Jun","Jul","Aug","Sep"],
+	datasets : [
+		{
+			strokeColor : "black",
+			data : [10,20,-5,-40,-30,50,100,70,-30],
+      			title : "data1"
+		},
+		{
+			strokeColor : "green",
+      			data : [20,0,-30,10,-10,-20,70,10,10],
+      			title : "data2"
+		}
+	]
+}        
+
+var mydata2 = {
+  labels : ["0","100","200","300","400","500","600","700","800"],
+  xBegin : 0,
+  xEnd :  800,   
+	datasets : [
+		{
+			strokeColor : "rgba(0,220,220,1)",
+			data : [],
+      			xPos : [],
+      			title : "data1"
+		},
+		{
+			strokeColor : "rgba(220,0,220,1)",
+      			data : [],
+      			xPos : [],
+      			title : "data2"
+		}
+	]
+}           
+
+
+    
+var nbiter=10;
+for(var i=0;i<nbiter+1;i++)
+{
+  mydata2.datasets[0].xPos[i]=mydata2.xBegin+i*(mydata2.xEnd-mydata2.xBegin)/nbiter;
+  mydata2.datasets[0].data[i]=-100+200*Math.random();
+}
+
+var nbiter=13;
+for(var i=0;i<nbiter+1;i++)
+{
+  mydata2.datasets[1].xPos[i]=mydata2.xBegin+i*(mydata2.xEnd-mydata2.xBegin)/nbiter;
+  mydata2.datasets[1].data[i]=-100+200*Math.random();
+}
+
+
+
+
+addHatch(mydata1,{});
+addHatch(mydata2,{animation : true,nb_hatch_lines : 100,positive_strokeColor : "green",negative_title : "title will appear in the legend for negative values"});
+
+
+
+var myoptions = {
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "hatch.js Add-ins",
+      // change some options to obtain a better result;
+      pointDot : false,
+      animation : true,
+      animationSteps : 10,
+      legend : true,
+      annotateDisplay : true,
+      inGraphDataShow: false,
+      yAxisMinimumInterval : 1,
+
+      // change options default values for producing the good result;
+      
+      datasetFill : false,
+      bezierCurve : false
+
+
+
+}
+
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine0 = new Chart(document.getElementById("canvas1").getContext("2d")).Line(mydata1,myoptions);
+    var myLine1 = new Chart(document.getElementById("canvas2").getContext("2d")).Line(mydata2,myoptions);
+}
+    </script>
+  </body>
+</html>
