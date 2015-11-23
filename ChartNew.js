@@ -2196,7 +2196,14 @@ window.Chart = function(context) {
 					ctx.closePath();
 					ctx.fillStyle=setOptionValue(1,"COLOR",ctx,data,statData,data[i].color,config.defaultFillColor,i,-1,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
 					ctx.fill();
-					if (config.segmentShowStroke) {
+
+					if(config.segmentShowStroke=="merge") { /* avoid blank stripes between piece of chart */
+						ctx.lineWidth =0;
+						ctx.strokeStyle =setOptionValue(1,"COLOR",ctx,data,statData,data[i].color,config.defaultFillColor,i,-1,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
+						ctx.setLineDash([]);
+						ctx.stroke();
+					}
+					else if (config.segmentShowStroke) {
 						ctx.strokeStyle = config.segmentStrokeColor;
 						ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.segmentStrokeWidth);
 						ctx.setLineDash(lineStyleFn(setOptionValue(1,"SEGMENTSTROKESTYLE",ctx,data,statData,data[i].segmentStrokeStyle,config.segmentStrokeStyle,i,-1,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} )));
@@ -2718,9 +2725,12 @@ window.Chart = function(context) {
 						rotateAnimation = animationDecimal;
 					}
 				}
+
 				correctedRotateAnimation = animationCorrection(rotateAnimation, data, config, i, -1, 0).mainVal;
 				if (!(typeof(data[i].value) == 'undefined') && 1*data[i].value >=0) {
 					ctx.beginPath();
+					ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.segmentStrokeWidth);
+					ctx.strokeStyle = "rgba(0,0,0,0)";
 					if (config.animationByData == "ByArc") {
 						endAngle=statData[i].startAngle+correctedRotateAnimation*statData[i].segmentAngle;
 						ctx.arc(midPieX, midPieY, scaleAnimation * dataDoughnutRadius, statData[i].startAngle, endAngle,false);
@@ -2738,10 +2748,16 @@ window.Chart = function(context) {
 						ctx.arc(midPieX, midPieY, scaleAnimation * dataDoughnutRadius, statData[i].firstAngle+correctedRotateAnimation * (statData[i].startAngle-statData[i].firstAngle), statData[i].firstAngle+correctedRotateAnimation * (statData[i].endAngle-statData[i].firstAngle),false);
 						ctx.arc(midPieX, midPieY, scaleAnimation * dataCutoutRadius, statData[i].firstAngle+correctedRotateAnimation * (statData[i].endAngle-statData[i].firstAngle), statData[i].firstAngle+correctedRotateAnimation * (statData[i].startAngle-statData[i].firstAngle), true);
 					}
-					ctx.closePath();
+					ctx.closePath();  
 					ctx.fillStyle=setOptionValue(1,"COLOR",ctx,data,statData,data[i].color,config.defaultFillColor,i,-1,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
 					ctx.fill();
-					if (config.segmentShowStroke) {
+					if(config.segmentShowStroke=="merge") { /* avoid blank stripes between piece of chart */
+						ctx.lineWidth =1.5;
+						ctx.strokeStyle =setOptionValue(1,"COLOR",ctx,data,statData,data[i].color,config.defaultFillColor,i,-1,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
+						ctx.setLineDash([]);
+						ctx.stroke();
+					}
+					else if (config.segmentShowStroke) {
 						ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.segmentStrokeWidth);
 						ctx.strokeStyle = config.segmentStrokeColor;
 						ctx.setLineDash(lineStyleFn(setOptionValue(1,"SEGMENTSTROKESTYLE",ctx,data,statData,data[i].segmentStrokeStyle,config.segmentStrokeStyle,i,-1,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} )));
