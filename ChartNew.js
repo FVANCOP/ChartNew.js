@@ -2928,12 +2928,9 @@ window.Chart = function(context) {
   			yAxisPosX = msr.leftNotUsableSize + Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft);
 			xAxisPosY = msr.topNotUsableSize + msr.availableHeight + Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop);
 			drawLabels();
-			if (valueBounds.minValue < 0) {
-				zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, scaleHop);
-			}
-			if (valueBounds.minValue2 < 0) {
-				zeroY2 = calculateOffset(config.logarithmic2, 0, calculatedScale2, scaleHop2);
-			}
+
+			zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, scaleHop);
+			if(typeof calculatedScale2 ==="object")zeroY2 = calculateOffset(config.logarithmic2, 0, calculatedScale2, scaleHop2);
 			initPassVariableData_part2(statData,data,config,ctx,{
 				xAxisPosY : xAxisPosY,
 				yAxisPosX : yAxisPosX,
@@ -2995,9 +2992,7 @@ window.Chart = function(context) {
 						case "0":
 						case 0:
 							// check if zero exists
-							if (zeroY != 0) {
-								yPosXScale = xAxisPosY - zeroY;
-							}
+							if (zeroY != 0) yPosXScale = xAxisPosY - zeroY;
 							break;
 					}
 					// draw the scale line
@@ -3276,8 +3271,9 @@ window.Chart = function(context) {
 
 			var zeroY = 0;
 			var zeroY2 = 0;
-			if (valueBounds.minValue < 0) 	zeroY = calculateOffset(false, 0, calculatedScale, scaleHop);
-			if (valueBounds.minValue2 < 0) zeroY2 = calculateOffset(config.logarithmic2, 0, calculatedScale2, scaleHop2);       	
+
+			zeroY = calculateOffset(false, 0, calculatedScale, scaleHop);
+			if(typeof calculatedScale2 ==="object") zeroY2 = calculateOffset(config.logarithmic2, 0, calculatedScale2, scaleHop2);       	
 			drawLabels();
 			initPassVariableData_part2(statData,data,config,ctx,{ 
 				msr: msr,
@@ -3636,7 +3632,7 @@ window.Chart = function(context) {
 			} else additionalSpaceBetweenBars=0;
 
 			drawLabels();
-			zeroY=  HorizontalCalculateOffset(0 , calculatedScale, scaleHop);
+			var zeroY=  HorizontalCalculateOffset(0 , calculatedScale, scaleHop);
 			initPassVariableData_part2(statData,data,config,ctx,{ 
 				yAxisPosX : yAxisPosX,
 				additionalSpaceBetweenBars : additionalSpaceBetweenBars,
@@ -4049,14 +4045,9 @@ window.Chart = function(context) {
 				barWidth=1*config.maxBarWidth;
 			} else additionalSpaceBetweenBars=0;
 
-			var zeroY = 0;
 			var zeroY2 = 0;
-			if (valueBounds.minValue < 0) {
-				zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, scaleHop);
-			}
-			if (valueBounds.minValue2 < 0) {
-				zeroY2 = calculateOffset(config.logarithmic2, 0, calculatedScale2, scaleHop2);
-			}
+			var zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, scaleHop);
+			if(typeof calculatedScale2 ==="object") zeroY2 = calculateOffset(config.logarithmic2, 0, calculatedScale2, scaleHop2);
 			initPassVariableData_part2(statData,data,config,ctx,{ 
 				msr: msr,
 				yAxisPosX : yAxisPosX,
@@ -4450,9 +4441,7 @@ window.Chart = function(context) {
 			} else additionalSpaceBetweenBars=0;
 
 			var zeroY = 0;
-			if (valueBounds.minValue < 0) {
-				zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, valueHop);
-			}
+			zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, valueHop);
 			drawLabels();
 			initPassVariableData_part2(statData,data,config,ctx,{ 
 				yAxisPosX : yAxisPosX,
