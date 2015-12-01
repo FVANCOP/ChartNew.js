@@ -1,0 +1,21 @@
+// JavaScript Document
+
+var lst=[];
+
+// Field0 : name
+// Field1 : source file
+// Field2 : Key words (the first key words is the category for the menu)
+// Field3 : Wiki links separated by a comma
+// Field4 : description
+
+lst[lst.length]=["home","../Samples/add-ins_format.html","Home","https://github.com/FVANCOP/ChartNew.js/wiki","<center><FONT SIZE=8>Welcome. This is the Demo page of ChartNew.js</FONT></center>"];
+lst[lst.length]=["test2","../Samples/animation_bar.html","Pie test2","https://github.com/FVANCOP/ChartNew.js/wiki","This is the Home Page of ChartNew.js"];
+lst[lst.length]=["test1","../Samples/animation_doughnut.html","Pie test1","https://github.com/FVANCOP/ChartNew.js/wiki","This is the Home Page of ChartNew.js"];
+lst[lst.length]=["test3","../Samples/animation_HorizontalBar.html","Lines test3","https://github.com/FVANCOP/ChartNew.js/wiki","This is the Home Page of ChartNew.js"];
+lst[lst.length]=["test5","../Samples/animation_HorizontalStackedBar.html","Varia test4","https://github.com/FVANCOP/ChartNew.js/wiki","This is the Home Page of ChartNew.js"];
+lst[lst.length]=["test4","../Samples/animation_lines.html","Lines test3","https://github.com/FVANCOP/ChartNew.js/wiki","This is the Home Page of ChartNew.js"];
+lst[lst.length]=["test6","../Samples/animation_pie.html","Lines test6","https://github.com/FVANCOP/ChartNew.js/wiki","This is the Home Page of ChartNew.js"];
+lst[lst.length]=["test5","../Samples/animation_polararea.html","Lines test5","https://github.com/FVANCOP/ChartNew.js/wiki","This is the Home Page of ChartNew.js"];
+lst[lst.length]=["test7","../Samples/animation_radar.html","Lines test7","https://github.com/FVANCOP/ChartNew.js/wiki","This is the Home Page of ChartNew.js"];
+lst[lst.length]=["test9","../Samples/animation_stacked_bar.html","Lines test9","https://github.com/FVANCOP/ChartNew.js/wiki","This is the Home Page of ChartNew.js"];
+

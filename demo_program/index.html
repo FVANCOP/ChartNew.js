@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+                                                                                                                                  	
+<!../Samples/add-ins_format.html>                                                                                                                                  	
+                                                                                                                                  	
+<script>
+
+var frameset;
+window.onload=function(){
+  frameset_srch=document.getElementById("menu_srch");
+  frameset_descr=document.getElementById("chart_descr");
+};
+
+var frame_menu_disp=1;
+
+function resizeMenu() {
+  frame_menu_disp=1-frame_menu_disp;
+  if(frame_menu_disp==1) {
+  	frame_left.setAttribute("cols","150, *,30");
+  	main_frame.setAttribute("rows","30, *, 0");
+  } else { 
+  	frame_left.setAttribute("cols","0, *,30");
+  	main_frame.setAttribute("rows","0, *, 0");
+  }
+};
+
+
+var frame_srch_disp=0;
+
+function resizeSearch() {
+  frame_srch_disp=1-frame_srch_disp;
+  if(frame_srch_disp==1)frameset_srch.setAttribute("rows","30, *");
+  else frameset_srch.setAttribute("rows","0, *");
+};
+
+var frame_descr_disp=0;
+
+function resizeDescription() {
+  frame_descr_disp=1-frame_descr_disp;
+  if(frame_descr_disp==1)frameset_descr.setAttribute("rows","*, 120");
+  else frameset_descr.setAttribute("rows","*, 0");
+};
+
+
+
+</script>
+                                                                                                                                  	
+
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+  <title>ChartNew.js</title>
+  </head>
+  
+  <FRAMESET ROWS="30, *, 0" border='0' frameborder='0' framespacing='0' id="main_frame">
+	<FRAME  frameborder='0' marginwidth='0' marginheight='0' name="title_frame" src="frame_title.html" id="frame_title">
+	<FRAMESET COLS="150, *,30" border='0' frameborder='0' framespacing='0' id="frame_left">
+		<FRAMESET ROWS="0, *" border='0' frameborder='0' framespacing='0' id='menu_srch'>
+			<FRAME  frameborder='0' marginwidth='0' marginheight='0' name="srch_frame" src="frame_search.html">
+			<FRAME  frameborder='0' marginwidth='0' marginheight='0' name="menu_frame"   src="">
+		</FRAMESET>
+		<FRAMESET rows="*, 0" border='0' frameborder='0' framespacing='0' id="chart_descr">
+			<FRAME  frameborder='0' marginwidth='0' marginheight='0' name="chart_frame" src="" id="chartId">
+			<FRAME  frameborder='0' marginwidth='0' marginheight='0' name="desc_frame" src="frame_description.html">
+		</FRAMESET>
+		<FRAME  frameborder='0' marginwidth='0' marginheight='0' name="options_frame"   src="frame_options.html">
+	</FRAMESET>
+	<FRAME  frameborder='0' marginwidth='0' marginheight='0' name="blank" src="frame_load_data.html">
+   </FRAMESET>
+  
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<meta name="description" content="source : http://designshack.net/articles/css/verticalaccordionav">
+ 
+<title>Design Shack Vertical Nav Menu</title>
+<link rel="stylesheet" media="screen" href="menu_style.css" />
+ 
+</head>
+<body>
+		<nav>
+<SCRIPT>
+function itemClick(item) {
+  top.blank.menu[item][3]=1-top.blank.menu[item][3];
+  location.reload();
+}
+function loadItem(item) {
+  top.blank.curelt=item;
+  top.blank.loadInfo(item);
+  return false;
+}
+var newdiv,lastdiv;
+lastdiv=true;
+if(typeof top.blank.menu != "undefined") {
+for(var i=0;i<top.blank.menu.length;i++) {
+	newdiv=false;
+	if(lastdiv==true)newdiv=true;
+	lastdiv=false;
+	if(i==top.blank.menu.length-1)lastdiv=true;
+	else if(top.blank.menu[i+1][0]!=top.blank.menu[i][0])lastdiv=true;
+	if(newdiv==true && lastdiv==true){
+		document.write("<div class=\"menu-item alpha\">");
+		document.write("<h4><a onclick=\"loadItem("+i+");\">"+top.blank.menu[i][0]+"</a></h4>");
+	} else if(newdiv==true) {
+		document.write("<div class=\"menu-item\">");
+		document.write("<h4><a onclick=\"itemClick("+i+")\">"+top.blank.menu[i][0]+"</a></h4>");
+		if(top.blank.menu[i][3]==0)document.write("<ul>");
+		else                       document.write("<ul style=\"height:auto\">");
+//		document.write("<ul>");
+	}
+	if(newdiv==false || lastdiv==false) {
+		document.write("<li><a onclick=\"loadItem("+i+");\">"+top.blank.menu[i][1]+"</a></li>");
+	}
+	
+	if(newdiv==false && lastdiv==true) {
+		document.write("</ul>");
+	}	
+	
+
+	if(lastdiv==true)document.write("</div>");	
+	
+}
+}
+</SCRIPT>
+		      
+		</nav>
+</body>
+</html>
