@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+  <meta name="generator" content="PSPad editor, www.pspad.com">
+  <title></title>
+  </head>
+  <script>
+  function reload_image() {
+	top.chart_frame.location.href=top.blank.lst[top.blank.curElt][1];
+//	top.blank.reloadChart();
+  };
+  function zoom_image() {
+  	var zoom_image=window.open(top.blank.lst[top.blank.curElt][1],"zoom_image");
+	zoom_image.focus();
+  };
+  function zoom_image_in_screen() {
+	top.resizeMenu();
+  };
+  function srch_frame(){
+  	top.resizeSearch();
+  };
+  function descr_frame(){
+  	top.resizeDescription();
+  };
+  function previous_chart() {
+  	top.blank.curElt=top.blank.curElt-1;
+  	if(top.blank.curElt < 0)top.blank.curElt= top.blank.lst.length-1;
+	top.chart_frame.location.href=top.blank.lst[top.blank.curElt][1];
+	top.desc_frame.location.reload();
+//	top.blank.reloadChart();
+  };
+  function next_chart() {
+  	top.blank.curElt=top.blank.curElt+1;
+  	if(top.blank.curElt >= top.blank.lst.length)top.blank.curElt=0;
+	top.chart_frame.location.href=top.blank.lst[top.blank.curElt][1];
+	top.desc_frame.location.reload();
+//	top.blank.reloadChart();
+  };
+
+  </script>
+  <body  bgcolor="#e5e5e7">
+
+   <a href="#" onclick="previous_chart();"><img src="previous.png" alt="Previous Chart" title="Previous Chart" height="25" width="25"></a> 
+   <a href="#" onclick="zoom_image_in_screen();"><img src="zoom2.png" alt="Zoom chart" title="Zoom chart" height="25" width="25"></a> 
+   <a href="#" onclick="reload_image();"><img src="reload.png" alt="Reload chart" title="Reload chart" height="25" width="25"></a> 
+   <a href="#" onclick="zoom_image();"><img src="zoom.png" alt="Display chart in another screen" title="Display chart in another screen" height="25" width="25"></a> 
+   <a href="#" onclick="srch_frame();"><img src="find.png" alt="Display/Hide Search field" title="Display/Hide Search field" height="25" width="25"></a> 
+   <a href="#" onclick="descr_frame();"><img src="description.png" alt="Display/Hide Description" title="Display/Hide Description" height="25" width="25"></a> 
+   <a href="#" onclick="next_chart();"><img src="next.png" alt="Next Chart" title="Next Chart" height="25" width="25"></a> 
+
+  </body>
+</html>
