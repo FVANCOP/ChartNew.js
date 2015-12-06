@@ -1724,6 +1724,7 @@ window.Chart = function(context) {
 		multiGraph: false,
 		clearRect: true, // do not change clearRect options; for internal use only
 		dynamicDisplay: false,
+		animationForceSetTimeOut : false,
 		graphSpaceBefore: 5,
 		graphSpaceAfter: 5,
 		canvasBorders: false,
@@ -4718,8 +4719,10 @@ window.Chart = function(context) {
 		var beginAnim = cntiter;
 		var beginAnimPct = percentAnimComplete;
 		if (typeof drawScale !== "function") drawScale = function() {};
-		if (config.clearRect) requestAnimFrame(animLoop);
-		else animLoop();
+		if (config.clearRect) {
+			if(config.animationForceSetTimeOut)requestAnimFrameSetTimeOut(animLoop);
+			else requestAnimFrame(animLoop);
+		} else animLoop();
 
 		function animateFrame() {
 			var easeAdjustedAnimationPercent = (config.animation) ? CapValue(easingFunction(percentAnimComplete), null, 0) : 1;
@@ -4755,9 +4758,11 @@ window.Chart = function(context) {
 			if (multAnim == -1 && cntiter <= beginAnim) {
 				if (typeof config.onAnimationComplete == "function" && ctx.runanimationcompletefunction==true) config.onAnimationComplete(ctx, config, data, 0, animationCount + 1);
 				multAnim = 1;
-				requestAnimFrame(animLoop);
+				if(config.animationForceSetTimeOut)requestAnimFrameSetTimeOut(animLoop);
+				else requestAnimFrame(animLoop);
 			} else if (percentAnimComplete < config.animationStopValue) {
-				requestAnimFrame(animLoop);
+				if(config.animationForceSetTimeOut)requestAnimFrameSetTimeOut(animLoop);
+				else requestAnimFrame(animLoop);
 			} else {
 				if ((animationCount < config.animationCount || config.animationCount == 0) && (ctx.firstPass ==1 || ctx.firstPass!=2)) {
 					animationCount++;
@@ -4794,6 +4799,10 @@ window.Chart = function(context) {
 				window.setTimeout(callback, 1000 / 60);
 			};
 	})();
+	var requestAnimFrameSetTimeOut = (function() {
+		return	function(callback) { window.setTimeout(callback, 1000 / 60); };
+	})();
+
 
 	function calculateScale(axis, config, maxSteps, minSteps, maxValue, minValue, labelTemplateString) {
 		var graphMin, graphMax, graphRange, stepValue, numberOfSteps, valueRange, rangeOrderOfMagnitude, decimalNum;
