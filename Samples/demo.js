@@ -18,6 +18,8 @@ var demo_common_options = {
 
 //	animation:false,
 
+	onAnimationComplete : onCompletionChart,
+
 	legend : true,
 	inGraphDataShow : true,
 	responsive : true
@@ -972,8 +974,8 @@ var opts_mydata2_gradient= {
 	scaleBackdropPaddingY :2,
 	segmentShowStroke : "merge",
 	segmentStrokeColor : "#333",
-	segmentStrokeWidth :1,
-	onAnimationComplete : function(){MoreChartOptions()}
+//	onAnimationComplete : function(){MoreChartOptions()},
+	segmentStrokeWidth :1
 	
 	};
 
