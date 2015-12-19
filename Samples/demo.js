@@ -782,7 +782,7 @@ var mydata2 = [
 	{
 		value : 90,
 		color: "#9D9B7F",
-		title : "Noth-America"
+		title : "North-America"
 	}
 ];
 
