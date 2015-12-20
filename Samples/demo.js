@@ -102,6 +102,59 @@ var opts_mydata1P = {
 
 //**************************************************
 
+var mydata1_gradient_background = {
+	labels : ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+	datasets : [
+		{
+			fillColor :"rgba(37,116,168,0.6)",
+			strokeColor : "rgba(37,116,168,1)",
+			pointColor : "rgba(37,116,168,1)",
+			markerShape :"circle",
+			pointStrokeColor : "rgba(255,255,255,1.00)",
+			data : [],
+      			title : ""+((new Date().getFullYear())-1).toString()
+		},
+		{
+			fillColor :"rgba(204,46,59,0.49)",
+			strokeColor : "rgba(204,46,59,1)",
+			pointColor : "rgba(204,46,59,1)",
+			markerShape :"cross",
+			pointStrokeColor : "black",
+			data : [],
+      			title : ""+((new Date().getFullYear())-2).toString()
+		}
+	],
+	shapesInChart : [
+		{
+			position : "INCHART",
+			shape: "RECTANGLE",
+        		fillColor : gradientColor,
+        		gradientColors : ["green","yellow"],			
+			strokeColor : "rgba(0,0,0,0)",
+			animate : false,
+			x1: -999,
+			y1: 999,
+			x2: +999	,
+			y2: -999
+		}
+	]
+	
+};
+for(var i=0;i<mydata1_gradient_background.labels.length;i++) {
+	mydata1_gradient_background.datasets[0].data[i]=Math.floor(Math.random() * 200)-100;
+	mydata1_gradient_background.datasets[1].data[i]=Math.floor(Math.random() * 200)-100;
+};
+
+var opts_mydata1_gradient_background = {
+	datasetFill : false,
+	endDrawScaleFunction: drawShapes
+}
+
+
+
+
+//**************************************************
+
 var gauss_data = {
   labels : ["-3",-2,-1,"0",1,2,"3"],
   xBegin : -3,
