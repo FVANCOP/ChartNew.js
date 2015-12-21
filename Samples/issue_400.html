@@ -1,0 +1,98 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=500;
+
+
+var mydata1 = {
+	labels : ["US","China","UK","Japan","Germany","France","Belgium","Canada","Korea","Brazil","Mexico","India"],
+	datasets : [
+		{
+			fillColor : "rgb(220,220,220)",
+			strokeColor : "red",
+			pointColor : "rgba(220,220,220,1)",
+			pointstrokeColor : "yellow",
+			data : [100,72.38,95,95.75,76.45,88.18,0,80.35,95.23,87,87.5,89.59],
+			title : "2014"
+		},
+		{
+			fillColor : "rgb(220,220,220)",
+			strokeColor : "blue",
+			pointColor : "green",
+			pointstrokeColor : "yellow",
+			data : [92.92,88.39,90.2,86.1,88.17,84.22,88.7,80.35,96.17,86.75,83.33,89.59],
+      			title : "2013"
+		}
+	]
+}               
+
+function paddingRadiusFct(area,ctx,data,statData,posi,posj,othervars) {
+	var offset=5;
+	if(data.datasets[posi].data[posj] > data.datasets[(posi+1)%2].data[posj])return(offset);
+	else if(data.datasets[posi].data[posj] == data.datasets[(posi+1)%2].data[posj])return(offset-2*offset*posi);
+	else return(-offset);
+};
+
+function alignFct(area,ctx,data,statData,posi,posj,othervars) {
+	if(data.datasets[posi].data[posj] > data.datasets[(posi+1)%2].data[posj])return("off-center");
+	else if(data.datasets[posi].data[posj] == data.datasets[(posi+1)%2].data[posj] && posi==0)return("off-center");
+	else return("to-center");
+};
+
+
+var opt1 = {
+      animation : false,
+      datasetFill : false,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      legend : true,
+      inGraphDataShow : true,
+      inGraphDataFontColor : ["red","blue"],
+      inGraphDataPaddingRadius : paddingRadiusFct,
+      inGraphDataAlign : alignFct
+
+}
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Radar1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+
+
+    var myRadar = new Chart(document.getElementById("canvas_Radar1").getContext("2d")).Radar(mydata1,opt1);
+
+}
+
+    </script>
+  </body>
+</html>
