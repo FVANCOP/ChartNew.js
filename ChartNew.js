@@ -2448,28 +2448,28 @@ window.Chart = function(context) {
 						if(setOptionValue(1,"INGRAPHDATASHOW",ctx,data,statData,data.datasets[i].inGraphDataShow,config.inGraphDataShow,i,j,{nullValue : true})) {
 							ctx.save();
 							ctx.beginPath();
-							ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,-1,{nullValue: true  });
-							ctx.textBaseline = setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,-1,{nullValue : true} );
-							if (setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,-1,{nullValue: true  }) == "off-center") {
-								if (setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) == "inRadiusAxis" || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) > 3 * Math.PI / 2 || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) <= Math.PI / 2) ctx.textAlign = "left";
+							ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  });
+							ctx.textBaseline = setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,j,{nullValue : true} );
+							if (setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  }) == "off-center") {
+								if (setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) == "inRadiusAxis" || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) > 3 * Math.PI / 2 || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) <= Math.PI / 2) ctx.textAlign = "left";
 								else ctx.textAlign = "right";
-							} else if (setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,-1,{nullValue: true  }) == "to-center") {
-								if (setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) == "inRadiusAxis" || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) > 3 * Math.PI / 2 || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) < Math.PI / 2) ctx.textAlign = "right";
+							} else if (setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  }) == "to-center") {
+								if (setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) == "inRadiusAxis" || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) > 3 * Math.PI / 2 || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) < Math.PI / 2) ctx.textAlign = "right";
 								else ctx.textAlign = "left";
-							} else ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,-1,{nullValue: true  });
-							if (setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,-1,{nullValue : true} ) == "off-center") {
+							} else ctx.textAlign = setOptionValue(1,"INGRAPHDATAALIGN",ctx,data,statData,undefined,config.inGraphDataAlign,i,j,{nullValue: true  });
+							if (setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,j,{nullValue : true} ) == "off-center") {
 								if ((config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) > Math.PI) ctx.textBaseline = "bottom";
 								else ctx.textBaseline = "top";
-							} else if (setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,-1,{nullValue : true} ) == "to-center") {
+							} else if (setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,j,{nullValue : true} ) == "to-center") {
 								if ((config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) > Math.PI) ctx.textBaseline = "top";
 								else ctx.textBaseline = "bottom";
-							} else ctx.textBaseline = setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,-1,{nullValue : true} );
-							ctx.font = setOptionValue(1,"INGRAPHDATAFONTSTYLE",ctx,data,statData,undefined,config.inGraphDataFontStyle,i,-1,{nullValue : true} ) + ' ' + setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ) + 'px ' + setOptionValue(1,"INGRAPHDATAFONTFAMILY",ctx,data,statData,undefined,config.inGraphDataFontFamily,i,-1,{nullValue : true} );
-							ctx.fillStyle = setOptionValue(1,"INGRAPHDATAFONTCOLOR",ctx,data,statData,undefined,config.inGraphDataFontColor,i,-1,{nullValue : true} );
+							} else ctx.textBaseline = setOptionValue(1,"INGRAPHDATAVALIGN",ctx,data,statData,undefined,config.inGraphDataVAlign,i,j,{nullValue : true} );
+							ctx.font = setOptionValue(1,"INGRAPHDATAFONTSTYLE",ctx,data,statData,undefined,config.inGraphDataFontStyle,i,j,{nullValue : true} ) + ' ' + setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ) + 'px ' + setOptionValue(1,"INGRAPHDATAFONTFAMILY",ctx,data,statData,undefined,config.inGraphDataFontFamily,i,j,{nullValue : true} );
+							ctx.fillStyle = setOptionValue(1,"INGRAPHDATAFONTCOLOR",ctx,data,statData,undefined,config.inGraphDataFontColor,i,j,{nullValue : true} );
 							var radiusPrt;
-							if (setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,i,-1,{nullValue : true} ) == 1) radiusPrt = 0 + setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} );
-							else if (setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,i,-1,{nullValue : true} ) == 2) radiusPrt = (statData[i][j].calculated_offset) / 2 + setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} );
-							else if (setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,i,-1,{nullValue : true} ) == 3) radiusPrt = (statData[i][j].calculated_offset) + setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,-1,{nullValue: true} );
+							if (setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,i,j,{nullValue : true} ) == 1) radiusPrt = 0 + setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,j,{nullValue: true} );
+							else if (setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,i,j,{nullValue : true} ) == 2) radiusPrt = (statData[i][j].calculated_offset) / 2 + setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,j,{nullValue: true} );
+							else if (setOptionValue(1,"INGRAPHDATARADIUSPOSITION",ctx,data,statData,undefined,config.inGraphDataRadiusPosition,i,j,{nullValue : true} ) == 3) radiusPrt = (statData[i][j].calculated_offset) + setOptionValue(1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,i,j,{nullValue: true} );
 							var x_pos,y_pos;
 							if(statData[i][j].calculated_offset>0) {
 							        x_pos=midPosX + statData[i][j].offsetX * (radiusPrt/statData[i][j].calculated_offset);
@@ -2482,15 +2482,15 @@ window.Chart = function(context) {
 							}
 							ctx.translate(x_pos,y_pos);
 							var rotateVal=0;
-							if (setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) == "inRadiusAxis") rotateVal= j * rotationDegree;
-							else if (setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) == "inRadiusAxisRotateLabels") {
+							if (setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) == "inRadiusAxis") rotateVal= j * rotationDegree;
+							else if (setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) == "inRadiusAxisRotateLabels") {
 								if ((j * rotationDegree + 2 * Math.PI) % (2 * Math.PI) > Math.PI / 2 && (j * rotationDegree + 2 * Math.PI) % (2 * Math.PI) < 3 * Math.PI / 2) rotateVal= 3 * Math.PI + j * rotationDegree;
 								else rotateVal = 2 * Math.PI + j * rotationDegree;
-							} else rotateVal=setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,-1,{nullValue : true} ) * (Math.PI / 180);
+							} else rotateVal=setOptionValue(1,"INGRAPHDATAROTATE",ctx,data,statData,undefined,config.inGraphDataRotate,i,j,{nullValue : true} ) * (Math.PI / 180);
 							ctx.rotate(rotateVal);
-							var dispString = tmplbis(setOptionValue(1,"INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,-1,{nullValue : true} ), statData[i][j],config);
-							setTextBordersAndBackground(ctx,dispString,setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ),0,0,setOptionValue(1,"INGRAPHDATABORDERS",ctx,data,statData,undefined,config.inGraphDataBorders,i,-1,{nullValue : true} ),setOptionValue(1,"INGRAPHDATABORDERSCOLOR",ctx,data,statData,undefined,config.inGraphDataBordersColor,i,-1,{nullValue : true} ),setOptionValue(ctx.chartLineScale,"INGRAPHDATABORDERSWIDTH",ctx,data,statData,undefined,config.inGraphDataBordersWidth,i,-1,{nullValue : true} ),setOptionValue(ctx.chartSpaceScale,"INGRAPHDATABORDERSXSPACE",ctx,data,statData,undefined,config.inGraphDataBordersXSpace,i,-1,{nullValue : true} ),setOptionValue(ctx.chartSpaceScale,"INGRAPHDATABORDERSYSPACE",ctx,data,statData,undefined,config.inGraphDataBordersYSpace,i,-1,{nullValue : true} ),setOptionValue(1,"INGRAPHDATABORDERSSTYLE",ctx,data,statData,undefined,config.inGraphDataBordersStyle,i,-1,{nullValue : true} ),setOptionValue(1,"INGRAPHDATABACKGROUNDCOLOR",ctx,data,statData,undefined,config.inGraphDataBackgroundColor,i,-1,{nullValue : true} ),"INGRAPHDATA");
-							ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,-1,{nullValue : true} ),true,config.detectMouseOnText,ctx,"INGRAPHDATA_TEXTMOUSE",rotateVal,x_pos,y_pos,i,j);
+							var dispString = tmplbis(setOptionValue(1,"INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,i,j,{nullValue : true} ), statData[i][j],config);
+							setTextBordersAndBackground(ctx,dispString,setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),0,0,setOptionValue(1,"INGRAPHDATABORDERS",ctx,data,statData,undefined,config.inGraphDataBorders,i,j,{nullValue : true} ),setOptionValue(1,"INGRAPHDATABORDERSCOLOR",ctx,data,statData,undefined,config.inGraphDataBordersColor,i,j,{nullValue : true} ),setOptionValue(ctx.chartLineScale,"INGRAPHDATABORDERSWIDTH",ctx,data,statData,undefined,config.inGraphDataBordersWidth,i,j,{nullValue : true} ),setOptionValue(ctx.chartSpaceScale,"INGRAPHDATABORDERSXSPACE",ctx,data,statData,undefined,config.inGraphDataBordersXSpace,i,j,{nullValue : true} ),setOptionValue(ctx.chartSpaceScale,"INGRAPHDATABORDERSYSPACE",ctx,data,statData,undefined,config.inGraphDataBordersYSpace,i,j,{nullValue : true} ),setOptionValue(1,"INGRAPHDATABORDERSSTYLE",ctx,data,statData,undefined,config.inGraphDataBordersStyle,i,j,{nullValue : true} ),setOptionValue(1,"INGRAPHDATABACKGROUNDCOLOR",ctx,data,statData,undefined,config.inGraphDataBackgroundColor,i,j,{nullValue : true} ),"INGRAPHDATA");
+							ctx.fillTextMultiLine(dispString, 0, 0, ctx.textBaseline, setOptionValue(ctx.chartTextScale,"INGRAPHDATAFONTSIZE",ctx,data,statData,undefined,config.inGraphDataFontSize,i,j,{nullValue : true} ),true,config.detectMouseOnText,ctx,"INGRAPHDATA_TEXTMOUSE",rotateVal,x_pos,y_pos,i,j);
 							ctx.restore();
 						}
 					}
