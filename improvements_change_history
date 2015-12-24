@@ -1,6 +1,21 @@
 Change history
 --------------
 
+21/12/2015 - Vancoppenolle Francois - Fix issues detected when trying to find a solution for issue 400
+19/12/2015 - Vancoppenolle Francois - Fix issue for Safari browser
+06/12/2015 - Vancoppenolle Francois - Fix for issue 397
+27/11/2015 - Vancoppenolle Francois - Fix issue 392
+23/11/2015 - Vancoppenolle Francois - Allow 'segmentShowStroke: "merge"' as value (see issue 389)
+16/11/2015 - Vancoppenolle François - add-ins hatch.js added
+08/11/2015 - Vancoppenolle François - expandInRadius & expandOutRadius added for Pie/Doughnut
+                                      add-ins specialInChartData.js
+28/10/2015 - Vancoppenolle Francois - Option linkType added for Lines
+25/10/2015 - Vancoppenolle Francois - Fix for issue 373
+07/10/2015 - Vancoppenolle Francois - Fix for issue 368
+05/10/2015 - Vancoppenolle Francois - Option annotateBarMinimumDetectionHeight added
+29/09/2015 - Vancoppenolle Francois - Fix issue for option annotateRelocate when more than 1 line for the annotation (issue 361)
+15/09/2015 - Vancoppenolle François - Lines in stackedBars
+08/09/2015 - Vancoppenolle Francois - Option maxBarWidth added
 01/09/2015 - Vancoppenolle Francois - Solution for issue #349
 31/08/2015 - Vancoppenolle Francois - New Add-ins shapesInChart.js
 14/07/2015 - Vancoppenolle Francois - fix issues with option legendPosX
