@@ -1,5 +1,5 @@
 //
-// See ..\Samples\issue_102.html
+// See ../Samples/issue_102.html
 //
 // Module intially written by Ole Kroger
 // Change 1 : Omar Sedki - possibility to specify a percentage 
