@@ -557,13 +557,15 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 						xpos += othervars.midPosX;
 						break;
 					case -2:
-						xpos += ctx.canvas.width / 2;
+						if (window.devicePixelRatio) xpos += (ctx.canvas.width/2)/window.devicePixelRatio;
+						else xpos += ctx.canvas.width / 2;
 						break;
 					case 3:
 						xpos += xpos + 2 * othervars.midPosX - othervars.borderX;
 						break;
 					case 4:
-						xpos += ctx.canvas.width;
+						if (window.devicePixelRatio) xpos += ctx.canvas.width/window.devicePixelRatio;
+						else xpos += ctx.canvas.width;
 						break;
 					default:
 						xpos += othervars.midPosX;
@@ -579,13 +581,15 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 						ypos += othervars.midPosY;
 						break;
 					case -2:
-						ypos += ctx.canvas.height / 2;
+						if (window.devicePixelRatio) ypos += (ctx.canvas.height/2)/window.devicePixelRatio;
+						else ypos += ctx.canvas.height / 2;
 						break;
 					case 1:
 						ypos += ypos + 2 * othervars.midPosY - othervars.borderY;
 						break;
 					case 4:
-						ypos += ctx.canvas.height;
+						if (window.devicePixelRatio) ypos += ctx.canvas.height/window.devicePixelRatio;
+						else ypos += ctx.canvas.height;
 						break;
 					default:
 						ypos += othervars.midPosY;
