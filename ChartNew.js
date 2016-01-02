@@ -2347,6 +2347,12 @@ window.Chart = function(context) {
 				minSteps: minSteps
 			};
 		};
+		
+		return {
+			data:data,
+			config:config,
+			ctx:ctx
+		};
 	};
 	var Radar = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
@@ -2673,6 +2679,12 @@ window.Chart = function(context) {
 				minSteps: minSteps
 			};
 		};
+		
+		return {
+			data:data,
+			config:config,
+			ctx:ctx
+		};
 	};
 
 
@@ -2821,8 +2833,12 @@ window.Chart = function(context) {
 			}
 			if(msr.legendMsr.dispLegend)drawLegend(msr.legendMsr,data,config,ctx,"Doughnut");
 		};
-		
-
+			
+		return {
+			data:data,
+			config:config,
+			ctx:ctx
+		};	
 	};
 	var Line = function(data, config, ctx) {
 		var maxSize, scaleHop, scaleHop2, calculatedScale, calculatedScale2, labelHeight, scaleHeight, valueBounds, labelTemplateString, labelTemplateString2;
@@ -3205,6 +3221,12 @@ window.Chart = function(context) {
 				minSteps: minSteps
 			};
 		};
+				
+		return {
+			data:data,
+			config:config,
+			ctx:ctx
+		};
 	};
 	var StackedBar = function(data, config, ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
@@ -3555,6 +3577,12 @@ window.Chart = function(context) {
 				maxSteps: maxSteps,
 				minSteps: minSteps
 			};
+		};
+		
+		return {
+			data:data,
+			config:config,
+			ctx:ctx
 		};
 	};
 	/**
@@ -3929,6 +3957,12 @@ window.Chart = function(context) {
 			};
 
 
+		};	
+		
+		return {
+			data:data,
+			config:config,
+			ctx:ctx
 		};
 	};
 	var Bar = function(data, config, ctx) {
@@ -4382,6 +4416,12 @@ window.Chart = function(context) {
 				minSteps: minSteps
 			};
 		};
+				
+		return {
+			data:data,
+			config:config,
+			ctx:ctx
+		};
 	};
 
 	var HorizontalBar = function(data, config, ctx) {
@@ -4689,6 +4729,12 @@ window.Chart = function(context) {
 				maxSteps: maxSteps,
 				minSteps: minSteps
 			};
+		};
+
+		return {
+			data:data,
+			config:config,
+			ctx:ctx
 		};
 	};
 
