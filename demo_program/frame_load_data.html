@@ -73,6 +73,13 @@
   
   // Load info;
   var curElt=0;
+  var setInit="";
+  if((top.location.href+"").indexOf("#") >0)setInit=top.location.href.substring((top.location.href+"").indexOf("#")+1);
+
+  for(i=0;i<lst.length;i++) {
+  	if (setInit==lst[i][1]){curElt=i;}
+  }
+  
     
   function loadInfo(elt) {
   	curElt=elt;
