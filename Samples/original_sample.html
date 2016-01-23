@@ -1,7 +1,7 @@
   <!doctype html>
 
 
-
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 
 <!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
 <SCRIPT src='../Add-ins/shapesInChart.js'></script>
@@ -639,7 +639,9 @@ var newopts = {
 	footNoteSpaceBefore : 0,
 	footNoteSpaceAfter : 0, 
 	startAngle : 0,
-	dynamicDisplay : true
+	dynamicDisplay : true,
+	dynamicDisplayYPartOfChart : 1,
+	dynamicDisplayXPartOfChart : 0
 }
 
 
@@ -665,7 +667,9 @@ var crosstxt1 = {
 	graphTitleFontSize : 24,
 	graphTitleFontStyle : "bold",
 	graphTitleFontColor : "#666",
-	dynamicDisplay : true
+	dynamicDisplay : true,
+	dynamicDisplayYPartOfChart : 1,
+	dynamicDisplayXPartOfChart : 0
 }
 
 var crosstxt2 = {
@@ -699,7 +703,9 @@ var crosstxt2 = {
 	spaceBottom : 30,
 	spaceLeft : 30,
 	spaceRight : 30,
-	dynamicDisplay : true                  
+	dynamicDisplay : true,
+	dynamicDisplayYPartOfChart : 1,
+	dynamicDisplayXPartOfChart : 0
 }
 
 function dispPct(numtxt,valtxt,ctx,config,posX,posY,borderX,borderY,overlay,data,animPC){
@@ -732,7 +738,9 @@ var crosstxt3 = {
 	spaceLeft : 30,
 	spaceRight : 30,
 	startAngle : 180,
-	dynamicDisplay : true                
+	dynamicDisplay : true,
+	dynamicDisplayYPartOfChart : 1,
+	dynamicDisplayXPartOfChart : 0
 }
 
 function dispPct2(numtxt,valtxt,ctx,config,posX,posY,borderX,borderY,overlay,data,animPC){
@@ -765,7 +773,9 @@ var crosstxt4 = {
 	spaceLeft : 30,
 	spaceRight : 30,
 	startAngle : 180,  
-	dynamicDisplay : true                
+	dynamicDisplay : true,
+	dynamicDisplayYPartOfChart : 1,
+	dynamicDisplayXPartOfChart : 0
 }
 
 
@@ -788,23 +798,39 @@ var crosstxt4 = {
     <script>
     
 
+      document.write("debut Radar");
       document.write("<canvas id=\"canvas_radar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("debut Line");
       document.write("<canvas id=\"canvas_line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("debut Bar");
       document.write("<canvas id=\"canvas_bar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("debut StackedBar");
       document.write("<canvas id=\"canvas_stackedbar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("debut Horizontal Bar");
       document.write("<canvas id=\"canvas_horizontalbar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("debut HorizontalStackedBar");
       document.write("<canvas id=\"canvas_horizontalstackedbar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("debut PolarArea");
       document.write("<canvas id=\"canvas_polararea\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("debut Pie");
       document.write("<canvas id=\"canvas_pie\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("debut Doughnut");
       document.write("<canvas id=\"canvas_doughnut\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("debut Doughnut 2");
       document.write("<canvas id=\"canvas_doughnut2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("debut Doughnut 3");
       document.write("<canvas id=\"canvas_doughnut3\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("debut Pie with Text 1");
       document.write("<canvas id=\"canvas_pie_with_text_1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("debut Pie with text 2");
       document.write("<canvas id=\"canvas_pie_with_text_2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("Fin");
     
 
 window.onload = function() {
 
+//    var myLine = new Chart(document.getElementById("canvas_horizontalstackedbar").getContext("2d")).HorizontalStackedBar(mydata1,newopts);
+//    var myLine = new Chart(document.getElementById("canvas_pie_with_text_2").getContext("2d")).Pie(mydata2,crosstxt2);
 
     if(1==1) {
     var myLine = new Chart(document.getElementById("canvas_line").getContext("2d")).Line(mydata1,newopts);
