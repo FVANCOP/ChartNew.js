@@ -14,6 +14,7 @@ var demo_common_options = {
 	scaleFontFamily:"'Open Sans'",
 	scaleFontStyle:"normal normal",
 	scaleFontColor:"rgba(0,0,0,1)",
+	responsive : true,
 	scaleFontSize:12,
 
 //	animation:false,
