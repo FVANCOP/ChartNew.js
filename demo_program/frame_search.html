@@ -4,9 +4,26 @@
   <meta http-equiv="content-type" content="text/html; charset=windows-1250">
   <meta name="generator" content="PSPad editor, www.pspad.com">
   <title></title>
+  <SCRIPT>
+  function perform_search() {
+  	window.alert("DOIT:"+searchform.search.value+"Hello");
+//  	searchform.search.value="Done";
+  	return false;
+  };
+  </SCRIPT>
   </head>
   <body  bgcolor="#e5e5e7">
-  Search Frame
+  <FORM name="searchform">
+  <TABLE>
+  <TR>
+  <TD>
+  <INPUT name="search"  style="width:90px" onKeyPress="if ( event.keyCode==13 || event.which  == 13) return perform_search(); else return true;"/>
+  </INPUT name="search"  style="width:100px" onKeyPress="window.alert('down');"/>
 
+  </TD>
+  <TD style="width:30px"><a href="#" onclick="perform_search();"><img src="filter.png" height="25" width="25"/></TD> 
+  </TR>
+  </TABLE>
+  </FORM>
   </body>
 </html>
