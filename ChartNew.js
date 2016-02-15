@@ -4184,16 +4184,15 @@ window.Chart = function(context) {
 
 		function roundRect(ctx, x, y, w, h, stroke, radius,i,j,fact) {
 			ctx.beginPath();
-			ctx.setLineDash(lineStyleFn(setOptionValue(1,"STROKESTYLE",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
-			ctx.moveTo(x + radius, y);
-			ctx.lineTo(x + w - radius, y);
-			ctx.quadraticCurveTo(x + w, y, x + w, y);
+			ctx.setLineDash(lineStyleFn(setOptionValue(true,1,"STROKESTYLE",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,"datasetStrokeStyle",i,j,{nullvalue : null} )));
+			ctx.moveTo(x + (w/2), y);
+			ctx.lineTo(x + w , y);
 			ctx.lineTo(x + w, y - h + fact*radius);
 			ctx.quadraticCurveTo(x + w, y - h, x + w - radius, y - h);
 			ctx.lineTo(x + radius, y - h);
 			ctx.quadraticCurveTo(x, y - h, x, y - h + fact*radius);
 			ctx.lineTo(x, y);
-			ctx.quadraticCurveTo(x, y, x + radius, y);
+			ctx.lineTo(x + (w/2), y);
 			if (stroke) ctx.stroke();
 			ctx.closePath();
 			ctx.fill();
@@ -4558,17 +4557,17 @@ window.Chart = function(context) {
 
 		function roundRect(ctx, x, y, w, h, stroke, radius, zeroY,i,j,fact) {
 			ctx.beginPath();
-			ctx.moveTo(y + zeroY, x + radius);
-			ctx.lineTo(y + zeroY, x + w - radius);
-			ctx.quadraticCurveTo(y + zeroY, x + w, y + zeroY, x + w);
+			ctx.moveTo(y + zeroY, x );
+			ctx.lineTo(y + zeroY, x + w);
 			ctx.lineTo(y + h - fact*radius, x + w);
 			ctx.quadraticCurveTo(y + h, x + w, y + h, x + w - radius);
 			ctx.lineTo(y + h, x + radius);
 			ctx.quadraticCurveTo(y + h, x, y + h - fact*radius, x);
 			ctx.lineTo(y + zeroY, x);
-			ctx.quadraticCurveTo(y + zeroY, x, y + zeroY, x + radius);
+			ctx.quadraticCurveTo(y + zeroY, x, y + zeroY, x + w);
+
 			if (stroke) { 
-				ctx.setLineDash(lineStyleFn(setOptionValue(1,"STROKESTYLE",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,i,j,{nullvalue : null} )));
+				ctx.setLineDash(lineStyleFn(setOptionValue(true,1,"STROKESTYLE",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,"datasetStrokeStyle",i,j,{nullvalue : null} )));
 				ctx.stroke();
 				ctx.setLineDash([]);
 			};
