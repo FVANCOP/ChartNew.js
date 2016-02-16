@@ -10,6 +10,14 @@ function addHatch(data,param) {
 	if(typeof data.xEnd == "undefined") data.xEnd=1 * data.labels[data.labels.length - 1];
 	if(typeof data.xBegin != "number" || isNaN(data.xBegin))data.xBegin=0;
 	if (data.xEnd <= data.xBegin || isNaN(data.xEnd)) data.xEnd = data.xBegin + 100;
+	var mouseDetection;
+	if (typeof param.mouseDetection != "undefined" ){
+		mouseDetection=param.mouseDetection;
+	} else if (typeof param.annotateDisplay != "undefined") {
+		mouseDetection=param.annotateDisplay;
+	} else mouseDetection=false;
+	
+
 
 	nb_hatch_lines= (typeof param.nb_hatch_lines != "undefined" ? param.nb_hatch_lines : 100)
 	data.datasets[2] ={
@@ -17,6 +25,7 @@ function addHatch(data,param) {
       			xPos : [],
 			origin : [],
       			linkType : 1,
+      			mouseDetection : mouseDetection,
       			animation : (typeof param.animation != "undefined" ? param.animation : true),
       			inGraphDataShow: (typeof param.positive_inGraphDataShow != "undefined" ? param.positive_inGraphDataShow : false),
       			annotateDisplay : (typeof param.positive_annotateDisplay != "undefined" ? param.positive_annotateDisplay : false),
@@ -33,6 +42,8 @@ function addHatch(data,param) {
       			xPos : [],
 			origin : [],
       			linkType : 1,
+      			highLight : false,
+      			mouseDetection : mouseDetection,
       			animation : (typeof param.animation != "undefined" ? param.animation : true),
       			inGraphDataShow: (typeof param.negative_inGraphDataShow != "undefined" ? param.negative_inGraphDataShow : false),
       			annotateDisplay : (typeof param.negative_annotateDisplay != "undefined" ? param.negative_annotateDisplay : false),
