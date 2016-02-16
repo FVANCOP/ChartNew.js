@@ -128,6 +128,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 		shapeLoadImages(data);
 	
 		for(var i=0;i<shapesInChart.length;i++) {
+		
 			if(typeof othervars.config.dispShapesInChart == "object") {
 				if (othervars.config.dispShapesInChart.indexOf(i)<0) continue;
 			} else if (typeof othervars.config.dispShapesInChart != "undefined") {
@@ -139,7 +140,8 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 			iter=drawShapeSetValue(shapesInChart[i].iter,drawShape_default.iter.toUpperCase());
 			if (typeof iter=="number" && iter != othervars.cntiter && othervars.config.animation==true) {continue;}
 			if (iter==="first" && othervars.cntiter != 1 && othervars.config.animation==true) {continue;}
-			if (iter==="last" && othervars.cntiter != othervars.config.animationSteps && othervars.config.animation==true) {continue;}
+//			if (iter==="last" && othervars.cntiter != othervars.config.animationSteps && othervars.config.animation==true) {continue;}
+			if (iter==="last" && othervars.animationValue < 1 && othervars.config.animation==true) {continue;}
 			if(typeof shapesInChart[i].shape == "function")shape= shapesInChart[i].shape;
 			else if(typeof shapesInChart[i].shape != "string")shape= drawShape_default.shape.toUpperCase();
 			else shape=shapesInChart[i].shape.toUpperCase();
@@ -413,7 +415,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 						else     ctx.lineTo(vxs,vys);
 					}					
 					ctx.closePath();
-					ctx.fillStyle=setOptionValue(1,"SHAPESINCHART_REGULARSHAPE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos1.xpos, midPosY : xypos1.ypos, radius : radius });
+					ctx.fillStyle=setOptionValue(true,1,"SHAPESINCHART_REGULARSHAPE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,"fillColor",-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos1.xpos, midPosY : xypos1.ypos, radius : radius });
 					ctx.fill();
 					ctx.stroke();
 					ctx.setLineDash([]);
@@ -433,7 +435,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 						xypos.xpos - width/2, xypos.ypos - height/2, // C4
 						xypos.xpos, xypos.ypos - height/2); // A1
 					ctx.closePath();
-					ctx.fillStyle=setOptionValue(1,"SHAPESINCHART_ELLIPSE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos.xpos, midPosY : xypos.ypos, radius : Math.max(width/2,height/2) });
+					ctx.fillStyle=setOptionValue(true,1,"SHAPESINCHART_ELLIPSE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,"fillColor",-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos.xpos, midPosY : xypos.ypos, radius : Math.max(width/2,height/2) });
 					ctx.fill();
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*drawShapeSetValue(shapesInChart[i].strokeSize,drawShape_default.strokeSize));
 					ctx.strokeStyle = drawShapeSetValue(shapesInChart[i].strokeColor,drawShape_default.strokeColor);
@@ -462,7 +464,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					ctx.lineTo(xypos2.xpos-(1-realAnimation)*((xypos2.xpos-xypos1.xpos)/2), xypos1.ypos+(1-realAnimation)*((xypos2.ypos-xypos1.ypos)/2));
 	
 					ctx.closePath();
-					ctx.fillStyle=setOptionValue(1,"SHAPESINCHART_RECT",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, xPosLeft : xypos1.xpos+(1-realAnimation)*((xypos2.xpos-xypos1.xpos)/2), yPosBottom : xypos1.ypos+(1-realAnimation)*((xypos2.ypos-xypos1.ypos)/2), yPosTop :xypos2.ypos-(1-realAnimation)*((xypos2.ypos-xypos1.ypos)/2) });
+					ctx.fillStyle=setOptionValue(true,1,"SHAPESINCHART_RECT",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,"fillColor",-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, xPosLeft : xypos1.xpos+(1-realAnimation)*((xypos2.xpos-xypos1.xpos)/2), yPosBottom : xypos1.ypos+(1-realAnimation)*((xypos2.ypos-xypos1.ypos)/2), yPosTop :xypos2.ypos-(1-realAnimation)*((xypos2.ypos-xypos1.ypos)/2) });
 					ctx.fill();
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*drawShapeSetValue(shapesInChart[i].strokeSize,drawShape_default.strokeSize));
 					ctx.strokeStyle = drawShapeSetValue(shapesInChart[i].strokeColor,drawShape_default.strokeColor);
@@ -508,7 +510,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 						ctx.arc(xypos.xpos,xypos.ypos, 0, (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].startAngle,drawShape_default.startAngle), (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].endAngle,drawShape_default.endAngle),false);
 					ctx.arc(xypos.xpos,xypos.ypos, realAnimation*1*radius, (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].startAngle,drawShape_default.startAngle), (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].endAngle,drawShape_default.endAngle),true);
 					ctx.closePath();
-					ctx.fillStyle=setOptionValue(1,"SHAPESINCHART_CIRCLE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos.xpos, midPosY : xypos.ypos, radius : radius  });
+					ctx.fillStyle=setOptionValue(true,1,"SHAPESINCHART_CIRCLE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,"fillColor",-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos.xpos, midPosY : xypos.ypos, radius : radius  });
 //					ctx.fillStyle=drawShapeSetValue(shapesInChart[i].fillColor,drawShape_default.fillColor);
 					ctx.fill();
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*drawShapeSetValue(shapesInChart[i].strokeSize,drawShape_default.strokeSize));
