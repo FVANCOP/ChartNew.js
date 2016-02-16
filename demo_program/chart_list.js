@@ -95,3 +95,5 @@ lst[lst.length]=["ZERO Line","../Samples/xAxisScale.html","05.Lines line zero dr
 lst[lst.length]=["issue 0396","../Samples/issue396.html","95.Issues line function color point ","","Solution for issue 396 - Two charts are displayed; When you click on a point in the first chart, the corresponding point on the second chart is highlighted."];
 lst[lst.length]=["Original Samples","../Samples/original_sample.html","50.Varia samples ","","This is the sample program that was initialy provided with ChartNew.js"];
 lst[lst.length]=["issue 0400","../Samples/issue_400.html","95.Issues radar function array color ","","Solution for issue 400 - Two set of data in a radar chart; Avoid an overwrite of the labels"];
+lst[lst.length]=["highLight 1","../Samples/highLight1.html","50.Varia highLight","","This is the sample program with option highLight : true"];
+lst[lst.length]=["highLight 2","../Samples/highLight2.html","50.Varia highLight","","This is a sample with usage of highLight with function isHighLight and other features around highLighting."];
