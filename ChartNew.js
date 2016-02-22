@@ -7728,7 +7728,7 @@ function calculatePieDrawingSize(ctx,msr,config,data,statData) {
 				else if (setOptionValue(true,1,"INGRAPHDATAANGLEPOSITION",ctx,data,statData,undefined,config.inGraphDataAnglePosition,"inGraphDataAnglePosition",i,-1,{nullValue : true} ) == 3) posAngle = realCumulativeAngle - statData[i].segmentAngle + setOptionValue(true,1,"INGRAPHDATAPADDINANGLE",ctx,data,statData,undefined,config.inGraphDataPaddingAngle,"inGraphDataPaddingAngle",i,-1,{nullValue: true  }) * (Math.PI / 180);
 				realCumulativeAngle -= statData[i].segmentAngle;
 				var dispString = tmplbis(setOptionValue(true,1,"INGRAPHDATATMPL",ctx,data,statData,undefined,config.inGraphDataTmpl,"inGraphDataTmpl",i,-1,{nullValue : true} ), statData[i],config);
-				var textMeasurement = ctx.measureText(dispString).width;
+				var textMeasurement = ctx.measureTextMultiLine(dispString).textWidth;
 				var MaxRadiusX = Math.abs((realAvailableWidth - textMeasurement) / Math.cos(posAngle)) - setOptionValue(true,1,"INGRAPHDATAPADDINGRADIUS",ctx,data,statData,undefined,config.inGraphDataPaddingRadius,"inGraphDataPaddingRadius",i,-1,{nullValue: true} ) - 5;
 				if (MaxRadiusX < doughnutRadius) doughnutRadius = MaxRadiusX;
 			}
