@@ -115,7 +115,6 @@ function shapeLoadImages(data) {
 
 
 function drawShapes(area, ctx, data,statData, posi,posj,othervars){
-
 	var shape,whendrw,iter,realAnimation,shapesInChart;
 
 	if(typeof data.shapesInChart == "object") var shapesInChart=data.shapesInChart;
@@ -123,25 +122,30 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 
 	
 	if(typeof shapesInChart == "object") {
-	
+
 		//      preload all images first;
 		shapeLoadImages(data);
 	
 		for(var i=0;i<shapesInChart.length;i++) {
-		
-			if(typeof othervars.config.dispShapesInChart == "object") {
-				if (othervars.config.dispShapesInChart.indexOf(i)<0) continue;
-			} else if (typeof othervars.config.dispShapesInChart != "undefined") {
-				if (typeof othervars.config.dispShapesInChart == false)continue;
+
+			if(area=="HIGHLIGHT") {
+				if(shapesInChart[i].hightLight != true)continue;
+			} else {		
+				if(typeof othervars.config.dispShapesInChart == "object") {
+					if (othervars.config.dispShapesInChart.indexOf(i)<0) continue;
+				} else if (typeof othervars.config.dispShapesInChart != "undefined") {
+					if (typeof othervars.config.dispShapesInChart == false)continue;
+				}
+
+				whendrw=drawShapeSetValue(shapesInChart[i].when,drawShape_default.when).toUpperCase();
+				if (whendrw != "ALWAYS" && whendrw != area) { continue;}
+				iter=drawShapeSetValue(shapesInChart[i].iter,drawShape_default.iter.toUpperCase());
+				if (typeof iter=="number" && iter != othervars.cntiter && othervars.config.animation==true) {continue;}
+				if (iter==="first" && othervars.cntiter != 1 && othervars.config.animation==true) {continue;}
+//				if (iter==="last" && othervars.cntiter != othervars.config.animationSteps && othervars.config.animation==true) {continue;}
+				if (iter==="last" && othervars.animationValue < 1 && othervars.config.animation==true) {continue;}
 			}
 
-			whendrw=drawShapeSetValue(shapesInChart[i].when,drawShape_default.when).toUpperCase();
-			if (whendrw != "ALWAYS" && whendrw != area) { continue;}
-			iter=drawShapeSetValue(shapesInChart[i].iter,drawShape_default.iter.toUpperCase());
-			if (typeof iter=="number" && iter != othervars.cntiter && othervars.config.animation==true) {continue;}
-			if (iter==="first" && othervars.cntiter != 1 && othervars.config.animation==true) {continue;}
-//			if (iter==="last" && othervars.cntiter != othervars.config.animationSteps && othervars.config.animation==true) {continue;}
-			if (iter==="last" && othervars.animationValue < 1 && othervars.config.animation==true) {continue;}
 			if(typeof shapesInChart[i].shape == "function")shape= shapesInChart[i].shape;
 			else if(typeof shapesInChart[i].shape != "string")shape= drawShape_default.shape.toUpperCase();
 			else shape=shapesInChart[i].shape.toUpperCase();
@@ -267,6 +271,8 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					ctx.stroke();
 					
 					ctx.restore();
+					ctx.strokeStyle = drawShapeSetValue(shapesInChart[i].strokeColor,drawShape_default.strokeColor);
+					ctx.setLineDash(lineStyleFn(drawShapeSetValue(shapesInChart[i].strokeStyle,drawShape_default.strokeStyle)));	
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*drawShapeSetValue(shapesInChart[i].strokeSize,drawShape_default.strokeSize));
 					ctx.setLineDash([]);
 
@@ -357,6 +363,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					}
 					var xypos1=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,vx,vy,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					ctx.beginPath();
+
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*drawShapeSetValue(shapesInChart[i].strokeSize,drawShape_default.strokeSize));
 					ctx.strokeStyle = drawShapeSetValue(shapesInChart[i].strokeColor,drawShape_default.strokeColor);
 					ctx.setLineDash(lineStyleFn(drawShapeSetValue(shapesInChart[i].strokeStyle,drawShape_default.strokeStyle)));	
@@ -764,3 +771,161 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 
 };
 
+function addIns_highLight(ctx, config, data, movement, animationCount,statData){
+	var special;
+	var shapesVar,shapeAddins;
+	var i,decalRadius,property;
+	var addHighLight=false,totreat;
+	var rectHeight, rectWidth, ratio;
+	if (ctx.tpdata==0){
+		if(typeof data.special=="object")special=data.special;
+		if(typeof data.shapesInChart == "object") shapesVar=data.shapesInChart;
+		else {
+			data.shapesInChart=[];
+			shapesVar=data.shapesInChart;
+		}
+	}
+	else {
+		if(typeof data[0].special=="object")special=data[0].special;
+		if(typeof data[0].shapesInChart == "object") shapesVar=data[0].shapesInChart;
+		else {
+			data[0].shapesInChart=[];
+			shapesVar=data[0].shapesInChart;
+		}
+	}
+	addHighLight=false;	
+	if(typeof special=="object") {
+		for(i=0;i<special.length;i++) {
+			totreat=false;
+			if(typeof special[i].addIns_shape== "undefined")shapeAddins="ARROW" ;
+			else shapeAddins=special[i].addIns_shape.toUpperCase();
+			switch(shapeAddins) {
+				case "ELLIPSE" :
+					switch(tpdraw(ctx,(typeof data.datasets == "object") ? data.datasets[special[i].posi] : undefined)) {
+						case "Line" :
+						case "Radar" :
+							totreat=true;
+							addHighLight=true;
+							shapesVar[shapesVar.length]={hightLight : true };
+							shapesVar[shapesVar.length-1].shape= special[i].addIns_shape;
+							shapesVar[shapesVar.length-1].position= "inchart";
+							shapesVar[shapesVar.length-1].x1= special[i].posj;
+							shapesVar[shapesVar.length-1].y1= data.datasets[special[i].posi].data[special[i].posj];
+							shapesVar[shapesVar.length-1].ellipseHeight=30;
+							shapesVar[shapesVar.length-1].ellipseWidth=40;
+
+							break;
+						case "Bar" :
+						case "StackedBar" :
+						case "HorizontalBar" :
+						case "HorizontalStackedBar" :
+							totreat=true;
+							addHighLight=true;
+							shapesVar[shapesVar.length]={hightLight : true };
+							shapesVar[shapesVar.length-1].shape= special[i].addIns_shape;
+							shapesVar[shapesVar.length-1].position= "absolute";
+							shapesVar[shapesVar.length-1].x1= (statData[special[i].posi][special[i].posj].xPosRight+statData[special[i].posi][special[i].posj].xPosLeft)/2;
+							shapesVar[shapesVar.length-1].y1= (statData[special[i].posi][special[i].posj].yPosTop+statData[special[i].posi][special[i].posj].yPosBottom)/2;
+							rectHeight=1.25*Math.abs(statData[special[i].posi][special[i].posj].yPosTop-statData[special[i].posi][special[i].posj].yPosBottom);
+							rectWidth=1.25*Math.abs(statData[special[i].posi][special[i].posj].xPosRight-statData[special[i].posi][special[i].posj].xPosLeft);
+							ratio=rectWidth/rectHeight;
+							shapesVar[shapesVar.length-1].ellipseWidth=Math.sqrt((rectWidth*rectWidth) + (ratio*ratio) * (rectHeight*rectHeight));
+							shapesVar[shapesVar.length-1].ellipseHeight=shapesVar[shapesVar.length-1].ellipseWidth/ratio;
+							break;
+						case "Pie" :
+						case "Doughnut" :
+						case "PolarArea" :
+						default:
+							break;
+					}				
+					shapesVar[shapesVar.length-1].strokeColor= "black";
+					shapesVar[shapesVar.length-1].fillColor= "black";    
+					break;
+				case "ARROW" :
+				default:
+					totreat=true;
+					addHighLight=true;
+					shapesVar[shapesVar.length]={hightLight : true };
+					shapesVar[shapesVar.length-1].shape= "arrow";
+					switch(tpdraw(ctx,(typeof data.datasets == "object") ? data.datasets[special[i].posi] : undefined)) {
+						case "Line" :
+						case "Radar" :
+							shapesVar[shapesVar.length-1].position= "inchart";
+							shapesVar[shapesVar.length-1].x1= special[i].posj;
+							shapesVar[shapesVar.length-1].y1= data.datasets[special[i].posi].data[special[i].posj];
+							shapesVar[shapesVar.length-1].paddingX1= 30;
+							shapesVar[shapesVar.length-1].paddingY1= -30;
+							shapesVar[shapesVar.length-1].x2= special[i].posj;
+							shapesVar[shapesVar.length-1].y2= data.datasets[special[i].posi].data[special[i].posj];
+							break;
+						case "Bar" :
+						case "StackedBar" :
+						case "HorizontalBar" :
+						case "HorizontalStackedBar" :
+							shapesVar[shapesVar.length-1].position= "absolute";
+							shapesVar[shapesVar.length-1].x2= statData[special[i].posi][special[i].posj].xPosRight;
+							shapesVar[shapesVar.length-1].y2= statData[special[i].posi][special[i].posj].yPosTop;
+							shapesVar[shapesVar.length-1].x1= shapesVar[shapesVar.length-1].x2;
+							shapesVar[shapesVar.length-1].y1= shapesVar[shapesVar.length-1].y2;
+							if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") {
+								shapesVar[shapesVar.length-1].x1=shapesVar[shapesVar.length-1].x1+30;
+								if(data.datasets[special[i].posi].data[special[i].posj]>=0) {
+									shapesVar[shapesVar.length-1].y1= shapesVar[shapesVar.length-1].y1-30;
+								} else {
+									shapesVar[shapesVar.length-1].y1= shapesVar[shapesVar.length-1].y1+30;
+								}
+							} else {
+								shapesVar[shapesVar.length-1].y1=shapesVar[shapesVar.length-1].y1-30;
+								if(data.datasets[special[i].posi].data[special[i].posj]>=0) {
+									shapesVar[shapesVar.length-1].x1= shapesVar[shapesVar.length-1].x1+30;
+								} else {
+									shapesVar[shapesVar.length-1].x1= shapesVar[shapesVar.length-1].x1-30;
+								}
+							}
+							break;
+						case "Pie" :
+						case "Doughnut" :
+							if(typeof config.highLightSet.expandOutRadius=="number")decalRadius=config.highLightSet.expandOutRadius;
+							else decalRadius=0;	
+							shapesVar[shapesVar.length-1].position= "inchart";
+							shapesVar[shapesVar.length-1].limitToChart= false;
+							shapesVar[shapesVar.length-1].x1= special[i].posi;
+							if(ctx.tpchart=="Pie")	shapesVar[shapesVar.length-1].y1= 1.3+decalRadius;
+							else shapesVar[shapesVar.length-1].y1= 1+(100*0.3)/(100-config.percentageInnerCutout);
+							
+							shapesVar[shapesVar.length-1].x2= special[i].posi;
+							shapesVar[shapesVar.length-1].y2= 1+decalRadius;
+							break;
+						case "PolarArea" :
+							shapesVar[shapesVar.length-1].position= "inchart";
+							shapesVar[shapesVar.length-1].limitToChart= false;
+							shapesVar[shapesVar.length-1].x1= special[i].posi;
+							shapesVar[shapesVar.length-1].y1= data[special[i].posi].value+0.3*(statData[0].outerVal-statData[0].calculatedScale.graphMin);;
+							shapesVar[shapesVar.length-1].x2= special[i].posi;
+							shapesVar[shapesVar.length-1].y2= data[special[i].posi].value;
+							break;
+					}				
+					shapesVar[shapesVar.length-1].strokeColor= "black";
+					shapesVar[shapesVar.length-1].fillColor= "black";    
+					break;
+			};
+			// overwrite options;
+			if(totreat) {
+				for (property in config.highLightSet) {
+					if(property.substring(0,7)=="addIns_") {			 
+						eval("shapesVar[shapesVar.length-1]."+property.substring(7,50)+"=config.highLightSet[property];");
+					}
+				}
+			}
+		}
+
+		
+		if(addHighLight) {
+			// draw shapes;
+			drawShapes("HIGHLIGHT", ctx, data,statData, 0, 0 ,{ config: config});
+			// remove shapes;
+			for(i=shapesVar.length-1;i>=0;i--) shapesVar.splice(i,1);
+		}
+	}
+
+};

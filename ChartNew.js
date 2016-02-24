@@ -2266,9 +2266,7 @@ window.Chart = function(context) {
 			populateLabels(1, config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, scaleStartValue, calculatedScale.graphMax, scaleStepWidth);
 			msr = setMeasures(data, config, ctx, ctx.canvas.height, ctx.canvas.width, calculatedScale.labels, null, true, false, false, false, true, "PolarArea");
 		}
-
 		var outerVal=calculatedScale.graphMin+calculatedScale.steps*calculatedScale.stepValue;
-
 		var drwSize=calculatePieDrawingSize(ctx,msr,config,data,statData);
 		midPosX=drwSize.midPieX;
 		midPosY=drwSize.midPieY;
@@ -4980,7 +4978,7 @@ ctx.lineWidth=Math.ceil(ctx.chartLineScale*setOptionValue(true,1,"BARSTROKEWIDTH
 			animateFrame();
 			//Stop the loop continuing forever
 			if (multAnim == -1 && cntiter <= beginAnim) {
-				if (typeof config.onAnimationComplete == "function" && ctx.runanimationcompletefunction==true) config.onAnimationComplete(ctx, config, data, 0, animationCount + 1);
+				if (typeof config.onAnimationComplete == "function" && ctx.runanimationcompletefunction==true) config.onAnimationComplete(ctx, config, data, 0, animationCount + 1,statData);
 				multAnim = 1;
 				if(config.animationForceSetTimeOut)requestAnimFrameSetTimeOut(animLoop);
 				else requestAnimFrame(animLoop);
@@ -5002,7 +5000,7 @@ ctx.lineWidth=Math.ceil(ctx.chartLineScale*setOptionValue(true,1,"BARSTROKEWIDTH
 				} else {
 					if(!testRedraw(ctx,data,config)) {
 						if (typeof config.onAnimationComplete == "function" && ctx.runanimationcompletefunction==true) {
-							config.onAnimationComplete(ctx, config, data, 1, animationCount + 1);
+							config.onAnimationComplete(ctx, config, data, 1, animationCount + 1,statData);
 							ctx.runanimationcompletefunction=false;
 						}
 					}
@@ -6692,7 +6690,7 @@ function drawLegend(legendMsr,data,config,ctx,typegraph) {
 				ctx.save();
 				ctx.beginPath();
 				var lgdbox=legendMsr.legendBox;
-				if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") if (data.datasets[orderi].type=="Line" && (!config.datasetFill || setOptionValue(false,1,"LINKTYPE",ctx,data,statData,data.datasets[orderi].linkType,config.linkType,"linkType",orderi,-1,{nullvalue : null} )==1)) lgdbox=false;
+				if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") if (data.datasets[orderi].type=="Line" && (!config.datasetFill || setOptionValue(false,1,"LINKTYPE",ctx,data,undefined,data.datasets[orderi].linkType,config.linkType,"linkType",orderi,-1,{nullvalue : null} )==1)) lgdbox=false;
 				if (lgdbox) {
 					if (legendMsr.drawLegendOnData) {
 	 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*setOptionValue(false,1,"LINEWIDTH",ctx,data,undefined,data.datasets[orderi].datasetStrokeWidth,config.datasetStrokeWidth,"datasetStrokeWidth",orderi,-1,{nullvalue : null} ));
