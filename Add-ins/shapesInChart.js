@@ -904,7 +904,6 @@ function addIns_highLight(ctx, config, data, movement, animationCount,statData){
 							shapesVar[shapesVar.length-1].x2= special[i].posi;
 							shapesVar[shapesVar.length-1].y2= data[special[i].posi].value;
 							break;
-							break;
 					}				
 					shapesVar[shapesVar.length-1].strokeColor= "black";
 					shapesVar[shapesVar.length-1].fillColor= "black";    
