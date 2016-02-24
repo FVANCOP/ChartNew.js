@@ -1,0 +1,110 @@
+<!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNewV2.js'></script>
+
+<SCRIPT>
+
+function setColor(area,ctx,data,statdata,i,j,othervars)
+{
+	return(data[i].color);
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=800;
+defCanvasHeight=650;
+
+var mydata2 = [
+	{
+		value : 7,
+		color: "blue",
+    		title : "Sektorius 1"
+	},
+	{
+		value : 20,
+		color: "orange",
+    		title : "Sektorius 2"
+	},
+	{
+		value : 11,
+		color: "green",
+    		title : "Sektorius 3"
+	},
+	{
+		value : 17,
+		color: "magenta",
+    		title : "Sektorius 4"
+	},
+	{
+		value : 30,
+		color: "red",
+    		title : "Sektorius 5"
+	}
+];
+
+
+var startWithDataset =1;
+var startWithData =1;
+
+var opt1 = {
+      animation : false,
+      canvasBorders : true,
+      inGraphDataShow : true,
+      legend : true,
+      startAngle : -180,
+      inGraphDataTmpl: "<%=v6+' %'%>",
+      percentageInnerCutout : 90,
+      inGraphDataFontSize: 25,
+      inGraphDataFontColor : setColor,
+      annotateDisplay : true,
+      canvasBackgroundColor: "#EFF5FB"
+}
+
+
+var opt2 = {
+      animation : false,
+      canvasBorders : true,
+      inGraphDataShow : true,
+      startAngle : 0,
+      inGraphDataPaddingRadius : 65,
+      inGraphDataTmpl: "<%=v6+' %\n'+v1%>",
+      inGraphDataAlign : "center",
+      inGraphDataVAlign : "middle",
+      percentageInnerCutout : 90,
+      spaceRight : 140,
+      spaceLeft : 140,
+      spaceTop : 80,
+      spaceBottom : 80,
+      inGraphDataFontSize: 25,
+      inGraphDataFontColor :["blue","orange","green","magenta","red"],
+      annotateDisplay : true,
+      canvasBackgroundColor: "#EFF5FB"
+
+}
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Doughnut1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Doughnut2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+
+window.onload = function() {
+    var myDoughnut = new Chart(document.getElementById("canvas_Doughnut1").getContext("2d")).Doughnut(mydata2,opt1);
+    var myDoughnut = new Chart(document.getElementById("canvas_Doughnut2").getContext("2d")).Doughnut(mydata2,opt2);
+	}
+
+    </script>
+  </body>
+</html>
