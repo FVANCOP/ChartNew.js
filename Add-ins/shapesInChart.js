@@ -773,7 +773,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 
 function addIns_highLight(ctx, config, data, movement, animationCount,statData){
 	var special;
-	var shapesVar;
+	var shapesVar,shapeAddins;
 	var i,decalRadius,property;
 	var addHighLight=false,totreat;
 	var rectHeight, rectWidth, ratio;
@@ -797,12 +797,56 @@ function addIns_highLight(ctx, config, data, movement, animationCount,statData){
 	if(typeof special=="object") {
 		for(i=0;i<special.length;i++) {
 			totreat=false;
-			switch(special[i].addIns_shape.toUpperCase()) {
+			if(typeof special[i].addIns_shape== "undefined")shapeAddins="ARROW" ;
+			else shapeAddins=special[i].addIns_shape.toUpperCase();
+			switch(shapeAddins) {
+				case "ELLIPSE" :
+					switch(tpdraw(ctx,(typeof data.datasets == "object") ? data.datasets[special[i].posi] : undefined)) {
+						case "Line" :
+						case "Radar" :
+							totreat=true;
+							addHighLight=true;
+							shapesVar[shapesVar.length]={hightLight : true };
+							shapesVar[shapesVar.length-1].shape= special[i].addIns_shape;
+							shapesVar[shapesVar.length-1].position= "inchart";
+							shapesVar[shapesVar.length-1].x1= special[i].posj;
+							shapesVar[shapesVar.length-1].y1= data.datasets[special[i].posi].data[special[i].posj];
+							shapesVar[shapesVar.length-1].ellipseHeight=30;
+							shapesVar[shapesVar.length-1].ellipseWidth=40;
+
+							break;
+						case "Bar" :
+						case "StackedBar" :
+						case "HorizontalBar" :
+						case "HorizontalStackedBar" :
+							totreat=true;
+							addHighLight=true;
+							shapesVar[shapesVar.length]={hightLight : true };
+							shapesVar[shapesVar.length-1].shape= special[i].addIns_shape;
+							shapesVar[shapesVar.length-1].position= "absolute";
+							shapesVar[shapesVar.length-1].x1= (statData[special[i].posi][special[i].posj].xPosRight+statData[special[i].posi][special[i].posj].xPosLeft)/2;
+							shapesVar[shapesVar.length-1].y1= (statData[special[i].posi][special[i].posj].yPosTop+statData[special[i].posi][special[i].posj].yPosBottom)/2;
+							rectHeight=1.25*Math.abs(statData[special[i].posi][special[i].posj].yPosTop-statData[special[i].posi][special[i].posj].yPosBottom);
+							rectWidth=1.25*Math.abs(statData[special[i].posi][special[i].posj].xPosRight-statData[special[i].posi][special[i].posj].xPosLeft);
+							ratio=rectWidth/rectHeight;
+							shapesVar[shapesVar.length-1].ellipseWidth=Math.sqrt((rectWidth*rectWidth) + (ratio*ratio) * (rectHeight*rectHeight));
+							shapesVar[shapesVar.length-1].ellipseHeight=shapesVar[shapesVar.length-1].ellipseWidth/ratio;
+							break;
+						case "Pie" :
+						case "Doughnut" :
+						case "PolarArea" :
+						default:
+							break;
+					}				
+					shapesVar[shapesVar.length-1].strokeColor= "black";
+					shapesVar[shapesVar.length-1].fillColor= "black";    
+					break;
 				case "ARROW" :
+				default:
 					totreat=true;
 					addHighLight=true;
 					shapesVar[shapesVar.length]={hightLight : true };
-					shapesVar[shapesVar.length-1].shape= special[i].addIns_shape;
+					shapesVar[shapesVar.length-1].shape= "arrow";
 					switch(tpdraw(ctx,(typeof data.datasets == "object") ? data.datasets[special[i].posi] : undefined)) {
 						case "Line" :
 						case "Radar" :
@@ -860,54 +904,10 @@ function addIns_highLight(ctx, config, data, movement, animationCount,statData){
 							shapesVar[shapesVar.length-1].x2= special[i].posi;
 							shapesVar[shapesVar.length-1].y2= data[special[i].posi].value;
 							break;
-						default:
 							break;
 					}				
 					shapesVar[shapesVar.length-1].strokeColor= "black";
 					shapesVar[shapesVar.length-1].fillColor= "black";    
-					break;
-				case "ELLIPSE" :
-					switch(tpdraw(ctx,(typeof data.datasets == "object") ? data.datasets[special[i].posi] : undefined)) {
-						case "Line" :
-						case "Radar" :
-							totreat=true;
-							addHighLight=true;
-							shapesVar[shapesVar.length]={hightLight : true };
-							shapesVar[shapesVar.length-1].shape= special[i].addIns_shape;
-							shapesVar[shapesVar.length-1].position= "inchart";
-							shapesVar[shapesVar.length-1].x1= special[i].posj;
-							shapesVar[shapesVar.length-1].y1= data.datasets[special[i].posi].data[special[i].posj];
-							shapesVar[shapesVar.length-1].ellipseHeight=30;
-							shapesVar[shapesVar.length-1].ellipseWidth=40;
-
-							break;
-						case "Bar" :
-						case "StackedBar" :
-						case "HorizontalBar" :
-						case "HorizontalStackedBar" :
-							totreat=true;
-							addHighLight=true;
-							shapesVar[shapesVar.length]={hightLight : true };
-							shapesVar[shapesVar.length-1].shape= special[i].addIns_shape;
-							shapesVar[shapesVar.length-1].position= "absolute";
-							shapesVar[shapesVar.length-1].x1= (statData[special[i].posi][special[i].posj].xPosRight+statData[special[i].posi][special[i].posj].xPosLeft)/2;
-							shapesVar[shapesVar.length-1].y1= (statData[special[i].posi][special[i].posj].yPosTop+statData[special[i].posi][special[i].posj].yPosBottom)/2;
-							rectHeight=1.25*Math.abs(statData[special[i].posi][special[i].posj].yPosTop-statData[special[i].posi][special[i].posj].yPosBottom);
-							rectWidth=1.25*Math.abs(statData[special[i].posi][special[i].posj].xPosRight-statData[special[i].posi][special[i].posj].xPosLeft);
-							ratio=rectWidth/rectHeight;
-							shapesVar[shapesVar.length-1].ellipseWidth=Math.sqrt((rectWidth*rectWidth) + (ratio*ratio) * (rectHeight*rectHeight));
-							shapesVar[shapesVar.length-1].ellipseHeight=shapesVar[shapesVar.length-1].ellipseWidth/ratio;
-							break;
-						case "Pie" :
-						case "Doughnut" :
-						case "PolarArea" :
-						default:
-							break;
-					}				
-					shapesVar[shapesVar.length-1].strokeColor= "black";
-					shapesVar[shapesVar.length-1].fillColor= "black";    
-					break;
-				default:
 					break;
 			};
 			// overwrite options;
