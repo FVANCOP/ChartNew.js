@@ -97,3 +97,6 @@ lst[lst.length]=["Original Samples","../Samples/original_sample.html","50.Varia 
 lst[lst.length]=["issue 0400","../Samples/issue_400.html","95.Issues radar function array color ","","Solution for issue 400 - Two set of data in a radar chart; Avoid an overwrite of the labels"];
 lst[lst.length]=["highLight 1","../Samples/highLight1.html","50.Varia highLight","","This is the sample program with option highLight : true"];
 lst[lst.length]=["highLight 2","../Samples/highLight2.html","50.Varia highLight","","This is a sample with usage of highLight with function isHighLight and other features around highLighting."];
+lst[lst.length]=["highLight 3","../Samples/highLight3.html","90.Add-ins highLight add-ins shapesInChart.js","","This is a sample with usageof hightLight option associated to the shapesInChart.js add-ins"];
+lst[lst.length]=["highLight 4","../Samples/highLight4.html","90.Add-ins highLight add-ins shapesInChart.js","","This is a sample with usageof hightLight option associated to the shapesInChart.js add-ins"];
+lst[lst.length]=["doughnut","../Samples/doughnut.html","35.Doughnut doughnut function color","","Simple doughnut sample"];
