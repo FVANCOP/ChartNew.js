@@ -1,0 +1,155 @@
+<!doctype html>
+
+
+
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+
+
+<SCRIPT>
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June","July"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [0.65,0.59,-0.90,0.81,0.56,0.55,0.40],
+      			title : "pFirst data"
+		},
+		{
+			fillColor : "rgba(110,0,220,0.3)",
+			strokeColor : "rgba(110,0,220,1)",
+			pointColor : "rgba(110,0,220,1)",
+			pointStrokeColor : "#fff",
+			data : [-0.35,0.30,-0.54,0.18,0.7,,],
+      			title : "pFirst data"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			type : "Line",
+			data : [0.28,0.70,0.40,-0.19,-0.96,0.27,1.00],
+			title : "pSecond data"
+		}
+	]
+}
+
+
+var mydata2 = [
+	{
+		value : 30,
+		color: "#D97041",
+		title : "data1",
+	},
+	{
+		value : 90,
+		color: "#C7604C",
+		title : "data2"
+	},
+	{
+		value : 24,
+		color: "#21323D",
+		title : "data3"
+	},
+	{
+		value : 58,
+		color: "#9D9B7F",
+		title : "data4"
+	},
+	{
+		value : 82,
+		color: "#7D4F6D",
+		title : "data5"
+	},
+	{
+		value : 8,
+		color: "#584A5E",
+		title : "data6"
+	}
+]
+
+
+
+var newopts = {
+//	inGraphDataShow : isHighLighted,
+	highLight : true,
+	highLightSet : { addIns_shape : "ELLIPSE", addIns_strokeColor : "red", addIns_fillColor : "rgba(0,0,0,0)" 
+	               },
+	highLightRerunEndFunction : true,
+	onAnimationComplete : addIns_highLight,
+	datasetFill : true,
+	scaleLabel: "<%=value%>",
+	scaleFontSize : 16,
+	canvasBorders : true,
+	graphTitle : "Sample ChartNew.js",
+	graphTitleFontFamily : "'Arial'",
+	graphTitleFontSize : 24,
+	graphTitleFontStyle : "bold",
+	graphTitleFontColor : "#666",
+	inGraphDataShow : true,
+	footNote : "Footnote for the graph",
+	legend : true,
+	yAxisLabel : "Y Axis Label",
+	xAxisLabel : "X Axis Label",
+	yAxisUnit : "Y Unit",
+	annotateDisplay : false,
+	animation : false, 
+	barBorderRadius : 5,
+	dynamicDisplay : false
+}
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+  
+  <!div id="divCursor" style="position:absolute"> <!/div>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+    
+
+      document.write("<canvas id=\"canvas_radar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_bar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_stackedbar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_horizontalbar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_horizontalstackedbar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    
+
+window.onload = function() {
+
+
+    if(1==1) {
+    var myLine = new Chart(document.getElementById("canvas_line").getContext("2d")).Line(mydata1,newopts);
+    var myLine = new Chart(document.getElementById("canvas_bar").getContext("2d")).Bar(mydata1,newopts);
+    var myLine = new Chart(document.getElementById("canvas_stackedbar").getContext("2d")).StackedBar(mydata1,newopts);
+    var myLine = new Chart(document.getElementById("canvas_horizontalbar").getContext("2d")).HorizontalBar(mydata1,newopts);
+    var myLine = new Chart(document.getElementById("canvas_horizontalstackedbar").getContext("2d")).HorizontalStackedBar(mydata1,newopts);
+    var myLine = new Chart(document.getElementById("canvas_radar").getContext("2d")).Radar(mydata1,newopts);
+    }
+
+}
+
+    </script>
+  </body>
+</html>
