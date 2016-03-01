@@ -1,6 +1,11 @@
 Change history
 --------------
 
+01/03/2016 - Vancoppenolle Francois - code associated to mouse actions rewritten
+24/02/2016 - Vancoppenolle Francois - special highLight through shapesInChart.js module
+16/02/2016 - Vancoppenolle Francois - highLight option added
+24/01/2016 - Vancoppenolle Francois - Fix issues
+02/01/2016 - Vancoppenolle Francois - Fix for request #404
 21/12/2015 - Vancoppenolle Francois - Fix issues detected when trying to find a solution for issue 400
 19/12/2015 - Vancoppenolle Francois - Fix issue for Safari browser
 06/12/2015 - Vancoppenolle Francois - Fix for issue 397
@@ -187,16 +192,13 @@ Future Improvements
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
 - non evolutive animation in Pie/Doughnut (https://github.com/nnnick/Chart.js/issues/357)
 - code reduction
-- animate Canvas when mouse is over a piece of graph (like in http://zurb.com/playground/pizza-pie-charts)
 - dynamicDisplay defines a canvas.id when not defined; Avoid defining a canvas.id (issue 35)
 - see issue #128
 - doughnut(s) around Pie - see issue #227
 
 Known Bugs
 ----------
-- problem with inGraphData on Pie/Doughnut
 - dynamicDisplay not working on IOS 5
-- Pie not working on some devices
 - If the first label is long, it can be truncated
 
    In "sample.html", if you put : 
