@@ -2051,7 +2051,7 @@ window.Chart = function(context) {
 		mouseOut: null,
 		mouseDblClick: null,
 		mouseWheel : null,
-		highLight : true,
+		highLight : false,
 		highLightMouseFunction : "mousemove",
 		highLightFullLine : false,   // true, false or "group"
 		highLightRerunEndFunction : false,
