@@ -881,7 +881,6 @@ function doMouseAction(event, ctx, action) {
 	if (ctx.firstPass != 9)return;
 	if(action=="mousedown") action=action+" "+event.which;
 	if(ctx.mouseAction.indexOf(action)<0){return;}
-console.log(action);
 	var config=mouseActionData[ctx.ChartNewId].config;
 	var data=mouseActionData[ctx.ChartNewId].data;
 	var i,prevShown,prevShowSaved;
@@ -900,7 +899,6 @@ console.log(action);
 	else if(action==mousewheelevt)realAction="mousewheel";
 	else realAction=action;
 
-console.log(action+" "+realAction);
 	// search if mouse over one or more pieces of chart;
 
 	for (i = 0; i < jsGraphAnnotate[ctx.ChartNewId]["length"]; i++) {
