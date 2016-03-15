@@ -1,0 +1,108 @@
+<!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=600;
+defCanvasHeight=300;
+
+var mydata = [
+	{
+		value : 30,
+		color: "#D97041",
+		title : "data1",
+	},
+	{
+		value : 90,
+		color: "#C7604C",
+		title : "data2"
+	},
+	{
+		value : 24,
+		color: "#21323D",
+		title : "data3"
+	},
+	{
+		value : 58,
+		color: "#9D9B7F",
+		title : "data4"
+	},
+	{
+		value : 82,
+		color: "#7D4F6D",
+		title : "data5"
+	},
+	{
+		value : 8,
+		color: "#584A5E",
+		title : "data6"
+	}
+]
+
+
+var opt = {
+      animation : true,
+      canvasBorders : true,
+      
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "animation With Update",
+      inGraphDataShow : true,
+      inGraphDataTmpl: "<%=v2%>",
+      onAnimationComplete : startUpdate,
+      graphTitleFontSize: 18
+};
+
+
+function startUpdate(ctx, config, data, tp, count) {
+console.log("onAnimationComplete Function executed");
+};
+
+
+function updt(ctx,data,config) {
+	updtData(data);
+	updateChart(ctx,data,config,true,true);
+	setTimeout(function (){updt(ctx,data,config);}, 5000);
+}
+
+function updtData(data) {
+	var i;
+	for(i=0;i<data.length-1;i++) data[i].value=data[i+1].value;
+	data[data.length-1].value=Math.floor(Math.random()*50);
+}
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Pie\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+	var myLine = new Chart(document.getElementById("canvas_Pie").getContext("2d")).Pie(mydata,opt);
+	setTimeout(function (){updt(document.getElementById("canvas_Pie").getContext("2d"),mydata,opt);}, 5000);
+
+ }
+    </script>
+  </body>
+</html>
