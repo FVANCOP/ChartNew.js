@@ -42,7 +42,7 @@ var startWithData =1;
 var opt = {
       animationStartWithDataset : startWithDataset,
       animationStartWithData : startWithData,
-//      animation : true,
+      animation : true,
       animationLeftToRight : true,
       animationSteps : 20,
       animationEasing: "linear",
@@ -70,16 +70,17 @@ var opt = {
 
 
 function startUpdate(ctx, config, data, tp, count) {
-console.log("onAnimationComplete Function executed");
+	setTimeout(function (){updt(ctx,data,config);}, 1000+Math.random()*500);
+//	setTimeout(function (){updt(ctx,data,config);}, 1000);
 };
 
 
 function updt(ctx,data,config) {
 	updtData(data);
         config.animationSteps = 50*data.datasets[0].xPos.length;
-	config.animationStartValue=1-(1/data.datasets[0].xPos.length);
+	config.animationStartValue=1-(2/data.datasets[0].xPos.length);
+	deleteHighLight(ctx,data);
 	updateChart(ctx,data,config,true,true);
-	setTimeout(function (){updt(ctx,data,config);}, 1000+Math.random()*2000);
 }
 
 function updtData(data) {
@@ -139,7 +140,6 @@ mydata.datasets[0].xPos[1]=new Date(mydata.datasets[0].xPos[1]-1000);
     document.write("<canvas id=\"canvas_Line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
 window.onload = function() {
 	var myLine = new Chart(document.getElementById("canvas_Line").getContext("2d")).Line(mydata,opt);
-	setTimeout(function (){updt(document.getElementById("canvas_Line").getContext("2d"),mydata,opt);}, 2000+Math.random()*2000);
 
  }
     </script>
