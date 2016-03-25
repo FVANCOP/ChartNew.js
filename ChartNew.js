@@ -471,6 +471,8 @@ function getMaximumHeight(domNode){
 
 function resizeCtx(ctx,config)
 {
+	if (isIE() < 9 && isIE() != false) return(true);
+
 	if(config.responsive) {	
 		if(typeof config.maintainAspectRatio == "undefined")config.maintainAspectRatio=true;
 		if(typeof config.responsiveMinWidth == "undefined")config.responsiveMinWidth=0;
