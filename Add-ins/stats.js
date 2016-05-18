@@ -867,6 +867,9 @@ function convertStat(statval, data, dataset, coldata) {
 				}
 			}
 		}
+	} else if (statval.toLowerCase().substring(0, 9) == "variable_") {
+		resval = eval(statval.toLowerCase().substring(9));
+		found=true;
 	}
 	return {
 		found: found,
