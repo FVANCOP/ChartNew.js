@@ -163,7 +163,7 @@ function fmtChartJS(config, value, fmt) {
 	var return_value;
 	if (fmt == "notformatted") {
 		return_value = value;
-	} else if (fmt == "none" && typeof(value) == "number") {
+	} else if ((fmt == "none" || fmt=="money") && typeof(value) == "number") {
 		if (config.roundNumber != "none") {
 			var roundVal;
 			if (config.roundNumber <= 0) {
@@ -192,6 +192,10 @@ function fmtChartJS(config, value, fmt) {
 				if (part2 != "") return_value = return_value + config.decimalSeparator + part2;
 			}
 		} else return_value = value;
+		if(fmt=="money") {
+			if(config.currencyPosition=="before")return_value=config.currency+return_value;
+			else return_value=return_value+config.currency;
+		}
 	} else if (fmt != "none" && fmt != "notformatted") {
 		return_value = fmtChartJSPerso(config, value, fmt);
 	} else {
@@ -2043,6 +2047,8 @@ window.Chart = function(context) {
 		spaceLeft: 0,
 		decimalSeparator: ".",
 		thousandSeparator: "",
+		currency : "\u20AC",    // 20AC= Euro
+		currencyPosition : "after",
 		roundNumber: "none",
 		roundPct: -1,
 		templatesOpenTag : "<%=",
