@@ -1,0 +1,176 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=500;
+
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June","July"],
+//	labels : ["January"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointstrokeColor : "yellow",
+			data : [95,53,99,30,73,27,82],
+//			data : [40],
+
+      title : "2014"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "green",
+			pointstrokeColor : "yellow",
+			data : [35,43,59,60,31,50,66],
+//			data : [35],
+      title : "2013"
+		}
+	]
+}               
+
+mydata1.shapesInChart=[];
+for(var i=0;i<mydata1.labels.length;i++){
+	mydata1.shapesInChart[i]= {
+			position : "INCHART",
+			shape: "LINE",
+			strokeStyle : "dashSpace",
+			animate : true,
+			x1: i,
+			y1: 0,
+			x2: i,
+			y2: Math.max(mydata1.datasets[0].data[i],mydata1.datasets[1].data[i]),
+			iter : 'last'
+	};
+	
+}
+
+
+var mydata2 = {
+	labels : ["January","February","March","April","May","June","July"],
+//	labels : ["January"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointstrokeColor : "yellow",
+			data : [95,53,99,30,73,27,82],
+//			data : [40],
+
+      title : "2014"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "green",
+			pointstrokeColor : "yellow",
+			data : [35,43,59,60,31,50,66],
+//			data : [35],
+      title : "2013"
+		}
+	]
+}               
+
+mydata2.shapesInChart=[];
+for(var i=0;i<mydata2.labels.length;i++){
+	mydata2.shapesInChart[i]= {
+			position : "INCHART",
+			shape: "LINE",
+			strokeStyle : "dashSpace",     
+			strokeColor: "black",
+			animate : true,
+			x1: i,
+			y1: 0,
+			x2: i,
+			y2: Math.max(mydata1.datasets[0].data[i],mydata1.datasets[1].data[i]),
+			iter : 'last'
+	};
+}
+
+for(var i=0;i<mydata2.labels.length;i++){
+	mydata2.shapesInChart[i+mydata2.labels.length]= {
+			position : "INCHART",
+			shape: "LINE",
+			strokeStyle : "dashSpace",
+			animate : true,
+			x1: 0,
+			y1: mydata1.datasets[0].data[i],
+			x2: i,
+			y2: mydata1.datasets[0].data[i],
+			iter : 'last'
+	};
+}
+
+for(var i=0;i<mydata2.labels.length;i++){
+	mydata2.shapesInChart[i+2*mydata2.labels.length]= {
+			position : "INCHART",
+			shape: "LINE",
+			strokeStyle : "dashSpace",
+			animate : true,
+			x1: 0,
+			y1: mydata1.datasets[1].data[i],
+			x2: i,
+			y2: mydata1.datasets[1].data[i],
+			iter : 'last'
+	};
+}
+
+
+var opt1 = {
+      scaleShowGridLines : false,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "issue 440",
+      legend : true,
+      inGraphDataShow : true,
+      annotateDisplay : true,
+      graphTitleFontSize: 18,
+      endDrawScaleFunction: drawShapes
+
+
+}
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Line2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine = new Chart(document.getElementById("canvas_Line1").getContext("2d")).Line(mydata1,opt1);
+    var myLine = new Chart(document.getElementById("canvas_Line2").getContext("2d")).Line(mydata2,opt1);
+}
+    </script>
+  </body>
+</html>
