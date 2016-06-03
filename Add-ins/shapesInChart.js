@@ -28,6 +28,7 @@ var drawShape_default= {
 	y8:0,
 	y9:0,
 	y10:0,
+	posj : 0,
 	strokeStyle: "solid",
 	strokeSize:2, 
 	strokeColor : "black", 
@@ -116,7 +117,6 @@ function shapeLoadImages(data) {
 
 function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 	var shape,whendrw,iter,realAnimation,shapesInChart;
-
 	if(typeof data.shapesInChart == "object") var shapesInChart=data.shapesInChart;
 	if(typeof data[0]=="object") if (typeof data[0].shapesInChart == "object") var shapesInChart=data[0].shapesInChart;
 
@@ -136,7 +136,6 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 				} else if (typeof othervars.config.dispShapesInChart != "undefined") {
 					if (typeof othervars.config.dispShapesInChart == false)continue;
 				}
-
 				whendrw=drawShapeSetValue(shapesInChart[i].when,drawShape_default.when).toUpperCase();
 				if (whendrw != "ALWAYS" && whendrw != area) { continue;}
 				iter=drawShapeSetValue(shapesInChart[i].iter,drawShape_default.iter.toUpperCase());
@@ -153,6 +152,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 			if(othervars.config.animation && drawShapeSetValue(shapesInChart[i].animate,drawShape_default.animate)) realAnimation=othervars.animationValue;
 			else realAnimation=1;
 			ctx.save();
+
 			switch(shape) {
 				case "LINE" :
 					var vright, vleft, vtop, vbottom, tmp;
@@ -198,7 +198,6 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					vleft= 1*drawShapeSetValue(shapesInChart[i].x2,drawShape_default.x2);
 					vtop= 1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1);
 					vbottom= 1*drawShapeSetValue(shapesInChart[i].y2,drawShape_default.y2);
-
 					ctx.beginPath();
 					var xypos1=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,vright,vtop,1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					var xypos2=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,vleft,vbottom,1*drawShapeSetValue(shapesInChart[i].paddingX2,drawShape_default.paddingX2),1*drawShapeSetValue(shapesInChart[i].paddingY2,drawShape_default.paddingY2),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
@@ -422,7 +421,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 						else     ctx.lineTo(vxs,vys);
 					}					
 					ctx.closePath();
-					ctx.fillStyle=setOptionValue(true,1,"SHAPESINCHART_REGULARSHAPE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,"fillColor",-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos1.xpos, midPosY : xypos1.ypos, radius : radius });
+					ctx.fillStyle=setOptionValue(true,true,1,"SHAPESINCHART_REGULARSHAPE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,"fillColor",-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos1.xpos, midPosY : xypos1.ypos, radius : radius });
 					ctx.fill();
 					ctx.stroke();
 					ctx.setLineDash([]);
@@ -442,7 +441,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 						xypos.xpos - width/2, xypos.ypos - height/2, // C4
 						xypos.xpos, xypos.ypos - height/2); // A1
 					ctx.closePath();
-					ctx.fillStyle=setOptionValue(true,1,"SHAPESINCHART_ELLIPSE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,"fillColor",-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos.xpos, midPosY : xypos.ypos, radius : Math.max(width/2,height/2) });
+					ctx.fillStyle=setOptionValue(true,true,1,"SHAPESINCHART_ELLIPSE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,"fillColor",-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos.xpos, midPosY : xypos.ypos, radius : Math.max(width/2,height/2) });
 					ctx.fill();
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*drawShapeSetValue(shapesInChart[i].strokeSize,drawShape_default.strokeSize));
 					ctx.strokeStyle = drawShapeSetValue(shapesInChart[i].strokeColor,drawShape_default.strokeColor);
@@ -471,7 +470,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					ctx.lineTo(xypos2.xpos-(1-realAnimation)*((xypos2.xpos-xypos1.xpos)/2), xypos1.ypos+(1-realAnimation)*((xypos2.ypos-xypos1.ypos)/2));
 	
 					ctx.closePath();
-					ctx.fillStyle=setOptionValue(true,1,"SHAPESINCHART_RECT",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,"fillColor",-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, xPosLeft : xypos1.xpos+(1-realAnimation)*((xypos2.xpos-xypos1.xpos)/2), yPosBottom : xypos1.ypos+(1-realAnimation)*((xypos2.ypos-xypos1.ypos)/2), yPosTop :xypos2.ypos-(1-realAnimation)*((xypos2.ypos-xypos1.ypos)/2) });
+					ctx.fillStyle=setOptionValue(true,true,1,"SHAPESINCHART_RECT",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,"fillColor",-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, xPosLeft : xypos1.xpos+(1-realAnimation)*((xypos2.xpos-xypos1.xpos)/2), yPosBottom : xypos1.ypos+(1-realAnimation)*((xypos2.ypos-xypos1.ypos)/2), yPosTop :xypos2.ypos-(1-realAnimation)*((xypos2.ypos-xypos1.ypos)/2) });
 					ctx.fill();
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*drawShapeSetValue(shapesInChart[i].strokeSize,drawShape_default.strokeSize));
 					ctx.strokeStyle = drawShapeSetValue(shapesInChart[i].strokeColor,drawShape_default.strokeColor);
@@ -517,7 +516,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 						ctx.arc(xypos.xpos,xypos.ypos, 0, (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].startAngle,drawShape_default.startAngle), (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].endAngle,drawShape_default.endAngle),false);
 					ctx.arc(xypos.xpos,xypos.ypos, realAnimation*1*radius, (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].startAngle,drawShape_default.startAngle), (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].endAngle,drawShape_default.endAngle),true);
 					ctx.closePath();
-					ctx.fillStyle=setOptionValue(true,1,"SHAPESINCHART_CIRCLE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,"fillColor",-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos.xpos, midPosY : xypos.ypos, radius : radius  });
+					ctx.fillStyle=setOptionValue(true,true,1,"SHAPESINCHART_CIRCLE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,"fillColor",-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos.xpos, midPosY : xypos.ypos, radius : radius  });
 //					ctx.fillStyle=drawShapeSetValue(shapesInChart[i].fillColor,drawShape_default.fillColor);
 					ctx.fill();
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*drawShapeSetValue(shapesInChart[i].strokeSize,drawShape_default.strokeSize));
@@ -540,6 +539,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 						othervars.xypos8=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x8,drawShape_default.x8),1*drawShapeSetValue(shapesInChart[i].y8,drawShape_default.y8),1*drawShapeSetValue(shapesInChart[i].paddingX8,drawShape_default.paddingX8),1*drawShapeSetValue(shapesInChart[i].paddingY8,drawShape_default.paddingY8),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 						othervars.xypos9=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x9,drawShape_default.x9),1*drawShapeSetValue(shapesInChart[i].y9,drawShape_default.y9),1*drawShapeSetValue(shapesInChart[i].paddingX9,drawShape_default.paddingX9),1*drawShapeSetValue(shapesInChart[i].paddingY9,drawShape_default.paddingY9),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 						othervars.xypos10=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x10,drawShape_default.x10),1*drawShapeSetValue(shapesInChart[i].y10,drawShape_default.y10),1*drawShapeSetValue(shapesInChart[i].paddingX10,drawShape_default.paddingX10),1*drawShapeSetValue(shapesInChart[i].paddingY10,drawShape_default.paddingY10),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
+						if(typeof shapesInChart[i].posj != "undefined")othervars.posj=shapesInChart[i].posj;
 						shapesInChart[i].shape(area, ctx, data,statData, posi,posj,othervars);
 					}
 					break;
@@ -606,9 +606,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 				}
 				break;
 			case "INCHART" :
-				switch(ctx.tpdata) {
-					case 0 :
-						switch(tpdraw(ctx,data.datasets[0])) {
+				switch(tpdraw(ctx,data.datasets[0])) {
 							case "Radar" :
 								var angle=((2*Math.PI)/(data.labels.length))*xposval;
 								ypos=calculateOffset(othervars.config.logarithmic, yposval, statData[0][0].calculatedScale, statData[0][0].scaleHop,limitToChart);
@@ -647,53 +645,44 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 								}
 								ypos = statData[0][0].xAxisPosY - statData[0][0].scaleHop * (xposval_wk+0.5)+paddingY1;
 								break;
-		        				default :
-								xpos=xposval+paddingX1;
-								ypos=yposval+paddingY1;
-								break;
-						}
-						break;
-					case 1: 
-						switch(ctx.tpchart) {
 							case "Pie" :
 							case "Doughnut" :
 							case "PolarArea" :
+								if(typeof shapesInChart.posj=="undefined")shapesInChart.posj=0;
 								if(xposval < -0.499)xpos=-0.499;
-								else if(xposval > data.length-0.501) xpos=data.length-0.501;
+								else if(xposval > data.datasets.length-0.501) xpos=data.datasets.length-0.501;
 								else xpos=xposval;
 								var curdata=Math.round(xpos);
-								var startAngle=statData[curdata].startAngle;
-								var segmentAngle=statData[curdata].segmentAngle;
-								var firstAngle=statData[curdata].firstAngle;
-								var realStartAngle=statData[curdata].realStartAngle;
-								var endAngle=statData[curdata].endAngle;
+								var startAngle=statData[curdata][shapesInChart.posj].startAngle;
+								var segmentAngle=statData[curdata][shapesInChart.posj].segmentAngle;
+								var firstAngle=statData[curdata][shapesInChart.posj].firstAngle;
+								var realStartAngle=statData[curdata][shapesInChart.posj].realStartAngle;
+								var endAngle=statData[curdata][shapesInChart.posj].endAngle;
 								var angle=2*Math.PI-(startAngle+(xpos-curdata+0.5)*segmentAngle);
-								if(ctx.tpchart=="PolarArea")
-									ypos= calculateOffset(othervars.config.logarithmic, yposval, statData[0].calculatedScale, statData[0].scaleHop);
-								else {
-									ypos=statData[0].int_radius+yposval*(statData[0].ext_radius-statData[0].int_radius);
+								if(ctx.tpchart=="PolarArea") {
+									ypos= calculateOffset(othervars.config.logarithmic, yposval, statData[0][0].calculatedScale, statData[0][0].scaleHop);
+								} else {
+									ypos=statData[0][shapesInChart.posj].int_radius+yposval*(statData[0][shapesInChart.posj].ext_radius-statData[0][shapesInChart.posj].int_radius);
 								}
 								if(limitToChart){
-									if (ypos<-statData[0].ext_radius)ypos=-statData[0].ext_radius;
-									if (ypos>statData[0].ext_radius)ypos=statData[0].ext_radius;
+									if (ypos<-statData[0][shapesInChart.posj].ext_radius)ypos=-statData[0][shapesInChart.posj].ext_radius;
+									if (ypos>statData[0][shapesInChart.posj].ext_radius)ypos=statData[0][shapesInChart.posj].ext_radius;
 								} 
 								xpos=Math.cos(angle) * ypos;
 								ypos=Math.sin(angle) * ypos;
-								xpos=statData[0].midPosX + xpos+paddingX1;
-								ypos=statData[0].midPosY - ypos+paddingY1;
+								xpos=statData[0][shapesInChart.posj].midPosX + xpos+paddingX1;
+								ypos=statData[0][shapesInChart.posj].midPosY - ypos+paddingY1;
+								if(yposval==-999){
+									xpos=statData[0][shapesInChart.posj].midPosX +paddingX1;
+									ypos=statData[0][shapesInChart.posj].midPosY +paddingY1;
+								}
 								break;
 		        				default :
 								xpos=xposval+paddingX1;
 								ypos=yposval+paddingY1;
 								break;
-						}
-						break;
-        				default :
-						xpos=xposval+paddingX1;
-						ypos=yposval+paddingY1;
-						break;
-					}
-					break;
+				}
+				break;
 			case "ABSOLUTE" :
 			default:
 				xpos=xposval+paddingX1;
@@ -777,21 +766,11 @@ function addIns_highLight(ctx, config, data, movement, animationCount,statData){
 	var i,decalRadius,property;
 	var addHighLight=false,totreat;
 	var rectHeight, rectWidth, ratio;
-	if (ctx.tpdata==0){
-		if(typeof data.special=="object")special=data.special;
-		if(typeof data.shapesInChart == "object") shapesVar=data.shapesInChart;
-		else {
-			data.shapesInChart=[];
-			shapesVar=data.shapesInChart;
-		}
-	}
+	if(typeof data.special=="object") special=data.special;
+	if(typeof data.shapesInChart == "object") shapesVar=data.shapesInChart;
 	else {
-		if(typeof data[0].special=="object")special=data[0].special;
-		if(typeof data[0].shapesInChart == "object") shapesVar=data[0].shapesInChart;
-		else {
-			data[0].shapesInChart=[];
-			shapesVar=data[0].shapesInChart;
-		}
+		data.shapesInChart=[];
+		shapesVar=data.shapesInChart;
 	}
 	addHighLight=false;	
 	if(typeof special=="object") {
@@ -885,24 +864,26 @@ function addIns_highLight(ctx, config, data, movement, animationCount,statData){
 							break;
 						case "Pie" :
 						case "Doughnut" :
+							shapesVar[shapesVar.length-1].posj=special[i].posj;
 							if(typeof config.highLightSet.expandOutRadius=="number")decalRadius=config.highLightSet.expandOutRadius;
 							else decalRadius=0;	
 							shapesVar[shapesVar.length-1].position= "inchart";
 							shapesVar[shapesVar.length-1].limitToChart= false;
 							shapesVar[shapesVar.length-1].x1= special[i].posi;
-							if(ctx.tpchart=="Pie")	shapesVar[shapesVar.length-1].y1= 1.3+decalRadius;
-							else shapesVar[shapesVar.length-1].y1= 1+(100*0.3)/(100-config.percentageInnerCutout);
+							if(ctx.tpchart=="Pie")	shapesVar[shapesVar.length-1].y1= 1+data.labels.length*0.3+decalRadius;
+							else shapesVar[shapesVar.length-1].y1= 1+data.labels.length*(100*0.3)/(100-config.percentageInnerCutout);
 							
 							shapesVar[shapesVar.length-1].x2= special[i].posi;
 							shapesVar[shapesVar.length-1].y2= 1+decalRadius;
 							break;
 						case "PolarArea" :
+							shapesVar[shapesVar.length-1].posj=special[i].posj;
 							shapesVar[shapesVar.length-1].position= "inchart";
 							shapesVar[shapesVar.length-1].limitToChart= false;
 							shapesVar[shapesVar.length-1].x1= special[i].posi;
-							shapesVar[shapesVar.length-1].y1= data[special[i].posi].value+0.3*(statData[0].outerVal-statData[0].calculatedScale.graphMin);;
+							shapesVar[shapesVar.length-1].y1= data.datasets[special[i].posi].data[special[i].posj]+0.3*(statData[0][0].outerVal-statData[0][0].calculatedScale.graphMin);
 							shapesVar[shapesVar.length-1].x2= special[i].posi;
-							shapesVar[shapesVar.length-1].y2= data[special[i].posi].value;
+							shapesVar[shapesVar.length-1].y2= data.datasets[special[i].posi].data[special[i].posj];
 							break;
 					}				
 					shapesVar[shapesVar.length-1].strokeColor= "black";

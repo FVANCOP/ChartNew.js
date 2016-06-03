@@ -35,12 +35,40 @@ var mydata1 = {
 	]
 }
 
-
-var mydata2 = [
-	{
-		value : 30,
-		color: "#D97041",
-		title : "data1",
+var mydata2 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [30], 
+      fillColor : "#D97041", 
+      title : "data1" 
+           }, 
+           { 
+      data : [90], 
+      fillColor : "#C7604C", 
+      title : "data2"
+           }, 
+           { 
+      data : [24], 
+      fillColor : "#21323D", 
+      title : "data3"
+           }, 
+           { 
+      data : [58], 
+      fillColor : "#9D9B7F", 
+      title : "data4"
+           }, 
+           { 
+      data : [82], 
+      fillColor : "#7D4F6D", 
+      title : "data5"
+           }, 
+           { 
+      data : [8], 
+      fillColor : "#584A5E", 
+      title : "data6"
+           } 
+],
 		shapesInChart : [
 			{
 				position : "RELATIVE",
@@ -287,44 +315,19 @@ var mydata2 = [
 				fontFamily : "'Arial'"
 			}
 		]
+ 
+};
 
-
-		
-	},
-	{
-		value : 90,
-		color: "#C7604C",
-		title : "data2"
-	},
-	{
-		value : 24,
-		color: "#21323D",
-		title : "data3"
-	},
-	{
-		value : 58,
-		color: "#9D9B7F",
-		title : "data4"
-	},
-	{
-		value : 82,
-		color: "#7D4F6D",
-		title : "data5"
-	},
-	{
-		value : 8,
-		color: "#584A5E",
-		title : "data6"
-	}
-]
-
-
-var mydata3 = [
-	{
-		value : 70,
-		color: "rgba(151,187,205,1)",
-		title : "data1",
-		shapesInChart : [
+var mydata3 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [70], 
+      fillColor : "rgba(151,187,205,1)", 
+      title : "data1"
+           } 
+],
+shapesInChart : [
 			{
 				position : "RELATIVE",
 				shape : "TEXT",
@@ -337,16 +340,24 @@ var mydata3 = [
 				fontSize : 50
 			}
 		]
+ 
+};
 
-	}
-]
-
-var mydata4 = [
-	{
-		value : 70,
-		color: "rgba(151,187,205,1)",
-		title : "data1",
-		shapesInChart : [
+var mydata4 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [70], 
+      fillColor : "rgba(151,187,205,1)", 
+      title : "data1"
+           }, 
+           { 
+      data : [30], 
+      fillColor : "rgba(220,220,220,1)", 
+      title : "data1"
+           } 
+], 
+shapesInChart : [
 			{
 				position : "RELATIVE",
 				shape : "TEXT",
@@ -359,14 +370,8 @@ var mydata4 = [
 				fontSize : 50
 			}
 		]
+};
 
-	},
-	{
-		value : 30,
-		color: "rgba(220,220,220,1)",
-		title : "data1"
-	}
-]
 
 var mydatan1 = {
 	labels : ["January","February","March","April","May","June","July"],
@@ -456,116 +461,131 @@ var mydata1b = {
 	]
 }
 
-var mydatan2 = [
-	{
-		value : -30,
-		color: "#D97041",
-		title : "data1"
-	},
-	{
-		value : -90,
-		color: "#C7604C",
-		title : "data2"
-	},
-	{
-		value : -24,
-		color: "#21323D",
-		title : "data3"
-	},
-	{
-		value : -58,
-		color: "#9D9B7F",
-		title : "data4"
-	},
-	{
-		value : -82,
-		color: "#7D4F6D",
-		title : "data5"
-	},
-	{
-		value : -8,
-		color: "#584A5E",
-		title : "data6"
-	}
+var mydatan2 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [-30], 
+      fillColor : "#D97041", 
+      title : "data1" 
+           }, 
+           { 
+      data : [-90], 
+      fillColor : "#C7604C", 
+      title : "data2"
+           }, 
+           { 
+      data : [-24], 
+      fillColor : "#21323D", 
+      title : "data3"
+           }, 
+           { 
+      data : [-58], 
+      fillColor : "#9D9B7F", 
+      title : "data4"
+           }, 
+           { 
+      data : [-82], 
+      fillColor : "#7D4F6D", 
+      title : "data5"
+           }, 
+           { 
+      data : [-8], 
+      fillColor : "#584A5E", 
+      title : "data6"
+           } 
 ]
+};
 
-
-var mydatan3 = [
-	{
-		value : -70,
-		color: "rgba(151,187,205,1)",
-		title : "data1"
-	}
+var mydatan3 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [-70], 
+      fillColor : "rgba(151,187,205,1)", 
+      title : "data1" 
+           }
 ]
+};
 
-var mydatan4 = [
-	{
-		value : -70,
-		color: "rgba(151,187,205,1)",
-		title : "data1"
-	},
-	{
-		value : -30,
-		color: "rgba(220,220,220,1)",
-		title : "data1"
-	}
+var mydatan4 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [-70], 
+      fillColor : "rgba(151,187,205,1)", 
+      title : "data1" 
+           },
+           {
+      data : [-30], 
+      fillColor: "rgba(220,220,220,1)",
+      title : "data2" 
+           }
 ]
+};
 
-var mydatam2 = [
-	{
-		value : -30,
-		color: "#D97041",
-		title : "data1"
-	},
-	{
-		value : 90,
-		color: "#C7604C",
-		title : "data2"
-	},
-	{
-		value : -24,
-		color: "#21323D",
-		title : "data3"
-	},
-	{
-		value : 58,
-		color: "#9D9B7F",
-		title : "data4"
-	},
-	{
-		value : -82,
-		color: "#7D4F6D",
-		title : "data5"
-	},
-	{
-		value : -8,
-		color: "#584A5E",
-		title : "data6"
-	}
+var mydatam2 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [-30], 
+      fillColor : "#D97041", 
+      title : "data1" 
+           }, 
+           { 
+      data : [90], 
+      fillColor : "#C7604C", 
+      title : "data2"
+           }, 
+           { 
+      data : [-24], 
+      fillColor : "#21323D", 
+      title : "data3"
+           }, 
+           { 
+      data : [58], 
+      fillColor : "#9D9B7F", 
+      title : "data4"
+           }, 
+           { 
+      data : [-82], 
+      fillColor : "#7D4F6D", 
+      title : "data5"
+           }, 
+           { 
+      data : [-8], 
+      fillColor : "#584A5E", 
+      title : "data6"
+           } 
 ]
+};
 
-
-var mydatam3 = [
-	{
-		value : -70,
-		color: "rgba(151,187,205,1)",
-		title : "data1"
-	}
+var mydatam3 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [-70], 
+      fillColor : "rgba(151,187,205,1)", 
+      title : "data1" 
+           }
 ]
+};
 
-var mydatam4 = [
-	{
-		value : -70,
-		color: "rgba(151,187,205,1)",
-		title : "data1"
-	},
-	{
-		value : 30,
-		color: "rgba(220,220,220,1)",
-		title : "data1"
-	}
+var mydatam4 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [-70], 
+      fillColor : "rgba(151,187,205,1)", 
+      title : "data1" 
+           },
+           {
+      data : [30], 
+      fillColor: "rgba(220,220,220,1)",
+      title : "data2" 
+           }
 ]
-
+};
 
 var newopts = {
 	dispShapesInChart : false,
@@ -745,7 +765,7 @@ var crosstxt3 = {
 
 function dispPct2(numtxt,valtxt,ctx,config,posX,posY,borderX,borderY,overlay,data,animPC){
         //  alert("INIT");
-        return(Math.round(animPC*data[0].value));
+        return(Math.round(animPC*data.datasets[0].data[0]));
 } 
 
 var crosstxt4 = {

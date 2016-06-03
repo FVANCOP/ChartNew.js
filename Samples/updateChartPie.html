@@ -13,10 +13,45 @@ function setColor(area,data,config,i,j,animPct,value)
 
 var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
 
-defCanvasWidth=600;
-defCanvasHeight=300;
+defCanvasWidth=900;
+defCanvasHeight=600;
+var mydata = { 
+     labels : ["2015","2016"], 
+     datasets : [ 
+           { 
+      data : [30,90], 
+      fillColor : "#D97041", 
+      title : "data1" 
+           }, 
+           { 
+      data : [90], 
+      fillColor : "#C7604C", 
+      title : "data2"
+           }, 
+           { 
+      data : [24,58], 
+      fillColor : "#21323D", 
+      title : "data3"
+           }, 
+           { 
+      data : [58], 
+      fillColor : "#9D9B7F", 
+      title : "data4"
+           }, 
+           { 
+      data : [,82], 
+      fillColor : "#7D4F6D", 
+      title : "data5"
+           }, 
+           { 
+      data : [8], 
+      fillColor : "#584A5E", 
+      title : "data6"
+           } 
+] 
+};
 
-var mydata = [
+var Omydata = [
 	{
 		value : 30,
 		color: "#D97041",
@@ -58,14 +93,14 @@ var opt = {
       canvasBordersColor : "black",
       graphTitle : "animation With Update",
       inGraphDataShow : true,
-      inGraphDataTmpl: "<%=v2%>",
+      inGraphDataTmpl: "<%=v3%>",
       onAnimationComplete : startUpdate,
       graphTitleFontSize: 18
 };
 
 
 function startUpdate(ctx, config, data, tp, count) {
-console.log("onAnimationComplete Function executed");
+// console.log("onAnimationComplete Function executed");
 };
 
 
@@ -76,9 +111,13 @@ function updt(ctx,data,config) {
 }
 
 function updtData(data) {
-	var i;
-	for(i=0;i<data.length-1;i++) data[i].value=data[i+1].value;
-	data[data.length-1].value=Math.floor(Math.random()*50);
+	var i,j;
+	for(i=0;i<data.datasets.length-1;i++){
+		for(j=0;j<data.labels.length;j++)			
+			data.datasets[i].data[j]=data.datasets[i+1].data[j];
+	}
+	for(j=0;j<data.labels.length;j++)			
+		data.datasets[data.datasets.length-1].data[j]=Math.floor(Math.random()*50);
 }
 
 

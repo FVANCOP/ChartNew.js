@@ -9,44 +9,46 @@
 defCanvasWidth=800;
 defCanvasHeight=800;
 
-var mydata2 = [
-	{
-		value : 1,
-		color: "#9F81F7",
-    title : "data1"
-	},
-	{
-		value : 45,
-		color: "#F4FA58",
-    title : "data2"
-	},
-	{
-		value : 2,
-		color: "#E6E6E6",
-    title : "data3"
-	},
-	{
-		value : 45,
-		color: "#81F7D8",
-    title : "data4"
-	},
-	{
-		value : 1,
-		color: "#F78181",
-    title : "data5"
-	},
-	{
-		value : 2,
-		color: "#F5A9F2",
-    title : "data6"
-	},
-	{
-		value : 1,
-		color: "#58FA58",
-    title : "data7"
-	}
-];
-
+var mydata2 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [1], 
+      fillColor : "#9F81F7", 
+      title : "data1"
+           }, 
+           { 
+      data : [45], 
+      fillColor : "#F4FA58", 
+      title : "data2"
+           }, 
+           { 
+      data : [2], 
+      fillColor : "#E6E6E6", 
+      title : "data3"
+           }, 
+           { 
+      data : [45], 
+      fillColor : "#81F7D8", 
+      title : "data4"
+           }, 
+           { 
+      data : [1], 
+      fillColor : "#F78181", 
+      title : "data5"
+           }, 
+           { 
+      data : [2], 
+      fillColor : "#F5A9F2", 
+      title : "data6" 
+           }, 
+           { 
+      data : [1], 
+      fillColor : "#58FA58", 
+      title : "data7"
+           } 
+] 
+};
 function setPosInPie1(area,ctx,data,statData,posi,posj,othervars)
 {
   
@@ -62,15 +64,15 @@ function setPosInPie2(area,ctx,data,statData,posi,posj,othervars)
 	var offSet=10;
 	var cntbef=0;
 	var cntaft=0;
-	if(statData[posi].segmentAngle*360/(2*Math.PI) < minAngle )
+	if(statData[posi][posj].segmentAngle*360/(2*Math.PI) < minAngle )
 	{
-		for(var i=posi-1;i>=0 && statData[i].segmentAngle*360/(2*Math.PI) < minAngle;i--)cntbef++;
-		if(cntbef==posi)for(var i=data.length-1;i>=0 && statData[i].segmentAngle*360/(2*Math.PI) < minAngle;i--)cntbef++;
+		for(var i=posi-1;i>=0 && statData[i][posj].segmentAngle*360/(2*Math.PI) < minAngle;i--)cntbef++;
+		if(cntbef==posi)for(var i=data.datasets.length-1;i>=0 && statData[i][posj].segmentAngle*360/(2*Math.PI) < minAngle;i--)cntbef++;
 
-		for(var i=posi+1;i<data.length && statData[i].segmentAngle*360/(2*Math.PI) < minAngle;i++)cntaft++;
-		if(posi+cntaft==data.length-1)for(var i=0;i<data.length && statData[i].segmentAngle*360/(2*Math.PI) < minAngle;i++)cntaft++;
-		if(cntbef>=data.length)cntbef=posi-1
-		if(cntaft>=data.length)cntaft=data.length-posi;
+		for(var i=posi+1;i<data.datasets.length && statData[i][posj].segmentAngle*360/(2*Math.PI) < minAngle;i++)cntaft++;
+		if(posi+cntaft==data.datasets.length-1)for(var i=0;i<data.datasets.length && statData[i][posj].segmentAngle*360/(2*Math.PI) < minAngle;i++)cntaft++;
+		if(cntbef>=data.datasets.length)cntbef=posi-1
+		if(cntaft>=data.datasets.length)cntaft=data.datasets.length-posi;
 	} 	
 	return((cntbef+cntaft)*offSet-cntaft*2*offSet);
 }

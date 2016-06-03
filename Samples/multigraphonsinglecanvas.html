@@ -26,17 +26,47 @@ datasets : [
     }
     ]
  }
- var mydata2 = [
-{
-    value : 30,
-    color: "#D97041",
-    title : "data1",
-    shapesInChart : [
+ 
+ var mydata2 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [30], 
+      fillColor : "#D97041", 
+      title : "data1" 
+           }, 
+           { 
+      data : [90], 
+      fillColor : "#C7604C", 
+      title : "data2"
+           }, 
+           { 
+      data : [24], 
+      fillColor : "#21323D", 
+      title : "data3"
+           }, 
+           { 
+      data : [58], 
+      fillColor : "#9D9B7F", 
+      title : "data4"
+           }, 
+           { 
+      data : [82], 
+      fillColor : "#7D4F6D", 
+      title : "data5"
+           }, 
+           { 
+      data : [8], 
+      fillColor : "#584A5E", 
+      title : "data6"
+           } 
+] ,
+  shapesInChart : [
 			{
 				position : "RELATIVE",
 				shape : "TEXT",
 				iter : "first",
-				text : "Multiple graph in a single Canvas",
+				text : "Multiple charts in a single Canvas",
 				x1 : -2,
 				y1 : 0,
 				paddingY1 : 20,
@@ -46,34 +76,8 @@ datasets : [
 				fontSize : 20
 			}
 		]
+};
 
-},
-{
-    value : 90,
-    color: "#C7604C",
-            title : "data2"
-},
-{
-    value : 24,
-    color: "#21323D",
-            title : "data3"
-},
-{
-    value : 58,
-    color: "#9D9B7F",
-            title : "data4"
-},
-{
-    value : 82,
-    color: "#7D4F6D",
-            title : "data5"
-},
-{
-    value : 8,
-    color: "#584A5E",
-            title : "data6"
-}
- ]
  var opt1 = {
   multiGraph : true,
   canvasBorders : true,
@@ -104,7 +108,7 @@ datasets : [
   canvasBorders : true,
   canvasBordersWidth : 3,
   canvasBordersColor : "black",
-  graphTitle : "Doughnut",
+  graphTitle : "PolarArea",
   legend : true,
   inGraphDataShow : true,
   annotateDisplay : true,
@@ -154,7 +158,7 @@ datasets : [
  window.onload = function() {
      var myGraph = new Chart(document.getElementById("canvas_Multigraph").getContext("2d"))
      myGraph.Pie(mydata2,opt1,myGraph);
-     myGraph.Doughnut(mydata2,opt2,myGraph);
+     myGraph.PolarArea(mydata2,opt2,myGraph);
      myGraph.Line(mydata1,opt3,myGraph);
      myGraph.Bar(mydata1,opt4,myGraph);
  }

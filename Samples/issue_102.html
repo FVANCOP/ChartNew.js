@@ -70,44 +70,49 @@ var HorizontalBarLineData = {
 	]
 }
 
-  var pieData = [
-    {
-  		value : 30,
-  		color: gradientColor,
-			gradientColors: ["#00FFFF 50%","green","yellow"],
-      title : "data1"
-  	},
-  	{
-  		value : 90,
-  		color: gradientColor,
-			gradientColors : ["red","yellow","blue"],
-      title : "data2"
-  	},
-  	{                                                       
-  		value : 24,
-  		color: gradientColor,
-			gradientColors : ["#DC2424","#4A569D"],
-      title : "data3"
-  	},
-  	{
-  		value : 58,
-  		color: gradientColor,
-			gradientColors : ["#24C6DC","#514A9D"],
-      title : "data4"
-  	},
-  	{
-  		value : 82,
-  		color: gradientColor,
-			gradientColors : ["#085078","#85D8CE"],
-      title : "data5"
-  	},
-  	{
-  		value : 8,
-  		color: gradientColor,
-			gradientColors : ["#3D7EAA","#FFE47A"],
-      title : "data6"
-  	}
-  ];
+
+var pieData = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [30], 
+      fillColor : gradientColor,
+      title : "data1", 
+      gradientColors: ["#00FFFF 50%","green","yellow"]
+           }, 
+           { 
+      data : [90], 
+      fillColor : gradientColor,
+      title : "data2", 
+      gradientColors : ["red","yellow","blue"]
+           }, 
+           { 
+      data : [24], 
+      fillColor : gradientColor,
+      title : "data3", 
+      gradientColors : ["#DC2424","#4A569D"]
+           }, 
+           { 
+      data : [58], 
+      fillColor : gradientColor,
+      title : "data4", 
+      gradientColors : ["#24C6DC","#514A9D"]
+           }, 
+           { 
+      data : [82], 
+      fillColor : gradientColor,
+      title : "data5", 
+      gradientColors : ["#085078","#85D8CE"]
+           }, 
+           { 
+      data : [8], 
+      fillColor : gradientColor,
+      title : "data6", 
+      gradientColors : ["#3D7EAA","#FFE47A"]
+           } 
+] 
+}; 
+
 
 
   var opts= {

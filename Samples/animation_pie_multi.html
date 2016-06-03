@@ -17,21 +17,22 @@ var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator
 defCanvasWidth=600;
 defCanvasHeight=300;
 
+
 var mydata2 = { 
-     labels : [""], 
+     labels : ["2014","2015","2016"], 
      datasets : [ 
            { 
-      data : [30], 
+      data : [30,15,14], 
       fillColor : "#D97041", 
       title : "data1" 
            }, 
            { 
-      data : [90], 
+      data : [90,,25], 
       fillColor : "#C7604C", 
       title : "data2"
            }, 
            { 
-      data : [24], 
+      data : [24,10], 
       fillColor : "#21323D", 
       title : "data3"
            }, 
@@ -41,19 +42,17 @@ var mydata2 = {
       title : "data4"
            }, 
            { 
-      data : [82], 
+      data : [,82,17], 
       fillColor : "#7D4F6D", 
       title : "data5"
            }, 
            { 
-      data : [8], 
+      data : [,8,], 
       fillColor : "#584A5E", 
       title : "data6"
            } 
 ] 
 };
-
-
 
 var startWithDataset =1;
 var startWithData =1;
@@ -71,6 +70,7 @@ var opt1 = {
       graphTitle : "animateRotate=true - animateScale=false - animationByData=false",
       legend : true,
       inGraphDataShow : true,
+      inGraphDataPaddingRadius : -5,
       animationEasing: "linear",
       annotateDisplay : true,
       spaceBetweenBar : 5,
@@ -91,6 +91,7 @@ var opt1b = {
       graphTitle : "animateRotate=true - animateScale=false - animationByData=true",
       legend : true,
       inGraphDataShow : true,
+      inGraphDataPaddingRadius : -5,
       animationEasing: "linear",
       annotateDisplay : true,
       spaceBetweenBar : 5,
@@ -111,6 +112,7 @@ var opt1c = {
       graphTitle : "animateRotate=true - animateScale=false - animationByData='ByArc'",
       legend : true,
       inGraphDataShow : true,
+      inGraphDataPaddingRadius : -5,
       animationEasing: "linear",
       annotateDisplay : true,
       spaceBetweenBar : 5,
@@ -132,6 +134,7 @@ var opt2 = {
       graphTitle : "animateRotate=false - animateScale=true",
       legend : true,
       inGraphDataShow : true,
+      inGraphDataPaddingRadius : -5,
       annotateDisplay : true,
       spaceBetweenBar : 5,
       graphTitleFontSize: 18
@@ -152,6 +155,7 @@ var opt3 = {
       graphTitle : "animateRotate=true - animateScale=true - animationByData=false",
       legend : true,
       inGraphDataShow : true,
+      inGraphDataPaddingRadius : -5,
       annotateDisplay : true,
       spaceBetweenBar : 5,
       graphTitleFontSize: 18
@@ -171,6 +175,7 @@ var opt3b = {
       graphTitle : "animateRotate=true - animateScale=true - animationByData=true",
       legend : true,
       inGraphDataShow : true,
+      inGraphDataPaddingRadius : -5,
       annotateDisplay : true,
       spaceBetweenBar : 5,
       graphTitleFontSize: 18
@@ -189,6 +194,7 @@ var opt3c = {
       graphTitle : "animateRotate=true - animateScale=true - animationByData='ByArc'",
       legend : true,
       inGraphDataShow : true,
+      inGraphDataPaddingRadius : -5,
       annotateDisplay : true,
       spaceBetweenBar : 5,
       graphTitleFontSize: 18
@@ -213,24 +219,24 @@ var opt3c = {
 
     <script>
 
-    document.write("<canvas id=\"canvas_PolarArea1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
-    document.write("<canvas id=\"canvas_PolarArea1b\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
-    document.write("<canvas id=\"canvas_PolarArea1c\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
-    document.write("<canvas id=\"canvas_PolarArea2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
-    document.write("<canvas id=\"canvas_PolarArea3\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
-    document.write("<canvas id=\"canvas_PolarArea3b\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
-    document.write("<canvas id=\"canvas_PolarArea3c\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Pie1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Pie1b\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Pie1c\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Pie2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Pie3\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Pie3b\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Pie3c\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
 
 window.onload = function() {
 
 
-    var myPolarArea = new Chart(document.getElementById("canvas_PolarArea1").getContext("2d")).PolarArea(mydata2,opt1);
-    var myPolarArea = new Chart(document.getElementById("canvas_PolarArea1b").getContext("2d")).PolarArea(mydata2,opt1b);
-    var myPolarArea = new Chart(document.getElementById("canvas_PolarArea1c").getContext("2d")).PolarArea(mydata2,opt1c);
-    var myPolarArea = new Chart(document.getElementById("canvas_PolarArea2").getContext("2d")).PolarArea(mydata2,opt2);
-    var myPolarArea = new Chart(document.getElementById("canvas_PolarArea3").getContext("2d")).PolarArea(mydata2,opt3);
-    var myPolarArea = new Chart(document.getElementById("canvas_PolarArea3b").getContext("2d")).PolarArea(mydata2,opt3b);
-    var myPolarArea = new Chart(document.getElementById("canvas_PolarArea3c").getContext("2d")).PolarArea(mydata2,opt3c);
+    var myPie = new Chart(document.getElementById("canvas_Pie1").getContext("2d")).Pie(mydata2,opt1);
+    var myPie = new Chart(document.getElementById("canvas_Pie1b").getContext("2d")).Pie(mydata2,opt1b);
+    var myPie = new Chart(document.getElementById("canvas_Pie1c").getContext("2d")).Pie(mydata2,opt1c);
+    var myPie = new Chart(document.getElementById("canvas_Pie2").getContext("2d")).Pie(mydata2,opt2);
+    var myPie = new Chart(document.getElementById("canvas_Pie3").getContext("2d")).Pie(mydata2,opt3);
+    var myPie = new Chart(document.getElementById("canvas_Pie3b").getContext("2d")).Pie(mydata2,opt3b);
+    var myPie = new Chart(document.getElementById("canvas_Pie3c").getContext("2d")).Pie(mydata2,opt3c);
 
 	}
 

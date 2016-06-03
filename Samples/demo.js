@@ -811,34 +811,36 @@ var opts_lines_with_shapes = {
 stats(lines_with_shapes,opts_lines_with_shapes);
 
 //**************************************************
-
-var mydata2 = [
-	{
-		value : 30,
-		color: "#D97041",
-		title : "Europe"
-	},
-	{
-		value : 58,
-		color: "#C7604C",
-		title : "Asia"
-	},
-	{
-		value : 82,
-		color: "#7D4F6D",
-		title : "South-America"
-	},
-	{
-		value : 24,
-		color: "#21323D",
-		title : "Africa"
-	},
-	{
-		value : 90,
-		color: "#9D9B7F",
-		title : "North-America"
-	}
-];
+ var mydata2 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [30], 
+      fillColor : "#D97041", 
+      title : "Europe" 
+           }, 
+           { 
+      data : [58], 
+      fillColor : "#C7604C", 
+      title : "Asia"
+           }, 
+           { 
+      data : [82], 
+      fillColor : "#7D4F6D", 
+      title : "South-America"
+           }, 
+           { 
+      data : [24], 
+      fillColor : "#21323D", 
+      title : "Africa"
+           }, 
+           { 
+      data : [90], 
+      fillColor : "#9D9B7F", 
+      title : "North-America"
+           } 
+] 
+};
 
 var opts_mydata2 = {
 	inGraphDataShow : false,
@@ -851,72 +853,79 @@ pushInGraphData("Pie",mydata2,opts_mydata2,{text : "<Title> (<Value>)"});
 
 //**************************************************
 
-var mydata2_gradient = [
+
+var mydata2_gradient = {
+     labels : [""], 
+     datasets : [ 
 	{
-		 value :265,
-	 	 color:gradientColor,
+		 data : [265],
+	 	 fillColor: gradientColor,
 		 gradientColors :["#333 0%","#333 55%","rgba(52,152,219,1) 75%","rgba(52,152,219,1) 90%","rgba(52,152,219,1) 100%",],
-		 title:'January'
+		 title: 'January'
 	},
 	{
-		value :208,
-		color: gradientColor,
+		data : [208], 
+		fillColor: gradientColor,
 		gradientColors :["#333 0%","#333 55%","rgba(46,204,113,1) 75%","rgba(46,204,113,1) 90%","rgba(46,204,113,1) 100%",],
 		title:'February'},
 	{
-		value :290,
-		color:gradientColor,
+		data : [290], 
+		fillColor:gradientColor,
 		gradientColors :["#333 0%","#333 55%","rgba(166,107,190,1) 75%","rgba(166,107,190,1) 90%","rgba(166,107,190,1) 100%",],
 		title:'March'
 	},
 	{
-		value :281,
-		color:gradientColor,
+		data : [281], 
+		fillColor:gradientColor,
 		gradientColors :["#333 0%","#333 55%","rgba(241,196,15,1) 75%","rgba(241,196,15,1) 90%","rgba(241,196,15,1) 100%",],
 		title:'April'
 	},
 	{
-		value :256,
-		color:gradientColor,
+		data : [256], 
+		fillColor:gradientColor,
 		gradientColors :["#333 0%","#333 55%","rgba(230,126,34,1) 75%","rgba(230,126,34,1) 90%","rgba(230,126,34,1) 100%",],
 		title:'May'
 	},
 	{
-		value :255,
-		color:gradientColor,
+		data : [255], 
+		fillColor:gradientColor,
 		gradientColors :["#333 0%","#333 55%","rgba(192,58,43,1) 75%","rgba(192,58,43,1) 90%","rgba(192,58,43,1) 100%",],
 		title:'June'
 	},
 	{
-		value :240,
-		color:gradientColor,gradientColors :["#333 0%","#333 55%","rgba(141,68,173,1) 75%","rgba(141,68,173,1) 90%","rgba(141,68,173,1) 100%",],
+		data : [240], 
+		fillColor:gradientColor,
+		gradientColors :["#333 0%","#333 55%","rgba(141,68,173,1) 75%","rgba(141,68,173,1) 90%","rgba(141,68,173,1) 100%",],
 		title:'July'
 	},
 	{
-		value :265,
-		color:gradientColor,
+		data : [265], 
+		fillColor:gradientColor,
 		gradientColors :["#333 0%","#333 55%","rgba(133,82,133,1) 75%","rgba(133,82,133,1) 90%","rgba(133,82,133,1) 100%",],
 		title:'January'
 	},
 	{
-		value :208,
-		color:gradientColor,
+		data : [208], 
+		fillColor:gradientColor,
 		gradientColors :["#333 0%","#333 55%","rgba(176,196,167,0.5) 75%","rgba(176,196,167,0.5) 90%","rgba(176,196,167,0.5) 100%",],
 		title:'February'
 	},
 	{
-		value :290,
-		color:gradientColor,
+		data : [290], 
+		fillColor:gradientColor,
 		gradientColors :["#333 0%","#333 55%","rgba(83,21,119,0.3) 75%","rgba(83,21,119,0.3) 90%","rgba(83,21,119,0.3) 100%",],
 		title:'March'
 	},
 	{
-		value :281,
-		color:gradientColor,
+		data : [281], 
+		fillColor:gradientColor,
 		gradientColors :["#333 0%","#333 55%","rgba(205,251,187,0.7) 75%","rgba(205,251,187,0.7) 90%","rgba(205,251,187,0.7) 100%",],
 		title:'April'
 		}
-];
+]
+};
+
+
 
 var opts_mydata2_gradient= {
 	canvasBackgroundColor:'rgba(255,255,255,1.00)',
@@ -1035,13 +1044,21 @@ var opts_mydata2_gradient= {
 
 //**************************************************
 
-
-var doughnut_text_in_center = [
-	{
-		value : 70,
-		color: "rgba(151,187,205,1)",
-		title : "Acquired",
-		shapesInChart : [
+var doughnut_text_in_center = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [70], 
+      fillColor : "rgba(151,187,205,1)", 
+      title : "Acquired",
+           }, 
+           { 
+      data : [30], 
+      fillColor : "rgba(220,220,220,1)", 
+      title : "Not Acquired"
+           } 
+],
+shapesInChart : [
 			{
 				position : "RELATIVE",
 				shape : "TEXT",
@@ -1054,17 +1071,12 @@ var doughnut_text_in_center = [
 				fontSize : 50
 			}
 		]
+};
 
-	},
-	{
-		value : 30,
-		color: "rgba(220,220,220,1)",
-		title : "Not Acquired"
-	}
-] ;
+
 
 function dispPct_Doughnut(numtxt,valtxt,ctx,config,posX,posY,borderX,borderY,overlay,data,animPC){
-        return("Result :\n"+Math.round(animPC*data[0].value)+"%");
+        return("Result :\n"+Math.round(animPC*data.datasets[0].data[0])+"%");
 } ;
 
 var opts_doughnut_text_in_center = {

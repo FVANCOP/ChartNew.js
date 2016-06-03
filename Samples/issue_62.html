@@ -11,12 +11,43 @@
   <body>
   <canvas id="mycanvas" height="600" width="1000"></canvas>
   <script>
-var DoughnutData = [
-{
-    value : 30,
-    color: "#D97041",
-    title : "January",
-    shapesInChart : [
+
+
+var DoughnutData = {
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [30], 
+      fillColor : "#D97041", 
+      title : "January" 
+           }, 
+           { 
+      data : [90], 
+      fillColor : "#C7604C", 
+      title : "February"
+           }, 
+           { 
+      data : [24], 
+      fillColor : "#21323D", 
+      title : "March"
+           }, 
+           { 
+      data : [58], 
+      fillColor : "#9D9B7F", 
+      title : "April"
+           }, 
+           { 
+      data : [82], 
+      fillColor : "#7D4F6D", 
+      title : "May"
+           }, 
+           { 
+      data : [8], 
+      fillColor : "#584A5E", 
+      title : "June"
+           } 
+], 
+shapesInChart : [
 			{
 				position : "RELATIVE",
 				shape : "TEXT",
@@ -29,34 +60,8 @@ var DoughnutData = [
 				fontSize : 50
 			}
 		]
+};
 
-},
-{
-    value : 90,
-    color: "#C7604C",
-    title : "February"
-},
-{
-    value : 24,
-    color: "#21323D",
-    title : "March"
-},
-{
-    value : 58,
-    color: "#9D9B7F",
-    title : "April"
-},
-{
-    value : 82,
-    color: "#7D4F6D",
-    title : "May"
-},
-{
-    value : 8,
-    color: "#584A5E",
-    title : "June"
-}
-]
 
 var opts= {legend : true,
 //   crossText : ["text\nin\ncenter"],
