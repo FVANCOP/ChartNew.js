@@ -2271,6 +2271,12 @@ window.Chart = function(context) {
         		if(config.responsive && !config.multiGraph) {
 				addResponsiveChart(ctx.ChartNewId,ctx,data,config);
 			}
+			if(typeof data.labels == "undefined")data.labels=[];
+			if (data.labels.length==0) {
+				var mxlgt = 0;
+				for (i = 0; i < data.datasets.length; i++) {mxlgt = Max([mxlgt, data.datasets[i].data.length]);}
+		                for (i=0;i<mxlgt;i++)data.labels[i]="";
+			}
 		} 
 
 		if (typeof ctx.ChartNewId == "undefined") {
