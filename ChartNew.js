@@ -644,17 +644,17 @@ function sleep(ms) {
 
 function saveCanvas(ctx, data, config) {
 	cvSave = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-	var saveCanvasConfig = {
+	var saveCanvasConfig1 = {
 		savePng: false,
 		annotateDisplay: false,
 		animation: false,
 		dynamicDisplay: false
 	};
-	var savePngConfig = mergeChartConfig(config, saveCanvasConfig);
-	savePngConfig.clearRect = false;
+	savePngConfig1 = mergeChartConfig(config, saveCanvasConfig1);
+	savePngConfig1.clearRect = false;
 	/* And ink them */
 
-	redrawGraph(ctx,data,savePngConfig);
+	redrawGraph(ctx,data,savePngConfig1);
 	var image;
 	if (config.savePngOutput == "NewWindow") {
 		image = ctx.canvas.toDataURL();
@@ -2031,6 +2031,8 @@ window.Chart = function(context) {
 		fmtV11: "none",
 		fmtV12: "none",
 		fmtV13: "none",
+		fmtV14: "none",
+		fmtV15: "none",
 		fmtXLabel: "none",
 		fmtYLabel: "none",
 		fmtYLabel2: "none",
@@ -6700,14 +6702,14 @@ window.Chart = function(context) {
 		// ----------------------------------------------------		
                 // highLight : false, 	highLightMouseFunction : "mousemove",
 		// ----------------------------------------------------		
-		// - mouse sortir ou entrer dans une pièce => Pas d'influence sur une action de souris. C'est lié à l'action de annotateFunction
+		// - mouse sortir ou entrer dans une piÃ¨ce => Pas d'influence sur une action de souris. C'est liÃ© Ã  l'action de annotateFunction
 		//      	annotateFunctionIn : inBar,
       		//		annotateFunctionOut : outBar,
 		// ----------------------------------------------------		
 		// - mouseDownRight	mouseDownLeft: null  mouseDownMiddle: null  
 		// - mouseMove: null 	mouseWheel : null    mouseOut: null (lorsque la souris sort du canvas) 	
 		// ----------------------------------------------------		
-		//  mouse sur texte : detectMouseOnText => Pas d'influence sur une action de souris. C'est lié à une autre action;
+		//  mouse sur texte : detectMouseOnText => Pas d'influence sur une action de souris. C'est liÃ© Ã  une autre action;
 		// ----------------------------------------------------		
 
 		function setAction(ctx,action){
@@ -6802,7 +6804,7 @@ window.Chart = function(context) {
 			};
 		}
 		
-		// initialiser les variables nécessaires pour l'action doMouseAction;
+		// initialiser les variables nÃ©cessaires pour l'action doMouseAction;
                 inMouseAction[ctx.ChartNewId]=false;
 		mouseActionData[ctx.ChartNewId]={ data : data, config: config, prevShow : -1 };
 	};
@@ -7308,6 +7310,9 @@ var startRadius,stopRadius;
 								v10 : 0,
 								v11: fmtChartJS(config, i, config.fmtV11),
 								v12: fmtChartJS(config, j, config.fmtV12),
+								v13 : fmtChartJS(config, segmentAngle, config.fmtV13),
+								v14 : fmtChartJS(config, McumulativeAngle[j] , config.fmtV14),
+								v15 : fmtChartJS(config, McumulativeAngle[j] + segmentAngle, config.fmtV15),
 								lgtxt: lgtxt,
 								lgtxt2: lgtxt2,
 								datavalue: 1 * data.datasets[i].data[j],
