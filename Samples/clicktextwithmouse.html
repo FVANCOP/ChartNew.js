@@ -49,12 +49,23 @@ var mydata1 = {
 
 }
 
-var mydata4 = [
-	{
-		value : 70,
-		color: "rgba(151,187,205,1)",
-		title : "data1",
-		shapesInChart : [
+
+
+var mydata4 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [70], 
+      fillColor : "rgba(151,187,205,1)", 
+      title : "data1" 
+           }, 
+           { 
+      data : [30], 
+      fillColor : "rgba(220,220,220,1)", 
+      title : "data2"
+           } 
+], 
+shapesInChart : [
 			{
 				position : "RELATIVE",
 				shape : "TEXT",
@@ -68,13 +79,8 @@ var mydata4 = [
 				fontSize : 15,
 			}
 		]
-	},
-	{
-		value : 30,
-		color: "rgba(220,220,220,1)",
-    title : "data2"
-	}
-]
+};
+
 
 function displayText(event,ctx,config,data,other)
 {
@@ -95,15 +101,9 @@ function displayText(event,ctx,config,data,other)
 				text=text+"\nCrossText : "+config.crossText[other.values[7]];
 				break;
 			case "INGRAPHDATA_TEXTMOUSE":
-				if(ctx.tpdata==0){
-					text=text+"\nText Id : ("+other.values[7]+","+other.values[8]+")";
-					text=text+"\nData Value : "+data.datasets[other.values[7]].data[other.values[8]];
-					text=text+"\nData associated to : "+data.labels[other.values[8]]+data.datasets[other.values[7]].title;
-				} else if(ctx.tpdata==1) {
-					text=text+"\nText Id : "+other.values[7];
-					text=text+"\nData Value : "+data[other.values[7]].value;
-					text=text+"\nData associated to : "+data[other.values[7]].title;
-				}
+				text=text+"\nText Id : ("+other.values[7]+","+other.values[8]+")";
+				text=text+"\nData Value : "+data.datasets[other.values[7]].data[other.values[8]];
+				text=text+"\nData associated to : "+data.labels[other.values[8]]+data.datasets[other.values[7]].title;
 				break;
 			case "YLEFTAXIS_TEXTMOUSE" :
 				text=text+"\nLabel Id : "+other.values[8];
@@ -124,12 +124,7 @@ function displayText(event,ctx,config,data,other)
 				break;
 			case "LEGEND_TEXTMOUSE" :
 				text=text+"\nLegend Id : "+other.values[7];
-				if(ctx.tpdata==0){
-					text=text+"\nData associated to : "+data.datasets[other.values[7]].title;
-				} else if(ctx.tpdata==1) {
-					text=text+"\nData Value : "+data[other.values[7]].value;
-					text=text+"\nData associated to : "+data[other.values[7]].title;
-				}
+				text=text+"\nData associated to : "+data.datasets[other.values[7]].title;
 				break;
 			default: break;
 		};

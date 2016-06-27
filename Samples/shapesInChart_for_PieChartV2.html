@@ -16,54 +16,56 @@ var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator
 defCanvasWidth=1200;
 defCanvasHeight=600;
 
-
-var mydata1 = [
-	{
-		value : 0,
-		color: "rgba(220,0,220,0.2)",
-		title : "data1"
-	},
-	{
-		value : 30,
-		color: "rgba(220,0,220,0.2)",
-		title : "data2"
-	},
-	{
-		value : 90,
-		color: "rgba(0,0,220,0.2)",
-    		title : "data3"
-	},
-	{
-		value : 0,
-		color: "rgba(220,0,220,0.2)",
-		title : "data4"
-	},
-	{
-		value : 0,
-		color: "rgba(220,0,220,0.2)",
-		title : "data5"
-	},
-	{
-		value : 24,
-		color: "rgba(220,0,0,0.2)",
-    		title : "data6"
-	},
-	{
-		value : 58,
-		color: "rgba(0,220,220,0.2)",
-    		title : "data7"
-	},
-	{
-		value : 82,
-		color: "rgba(0,220,0,0.2)",
-    		title : "data8"
-	},
-	{
-		value : 8,
-		color: "rgba(50,100,150,0.2)",
-    		title : "data9"
-	}
-];
+var mydata1 = { 
+     labels : ["2015","2016"], 
+     datasets : [ 
+           { 
+      data : [0,30], 
+      fillColor : "rgba(220,0,220,0.2)", 
+      title : "data1", 
+           }, 
+           { 
+      data : [30,90], 
+      fillColor : "rgba(220,0,220,0.2)", 
+      title : "data2", 
+           }, 
+           { 
+      data : [90,0], 
+      fillColor : "rgba(0,0,220,0.2)", 
+      title : "data3", 
+           }, 
+           { 
+      data : [0,0], 
+      fillColor : "rgba(220,0,220,0.2)", 
+      title : "data4", 
+           }, 
+           { 
+      data : [0,24], 
+      fillColor : "rgba(220,0,220,0.2)", 
+      title : "data5", 
+           }, 
+           { 
+      data : [24,58], 
+      fillColor : "rgba(220,0,0,0.2)", 
+      title : "data6", 
+           }, 
+           { 
+      data : [58,82], 
+      fillColor : "rgba(0,220,220,0.2)", 
+      title : "data7", 
+           }, 
+           { 
+      data : [82,8], 
+      fillColor : "rgba(0,220,0,0.2)", 
+      title : "data8", 
+           }, 
+           { 
+      data : [8,2], 
+      fillColor : "rgba(50,100,150,0.2)", 
+      title : "data9", 
+           } 
+] 
+};
 
 
 var opt1 = {

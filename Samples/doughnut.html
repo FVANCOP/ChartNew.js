@@ -6,7 +6,7 @@
 
 function setColor(area,ctx,data,statdata,i,j,othervars)
 {
-	return(data[i].color);
+	return(data.datasets[i].fillColor);
 }
 
 var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
@@ -14,34 +14,68 @@ var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator
 defCanvasWidth=800;
 defCanvasHeight=650;
 
-var mydata2 = [
-	{
-		value : 7,
-		color: "blue",
-    		title : "Sektorius 1"
-	},
-	{
-		value : 20,
-		color: "orange",
-    		title : "Sektorius 2"
-	},
-	{
-		value : 11,
-		color: "green",
-    		title : "Sektorius 3"
-	},
-	{
-		value : 17,
-		color: "magenta",
-    		title : "Sektorius 4"
-	},
-	{
-		value : 30,
-		color: "red",
-    		title : "Sektorius 5"
-	}
-];
+var mydata1 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [7], 
+      fillColor : "blue", 
+      title : "Sektorius 1"
+           }, 
+           { 
+      data : [20], 
+      fillColor : "orange", 
+      title : "Sektorius 2"
+           }, 
+           { 
+      data : [11], 
+      fillColor : "green", 
+      title : "Sektorius 3"
+           }, 
+           { 
+      data : [17], 
+      fillColor : "magenta", 
+      title : "Sektorius 4"
+           }, 
+           { 
+      data : [30], 
+      fillColor : "red", 
+      title : "Sektorius 5"
+           } 
+]
+};
 
+
+var mydata2 = { 
+     labels : ["2015","2016"], 
+     datasets : [ 
+           { 
+      data : [7,14], 
+      fillColor : "blue", 
+      title : "Sektorius 1"
+           }, 
+           { 
+      data : [20,90], 
+      fillColor : "orange", 
+      title : "Sektorius 2"
+           }, 
+           { 
+      data : [,18], 
+      fillColor : "green", 
+      title : "Sektorius 3"
+           }, 
+           { 
+      data : [13,], 
+      fillColor : "magenta", 
+      title : "Sektorius 4"
+           }, 
+           { 
+      data : [,30], 
+      fillColor : "red", 
+      title : "Sektorius 5"
+           } 
+]
+};
 
 var startWithDataset =1;
 var startWithData =1;
@@ -82,6 +116,23 @@ var opt2 = {
 
 }
 
+var opt3 = {
+      inGraphDataAlign : ["to-center","off-center"],
+      inGraphDataRadiusPosition : [1,3],
+      inGraphDataVAlign : ["to-center","off-center"],
+      inGraphDataPaddingRadius : [-3,0],
+      animation : false,
+      canvasBorders : true,
+      inGraphDataShow : true,
+      legend : true,
+      startAngle : -180,
+      inGraphDataTmpl: "<%=v6+' %('+v2+')'%>",
+      percentageInnerCutout : 90,
+      inGraphDataFontSize: 25,
+      inGraphDataFontColor : setColor,
+      annotateDisplay : true,
+      canvasBackgroundColor: "#EFF5FB"
+}
 
 </SCRIPT>
 
@@ -99,10 +150,12 @@ var opt2 = {
 
     document.write("<canvas id=\"canvas_Doughnut1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
     document.write("<canvas id=\"canvas_Doughnut2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Doughnut3\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
 
 window.onload = function() {
-    var myDoughnut = new Chart(document.getElementById("canvas_Doughnut1").getContext("2d")).Doughnut(mydata2,opt1);
-    var myDoughnut = new Chart(document.getElementById("canvas_Doughnut2").getContext("2d")).Doughnut(mydata2,opt2);
+    var myDoughnut = new Chart(document.getElementById("canvas_Doughnut1").getContext("2d")).Doughnut(mydata1,opt1);
+    var myDoughnut = new Chart(document.getElementById("canvas_Doughnut2").getContext("2d")).Doughnut(mydata1,opt2);
+    var myDoughnut = new Chart(document.getElementById("canvas_Doughnut3").getContext("2d")).Doughnut(mydata2,opt3);
 	}
 
     </script>

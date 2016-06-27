@@ -42,76 +42,105 @@ var mydata1 = {
 		}
 	]
 } ;
-var mydata2 = [
-	{
-		value : 30,
-		color: "#D97041",
-		title : "data1",
-		myInGraphData : "smiley_small.gif"
-	},
-	{
-		value : 90,
-		color: "#C7604C",
-    		title : "data2",
-    		myInGraphData : "90 (max)"
-	},
-	{
-		value : 24,
-		color: "#21323D",
-    		title : "data3"
-	},
-	{
-		value : 58,
-		color: "#9D9B7F",
-    		title : "data4",
-		myInGraphData : "smiley_big.gif"
-	},
-	{
-		value : 82,
-		color: "#7D4F6D",
-    		title : "data5"
-	},
-	{
-		value : 8,
-		color: "#584A5E",
-    		title : "data6",  
-    		myInGraphData : "8 (min)"
-	}
-];
-    
+var mydata2 = { 
+     labels : ["2014","2015","2016"], 
+     datasets : [ 
+           { 
+      data : [30,15,14], 
+      fillColor : "#D97041", 
+      title : "data1",
+      myInGraphData : [,"smiley_small.gif",undefined]
+           }, 
+           { 
+      data : [90,,25], 
+      fillColor : "#C7604C", 
+      title : "data2",
+     myInGraphData : ["90 (max)",,"25 max"],
+           }, 
+           { 
+      data : [24,10], 
+      fillColor : "#21323D", 
+      title : "data3"
+           }, 
+           { 
+      data : [58], 
+      fillColor : "#9D9B7F", 
+      title : "data4",
+      myInGraphData : "smiley_big.gif"
+           }, 
+           { 
+      data : [,82,17], 
+      fillColor : "#7D4F6D", 
+      title : "data5"
+           }, 
+           { 
+      data : [,8,], 
+      fillColor : "#584A5E", 
+      title : "data6",
+     myInGraphData : "8 (min)"
+           } 
+]
+};
 
 
-mydata2[0].shapesInChart=[];
 var cntshapes=0;
 var paddingval=3;
 var spaceval=0.05;
 
-var tot=0;
-for(var i=0;i<mydata2.length;i++) {
-	tot+=1*mydata2[i].value;
+//var tot=0;
+//for(var i=0;i<mydata2.datasets.length;i++) {
+//	tot+=1*mydata2.datasets[i].data[0];
+//}
+
+var tot=[];
+for(var i=0;i<mydata2.datasets.length;i++) {
+	for(j=0;j<mydata2.labels.length;j++) {
+		if(i==0)tot[j]=0;
+		if((1*mydata2.datasets[i].data[j])>0)tot[j]+=1*mydata2.datasets[i].data[j];
+	}
 }
-var startAngle=90;
+
+var startAngle;
 var align, baseline;
 
-for(var i=0;i<mydata2.length;i++) {
-	startAngle-= 180*((1*mydata2[i].value)/tot);
-	if (startAngle==90 || startAngle==-90 || startAngle==-270)align="center";
-	else if (startAngle < -90)align="right";
-	else align="left"
-	if (startAngle==0 || startAngle==-180)baseline="middle";
-	else if (startAngle <0 && startAngle > -180)baseline="top";
-	else baseline="bottom";
-	startAngle-= 180*((1*mydata2[i].value)/tot);
-	if(typeof mydata2[i].myInGraphData == "string") {
-			if(mydata2[i].myInGraphData.toUpperCase().indexOf(".JPG")>=0 || mydata2[i].myInGraphData.toUpperCase().indexOf(".GIF")>=0) {
-				mydata2[0].shapesInChart[cntshapes] = {
+mydata2.shapesInChart=[];
+
+//for(j=0;j<1;j++)
+var objectToDraw;
+
+for(j=0;j<mydata2.labels.length;j++)
+{
+	startAngle=90;
+	for(var i=0;i<mydata2.datasets.length;i++) {
+		if(!((1*mydata2.datasets[i].data[j])>0))continue;
+		
+		
+		startAngle-= 180*((1*mydata2.datasets[i].data[j])/tot[j]);
+
+		if (startAngle==90 || startAngle==-90 || startAngle==-270)align="center";
+		else if (startAngle < -90)align="right";
+		else align="left"
+		if (startAngle==0 || startAngle==-180)baseline="middle";
+		else if (startAngle <0 && startAngle > -180)baseline="top";
+		else baseline="bottom";
+		startAngle-= 180*((1*mydata2.datasets[i].data[j])/tot[j]);
+		
+		if(typeof mydata2.datasets[i].myInGraphData=="object") {
+			objectToDraw=mydata2.datasets[i].myInGraphData[Math.min(j,mydata2.datasets[i].myInGraphData.length-1)];
+		}else if(typeof mydata2.datasets[i].myInGraphData!="undefined")objectToDraw=mydata2.datasets[i].myInGraphData;
+		else objectToDraw=undefined;
+		
+		if(typeof objectToDraw == "string") {
+			if(objectToDraw.toUpperCase().indexOf(".JPG")>=0 || objectToDraw.toUpperCase().indexOf(".GIF")>=0) {
+				mydata2.shapesInChart[cntshapes] = {
 				position : "INCHART",
 				shape: "IMAGE",
-				imagesrc : "" + mydata2[i].myInGraphData,
+				imagesrc : "" + objectToDraw,
 				x1:  i,
-				y1:  1+spaceval,
+				y1:  1,
+				posj : j,
 				paddingX1 : 0,
-				paddingY1 : 0,
+				paddingY1 : +10,
 				imageAlign : align,
 				imageBaseline : baseline,
 				imageWidth : 50,
@@ -119,12 +148,13 @@ for(var i=0;i<mydata2.length;i++) {
 				iter : "last"
 				};
 			} else {
-				mydata2[0].shapesInChart[cntshapes] = {
+				mydata2.shapesInChart[cntshapes] = {
 				position : "INCHART",
 				shape: "Text",
-				text : "" + mydata2[i].myInGraphData,
+				text : "" + objectToDraw,
 				x1:  i,
 				y1:  1+spaceval,
+				posj : j,
 				paddingX1 : 0,
 				paddingY1 : 0,
 				textAlign : align,
@@ -138,13 +168,14 @@ for(var i=0;i<mydata2.length;i++) {
 			}
 			cntshapes++;
 			
-		} else if(typeof mydata2[i].value != "undefined") {
-			mydata2[0].shapesInChart[cntshapes] = {
+		} else if(typeof mydata2.datasets[i].data[j] != "undefined") {
+			mydata2.shapesInChart[cntshapes] = {
 			position : "INCHART",
 			shape: "Text",
-			text : "" + mydata2[i].value,
+			text : "" + mydata2.datasets[i].data[j],
 			x1:  i,
 			y1:  1+spaceval,
+			posj : j,
 			paddingX1 : 0,
 			paddingY1 : 0,
 			textAlign : align,
@@ -159,8 +190,8 @@ for(var i=0;i<mydata2.length;i++) {
 			
 		}	
 	
+	}
 }
-
 var startWithDataset =1;
 var startWithData =1;
 

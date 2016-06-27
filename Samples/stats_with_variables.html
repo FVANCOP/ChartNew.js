@@ -1,51 +1,55 @@
-<!doctype html>
+    <!doctype html>
   
   <SCRIPT src='../ChartNew.js'></script>
   <SCRIPT src='../Add-ins/stats.js'></script>
+  <SCRIPT src='../Add-ins/shapesInChart.js'></script>
   
   <SCRIPT>
   
   defCanvasWidth=850;
   defCanvasHeight=600;
   
-  var mydata1 = [
-        {
-  		value : 30,
-  		color: "#D97041",
-                title : "data1 #variable_data[0].value#",
-  	},
-  	{
-  		value : 90,
-  		color: "#C7604C",
-                title : "data2 #variable_data[1].value#"
-  	},
-  	{
-  		value : 24,
-  		color: "#21323D",
-                title : "data3 #variable_data[2].value#"
-  	},
-  	{
-  		value : 58,
-  		color: "#9D9B7F",
-                title : "data4 #variable_data[3].value#"
-  	},
-  	{
-  		value : 82,
-  		color: "#7D4F6D",
-                title : "data5 #variable_data[4].value#"
-  	},
-  	{
-  		value : 8,
-  		color: "#584A5E",
-                title : "data6 #variable_data[5].value#"
-  	}
-  ];
+  var mydata1 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [30], 
+      fillColor : "#D97041", 
+      title : "data1 #variable_mydata1.datasets[0].data[0]#" 
+           }, 
+           { 
+      data : [90], 
+      fillColor : "#C7604C", 
+      title : "data2 #variable_mydata1.datasets[1].data[0]#"
+           }, 
+           { 
+      data : [24], 
+      fillColor : "#21323D", 
+      title : "data3 #variable_mydata1.datasets[2].data[0]#"
+           }, 
+           { 
+      data : [58], 
+      fillColor : "#9D9B7F", 
+      title : "data4 #variable_mydata1.datasets[3].data[0]#"
+           }, 
+           { 
+      data : [82], 
+      fillColor : "#7D4F6D", 
+      title : "data5 #variable_mydata1.datasets[4].data[0]#"
+           }, 
+           { 
+      data : [8], 
+      fillColor : "#584A5E", 
+      title : "data6 #variable_mydata1.datasets[5].data[0]#"
+           } 
+] 
+};
   
   
   var conf = {
       canvasBorders : true,
       inGraphDataShow : true,
-      inGraphDataTmpl: "<%=v2%>",
+      inGraphDataTmpl: "<%=v3%>",
       legend : true,
       legendFontSize : 25,
       legendPosX : 3,

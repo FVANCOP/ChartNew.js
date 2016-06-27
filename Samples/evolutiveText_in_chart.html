@@ -12,13 +12,21 @@
 defCanvasWidth=1200;
 defCanvasHeight=600;
 
-
-var mydata3 = [
-	{
-		value : 70,
-		color: "rgba(151,187,205,1)",
-		title : "data1",
-		shapesInChart : [
+var mydata3 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [70], 
+      fillColor : "rgba(151,187,205,1)", 
+      title : "data1"
+           }, 
+           { 
+      data : [30], 
+      fillColor : "rgba(220,220,220,1)", 
+      title : "data1"
+           } 
+],
+shapesInChart : [
 			{
 				position : "RELATIVE",
 				shape : "TEXT",
@@ -31,21 +39,23 @@ var mydata3 = [
 				fontSize : 50
 			}
 		]
+}; 
 
-	},
-	{
-		value : 30,
-		color: "rgba(220,220,220,1)",
-		title : "data1"
-	}
-]
-
-var mydata4 = [
-	{
-		value : 70,
-		color: "rgba(151,187,205,1)",
-		title : "data1",
-		shapesInChart : [
+var mydata4 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [70], 
+      fillColor : "rgba(151,187,205,1)", 
+      title : "data1"
+           }, 
+           { 
+      data : [30], 
+      fillColor : "rgba(220,220,220,1)", 
+      title : "data1"
+           } 
+],
+shapesInChart : [
 			{
 				position : "RELATIVE",
 				shape : "TEXT",
@@ -58,14 +68,37 @@ var mydata4 = [
 				fontSize : 50
 			}
 		]
+};
 
-	},
-	{
-		value : 30,
-		color: "rgba(220,220,220,1)",
-		title : "data1"
-	}
-]
+
+var mydata5 = { 
+     labels : ["2015","2016"], 
+     datasets : [ 
+           { 
+      data : [70,100], 
+      fillColor : "rgba(151,187,205,1)", 
+      title : "data1"
+           }, 
+           { 
+      data : [30,50], 
+      fillColor : "rgba(220,220,220,1)", 
+      title : "data1"
+           } 
+],
+shapesInChart : [
+			{
+				position : "RELATIVE",
+				shape : "TEXT",
+				text : dispPct3,
+				x1 : 2,
+				y1 : 2,
+				textAlign : "center",
+				textBaseline : "middle",
+				fontColor : "black", 
+				fontSize : 35
+			}
+		]
+};
 
 
 
@@ -94,8 +127,20 @@ var crosstxt3 = {
 }
 
 function dispPct2(numtxt,valtxt,ctx,config,posX,posY,borderX,borderY,overlay,data,animPC){
-        return(Math.round(animPC*data[0].value));
+        return(Math.round(animPC*data.datasets[0].data[0]));
 } 
+
+function dispPct3(numtxt,valtxt,ctx,config,posX,posY,borderX,borderY,overlay,data,animPC){
+	var result;
+	var pct;
+	result="";
+	for(var i=0;i<data.datasets.length;i++){
+		pct=Math.round(100*animPC*data.datasets[0].data[i]/(data.datasets[0].data[i]+data.datasets[1].data[i]));
+	        result=result+"\n"+data.labels[i]+" : "+pct+" %";
+	}
+        return(result.substring(1));
+} 
+
 
 var crosstxt4 = {
 	animationEasing : "linear",
@@ -117,6 +162,29 @@ var crosstxt4 = {
 }
 
 
+var crosstxt5 = {
+	animationEasing : "linear",
+	endDrawDataFunction: drawShapes,
+	canvasBorders : true,
+	canvasBordersWidth : 3,
+	canvasBordersColor : "black",
+	graphTitle : "Draw text through the graph",
+	graphTitleFontFamily : "'Arial'",
+	graphTitleFontSize : 24,
+	graphTitleFontStyle : "bold",
+	graphTitleFontColor : "#666",
+        inGraphDataShow : true,
+        inGraphDataFontSize : 30,
+        inGraphDataFontStyle : "bold",
+        inGraphDataPaddingRadius : -10,
+	spaceTop : 30,
+	spaceBottom : 30,
+	spaceLeft : 30,
+	spaceRight : 30,
+	startAngle : 180,  
+	dynamicDisplay : true                
+}
+
 
 </SCRIPT>
 
@@ -137,12 +205,14 @@ var crosstxt4 = {
     
       document.write("<canvas id=\"canvas_doughnut2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
       document.write("<canvas id=\"canvas_doughnut3\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_doughnut4\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
     
 
 window.onload = function() {
 
     var myLine = new Chart(document.getElementById("canvas_doughnut2").getContext("2d")).Doughnut(mydata3,crosstxt3);
     var myLine = new Chart(document.getElementById("canvas_doughnut3").getContext("2d")).Doughnut(mydata4,crosstxt4);
+    var myLine = new Chart(document.getElementById("canvas_doughnut4").getContext("2d")).Doughnut(mydata5,crosstxt5);
 
 }
 

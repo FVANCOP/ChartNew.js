@@ -22,42 +22,86 @@ defCanvasWidth=1200;
 defCanvasHeight=600;
 
 
-var mydata1 = [
-	{
-		value : 40,
-		color: "rgba(220,0,220,0.2)",
-		title : "data1"
-	},
-	{
-		value : 80,
-		color: "rgba(0,0,220,0.2)",
-    		title : "data2" ,
-    		fontStyle : "bold",
-    		fontSize : 35,
-    		expandInRadius : 0.1,
-    		expandOutRadius : 0.1
-	},
-	{
-		value : 24,
-		color: "rgba(220,0,0,0.2)",
-    		title : "data3"
-	},
-	{
-		value : 58,
-		color: "rgba(0,220,220,0.2)",
-    		title : "data4"
-	},
-	{
-		value : 50,
-		color: "rgba(0,220,0,0.2)",
-    		title : "data5"
-	},
-	{
-		value : 0,
-		color: "rgba(50,100,150,0.2)",
-    		title : "data7"
-	}
-];
+var mydata1 = { 
+     labels : ["2015","2016"], 
+     datasets : [ 
+           { 
+      data : [40,10], 
+      fillColor : "rgba(220,0,220,0.2)", 
+      title : "data1" 
+           }, 
+           { 
+      data : [80,25], 
+      fillColor : "rgba(0,0,220,0.2)", 
+      title : "data2", 
+      fontStyle :   "bold", 
+      fontSize : [35,15], 
+      expandOutRadius : 0.1, 
+      expandInRadius : 0.1
+           }, 
+           { 
+      data : [24,5], 
+      fillColor : "rgba(220,0,0,0.2)", 
+      title : "data3"
+           }, 
+           { 
+      data : [58,30], 
+      fillColor : "rgba(0,220,220,0.2)", 
+      title : "data4", 
+           }, 
+           { 
+      data : [50], 
+      fillColor : "rgba(0,220,0,0.2)", 
+      title : "data5", 
+           }, 
+           { 
+      data : [,0], 
+      fillColor : "rgba(50,100,150,0.2)", 
+      title : "data7", 
+           } 
+]
+};
+
+var mydata1S = { 
+     labels : ["2015"], 
+     datasets : [ 
+           { 
+      data : [40], 
+      fillColor : "rgba(220,0,220,0.2)", 
+      title : "data1" 
+           }, 
+           { 
+      data : [80], 
+      fillColor : "rgba(0,0,220,0.2)", 
+      title : "data2", 
+      fontStyle :   "bold", 
+      fontSize : 35, 
+      expandOutRadius : 0.1, 
+      expandInRadius : 0.1
+           }, 
+           { 
+      data : [24], 
+      fillColor : "rgba(220,0,0,0.2)", 
+      title : "data3"
+           }, 
+           { 
+      data : [58], 
+      fillColor : "rgba(0,220,220,0.2)", 
+      title : "data4", 
+           }, 
+           { 
+      data : [50], 
+      fillColor : "rgba(0,220,0,0.2)", 
+      title : "data5", 
+           }, 
+           { 
+      data : [0], 
+      fillColor : "rgba(50,100,150,0.2)", 
+      title : "data7", 
+           } 
+]
+};
+
 
 
 var image=new Image();
@@ -73,6 +117,7 @@ var opt1 = {
 };
 
 pushInGraphData("Doughnut",mydata1,opt1,{text: "<Title> (<Value>)", imageLoad : image,imageWidth : 30, imageHeight : 30, avoidOverwrite : true,link : "triangle"});
+pushInGraphData("Doughnut",mydata1S,opt1,{text: "<Title> (<Value>)", imageLoad : image,imageWidth : 30, imageHeight : 30, avoidOverwrite : true,link : "triangle"});
 
 
 
@@ -92,9 +137,11 @@ pushInGraphData("Doughnut",mydata1,opt1,{text: "<Title> (<Value>)", imageLoad : 
 
     <script>
 
-    document.write("<canvas id=\"canvas\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
 window.onload = function() {
-    var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Doughnut(mydata1,opt1);
+    var myLine = new Chart(document.getElementById("canvas1").getContext("2d")).Doughnut(mydata1S,opt1);
+    var myLine = new Chart(document.getElementById("canvas2").getContext("2d")).Doughnut(mydata1,opt1);
 }
     </script>
   </body>

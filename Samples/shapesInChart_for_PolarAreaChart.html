@@ -20,14 +20,41 @@ var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator
 
 defCanvasWidth=1200;
 defCanvasHeight=600;
-
-
-var mydata1 = [
-	{
-		value : 30,
-		color: "rgba(220,0,220,0.2)",
-		title : "data1",
-		shapesInChart : [
+var mydata1 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [30], 
+      fillColor : "rgba(220,0,220,0.2)", 
+      title : "data1" 
+           }, 
+           { 
+      data : [90], 
+      fillColor : "rgba(0,0,220,0.2)", 
+      title : "data2"
+           }, 
+           { 
+      data : [24], 
+      fillColor : "rgba(220,0,0,0.2)", 
+      title : "data3"
+           }, 
+           { 
+      data : [58], 
+      fillColor : "rgba(0,220,220,0.2)", 
+      title : "data4"
+           }, 
+           { 
+      data : [82], 
+      fillColor : "rgba(0,220,0,0.2)", 
+      title : "data5"
+           }, 
+           { 
+      data : [8], 
+      fillColor : "rgba(50,100,150,0.2)", 
+      title : "data6"
+           } 
+],
+shapesInChart : [
 		{
 			position : "INCHART",
 			shape: "CIRCLE",
@@ -148,254 +175,11 @@ var mydata1 = [
 			limitToChart : false,
 			iter : "last"
 		},
-		],
-		shapesInChar : [
-		{
-			position : "INCHART",
-			shape: "TEXT",
-			text : "<%='Mean : '+roundToNumber(#mean#,-2)%>",
-			textAlign : "left",
-			textBaseline : "middle",
-			fontColor : "black", 
-			fontStyle : "italic",
-			animate : false,
-			x1: "<%=#COUNT_ALL#%>",
-			iter : "first",
-			y1: "<%=#mean#%>",
-			paddingX1 : 20, 
-			paddingY1 : 0
-		},
-		{
-			position : "INCHART",
-			shape: "TEXT",
-			text : "<%='Mean+St.Dev:\n'+roundToNumber(#mean#+#standard_deviation#,-2)%>",
-			textAlign : "left",
-			textBaseline : "middle",
-			fontColor : "black", 
-			fontStyle : "italic",
-			animate : false,
-			x1: "<%=#COUNT_ALL#%>",
-			iter : "first",
-			y1: "<%=#mean#+#standard_deviation#%>",
-			paddingX1 : 20, 
-			paddingY1 : 0
-		},
-		{
-			position : "INCHART",
-			shape: "TEXT",
-			text : "<%='Mean-St.Dev.:\n'+roundToNumber(#mean#-#standard_deviation#,-2)%>",
-			textAlign : "left",
-			textBaseline : "middle",
-			fontColor : "black", 
-			fontStyle : "italic",
-			animate : false,
-			x1: "<%=#COUNT_ALL#%>",
-			iter : "first",
-			y1: "<%=#mean#-#standard_deviation#%>",
-			paddingX1 : 20, 
-			paddingY1 : 0
-		},
-		{
-			position : "INCHART",
-			shape: "TEXT",
-			text : "Min.",
-			textAlign : "left",
-			textBaseline : "bottom",
-			fontColor : "black", 
-			fontSize : 18,
-			animate : false,
-			x1: "<%=#MINIMUMPJ#%>", 
-			y1 : "<%=#MINIMUM#%>",
-			rotate : -45,
-			paddingX1 : -50,
-			paddingY1 : +50,
-			iter : "last"
-		},
-		{
-			position : "INCHART",
-			shape: "TEXT",
-			text : "All lines",
-			textAlign : "left",
-			textBaseline : "bottom",
-			fontColor : "black", 
-			fontSize : 18,
-			animate : false,
-			x1: "<%=#MINIMUMPJ#%>", 
-			y1 : "<%=#MINIMUM#%>",
-			rotate : -45,
-			paddingX1 : -50,
-			paddingY1 : +78,
-			iter : "last"
-		},
-		{
-			position : "RELATIVE",
-			shape: "ELLIPSE",
-			ellipseWidth : 500,
-			ellipseHeight : 100,
-			fillColor: "lightblue",
-			strokeColor : "black",
-			animate : false,
-			x1: 2,
-			y1: 3,
-			paddingX1 : 0,
-			paddingY1 : -70
-		},
-		{
-			position : "RELATIVE",
-			shape: "TEXT",
-			text : "Demo ShapesInChart.js",
-			textAlign : "center",
-			textBaseline : "middle",
-			fontColor : "black", 
-			fontSize : 25,
-			animate : false,
-			x1: 2, 
-			y1 : 3,
-			paddingX1 : 0,
-			paddingY1 : -70
-		},
-		{
-			position : "INCHART",
-			shape: "RECTANGLE",
-			fillColor: "lightgreen",
-			strokeColor : "black",
-			animate : false,
-			x1: 0,
-			y1: 999,
-			paddingX1 : 10,
-			paddingY1 : 10,
-			x2: 0,
-			y2: 999 ,
-			paddingX2 : 220,
-			paddingY2 : 70
-		},
-		{
-			position : "INCHART",
-			shape: "REGULARSHAPE",
-			sideCount : 6,
-			strokeColor : "black", 
-			fillColor : "black", 
-			radius : 10, 
-			animate : false,
-			x1: 0, 
-			y1 : 999,
-			paddingX1 : 30,
-			paddingY1 : 25, 
-			iter : "ALL"
-		},
-		{
-			position : "INCHART",
-			shape: "TEXT",
-			text : "Maximum for the line",
-			textAlign : "left",
-			textBaseline : "middle",
-			fontColor : "black", 
-			fontSize : 18,
-			animate : false,
-			x1: 0, 
-			y1 : 999,
-			paddingX1 : 45,
-			paddingY1 : 25
-		},
-		{
-			position : "INCHART",
-			shape: "STAR",
-			lineCount : 3,
-			strokeColor : "black", 
-			animate : false,
-			x1: 0, 
-			y1 : 999,
-			paddingX1 : 30,
-			paddingY1 : 50, 
-			iter : "ALL"
-		},
-		{
-			position : "INCHART",
-			shape: "TEXT",
-			text : "Minimum for the line",
-			textAlign : "left",
-			textBaseline : "middle",
-			fontColor : "black", 
-			fontSize : 18,
-			animate : false,
-			x1: 0, 
-			y1 : 999,
-			paddingX1 : 45,
-			paddingY1 : 50 
-		},
-		{
-			position : "INCHART",
-			shape: "REGULARSHAPE",
-			sideCount : 6,
-			strokeColor : "black", 
-			fillColor : "black", 
-			radius : 10, 
-			animate : false,
-			x1: "<%=#DS_MAXIMUMPJ(0)#%>", 
-			y1 : "<%=#DS_MAXIMUM(0)#%>",
-			iter : "ALL"
-		},
-		{
-			position : "INCHART",
-			shape: "REGULARSHAPE",
-			sideCount : 6,
-			strokeColor : "blue", 
-			fillColor : "blue",
-			radius : 10, 
-			animate : false,
-			x1: "<%=#DS_MAXIMUMPJ(1)#%>", 
-			y1 : "<%=#DS_MAXIMUM(1)#%>",
-			iter : "ALL"
-		},
-		{
-			position : "INCHART",
-			shape: "STAR",
-			lineCount : 3,
-			strokeColor : "black", 
-			animate : false,
-			x1: "<%=#DS_MINIMUMPJ(0)#%>", 
-			y1 : "<%=#DS_MINIMUM(0)#%>",
-			iter : "ALL"
-		},
-		{
-			position : "INCHART",
-			shape: "STAR",
-			lineCount : 3,
-			strokeColor : "blue", 
-			animate : false,
-			x1: "<%=#DS_MINIMUMPJ(1)#%>", 
-			y1 : "<%=#DS_MINIMUM(1)#%>",
-			iter : "ALL"
-		}
-	]
-    
-	},
-	{
-		value : 90,
-		color: "rgba(0,0,220,0.2)",
-    		title : "data2"
-	},
-	{
-		value : 24,
-		color: "rgba(220,0,0,0.2)",
-    		title : "data3"
-	},
-	{
-		value : 58,
-		color: "rgba(0,220,220,0.2)",
-    		title : "data4"
-	},
-	{
-		value : 82,
-		color: "rgba(0,220,0,0.2)",
-    		title : "data5"
-	},
-	{
-		value : 8,
-		color: "rgba(50,100,150,0.2)",
-    		title : "data6"
-	}
-];
+]
+ 
+};
+
+
 
 
 

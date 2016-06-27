@@ -20,54 +20,57 @@ var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator
 defCanvasWidth=1200;
 defCanvasHeight=600;
 
+var mydata1 = { 
+     labels : ["2015","2016"], 
+     datasets : [ 
+           { 
+      data : [0,30], 
+      fillColor : "rgba(220,0,220,0.2)", 
+      title : "data0_1"
+           }, 
+           { 
+      data : [30,90], 
+      fillColor : "rgba(220,0,220,0.2)", 
+      title : "data1"
+           }, 
+           { 
+      data : [90,0], 
+      fillColor : "rgba(0,0,220,0.2)", 
+      title : "data2"
+           }, 
+           { 
+      data : [0,0], 
+      fillColor : "rgba(220,0,220,0.2)", 
+      title : "data0_2"
+           }, 
+           { 
+      data : [0,24], 
+      fillColor : "rgba(220,0,220,0.2)", 
+      title : "data0_3"
+           }, 
+           { 
+      data : [24,58], 
+      fillColor : "rgba(220,0,0,0.2)", 
+      title : "data3"
+           }, 
+           { 
+      data : [58,82], 
+      fillColor : "rgba(0,220,220,0.2)", 
+      title : "data4" 
+           }, 
+           { 
+      data : [82,8], 
+      fillColor : "rgba(0,220,0,0.2)", 
+      title : "data5"
+           }, 
+           { 
+      data : [8,0], 
+      fillColor : "rgba(50,100,150,0.2)", 
+      title : "data6"
+           } 
+] 
+};
 
-var mydata1 = [
-	{
-		value : 0,
-		color: "rgba(220,0,220,0.2)",
-		title : "data0_1"
-	},
-	{
-		value : 30,
-		color: "rgba(220,0,220,0.2)",
-		title : "data1"
-	},
-	{
-		value : 90,
-		color: "rgba(0,0,220,0.2)",
-    		title : "data2"
-	},
-	{
-		value : 0,
-		color: "rgba(220,0,220,0.2)",
-		title : "data0_2"
-	},
-	{
-		value : 0,
-		color: "rgba(220,0,220,0.2)",
-		title : "data0_3"
-	},
-	{
-		value : 24,
-		color: "rgba(220,0,0,0.2)",
-    		title : "data3"
-	},
-	{
-		value : 58,
-		color: "rgba(0,220,220,0.2)",
-    		title : "data4"
-	},
-	{
-		value : 82,
-		color: "rgba(0,220,0,0.2)",
-    		title : "data5"
-	},
-	{
-		value : 8,
-		color: "rgba(50,100,150,0.2)",
-    		title : "data6"
-	}
-];
 
 function myShapeFunction(area, ctx, data,statData, posi,posj,othervars){
 
@@ -111,20 +114,23 @@ function myShapeFunction(area, ctx, data,statData, posi,posj,othervars){
 
 };
 
-mydata1[0].shapesInChart=[];
+mydata1.shapesInChart=[];
+for(j=0;j<mydata1.labels.length;j++)
+{
 var last0=1.1;
-for(i=0;i<mydata1.length;i++){
-		mydata1[0].shapesInChart[i]={
+for(i=0;i<mydata1.datasets.length;i++){
+		mydata1.shapesInChart[i+j*mydata1.datasets.length]={
 			position : "INCHART",
 			shape: myShapeFunction,
 //			shape: "ARROW",
-			text : mydata1[i].title+" ("+mydata1[i].value.toString()+")",
+			text : mydata1.datasets[i].title+" ("+mydata1.datasets[i].data[0].toString()+")",
 			x1:  i,
 			y1: 1,
 			x2: i+0.2,
 			y2 : 1.1,
 			x3: i,
 			y3 : 1.05,
+			posj : j,
 			paddingX2 : 0,
 			paddingY2 : 0,
 			strokeColor : "grey",
@@ -138,10 +144,9 @@ for(i=0;i<mydata1.length;i++){
 			fontFamily : "'Arial'",
 			iter : "last"
 			}
-		if(mydata1[i].value==0){last0=last0+0.1;mydata1[0].shapesInChart[i].y2=last0;mydata1[0].shapesInChart[i].paddingX2=40;}
+		if(mydata1.datasets[i].data[0]==0){last0=last0+0.1;mydata1.shapesInChart[i].y2=last0;mydata1.shapesInChart[i].paddingX2=40;}
 		else last0=1.1;
-			
-
+}
 };
 
 

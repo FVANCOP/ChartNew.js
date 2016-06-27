@@ -33,12 +33,12 @@ function gradientColor(area,ctx,data,statData,posi,posj,othervars) {
 			case "PolarArea" :
 			case "Pie" : 
 			case "Doughnut" :
-				if (area == "COLOR") {
-					grd = ctx.createRadialGradient(statData[0].midPosX, statData[0].midPosY, othervars.scaleAnimation*statData[0].int_radius, statData[0].midPosX, statData[0].midPosY , othervars.scaleAnimation* statData[0].radiusOffset);
+				if (area == "FILLCOLOR") {
+					grd = ctx.createRadialGradient(statData[0][0].midPosX, statData[0][0].midPosY, othervars.scaleAnimation*statData[0][posj].int_radius, statData[0][0].midPosX, statData[0][0].midPosY , othervars.scaleAnimation* statData[0][posj].radiusOffset);
 				} else {
 					grd = ctx.createRadialGradient(othervars.xPosLeft + (othervars.xPosRight - othervars.xPosLeft) / 2, othervars.yPosBottom + (othervars.yPosTop - othervars.yPosBottom) / 2, 0, othervars.xPosLeft + (othervars.xPosRight - othervars.xPosLeft) / 2, othervars.yPosBottom + (othervars.yPosTop - othervars.yPosBottom) / 2, Math.max((othervars.xPosRight - othervars.xPosLeft) / 2, (othervars.yPosTop - othervars.yPosBottom) / 2));
 				}
-				gradientColors = data[posi].gradientColors;
+				gradientColors = data.datasets[posi].gradientColors;
 				break;
 			case "Line" :
 			case "Bar" :

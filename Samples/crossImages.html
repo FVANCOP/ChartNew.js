@@ -13,19 +13,41 @@ defCanvasWidth=800;
 defCanvasHeight=600;
 
 
-var mydata2 = [
-	{
-		value : 30,
-		color: "#D97041",
-    		title : "data1",
-//      crossImage : [smyley_1,smyley_2,smyley_2,smyley_2,smyley_2],
-//      crossImageRelativePosX : [2,0,0,4,4],
-//      crossImageRelativePosY : [2,0,4,0,4],
-//      crossImageAlign : ["center","left","left","right","right"],
-//      crossImageBaseline : ["middle","top","bottom","top","bottom"],
-//      crossImageIter : ["all"],
-//      crossImageOverlay : [false]
-//                        use new module shapesInChart.js
+
+var mydata2 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [30], 
+      fillColor : "#D97041", 
+      title : "data1" 
+           }, 
+           { 
+      data : [90], 
+      fillColor : "#C7604C", 
+      title : "data2"
+           }, 
+           { 
+      data : [24], 
+      fillColor : "#21323D", 
+      title : "data3"
+           }, 
+           { 
+      data : [58], 
+      fillColor : "#9D9B7F", 
+      title : "data4"
+           }, 
+           { 
+      data : [82], 
+      fillColor : "#7D4F6D", 
+      title : "data5"
+           }, 
+           { 
+      data : [8], 
+      fillColor : "#584A5E", 
+      title : "data6"
+           } 
+] ,
 	shapesInChart : [
 		{
 			position : "RELATIVE",
@@ -84,34 +106,10 @@ var mydata2 = [
 		}	
 			
 	]
-    		
-	},
-	{
-		value : 90,
-		color: "#C7604C",
-    title : "data2"
-	},
-	{
-		value : 24,
-		color: "#21323D",
-    title : "data3"
-	},
-	{
-		value : 58,
-		color: "#9D9B7F",
-    title : "data4"
-	},
-	{
-		value : 82,
-		color: "#7D4F6D",
-    title : "data5"
-	},
-	{
-		value : 8,
-		color: "#584A5E",
-    title : "data6"
-	}
-]
+    
+};
+
+
 
 //var smyley_1=new Image();
 //smyley_1.src="smiley_150x150.jpg";

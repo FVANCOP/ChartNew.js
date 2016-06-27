@@ -106,10 +106,11 @@ function pushInGraphData(type_chart,data,config,pushInfoDefault) {
 			for(var j=0;j<data.datasets[i].data.length;j++) {
 				if(typeof data.datasets[i].data[j]!="undefined") {
 					resconfig = mergeChartConfig(data.datasets[i], pushconfig);
-					pushInGraphDataSub(type_chart.upcase(),data.datasets[i],i,j,shapesInChart,data,config,resconfig);
+					pushInGraphDataSub(type_chart.toUpperCase(),data.datasets[i],i,j,shapesInChart,data,config,resconfig);
 				}
 			}
 		}
+		data.shapesInChart[0].avoidOverwrite=pushconfig.avoidOverwrite;
 	}
 	else {
 		pushInfo=data;
@@ -125,13 +126,14 @@ function pushInGraphData(type_chart,data,config,pushInfoDefault) {
 	}
 	
 
-	function mergeOptionConfig(defaults, userDefined) {
+	function mergeOptionConfig(defaults, userDefined,posj) {
 		var returnObj = {};
 		for (var attrname in defaults) {
 			returnObj[attrname] = defaults[attrname];
 		}
 		for (var attrnameBis in userDefined) {
-			returnObj[attrnameBis] = userDefined[attrnameBis];
+			if(typeof  userDefined[attrnameBis]=="object") returnObj[attrnameBis] = userDefined[attrnameBis][Math.min(j,userDefined[attrnameBis].length-1)];
+			else returnObj[attrnameBis] = userDefined[attrnameBis];
 		}
 		return returnObj;
 	};
@@ -140,8 +142,7 @@ function pushInGraphData(type_chart,data,config,pushInfoDefault) {
 	function pushInGraphDataSub(type_chart,pushInfoI,i,j,shapesInChart,data,config,resconfig) {
 
         	var addRadius;
-		shapesInChart[shapesInChart.length]=mergeOptionConfig(resconfig,pushInfoI);
-	
+		shapesInChart[shapesInChart.length]=mergeOptionConfig(resconfig,pushInfoI,j);
 		// push shapesInChart info for the pointer;
 
 		var newShapes=shapesInChart[shapesInChart.length-1];
@@ -154,7 +155,15 @@ function pushInGraphData(type_chart,data,config,pushInfoDefault) {
 		switch(newShapes.link.toUpperCase()) {
 			case  "TRIANGLE" :
 				var cumval=0;
-				for(var vi=0;vi<data.length;vi++)cumval=cumval+1*data[vi].value;
+				if(typeof data.length!="undefined") {	
+					for(var vi=0;vi<data.length;vi++){
+						if(data[vi].value>0)cumval=cumval+1*data[vi].value;
+					}
+				} else {
+					for(var vi=0;vi<data.datasets.length;vi++){
+						if(data.datasets[vi].data[j]>0)cumval=cumval+1*data.datasets[vi].data[j];
+					}
+				}
 				var arrowWidth=(cumval/360)*newShapes.arrowWidth;
 	
 				newShapes.shape = annotateTriangleFunction;
@@ -162,26 +171,47 @@ function pushInGraphData(type_chart,data,config,pushInfoDefault) {
 				newShapes.strokeStyle=newShapes.linkStrokeStyleLine; 
 				newShapes.strokeSize=newShapes.linkStrokeSizeLine;
 				switch(type_chart) {
-					case "PIE" :
-					case "DOUGHNUT" :
+					case "DELPIE" :
+					case "DELDOUGHNUT" :
 						var multRadius;
 						var percentageInnerCutout=50;
 						if(typeof config.percentageInnerCutout != "undefined")percentageInnerCutout=config.percentageInnerCutout;
-						if(type_chart.toUpperCase()=="DOUGHNUT")multRadius=100/(100-percentageInnerCutout);
+						if(type_chart.toUpperCase()=="DOUGHNUT" || type_chart.toUpperCase()=="MDOUGHNUT")multRadius=100/(100-percentageInnerCutout);
 						else multRadius=1;
-                                                addRadius=0;
+                       	                        addRadius=0;
 						if(typeof pushInfoI.expandOutRadius!="undefined")addRadius=1*pushInfoI.expandOutRadius;
-
-						if(newShapes.x1==null)newShapes.x1=  (pushInfoI.value==0 ? i : Math.max(i-0.5,i-(arrowWidth/pushInfoI.value)));
+						if(newShapes.x1==null)newShapes.x1=  (pushInfoI.data[j]==0 ? i : Math.max(i-0.5,i-(arrowWidth/pushInfoI.data[j])));
 						if(newShapes.y1==null)newShapes.y1= 0.99+addRadius;
 						if(newShapes.x2==null)newShapes.x2= i;
 						if(newShapes.y2==null)newShapes.y2 =1+newShapes.arrowHeight+addRadius;
-						if(newShapes.x3==null)newShapes.x3= (pushInfoI.value==0 ? i : Math.min(i+0.5,i+(arrowWidth/pushInfoI.value)));
+						if(newShapes.x3==null)newShapes.x3= (pushInfoI.data[j]==0 ? i : Math.min(i+0.5,i+(arrowWidth/pushInfoI.data[j])));
 						if(newShapes.y3==null)newShapes.y3 = 0.99+addRadius;
 						if(newShapes.x4==null)newShapes.x4 = i;
 						if(newShapes.y4==null)newShapes.y4 = 1.2+addRadius;
 						if(newShapes.fillColor==null)newShapes.fillColor =pushInfoI.color;
+						break;
+					case "PIE" :
+					case "DOUGHNUT" :
+					case "MPIE" :
+					case "MDOUGHNUT" :
+						var multRadius;
+						var percentageInnerCutout=50;
 
+						if(typeof config.percentageInnerCutout != "undefined")percentageInnerCutout=config.percentageInnerCutout;
+						if(type_chart.toUpperCase()=="MDOUGHNUT")multRadius=100/(100-percentageInnerCutout);
+						else multRadius=1;
+                       	                        addRadius=0;
+						if(typeof pushInfoI.expandOutRadius!="undefined")addRadius=1*pushInfoI.expandOutRadius;
+						if(newShapes.x1==null)newShapes.x1=  (pushInfoI.data[j]==0 ? i : Math.max(i-0.5,i-(arrowWidth/pushInfoI.data[j])));
+						if(newShapes.y1==null)newShapes.y1= 0.99+addRadius;
+						if(newShapes.x2==null)newShapes.x2= i;
+						if(newShapes.y2==null)newShapes.y2 =1+newShapes.arrowHeight+addRadius;
+						if(newShapes.x3==null)newShapes.x3= (pushInfoI.data[j]==0 ? i : Math.min(i+0.5,i+(arrowWidth/pushInfoI.data[j])));
+						if(newShapes.y3==null)newShapes.y3 = 0.99+addRadius;
+						if(newShapes.x4==null)newShapes.x4 = i;
+						if(newShapes.y4==null)newShapes.y4 = 1.2+addRadius;
+						if(newShapes.posj==null)newShapes.posj = j;
+						if(newShapes.fillColor==null)newShapes.fillColor =pushInfoI.fillColor;
 						break;
 					case "POLARAREA" :
 					case "LINE" :
@@ -203,10 +233,30 @@ function pushInGraphData(type_chart,data,config,pushInfoDefault) {
 				switch(type_chart) {
 					case "PIE" :
 					case "DOUGHNUT" :
+					case "MPIE" :
+					case "MDOUGHNUT" :
 						var multRadius;
 						var percentageInnerCutout=50;
 						if(typeof config.percentageInnerCutout != "undefined")percentageInnerCutout=config.percentageInnerCutout;
-						if(type_chart.toUpperCase()=="DOUGHNUT")multRadius=100/(100-percentageInnerCutout);
+						if(type_chart.toUpperCase()=="MDOUGHNUT")multRadius=100/(100-percentageInnerCutout);
+						else multRadius=1;
+                                                addRadius=0;
+						if(typeof pushInfoI.expandOutRadius!="undefined")addRadius=1*pushInfoI.expandOutRadius;
+						if(newShapes.x1==null)newShapes.x1=i;
+						if(newShapes.y1==null)newShapes.y1=1+addRadius;
+						if(newShapes.x2==null)newShapes.x2=i;
+						if(newShapes.y2==null)newShapes.y2=1+newShapes.piePaddingY*multRadius;
+						// x10=center of circle;
+						if(newShapes.x10==null)newShapes.x10=i;
+						if(newShapes.y10==null)newShapes.y10=-999;
+						if(newShapes.posj==null)newShapes.posj = j;
+						break;
+					case "DELPIE" :
+					case "DELDOUGHNUT" :
+						var multRadius;
+						var percentageInnerCutout=50;
+						if(typeof config.percentageInnerCutout != "undefined")percentageInnerCutout=config.percentageInnerCutout;
+						if(type_chart.toUpperCase()=="DOUGHNUT" || type_chart.toUpperCase()=="DOUGHNUT")multRadius=100/(100-percentageInnerCutout);
 						else multRadius=1;
                                                 addRadius=0;
 						if(typeof pushInfoI.expandOutRadius!="undefined")addRadius=1*pushInfoI.expandOutRadius;
@@ -239,7 +289,14 @@ function pushInGraphData(type_chart,data,config,pushInfoDefault) {
 
 function annotateLineFunction(area, ctx, data, statData, posi,posj,othervars){
 
-	if (typeof ctx.specialInChartData=="undefined")ctx.specialInChartData=[];
+	if (typeof ctx.specialInChartData=="undefined"){
+		ctx.specialInChartData=[];
+		ctx.specialInChartData.prevMsr=[];
+		ctx.specialInChartData.textAlign=[];
+        	ctx.specialInChartData.textBaseline=[];
+		ctx.specialInChartData.prevXln=[];
+		ctx.specialInChartData.prevYln=[];	
+	}
 	/* compute radius */
 	var radius= (Math.sqrt(Math.pow(othervars.xypos2.xpos-othervars.xypos10.xpos,2)+ Math.pow(othervars.xypos2.ypos-othervars.xypos10.ypos,2)));
 
@@ -268,21 +325,27 @@ function annotateLineFunction(area, ctx, data, statData, posi,posj,othervars){
 		xln=radius + othervars.xypos10.xpos+othervars.shapesInChart.paddingX;
 		yln=othervars.xypos2.ypos+othervars.shapesInChart.paddingY;
 	}
+	var avoidOverwrite;
+	if(typeof data.length!="undefined")avoidOverwrite=data[0].shapesInChart[0].avoidOverwrite;
+	else avoidOverwrite=data.shapesInChart[0].avoidOverwrite;
 
-	if(data[0].shapesInChart[0].avoidOverwrite) {
+        if (typeof ctx.specialInChartData.prevYln=="undefined") {
+		ctx.specialInChartData.prevXln=[];
+		ctx.specialInChartData.prevYln=[];	
+	}
+	if(avoidOverwrite) {
 	
-		if (typeof ctx.specialInChartData.prevYln!="undefined") {
-			if(Math.abs(ctx.specialInChartData.prevXln-xln)<0.001) {
-				if(othervars.xypos10.xpos<othervars.xypos2.xpos) yln=Math.max(yln,ctx.specialInChartData.prevYln+1.5*othervars.shapesInChart.fontSize);
-				else yln=Math.min(yln,ctx.specialInChartData.prevYln-1.5*othervars.shapesInChart.fontSize);
+		if (typeof ctx.specialInChartData.prevYln[othervars.posj]!="undefined") {
+			if(Math.abs(ctx.specialInChartData.prevYln[othervars.posj]-yln)<1.5*othervars.shapesInChart.fontSize) {
+				if(othervars.xypos10.xpos<othervars.xypos2.xpos)yln=Math.max(yln,ctx.specialInChartData.prevYln[othervars.posj]+1.5*othervars.shapesInChart.fontSize);
+				else yln=Math.min(yln,ctx.specialInChartData.prevYln[othervars.posj]-1.5*othervars.shapesInChart.fontSize);
 			}
 		};
-		ctx.specialInChartData.prevXln=xln;
-		ctx.specialInChartData.prevYln=yln;
+		ctx.specialInChartData.prevXln[othervars.posj]=xln;
+		ctx.specialInChartData.prevYln[othervars.posj]=yln;
 	};
 
 	ctx.beginPath();
-
 	ctx.moveTo(othervars.xypos1.xpos, othervars.xypos1.ypos);
 	ctx.quadraticCurveTo(xip, yip,xln, yln);
 	ctx.lineWidth = othervars.shapesInChart.strokeSize;
@@ -307,7 +370,15 @@ function annotateLineFunction(area, ctx, data, statData, posi,posj,othervars){
 
 function annotateTriangleFunction(area, ctx, data,statData, posi,posj,othervars){
 
-	if (typeof ctx.specialInChartData=="undefined")ctx.specialInChartData=[];
+
+	if (typeof ctx.specialInChartData=="undefined"){
+		ctx.specialInChartData=[];
+		ctx.specialInChartData.prevMsr=[];
+		ctx.specialInChartData.textAlign=[];
+        	ctx.specialInChartData.textBaseline=[];
+		ctx.specialInChartData.prevXln=[];
+		ctx.specialInChartData.prevYln=[];	
+	}
 
 // triangle to label;
 	ctx.beginPath();
@@ -349,25 +420,27 @@ function annotateTriangleFunction(area, ctx, data,statData, posi,posj,othervars)
 	
 	ctx.textBaseline="middle";
 
-	if(data[0].shapesInChart[0].avoidOverwrite) {
+	var avoidOverwrite;
+	if(typeof data.length!="undefined")avoidOverwrite=data[0].shapesInChart[0].avoidOverwrite;
+	else avoidOverwrite=data.shapesInChart[0].avoidOverwrite;
+
 	
-		if (typeof ctx.specialInChartData.prevYln!="undefined" && ctx.textAlign==ctx.specialInChartData.textAlign) {
+	if(avoidOverwrite) {
+		if (typeof ctx.specialInChartData.prevYln[othervars.posj]!="undefined" && ctx.textAlign==ctx.specialInChartData.textAlign[othervars.posj]) {
 				if(othervars.xypos4.xpos>=othervars.xypos2.xpos) { 
-					
-				
-					yln=Math.max(yln,ctx.specialInChartData.prevYln+1.5*othervars.shapesInChart.fontSize);
+					yln=Math.max(yln,ctx.specialInChartData.prevYln[othervars.posj]+1.5*othervars.shapesInChart.fontSize);
 				} else {
-					yln=Math.min(yln,ctx.specialInChartData.prevYln-1.5*othervars.shapesInChart.fontSize);
+					yln=Math.min(yln,ctx.specialInChartData.prevYln[othervars.posj]-1.5*othervars.shapesInChart.fontSize);
 				}
-		}
-		ctx.specialInChartData.prevXln=xln;
-		ctx.specialInChartData.prevYln=yln;
+		} 
+		ctx.specialInChartData.prevXln[othervars.posj]=xln;
+		ctx.specialInChartData.prevYln[othervars.posj]=yln;
 	};
 
 // draw labels/images;
-	ctx.specialInChartData.prevMsr=drawTextAndImage(area, ctx, data,statData, posi,posj,othervars,xln+paddingX, yln+paddingY);
-        ctx.specialInChartData.textAlign=ctx.textAlign;
-        ctx.specialInChartData.textBaseline=ctx.textBaseline;
+	ctx.specialInChartData.prevMsr[othervars.posj]=drawTextAndImage(area, ctx, data,statData, posi,posj,othervars,xln+paddingX, yln+paddingY);
+        ctx.specialInChartData.textAlign[othervars.posj]=ctx.textAlign;
+        ctx.specialInChartData.textBaseline[othervars.posj]=ctx.textBaseline;
         
 };
 
