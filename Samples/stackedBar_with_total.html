@@ -1,0 +1,94 @@
+<!doctype html>
+<meta http-equiv="content-type" content="text/html; charset=windows-1250">
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]-->
+<SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+
+
+<SCRIPT>
+
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June","July"],
+	datasets : [
+		{
+			fillColor : "rgba(0,200,200,0.4)",
+			strokeColor : "black",
+			pointColor : "black",
+			pointstrokeColor : "black",
+			data : [16,20,13,21,23,18,15],
+			title : "2015"
+		},
+		{
+			fillColor : "rgba(200,200,200,0.4)",
+			strokeColor : "blue",
+			pointColor : "blue",
+			pointstrokeColor : "blue",
+			data : [13,11,15,17,15,11,10],
+      			title : "2014"
+		}
+	],
+	shapesInChart : [
+	]
+}     ;
+
+var opt1 = {
+	graphMin : 0,
+	inGraphDataYPosition : 2,
+	canvasBorders : true,
+	legend : true,
+	inGraphDataShow : true,
+	endDrawScaleFunction: drawShapes
+
+}
+
+for(var i=0;i<mydata1.labels.length;i++) {
+	tot=0;
+	for(j=0;j<mydata1.datasets.length;j++)tot+=1*mydata1.datasets[j].data[i];
+	mydata1.shapesInChart[mydata1.shapesInChart.length] = 
+		{
+			position : "INCHART",
+			shape: "TEXT",
+			text : tot,
+			textAlign : "center",
+			textBaseline : "bottom",
+			fontColor : "black", 
+			fontSize : 18,
+			animate : false,
+			x1: i, 
+			y1 : tot,
+			iter : "last"
+		};
+}
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine = new Chart(document.getElementById("canvas_Line").getContext("2d")).StackedBar(mydata1,opt1);
+}
+    </script>
+  </body>
+</html>
