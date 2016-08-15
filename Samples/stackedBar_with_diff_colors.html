@@ -1,0 +1,196 @@
+<!doctype html>
+<meta http-equiv="content-type" content="text/html; charset=windows-1250">
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]-->
+<SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+
+
+<SCRIPT>
+
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = {
+	labels : ["2015\n","2016","","2015","2016","","2015","2016"],
+	datasets : [
+		{
+			fillColor : "darkRed",
+			strokeColor : "black",
+			pointColor : "black",
+			pointstrokeColor : "black",
+			data : [16,,,13,,,23,,],
+			title : "Period 1"
+		},
+		{
+			fillColor : "darkBlue",
+			strokeColor : "black",
+			pointColor : "black",
+			pointstrokeColor : "black",
+			data : [16,,,13,,,23,,],
+			title : "Period 2"
+		},
+		{
+			fillColor : "darkOrange",
+			strokeColor : "black",
+			pointColor : "black",
+			pointstrokeColor : "black",
+			data : [16,,,13,,,23,,],
+			title : "Period 3"
+		},
+		{
+			fillColor : "darkGreen",
+			strokeColor : "blue",
+			pointColor : "blue",
+			pointstrokeColor : "blue",
+			data : [11,,,17,,,11,],
+      			title : "Period 4"
+		},
+		{
+			fillColor : "Red",
+			strokeColor : "blue",
+			pointColor : "blue",
+			pointstrokeColor : "blue",
+			data : [,11,,,17,,,11],
+      			title : "Period 1"
+		},
+		{
+			fillColor : "Blue",
+			strokeColor : "blue",
+			pointColor : "blue",
+			pointstrokeColor : "blue",
+			data : [,11,,,17,,,11],
+      			title : "Period 2"
+		},
+		{
+			fillColor : "Orange",
+			strokeColor : "blue",
+			pointColor : "blue",
+			pointstrokeColor : "blue",
+			data : [,11,,,17,,,11],
+      			title : "Period 3"
+		},
+		{
+			fillColor : "Green",
+			strokeColor : "black",
+			pointColor : "black",
+			pointstrokeColor : "black",
+			data : [,16,,,13,,,23],
+			title : "Period 4"
+		}
+	],
+	shapesInChart : [
+		{
+			position : "INCHART",
+			shape: "TEXT",
+			text : "January",
+			textAlign : "center",
+			textBaseline : "middle",
+			fontColor : "#666", 
+			fontSize : 12,
+			animate : false,
+			iter : 1,
+			x1: 0.5, 
+			y1 : 0,
+			paddingX1 : 0,
+			paddingY1 : 28
+		},
+		{
+			position : "INCHART",
+			shape: "TEXT",
+			text : "February",
+			textAlign : "center",
+			textBaseline : "middle",
+			fontColor : "#666", 
+			fontSize : 12,
+			animate : false,
+			iter : 1,
+			x1: 3.5, 
+			y1 : 0,
+			paddingX1 : 0,
+			paddingY1 : 28
+		},
+		{
+			position : "INCHART",
+			shape: "TEXT",
+			text : "March",
+			textAlign : "center",
+			textBaseline : "middle",
+			fontColor : "#666", 
+			fontSize : 12,
+			animate : false,
+			iter : 1,
+			x1: 6.5, 
+			y1 : 0,
+			paddingX1 : 0,
+			paddingY1 : 28
+		},
+		{
+			position : "ABSOLUTE",
+			shape: "TEXT",
+			text : "2015",
+			textAlign : "center",
+			textBaseline : "middle",
+			fontColor : "#666", 
+			fontSize : 12,
+			animate : false,
+			iter : 1,
+			x1: 450, 
+			y1 : 560
+		},
+		{
+			position : "ABSOLUTE",
+			shape: "TEXT",
+			text : "2016",
+			textAlign : "center",
+			textBaseline : "middle",
+			fontColor : "#666", 
+			fontSize : 12,
+			animate : false,
+			iter : 1,
+			x1: 450,
+			y1 : 575
+		}
+
+	]
+}     ;
+
+var opt1 = {
+	xAxisTop : false,
+	graphMin : 0,
+	canvasBorders : true,
+	legend : true,
+	maxLegendCols : 4,
+	legendSpaceLeftText : 50,
+	endDrawDataFunction: drawShapes
+
+}
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine = new Chart(document.getElementById("canvas_Line").getContext("2d")).StackedBar(mydata1,opt1);
+}
+    </script>
+  </body>
+</html>
