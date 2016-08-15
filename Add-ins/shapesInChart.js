@@ -78,6 +78,8 @@ var drawShape_default= {
 	textBorders : false,
 	textBordersColor : "black",
 	textBordersWidth : 1,
+	textBordersSelection : 15,
+	textBordersRadius : 0,
 	textBordersXSpace : 3,
 	textBordersYSpace : 3,
 	textBordersStyle : "solid",
@@ -315,7 +317,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					ctx.textBaseline = drawShapeSetValue(shapesInChart[i].textBaseline,drawShape_default.textBaseline);
 					var rotateVal=Math.PI * 1*drawShapeSetValue(shapesInChart[i].rotate,drawShape_default.rotate) / 180;
 					ctx.rotate(rotateVal);
-					setTextBordersAndBackground(ctx,text,Math.ceil(ctx.chartTextScale*fontSize),0,0,drawShapeSetValue(shapesInChart[i].textBorders,drawShape_default.textBorders),drawShapeSetValue(shapesInChart[i].textBordersColor,drawShape_default.textBordersColor),Math.ceil((realAnimation)*ctx.chartLineScale*drawShapeSetValue(shapesInChart[i].textBordersWidth,drawShape_default.textBordersWidth)),Math.ceil(ctx.chartSpaceScale*drawShapeSetValue(shapesInChart[i].textBordersXSpace,drawShape_default.textBordersXSpace)),Math.ceil(ctx.chartSpaceScale*drawShapeSetValue(shapesInChart[i].textBordersYSpace,drawShape_default.textBordersYSpace)),drawShapeSetValue(shapesInChart[i].textBordersStyle,drawShape_default.textBordersStyle),drawShapeSetValue(shapesInChart[i].textBackgroundColor,drawShape_default.textBackgroundColor),"TEXTINSHAPE");
+					setTextBordersAndBackground(ctx,text,Math.ceil(ctx.chartTextScale*fontSize),0,0,drawShapeSetValue(shapesInChart[i].textBorders,drawShape_default.textBorders),drawShapeSetValue(shapesInChart[i].textBordersSelection,drawShape_default.textBordersSelection),drawShapeSetValue(shapesInChart[i].textBordersColor,drawShape_default.textBordersColor),Math.ceil((realAnimation)*ctx.chartLineScale*drawShapeSetValue(shapesInChart[i].textBordersWidth,drawShape_default.textBordersWidth)),Math.ceil(ctx.chartSpaceScale*drawShapeSetValue(shapesInChart[i].textBordersXSpace,drawShape_default.textBordersXSpace)),Math.ceil(ctx.chartSpaceScale*drawShapeSetValue(shapesInChart[i].textBordersYSpace,drawShape_default.textBordersYSpace)),drawShapeSetValue(shapesInChart[i].textBordersStyle,drawShape_default.textBordersStyle),drawShapeSetValue(shapesInChart[i].textBackgroundColor,drawShape_default.textBackgroundColor),"TEXTINSHAPE",drawShapeSetValue(shapesInChart[i].textBordersRadius,drawShape_default.textBordersRadius));
 					if (iter !=="all" || (iter === "all" && othervars.cntiter != othervars.config.animationSteps) || othervars.config.animation==false) {
 					       ctx.fillTextMultiLine(text, 0, 0, ctx.textBaseline, Math.ceil(ctx.chartTextScale*fontSize),true,othervars.config.detectMouseOnText,ctx,"SHAPESINCHART_TEXTMOUSE",rotateVal,xypos1.xpos, xypos1.ypos,-1,-1);
 					} else ctx.fillTextMultiLine(text, 0, 0, ctx.textBaseline, Math.ceil(ctx.chartTextScale*fontSize),true,false,ctx,"SHAPESINCHART_TEXTMOUSE",rotateVal,xypos1.xpos, xypos1.ypos,-1,-1);
