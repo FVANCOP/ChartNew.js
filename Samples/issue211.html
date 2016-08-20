@@ -77,11 +77,10 @@ var mydata2 = {
 function annotateAllX(area,ctx,data,statData,posi,posj,othervars) {
 	var retstring="";
 	if(ctx.tpchart=="Pie" || ctx.tpchart=="Doughnut" || ctx.tpchart=="PolarArea") {
-		for(i=0;i<data.length;i++)
-		{
-			retstring=retstring+statData[i].v1+"="+statData[i].v3+"<BR>";
+		if(statData[posi][posj].v2!="")retstring=statData[posi][posj].v2+'<BR>';
+		for(var i=0;i<data.datasets.length;i++){
+			if(typeof statData[i][posj].v3!="undefined")retstring=retstring+statData[i][posj].v1+"="+statData[i][posj].v3+"<BR>";
 		}
-
 	} else {
 		if(statData[posi][posj].v2!="")retstring=statData[posi][posj].v2+'<BR>';
 		for(var i=0;i<data.datasets.length;i++){
@@ -147,9 +146,9 @@ window.onload = function() {
     var myLine = new Chart(document.getElementById("canvas_horizontalstackedbar").getContext("2d")).HorizontalStackedBar(mydata1,setopts);
     var myLine = new Chart(document.getElementById("canvas_radar").getContext("2d")).Radar(mydata1,setopts);
     
-    var myLine = new Chart(document.getElementById("canvas_polararea").getContext("2d")).PolarArea(mydata2,setopts);
-    var myLine = new Chart(document.getElementById("canvas_pie").getContext("2d")).Pie(mydata2,setopts);
-    var myLine = new Chart(document.getElementById("canvas_doughnut").getContext("2d")).Doughnut(mydata2,setopts);
+    var myLine = new Chart(document.getElementById("canvas_polararea").getContext("2d")).PolarArea(mydata1,setopts);
+    var myLine = new Chart(document.getElementById("canvas_pie").getContext("2d")).Pie(mydata1,setopts);
+    var myLine = new Chart(document.getElementById("canvas_doughnut").getContext("2d")).Doughnut(mydata1,setopts);
     }
 
 }
