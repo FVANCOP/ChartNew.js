@@ -63,7 +63,7 @@ function fmtChartJSPerso(config, value, fmt) {
 			break;
 		case "FMTDATE":
 			spltdt = fmt.split(/[\s,]+/)[1].toUpperCase();
-			return_value = spltdt.replaceArray(["DD", "MM", "YYYY", "YY"], [value.getDate(), 1 + value.getMonth(), value.getFullYear(), value.getYear() % 100]);
+			return_value = spltdt.replaceArray(["DD", "MM", "YYYY", "YY", "QQQQQQ"],[value.getDate(), 1 + value.getMonth(), value.getFullYear(), value.getYear() % 100,value.getFullYear()+"/"+ (value.getMonth()<3 ? 1 : (value.getMonth()<6 ? 2 : (value.getMonth()<9 ? 3 : 4)))]);
 			break;
 		case "TIME":
 			return_value = value.toLocaleTimeString();
