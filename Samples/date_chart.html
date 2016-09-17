@@ -1,0 +1,104 @@
+<!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/format.js'></script>
+
+<SCRIPT>
+
+var charJSPersonalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata = {
+//	labels : [new Date(2006,0,1,0,0,0),new Date(2007,0,1,0,0,0),new Date(2008,0,1,0,0,0),new Date(2009,0,1,0,0,0),new Date(2010,0,1,0,0,0),new Date(2011,0,1,0,0,0),new Date(2012,0,1,0,0,0),new Date(2013,0,1,0,0,0),new Date(2014,0,1,0,0,0),new Date(2015,0,1,0,0,0),new Date(2016,0,1,0,0,0),new Date(2017,0,1,0,0,0)],
+	labels : [],
+	datasets : [
+		{
+			strokeColor : "red",
+			pointColor : "red",
+			pointStrokeColor : "black",
+			xPos : [new Date(2006,0,1,0,0,0),new Date(2007,0,1,0,0,0),new Date(2009,6,1,0,0,0),new Date(2009,9,1,0,0,0),new Date(2010,0,1,0,0,0),
+              			new Date(2012,0,1,0,0,0),new Date(2013,0,1,0,0,0),new Date(2015,0,1,0,0,0),new Date(2015,6,1,0,0,0),new Date(2015,9,1,0,0,0),
+				new Date(2016,3,1,0,0,0)],
+			data : [,,,,50,55,,57,,56,60],
+		      	title : "Series B"
+		},
+		{
+			strokeColor : "green",
+			pointColor : "green",
+			pointStrokeColor : "black",
+			xPos : [new Date(2006,0,1,0,0,0),new Date(2007,0,1,0,0,0),new Date(2009,6,1,0,0,0),new Date(2009,9,1,0,0,0),new Date(2010,0,1,0,0,0),
+              			new Date(2012,0,1,0,0,0),new Date(2013,0,1,0,0,0),new Date(2015,0,1,0,0,0),new Date(2015,6,1,0,0,0),new Date(2015,9,1,0,0,0),
+				new Date(2016,3,1,0,0,0)],
+			data : [25,30,32,34,36,45,50,45,40,41,44],
+      			title : "Series A"
+		}
+	]
+}               
+
+
+var opt1 = {
+      canvasBorders : true,
+      datasetFill: false,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "Date Chart",
+      legend : true,
+      annotateDisplay : true,
+      annotateLabel : "<%=v3 + ' (' + v1+';'+ v2 + ')'%>",
+      // inGraphDataShow : true,
+      // inGraphDataTmpl : "<%=v3 + ' (' + v2 + ')'%>",
+      fmtV2 : "FMTDATE QQQQQQ",
+      graphTitleFontSize: 18,
+      fmtXLabel : "FMTDATE YYYY",
+      graphMin : 0,
+      yAxisMinimumInterval : 5,
+      legendBlockSize: 40
+
+
+
+}
+
+var firstyear=9999;
+var lastyear=-9999;
+for(var i=0;i<mydata.datasets.length;i++)
+{
+	for(var j=0;j<mydata.datasets[i].xPos.length;j++)
+	{
+		curyear=mydata.datasets[i].xPos[j].getFullYear();
+		firstyear=Math.min(curyear,firstyear);
+		lastyear=Math.max(curyear+1,lastyear);
+	}
+}
+
+for(i=firstyear;i<=lastyear;i++){
+	mydata.labels[i-firstyear]=new Date(i,0,1,0,0,0)
+}
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+
+
+    var myLine = new Chart(document.getElementById("canvas_Line1").getContext("2d")).Line(mydata,opt1);
+}
+    </script>
+  </body>
+</html>
