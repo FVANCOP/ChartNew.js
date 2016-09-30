@@ -2,22 +2,32 @@
 
 <!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
 <SCRIPT src='../Add-ins/shapesInChart.js'></script>
+<SCRIPT src='../Add-ins/drawLegend.js'></script>
+
 
 <SCRIPT>
-
-function setColor(area,data,config,i,j,animPct,value)
-{
-  if(value > 35)return("rgba(220,0,0,"+animPct);
-  else return("rgba(0,220,0,"+animPct);
-  
-}
 
 var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
 
 defCanvasWidth=1200;
 defCanvasHeight=600;
 
-var decal=0.03;
+
+
+// *************************************************;
+
+var   leftScaleStartValue = 10; 
+var   leftScaleStepWidth = 20;
+var   leftScaleSteps = 9; 
+
+var   rightScaleStartValue = 20; 
+var   rightScaleStepWidth = 40;
+var   rightScaleSteps = 6; 
+
+// *************************************************;
+
+
+
 
 var mydata1 = {
 	labels : ["January","February","March","April","May","June","July"],
@@ -26,121 +36,126 @@ var mydata1 = {
 		{
 			fillColor : "rgba(220,220,220,0.5)",
 			strokeColor : "rgba(220,220,220,1)",
-			pointColor : "rgba(220,220,220,1)",
-			pointstrokeColor : "yellow",
 			data : [95,53,99,,73,27,82],
-//			data : [40],
-
-      title : "2014"
+			axis : 1,
+      			title : "2012"
 		},
 		{
 			fillColor : "rgba(151,187,205,0.5)",
 			strokeColor : "rgba(151,187,205,1)",
-			pointColor : "green",
-			pointstrokeColor : "yellow",
 			data : [35,43,59,,31,50,66],
-//			data : [35],
-      title : "2013"
-		}
-	],
-	shapesInChart : [
-		{
-		        position : "INCHART",
-        		shape: "RECTANGLE",
-        		fillColor: "rgba(220,0,200,0.2)",
-        		strokeColor : "rgba(0,0,0,0)",
-        		animate : false,
-        		x1: -0.50+decal,
-        		y1: -100,
-        		x2: +0.50-decal    ,
-        		y2: 40
+			axis : 1,
+      			title : "2013"
 		},
 		{
-		        position : "INCHART",
-        		shape: "RECTANGLE",
-        		fillColor: "rgba(220,0,200,0.2)",
-        		strokeColor : "rgba(0,0,0,0)",
-        		animate : false,
-        		x1: 0.50+decal,
-        		y1: -100,
-        		x2: +1.50-decal    ,
-        		y2: 72
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			data : [58,47,124,41,67,91,115],
+			axis : 1,
+      			title : "2014"
 		},
 		{
-		        position : "INCHART",
-        		shape: "RECTANGLE",
+			// define the data of the overlapping bar as last; Those data will be removed. This is just to simplify your life !
         		fillColor: "rgba(220,0,200,0.2)",
         		strokeColor : "rgba(0,0,0,0)",
-        		animate : false,
-        		x1: 1.50+decal,
-        		y1: -100,
-        		x2: +2.50-decal    ,
-        		y2: 30
-		},
-		{
-		        position : "INCHART",
-        		shape: "RECTANGLE",
-        		fillColor: "rgba(220,0,200,0.2)",
-        		strokeColor : "rgba(0,0,0,0)",
-        		animate : false,
-        		x1: 2.50+decal,
-        		y1: -100,
-        		x2: +3.50-decal   ,
-        		y2: 63
-		},
-		{
-		        position : "INCHART",
-        		shape: "RECTANGLE",
-        		fillColor: "rgba(220,0,200,0.2)",
-        		strokeColor : "rgba(0,0,0,0)",
-        		animate : false,
-        		x1: 3.50+decal,
-        		y1: -100,
-        		x2: +4.50-decal    ,
-        		y2: 75
-		},
-		{
-		        position : "INCHART",
-        		shape: "RECTANGLE",
-        		fillColor: "rgba(220,0,200,0.2)",
-        		strokeColor : "rgba(0,0,0,0)",
-        		animate : false,
-        		x1: 4.50+decal,
-        		y1: -100,
-        		x2: +5.50-decal    ,
-        		y2: 52
-		},
-		{
-		        position : "INCHART",
-        		shape: "RECTANGLE",
-        		fillColor: "rgba(220,0,200,0.2)",
-        		strokeColor : "rgba(0,0,0,0)",
-        		animate : false,
-        		x1: 5.50+decal,
-        		y1: -100,
-        		x2: +6.50-decal    ,
-        		y2: 83
+			data : [210,80,145,187,64,99,157],
+			axis : 2,
+			title : "Third bar"			
 		}
 	]
 }               
 
-var startWithDataset =1;
-var startWithData =1;
+// compute conversion factor for second axis;
+
+var leftTopScale=leftScaleStartValue+(leftScaleSteps*leftScaleStepWidth);
+var rightTopScale=rightScaleStartValue+(rightScaleSteps*rightScaleStepWidth);
+
+var convert_a=leftScaleStartValue;
+var convert_b=(leftTopScale-leftScaleStartValue)/(rightTopScale-rightScaleStartValue);
+
+// Build the legend;
+
+mydata1.shapesInChart=[];
+mydata1.legend =[];
+for(i=0;i<mydata1.datasets.length;i++)
+{
+	mydata1.legend[mydata1.legend.length]= {
+		element : "shapeText",
+		shape : "rectangle",
+		shapeFillColor : mydata1.datasets[i].fillColor,
+		shapeBordersColor : mydata1.datasets[i].strokeColor,
+		text : mydata1.datasets[i].title
+	};
+}
+
+// Build Third Bar through shapes in chart;
+
+var i,prevPos;
+var decal=0.03;
+
+for(i=0;i<mydata1.datasets[mydata1.datasets.length-1].data.length;i++) {
+	if(mydata1.datasets[mydata1.datasets.length-1].axis!=2) {
+		converted_y2=mydata1.datasets[mydata1.datasets.length-1].data[i]
+	} else {
+      		converted_y2=convert_a+(mydata1.datasets[mydata1.datasets.length-1].data[i]-rightScaleStartValue)*convert_b;
+	}
+	mydata1.shapesInChart[mydata1.shapesInChart.length]= {
+		        position : "INCHART",
+        		shape: "RECTANGLE",
+        		fillColor: mydata1.datasets[mydata1.datasets.length-1].fillColor,
+        		strokeColor : mydata1.datasets[mydata1.datasets.length-1].strokeColor,
+        		animate : false,
+        		x1: -0.5+i+decal,
+        		y1: 0,
+        		x2: 0.50+i-decal    ,
+        		y2: converted_y2,
+        		y2_original_value : mydata1.datasets[mydata1.datasets.length-1].data[i]
+	}
+	prevPos=mydata1.shapesInChart.length-1;
+	mydata1.shapesInChart[mydata1.shapesInChart.length]= {
+			position : "INCHART",
+			shape: "TEXT",
+			text : mydata1.shapesInChart[prevPos].y2_original_value,
+			textAlign : "center",
+			textBaseline : "bottom",
+			fontColor : "black", 
+			fontSize : 18,
+			animate : false,
+			x1: mydata1.shapesInChart[prevPos].x1+(mydata1.shapesInChart[prevPos].x2-mydata1.shapesInChart[prevPos].x1)/2, 
+			y1 : mydata1.shapesInChart[prevPos].y2,
+			paddingX1 : 0,
+			paddingY1 : -5,
+			iter : "last"
+	};
+
+}
+
+// remove last data;
+
+mydata1.datasets.splice(mydata1.datasets.length-1,1);
+
+
 
 var opt1 = {
-      animationStartWithDataset : startWithDataset,
-      animationStartWithData : startWithData,
-      animationSteps : 200,
       canvasBorders : true,
-      canvasBordersWidth : 3,
-      canvasBordersColor : "black",
-      graphTitle : "default animation",
+      graphTitle : "third bar",
       legend : true,
       inGraphDataShow : true,
       annotateDisplay : true,
       graphTitleFontSize: 18,
-      endDrawDataFunction : drawShapes
-
+      endDrawDataFunction : drawShapes,
+      
+      scaleOverride: true, 
+      scaleStartValue : leftScaleStartValue, 
+      scaleStepWidth : leftScaleStepWidth,
+      scaleSteps : leftScaleSteps, 
+      scaleOverride2 : true, 
+      forceSecondScale : true,
+      scaleStartValue2 : rightScaleStartValue, 
+      scaleStepWidth2 : rightScaleStepWidth,
+      scaleSteps2 : rightScaleSteps, 
+      yAxisRight : true,
+      yAxisLeft : true 
 }
 
 
