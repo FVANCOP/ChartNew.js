@@ -9,8 +9,6 @@ var defaultMaxLegendCols=999;
 
 
 
-
-
 var defaultLegendValues = {
 	
 	element : "shapeText", // "shapeText" ou "CR"
@@ -95,6 +93,8 @@ function drawLegend(legendMsr,data,config,ctx,typegraph,cntiter) {
 			// draw Shape;
 			xpos=legendMsr.xLegendPos+legendMsr.legendFirstTextXPos+legendMsr.elementMsr[i].eltPosX+legendMsr.elementMsr[i].shapePosX;
 			ypos=legendMsr.yLegendPos+legendMsr.legendFirstTextYPos+legendMsr.elementMsr[i].eltPosY+legendMsr.elementMsr[i].shapePosY;
+
+
 			if(legendMsr.elementMsr[i].shapeHeight>0 && legendMsr.elementMsr[i].shapeWidth>0) {
 				ctx.save();
 				ctx.beginPath();
@@ -137,7 +137,7 @@ function drawLegend(legendMsr,data,config,ctx,typegraph,cntiter) {
 						ctx.restore();
 				
 						ctx.fill();
-						if((config.pointDot==1 || legendMsr.elementMsr[i].element.drawMarker==true)  && legendMsr.elementMsr[i].element.markerCount>0) {
+						if((config.pointDot==1 || legendMsr.elementMsr[i].element.drawMarker==true)  && legendMsr.elementMsr[i].element.markerCount>0 && legendMsr.elementMsr[i].element.markerShape!="") {
 							var markerDispl=legendMsr.elementMsr[i].shapeWidth/(legendMsr.elementMsr[i].element.markerCount+1);
 							for(j=0;j<legendMsr.elementMsr[i].element.markerCount;j++) {
 								ctx.beginPath();
@@ -212,7 +212,6 @@ function measureLegend(data,ctx,config,widestLegend,highestLegend,nbLegendLines,
 		for(i=0;i<data.legend.length;i++) {
 			elementMsr[i]={};
 			elementMsr[i].element=setLegendElementValue(data,i,config,legendDefaultValuesFromConfig);
-			adaptLegendParams(i);
 		}		
 	} else {
 		cntLegend=data.datasets.length;
@@ -249,7 +248,6 @@ function measureLegend(data,ctx,config,widestLegend,highestLegend,nbLegendLines,
 				elementMsr[i].element.shapeFillColor=setOptionValue(true,false,1,"LEGENDFILLCOLOR",ctx,data,undefined,data.datasets[j].fillColor,config.defaultFillColor,"fillColor",i,-1,{animationValue: 1, xPosLeft : 0, yPosBottom : 0, xPosRight : 0 + Math.ceil(ctx.chartTextScale*config.legendBlockSize), yPosTop : 0 - (Math.ceil(ctx.chartTextScale*config.legendFontSize))} );
 			}
 			elementMsr[i].element=setLegendElementValueBis(elementMsr[i].element,config,legendDefaultValuesFromConfig);
-			adaptLegendParams(i);
 		}
 	}
 	// compute width and height of each Element;
@@ -269,6 +267,10 @@ function measureLegend(data,ctx,config,widestLegend,highestLegend,nbLegendLines,
 		// Shape size;
 		elementMsr[i].shapeWidth=0;
 		elementMsr[i].shapeHeight=0;
+		elementMsr[i].shapePosX=0;
+		elementMsr[i].shapePosY=0;
+
+
 
 		if((elementMsr[i].element.shape =="rectangle" || elementMsr[i].element.shape =="ellipse" || elementMsr[i].element.shape =="line") && elementMsr[i].element.element=="shapeText") {
 			if(elementMsr[i].textWidth>0 && elementMsr[i].textHeight>0 && elementMsr[i].element.textHPos>0 && elementMsr[i].element.textHPos<4 && elementMsr[i].element.textVPos>0 && elementMsr[i].element.textVPos<4){
@@ -353,6 +355,9 @@ function measureLegend(data,ctx,config,widestLegend,highestLegend,nbLegendLines,
 		
 				}
 			} else if(elementMsr[i].width > 0 && typeof elementMsr[i].element.elementWidth=="string") {
+
+ console.log("Correct width of elt  "+i+" "+elementMsr[i].element.elementWidth+" "+elementMsr[i].width);
+
 				for(j=i+1;j<cntLegend;j++) {
 					if(elementMsr[j].width>0 && typeof elementMsr[j].element.elementWidth=="string" && elementMsr[i].element.elementWidth==elementMsr[j].element.elementWidth) {
 						if(elementMsr[j].width>elementMsr[i].width) {
@@ -366,6 +371,7 @@ function measureLegend(data,ctx,config,widestLegend,highestLegend,nbLegendLines,
 						}
 					}					
 				}
+ console.log("After : "+elementMsr[i].width);
 			}
 			if(typeof elementMsr[i].element.elementHeight=="number" && elementMsr[i].height>0)
 			{
@@ -583,105 +589,7 @@ function measureLegend(data,ctx,config,widestLegend,highestLegend,nbLegendLines,
 		elementMsr : elementMsr
 	};
 
-function adaptLegendParams(i) {
-}
-function bidon(i) {
-	var element=["shapeText","CR"];
-	if(typeof elementMsr[i].element.element!="string")elementMsr[i].element.element="";
-	if(element.indexOf(elementMsr[i].element.element)<0)elementMsr[i].element.element=element[0];
-	if(typeof elementMsr[i].element.textHPos!="number")elementMsr[i].element.textHPos=4;
-        elementMsr[i].element.textHPos=Math.ceil(elementMsr[i].element.textHPos);
-        if(elementMsr[i].element.textHPos<0 || elementMsr[i].element.textHPos>4)elementMsr[i].element.textHPos=4;
-	if(typeof elementMsr[i].element.textVPos!="number")elementMsr[i].element.textVPos=2;
-        elementMsr[i].element.textVPos=Math.ceil(elementMsr[i].element.textVPos);
-        if(elementMsr[i].element.textVPos<0 || elementMsr[i].element.textVPos>4)elementMsr[i].element.textVPos=2;
 
-//}
-
-//function bidon(i) {
-        
-	if(typeof elementMsr[i].element.HspaceBetweenShapeAndText!="number")elementMsr[i].element.HspaceBetweenShapeAndText=0;
-	elementMsr[i].element.HspaceBetweenShapeAndText=Math.max(0,Math.ceil(elementMsr[i].element.HspaceBetweenShapeAndText));
-	if(typeof elementMsr[i].element.VspaceBetweenShapeAndText!="number")elementMsr[i].element.VspaceBetweenShapeAndText=0;
-	elementMsr[i].element.VspaceBetweenShapeAndText=Math.max(0,Math.ceil(elementMsr[i].element.VspaceBetweenShapeAndText));
-	if(typeof elementMsr[i].element.spaceBefore!="number")elementMsr[i].element.spaceBefore=0;
-	elementMsr[i].element.spaceBefore=Math.max(0,Math.ceil(elementMsr[i].element.spaceBefore));
-	if(typeof elementMsr[i].element.spaceAfter!="number")elementMsr[i].element.spaceAfter=0;
-	elementMsr[i].element.spaceAfter=Math.max(0,Math.ceil(elementMsr[i].element.spaceAfter));
-	
-	if(typeof elementMsr[i].element.elementWidth == "number") {
-		elementMsr[i].element.elementWidth=Math.max(0,Math.ceil(elementMsr[i].element.elementWidth));
-	} else if(typeof elementMsr[i].element.elementWidth != "string")elementMsr[i].element.elementWidth="maxwidth";
-
-	if(typeof elementMsr[i].element.elementHeight == "number") {
-		elementMsr[i].element.elementHeight=Math.max(0,Math.ceil(elementMsr[i].element.elementHeight));
-	} else if(typeof elementMsr[i].element.elementHeight != "string")elementMsr[i].element.elementHeight="maxheight";
-
-	if(typeof elementMsr[i].element.shape!="string")elementMsr[i].element.shape="";
-	var shape=["rectangle","ellipse","line"];
-	if(shape.indexOf(elementMsr[i].element.shape)<0)elementMsr[i].element.shape=shape[0];
-
-	if(typeof elementMsr[i].element.shapeHeight == "number") {
-		elementMsr[i].element.shapeHeight=Math.max(0,Math.ceil(elementMsr[i].element.shapeHeight));
-	} else if(typeof elementMsr[i].element.shapeHeight != "string")elementMsr[i].element.shapeHeight="maxheight";
-	if(typeof elementMsr[i].element.shapeWidth == "number") {
-		elementMsr[i].element.shapeWidth=Math.max(0,Math.ceil(elementMsr[i].element.shapeWidth));
-	} else if(typeof elementMsr[i].element.shapeWidth != "string")elementMsr[i].element.shapeWidth="maxwidth";
-
-        if(typeof elementMsr[i].element.markerShape !="string")elementMsr[i].element.markerShape="";
-
-	if(typeof elementMsr[i].element.markerCount!="number")elementMsr[i].element.markerCount=0;
-	elementMsr[i].element.markerCount=Math.max(0,Math.ceil(elementMsr[i].element.markerCount));
-
-	if(typeof elementMsr[i].element.markerRadius!="number")elementMsr[i].element.markerRadius=0;
-	elementMsr[i].element.markerRadius=Math.max(0,Math.ceil(elementMsr[i].element.markerRadius));
-
-        if(typeof elementMsr[i].element.markerStrokeStyle !="string")elementMsr[i].element.markerStrokeStyle="";
-
-
-        if(typeof elementMsr[i].element.markerFillColor !="string")elementMsr[i].element.markerFillColor="rgba(220,220,220,1)";
-
-	if(typeof elementMsr[i].element.markerLineWidth!="number")elementMsr[i].element.markerLineWidth=0;
-	elementMsr[i].element.markerLineWidth=Math.max(0,Math.ceil(elementMsr[i].element.markerLineWidth));
-
-
-	var boolval=[true,false];
-	if(boolval.indexOf(elementMsr[i].element.shapeBorders)<0) elementMsr[i].element.shapeBorders=true;
-
-	if(typeof elementMsr[i].element.shapePaddingX!="number")elementMsr[i].element.shapePaddingX=0;
-	elementMsr[i].element.shapePaddingX=Math.max(0,Math.ceil(elementMsr[i].element.shapePaddingX));
-	if(typeof elementMsr[i].element.shapePaddingY!="number")elementMsr[i].element.shapePaddingY=0;
-	elementMsr[i].element.shapePaddingY=Math.max(0,Math.ceil(elementMsr[i].element.shapePaddingY));
-	if(typeof elementMsr[i].element.shapeBordersRadius!="number")elementMsr[i].element.shapeBordersRadius=0;
-	elementMsr[i].element.shapeBordersRadius=Math.max(0,Math.ceil(elementMsr[i].element.shapeBordersRadius));
-	if(typeof elementMsr[i].element.shapeBordersSelection!="number")elementMsr[i].element.shapeBordersSelection=15;
-	elementMsr[i].element.shapeBordersSelection=Math.max(0,Math.min(15,Math.ceil(elementMsr[i].element.shapeBordersSelection)));
-
-	if(typeof elementMsr[i].element.shapeBordersWidth!="number")elementMsr[i].element.shapeBordersWidth=0;
-	elementMsr[i].element.shapeBordersWidth=Math.max(0,Math.ceil(elementMsr[i].element.shapeBordersWidth));
-
-        if(typeof elementMsr[i].element.shapeBordersStyle !="string")elementMsr[i].element.shapeBordersStyle="";
-
-        if(typeof elementMsr[i].element.shapeBordersColor !="string")elementMsr[i].element.shapeBordersColor="#666";
-        if(typeof elementMsr[i].element.shapeFillColor !="string")elementMsr[i].element.shapeFillColor="rgba(220,220,220,0.5)";
-
-        if(typeof elementMsr[i].element.text !="string")elementMsr[i].element.text="";
-
-	if(typeof elementMsr[i].element.textPaddingX!="number")elementMsr[i].element.textPaddingX=0;
-	elementMsr[i].element.textPaddingX=Math.max(0,Math.ceil(elementMsr[i].element.textPaddingX));
-	if(typeof elementMsr[i].element.textPaddingY!="number")elementMsr[i].element.textPaddingY=0;
-	elementMsr[i].element.textPaddingY=Math.max(0,Math.ceil(elementMsr[i].element.textPaddingY));
-
-        if(typeof elementMsr[i].element.fontFamily !="string")elementMsr[i].element.fontFamily="";
-
-	if(typeof elementMsr[i].element.fontSize!="number")elementMsr[i].element.fontSize=0;
-	elementMsr[i].element.fontSize=Math.max(0,Math.ceil(elementMsr[i].element.fontSize));
-
-        if(typeof elementMsr[i].element.fontStyle !="string")elementMsr[i].element.fontStyle="";
-
-        if(typeof elementMsr[i].element.fontColor !="string")elementMsr[i].element.fontColor="#666";
-
-};
 
 	function adjustAlign(i,decalelt) {		
 		if(elementMsr[i].element.textHPos==2){
