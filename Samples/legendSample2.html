@@ -1,0 +1,860 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/format.js'></script>
+<SCRIPT src='../Add-ins/gradientColor.js'></script>
+<SCRIPT src='../Add-ins/drawLegend.js'></script>
+
+
+<SCRIPT>
+
+
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=600;
+defCanvasHeight=300;
+
+var textHPos =4;
+var textVPos =2;
+var VspaceBetweenShapeAndText = 0;
+var HspaceBetweenShapeAndText=5;
+var spaceBefore = 10;
+var spaceAfter = 5;
+var elementWidth1= "max";
+var elementHeight1 = "max";
+var shapeHeight1 = "firstlegend";
+var shapeWidth1 = 160;
+var elementWidth2= "firstlegend";
+var elementHeight2 = "firstlegend";
+var shapeHeight2 = "secondlegend";
+var shapeWidth2 = "secondlegend";
+var shapePaddingX = 0;
+var shapePaddingY = 0;
+var textPaddingX = 0;
+var textPaddingY = 0;
+var element = "shapeText";
+var shape = "line";
+var shapeBordersWidth = 2;
+var shapeBordersRadius =  0;
+var shapeBordersSelection = 1;
+var shapeBorders = false;
+var shapeBordersColor =  "black";
+var shapeFillColor = "green";
+var fontSize = 15;
+var fontFamily = "'Arial'";
+var fontStyle = "italic";
+var fontColor= "blue";
+
+
+
+var textHPos =7;
+var textVPos =-2;
+var VspaceBetweenShapeAndText = 0;
+var HspaceBetweenShapeAndText=5;
+var spaceBefore = 10;
+var spaceAfter = 5;
+var elementWidth1= "max";
+var elementHeight1 = "max";
+var shapeHeight1 = "firstlegend";
+var shapeWidth1 = 160;
+var elementWidth2= "firstlegend";
+var elementHeight2 = "firstlegend";
+var shapeHeight2 = "secondlegend";
+var shapeWidth2 = "secondlegend";
+var shapePaddingX = 0;
+var shapePaddingY = 0;
+var textPaddingX = 0;
+var textPaddingY = 0;
+var element = "shapeText";
+var shape = "line";
+var shapeBordersWidth = 2;
+var shapeBordersRadius =  0;
+var shapeBordersSelection = 1;
+var shapeBorders = false;
+var shapeBordersColor =  "black";
+var shapeFillColor = "green";
+var fontSize = 15;
+var fontFamily = "'Arial'";
+var fontStyle = "italic";
+var fontColor= "blue";
+
+
+
+
+ var BarLineData = {
+	labels : ["January","February","March","April","May","June","July"],
+	datasets : [
+			{
+			fillColor : "green",
+			data : [0.30,0.44,0.42,0.19,0.90,0.37,1.20],
+      			title : "Bar 1"
+			},
+			{
+			fillColor : "red",
+			data : [0.30,0.42,0.35,0.19,0.96,0.27,1.00],
+      			title : "Bar 2"
+			}
+	],
+	legend : [
+		{
+			element:"CR",
+			nextLineAlign : "center", 
+		},
+		{
+			text : "title of the legend",
+			elementWidth: "titre1",
+			elementHeight : "titre1",
+			element : "shapeText",
+			fontSize : 20,
+			fontStyle : "bold italic",
+			fontColor: "black"
+		},
+		{
+			element:"CR"
+		},
+		{
+			text : "First Element",
+			fontStyle : "bold",
+			fontColor: "black",
+			textVPos : 2,
+			textHPos : 2,
+			elementWidth: "width1",
+			elementHeight : "height1",
+			shapeWidth : "widthShape1",
+			element : "shapeText",
+			shape : "rectangle",
+			shapeFillColor : "green"
+		},
+		{
+			text : "Second Element",
+			fontStyle : "bold",
+			fontColor: "black",
+			textVPos : 2,
+			textHPos : 2,
+			elementWidth: "width1",
+			elementHeight : "height1",
+			element : "shapeText",
+			shapeWidth : "widthShape1",
+			shape : "rectangle",
+			shapeFillColor : "red"
+		}
+	],
+	
+	legendX : [
+		{
+			element:"CR",
+			nextLineAlign : "center", 
+//			nextLineBaseline : "center",
+			CRSpace : 10,
+			maxLegendCols : 4			
+		},
+		{
+			text : "titre de la legende",
+			textHPos : 2,
+			textVPos : 1,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: "titre1",
+			elementHeight : "titre1",
+			shapeHeight : "titre1",
+			shapeWidth : "titre1",
+			shapePaddingX : 0,
+			shapePaddingY : 0,
+			textPaddingX : 0,
+			textPaddingY : 0,
+			element : "shapeText",
+			shape : "rectangle",
+			shapeBordersWidth : 2,
+			shapeBordersRadius :  0,
+			shapeBordersSelection : 1,
+			shapeBorders : true,
+			shapeBordersColor :  "black",
+			shapeFillColor : "rgba(0,0,0,0)",
+			fontSize : 30,
+			fontFamily : fontFamily,
+//			fontFamily : 5,
+			fontStyle : "bold italic",
+			fontColor: "black",
+			markerStrokeStyle :"bidon",
+			noparam : 0
+		},
+		{
+			element:"CR",
+			nextLineAlign : "left", 
+//			nextLineBaseline : "center",
+			CRSpace : 10			
+		},
+		{
+			text : "text 1",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth1,
+			elementHeight : elementHeight1,
+			shapeHeight : shapeHeight1,
+			shapeWidth : shapeWidth1,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			text : "text 2 plus long",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth1,
+			elementHeight : elementHeight1,
+			shapeHeight : shapeHeight1,
+			shapeWidth : shapeWidth1,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			text : "text 3",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: "X",
+			elementHeight : "X",
+			shapeHeight : "W",
+			shapeWidth : 80,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize+20,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			text : "text 4",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth1,
+			elementHeight : elementHeight1,
+			shapeHeight : shapeHeight1,
+			shapeWidth : shapeWidth1,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			element:"CR",
+			nextLineAlign : "left", 
+//			nextLineBaseline : "center",
+			CRSpace : 10			
+		},
+		{
+			text : "text 5",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth1,
+			elementHeight : elementHeight1,
+			shapeHeight : shapeHeight1,
+			shapeWidth : shapeWidth1,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			element:"CR",
+			nextLineAlign : "center", 
+//			nextLineBaseline : "center",
+			CRSpace : 10
+			
+		},
+		{
+			text : "second titre de la legende",
+			textHPos : 2,
+			textVPos : 1,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: "titre2",
+			elementHeight : "titre2",
+			shapeHeight : "titre2",
+			shapeWidth : "titre2",
+			shapePaddingX : 0,
+			shapePaddingY : 0,
+			textPaddingX : 0,
+			textPaddingY : 0,
+			element : "shapeText",
+			shape : "rectangle",
+			shapeBordersWidth : 2,
+			shapeBordersRadius :  0,
+			shapeBordersSelection : 1,
+			shapeBorders : true,
+			shapeBordersColor :  "black",
+			shapeFillColor : "rgba(0,0,0,0)",
+			fontSize : 30,
+			fontFamily : fontFamily,
+			fontStyle : "bold",
+			fontColor: "black",
+                        noparam : 0
+		},
+		{
+			element:"CR",
+			nextLineAlign : "center", 
+//			nextLineBaseline : "center",
+			CRSpace : 10,
+			maxLegendCols : 3		
+						
+		},
+		{
+			text : "text 6 plus long",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth2,
+			elementHeight : elementHeight2,
+			shapeHeight : shapeHeight2,
+			shapeWidth : shapeWidth2,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			text : "text 7 beaucoup plus long",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth2,
+			elementHeight : elementHeight2,
+			shapeHeight : shapeHeight2,
+			shapeWidth : shapeWidth2,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			text : "text 8",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth2,
+			elementHeight : elementHeight2,
+			shapeHeight : shapeHeight2,
+			shapeWidth : shapeWidth2,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			text : "text 9",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth2,
+			elementHeight : elementHeight2,
+			shapeHeight : shapeHeight2,
+			shapeWidth : shapeWidth2,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			text : "text 10 plus long",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth2,
+			elementHeight : elementHeight2,
+			shapeHeight : shapeHeight2,
+			shapeWidth : shapeWidth2,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			element:"CR",
+			nextLineAlign : "left", 
+//			nextLineBaseline : "center",
+			CRSpace : 10			
+		},
+		{
+			text : "text 11",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth2,
+			elementHeight : elementHeight2,
+			shapeHeight : shapeHeight2,
+			shapeWidth : shapeWidth2,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			text : "text 12 plus long",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth2,
+			elementHeight : elementHeight2,
+			shapeHeight : shapeHeight2,
+			shapeWidth : shapeWidth2,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			text : "text 13",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth2,
+			elementHeight : elementHeight2,
+			shapeHeight : shapeHeight2,
+			shapeWidth : shapeWidth2,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			text : "text 14 encore plus long",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth2,
+			elementHeight : elementHeight2,
+			shapeHeight : shapeHeight2,
+			shapeWidth : shapeWidth2,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			text : "text 15",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth2,
+			elementHeight : elementHeight2,
+			shapeHeight : shapeHeight2,
+			shapeWidth : shapeWidth2,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			text : "text 16",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth2,
+			elementHeight : elementHeight2,
+			shapeHeight : shapeHeight2,
+			shapeWidth : shapeWidth2,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		},
+		{
+			text : "text 17",
+			textHPos : textHPos,
+			textVPos :textVPos,
+			VspaceBetweenShapeAndText : VspaceBetweenShapeAndText,
+			HspaceBetweenShapeAndText : HspaceBetweenShapeAndText,
+			spaceBefore : spaceBefore,
+			spaceAfter : spaceAfter,
+			elementWidth: elementWidth2,
+			elementHeight : elementHeight2,
+			shapeHeight : shapeHeight2,
+			shapeWidth : shapeWidth2,
+			shapePaddingX : shapePaddingX,
+			shapePaddingY : shapePaddingY,
+			textPaddingX : textPaddingX,
+			textPaddingY : textPaddingY,
+			element : element,
+			shape : shape,
+			shapeBordersWidth : shapeBordersWidth,
+			shapeBordersRadius :  shapeBordersRadius,
+			shapeBordersSelection : shapeBordersSelection,
+			shapeBorders : shapeBorders,
+			shapeBordersColor :  shapeBordersColor,
+			shapeFillColor : shapeFillColor,
+			fontSize : fontSize,
+			fontFamily : fontFamily,
+			fontStyle : fontStyle,
+			fontColor: fontColor,
+                        noparam : 0
+		}
+		
+	],
+	datasetsX : [
+		{
+			type: "Line",
+			fill: false,
+			strokeColor : "rgb(230, 14, 14)",
+			pointColor : "rgb(205, 151, 155)",
+			pointStrokeColor : "#f56691",
+			pointDotStrokeWidth : 1,
+			data : [0.30,0.44,0.42,0.19,0.90,0.37,1.20],
+      			title : "line 1",
+      			axis : 1
+		},
+		{
+			fillColor : gradientColor,
+			gradientColors : ["#00FFFF 50%","green","yellow"],
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointDotStrokeWidth : 1,
+			pointStrokeColor : "blue",
+			data : [-0.30,-0.44,-0.42,-0.19,-0.90,-0.37,-1.20],
+			title : "Bar 1"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointDotStrokeWidth : 1,
+			pointStrokeColor : "#fff",
+			data : [0.28,0.48,0.40,0.19,0.96,0.27,1.00],
+      title : "Text Bar 2"
+		},
+		{
+			type: "Line",
+			fill: false,
+			fillColor : "rgba(151, 205, 172, 0.5)",
+			strokeColor : "rgb(87, 147, 106)",
+			pointColor : "rgb(151, 205, 172)",
+			pointDotStrokeWidth : 1,
+			pointStrokeColor : "#fff",
+			data : [0.42,0.58,0.44,0.22,0.84,0.17,0.70],
+			title : "Line 3",
+			axis : 1
+		}
+	]
+}
+
+for(i=3;i<BarLineData.legend.length;i++) {
+//        BarLineData.legend[i].textHPos=Math.floor(Math.random() * 5);
+//        BarLineData.legend[i].textVPos=Math.floor(Math.random() * 5);
+//        BarLineData.legend[i].textHPos=2;
+//        BarLineData.legend[i].textVPos=2;
+//	  BarLineData.legend[i].fontSize=Math.floor(Math.random() * 10)+10;
+//        BarLineData.legend[i].textHPos=2;
+//        BarLineData.legend[i].textPaddingY=-10+Math.floor(Math.random() * 20);
+//        BarLineData.legend[i].textPaddingX=-10+Math.floor(Math.random() * 20);
+        
+        
+};
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+  <canvas id="canvas_Line" height="400" width="600"></canvas>
+    <script>
+  var opts= {animation : false,legend : 
+  true,annotateDisplay:true,
+  inGraphDataShow : true, 
+  datasetFill : false,
+  // maxLegendCols : 3,
+  showXLabels : 3,
+  showYLabels : 5,
+//  legendBlockSize :40, 
+//legendPosX : 4, 
+//legendPosY : 3, 
+//  datasetStrokeWidth : 5,
+//  barStrokeWidth : 4,
+  legendBlockSize : 40,
+//  legendSpaceBetweenTextVertical : 10,
+  barValueSpacing : 10,
+//  legendFontSize : 40,
+//  legendSpaceBetweenBoxAndText : -300,
+  maxLegendCols : 3
+};  
+
+window.onload = function() {
+	var bar = new Chart(document.getElementById("canvas_Line").getContext("2d")).Bar(BarLineData,opts);
+
+ }
+    </script>
+  </body>
+</html>
