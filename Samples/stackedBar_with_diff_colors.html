@@ -4,6 +4,7 @@
 <!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]-->
 <SCRIPT src='../ChartNew.js'></script>
 <SCRIPT src='../Add-ins/shapesInChart.js'></script>
+<SCRIPT src='../Add-ins/drawLegend.js'></script>
 
 
 <SCRIPT>
@@ -128,35 +129,160 @@ var mydata1 = {
 			y1 : 0,
 			paddingX1 : 0,
 			paddingY1 : 28
-		},
-		{
-			position : "ABSOLUTE",
-			shape: "TEXT",
-			text : "2015",
-			textAlign : "center",
-			textBaseline : "middle",
-			fontColor : "#666", 
-			fontSize : 12,
-			animate : false,
-			iter : 1,
-			x1: 450, 
-			y1 : 560
-		},
-		{
-			position : "ABSOLUTE",
-			shape: "TEXT",
-			text : "2016",
-			textAlign : "center",
-			textBaseline : "middle",
-			fontColor : "#666", 
-			fontSize : 12,
-			animate : false,
-			iter : 1,
-			x1: 450,
-			y1 : 575
 		}
+	],
+  legend : [
+    {
+      element : "CR",
+      nextLineAlign : "center"
+    },
+    {
+      element : "shapeText",
+      text : "2015 / 2016",
+      fontSize : 20
+    },
+    {
+      element : "CR",
+      nextLineAlign : "center"
+    },
+    {
+      element : "shapeText",
+      text : "Period 1",
+      fontSize : 15,
+      elementHeight : "maxheight",
+      elementWidth : "text1"
+    },
+    {
+      element : "shapeText",
+      shape : "rectangle",
+      shapeHeight : 15,
+      shapeWidth : 30,
+      elementHeight : "maxheight",
+      elementWidth : "shape",
+ 			shapeFillColor : "darkRed"
 
-	]
+    },
+    {
+      element : "shapeText",
+      text : "/",
+      fontSize : 15,
+      elementHeight : "maxheight",
+      elementWidth : "text2"
+    },
+    {
+      element : "shapeText",
+      shape : "rectangle",
+      shapeHeight : 15,
+      shapeWidth : 30,
+      elementHeight : "maxheight",
+      elementWidth : "shape",
+ 			shapeFillColor : "red"
+    },
+    {
+      element : "shapeText",
+      text : "Period 2",
+      fontSize : 15,
+      spaceBefore : 20,
+      elementHeight : "maxheight",
+      elementWidth : "text1"
+    },
+    {
+      element : "shapeText",
+      shape : "rectangle",
+      shapeHeight : 15,
+      shapeWidth : 30,
+      elementHeight : "maxheight",
+      elementWidth : "shape",
+ 			shapeFillColor : "darkBlue"
+
+    },
+    {
+      element : "shapeText",
+      text : "/",
+      fontSize : 15,
+      elementHeight : "maxheight",
+      elementWidth : "text2"
+    },
+    {
+      element : "shapeText",
+      shape : "rectangle",
+      shapeHeight : 15,
+      shapeWidth : 30,
+      elementHeight : "maxheight",
+      elementWidth : "shape",
+ 			shapeFillColor : "Blue"
+    },
+    {
+      element : "shapeText",
+      text : "Period 3",
+      fontSize : 15,
+      spaceBefore : 20,
+      elementHeight : "maxheight",
+      elementWidth : "text1"
+    },
+    {
+      element : "shapeText",
+      shape : "rectangle",
+      shapeHeight : 15,
+      shapeWidth : 30,
+      elementHeight : "maxheight",
+      elementWidth : "shape",
+ 			shapeFillColor : "darkOrange"
+
+    },
+    {
+      element : "shapeText",
+      text : "/",
+      fontSize : 15,
+      elementHeight : "maxheight",
+      elementWidth : "text2"
+    },
+    {
+      element : "shapeText",
+      shape : "rectangle",
+      shapeHeight : 15,
+      shapeWidth : 30,
+      elementHeight : "maxheight",
+      elementWidth : "shape",
+ 			shapeFillColor : "Orange"
+    },
+    {
+      element : "shapeText",
+      text : "Period 4",
+      fontSize : 15,
+      spaceBefore : 20,
+      elementHeight : "maxheight",
+      elementWidth : "text1"
+    },
+    {
+      element : "shapeText",
+      shape : "rectangle",
+      shapeHeight : 15,
+      shapeWidth : 30,
+      elementHeight : "maxheight",
+      elementWidth : "shape",
+ 			shapeFillColor : "darkGreen"
+
+    },
+    {
+      element : "shapeText",
+      text : "/",
+      fontSize : 15,
+      elementHeight : "maxheight",
+      elementWidth : "text2"
+    },
+    {
+      element : "shapeText",
+      shape : "rectangle",
+      shapeHeight : 15,
+      shapeWidth : 30,
+      elementHeight : "maxheight",
+      elementWidth : "shape",
+ 			shapeFillColor : "green"
+    }
+
+    
+  ]
 }     ;
 
 var opt1 = {
@@ -164,8 +290,8 @@ var opt1 = {
 	graphMin : 0,
 	canvasBorders : true,
 	legend : true,
-	maxLegendCols : 4,
-	legendSpaceLeftText : 50,
+//	maxLegendCols : 4,
+//	legendSpaceLeftText : 50,
 	endDrawDataFunction: drawShapes
 
 }

@@ -1,0 +1,527 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/format.js'></script>
+<SCRIPT src='../Add-ins/gradientColor.js'></script>
+<SCRIPT src='../Add-ins/drawLegend.js'></script>
+
+
+<SCRIPT>
+
+
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=600;
+defCanvasHeight=300;
+
+var textHPos =4;
+var textVPos =2;
+var VspaceBetweenShapeAndText = 0;
+var HspaceBetweenShapeAndText=5;
+var spaceBefore = 10;
+var spaceAfter = 5;
+var elementWidth1= "max";
+var elementHeight1 = "max";
+var shapeHeight1 = "firstlegend";
+var shapeWidth1 = 160;
+var elementWidth2= "firstlegend";
+var elementHeight2 = "firstlegend";
+var shapeHeight2 = "secondlegend";
+var shapeWidth2 = "secondlegend";
+var shapePaddingX = 0;
+var shapePaddingY = 0;
+var textPaddingX = 0;
+var textPaddingY = 0;
+var element = "shapeText";
+var shape = "line";
+var shapeBordersWidth = 2;
+var shapeBordersRadius =  0;
+var shapeBordersSelection = 1;
+var shapeBorders = false;
+var shapeBordersColor =  "black";
+var shapeFillColor = "green";
+var fontSize = 15;
+var fontFamily = "'Arial'";
+var fontStyle = "italic";
+var fontColor= "blue";
+
+
+
+var textHPos =7;
+var textVPos =-2;
+var VspaceBetweenShapeAndText = 0;
+var HspaceBetweenShapeAndText=5;
+var spaceBefore = 10;
+var spaceAfter = 5;
+var elementWidth1= "max";
+var elementHeight1 = "max";
+var shapeHeight1 = "firstlegend";
+var shapeWidth1 = 160;
+var elementWidth2= "firstlegend";
+var elementHeight2 = "firstlegend";
+var shapeHeight2 = "secondlegend";
+var shapeWidth2 = "secondlegend";
+var shapePaddingX = 0;
+var shapePaddingY = 0;
+var textPaddingX = 0;
+var textPaddingY = 0;
+var element = "shapeText";
+var shape = "line";
+var shapeBordersWidth = 2;
+var shapeBordersRadius =  0;
+var shapeBordersSelection = 1;
+var shapeBorders = false;
+var shapeBordersColor =  "black";
+var shapeFillColor = "green";
+var fontSize = 15;
+var fontFamily = "'Arial'";
+var fontStyle = "italic";
+var fontColor= "blue";
+
+
+
+
+ var BarLineData = {
+	labels : ["January","February","March","April","May","June","July"],
+	datasets : [
+			{
+			fillColor : "green",
+			data : [0.30,0.44,0.42,0.19,0.90,0.37,1.20],
+      			title : "Bar 1"
+			},
+			{
+			fillColor : "red",
+			data : [0.30,0.42,0.35,0.19,0.96,0.27,1.00],
+      			title : "Bar 2"
+			}
+	],
+	legend : [
+		{
+			element:"CR",
+			nextLineAlign : "center", 
+		},
+		{
+			text : "textVPos=0",
+      textVPos : 2,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+			shape : "none",
+      fontSize : 25,
+      fontStyle : "bold"
+		},
+		{
+			text : "textHPos=0",
+      textHPos : 0,
+      textVPos : 0,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "ellipse",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=1",
+      textHPos : 1,
+      textVPos : 0,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "ellipse",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=2",
+      textHPos : 2,
+      textVPos : 0,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "ellipse",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=3",
+      textHPos : 3,
+      textVPos : 0,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "ellipse",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=4",
+      textHPos : 4,
+      textVPos : 0,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "ellipse",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+    {
+       element : "CR"
+    },
+		{
+			text : "",
+			elementWidth: "linewidth",
+			elementHeight : "lineheight",
+			element : "shapeText",
+      shape : "line",
+      shapeWidth : 1250,
+      shapeBordersColor : "black"
+		},
+
+		{
+			text : "textVPos=1",
+      textVPos : 2,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+			shape : "none",
+      fontSize : 25,
+      fontStyle : "bold"
+		},
+		{
+			text : "textHPos=0",
+      textHPos : 0,
+      textVPos : 1,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=1",
+      textHPos : 1,
+      textVPos : 1,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=2",
+      textHPos : 2,
+      textVPos : 1,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=3",
+      textHPos : 3,
+      textVPos : 1,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=4",
+      textHPos : 4,
+      textVPos : 1,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+    {
+       element : "CR"
+    },
+		{
+			text : "",
+			elementWidth: "linewidth",
+			elementHeight : "lineheight",
+			element : "shapeText",
+      shape : "line",
+      shapeWidth : 1250,
+      shapeBordersColor : "black"
+		},
+		{
+			text : "textVPos=2",
+      textVPos : 2,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+			shape : "none",
+      fontSize : 25,
+      fontStyle : "bold"
+		},
+		{
+			text : "textHPos=0",
+      textHPos : 0,
+      textVPos : 2,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=1",
+      textHPos : 1,
+      textVPos : 2,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=2",
+      textHPos : 2,
+      textVPos : 2,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=3",
+      textHPos : 3,
+      textVPos : 2,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=4",
+      textHPos : 4,
+      textVPos : 2,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+    {
+       element : "CR"
+    },
+		{
+			text : "",
+			elementWidth: "linewidth",
+			elementHeight : "lineheight",
+			element : "shapeText",
+      shape : "line",
+      shapeWidth : 1250,
+      shapeBordersColor : "black"
+		},
+		{
+			text : "textVPos=3",
+      textVPos : 2,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+			shape : "none",
+      fontSize : 25,
+      fontStyle : "bold"
+		},
+		{
+			text : "textHPos=0",
+      textHPos : 0,
+      textVPos : 3,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=1",
+      textHPos : 1,
+      textVPos : 3,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=2",
+      textHPos : 2,
+      textVPos : 3,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=3",
+      textHPos : 3,
+      textVPos : 3,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=4",
+      textHPos : 4,
+      textVPos : 3,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+    {
+       element : "CR"
+    },
+		{
+			text : "",
+			elementWidth: "linewidth",
+			elementHeight : "lineheight",
+			element : "shapeText",
+      shape : "line",
+      shapeWidth : 1250,
+      shapeBordersColor : "black"
+		},
+		{
+			text : "textVPos=4",
+      textVPos : 2,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+			shape : "none",
+      fontSize : 25,
+      fontStyle : "bold"
+		},
+		{
+			text : "textHPos=0",
+      textHPos : 0,
+      textVPos : 4,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=1",
+      textHPos : 1,
+      textVPos : 4,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=2",
+      textHPos : 2,
+      textVPos : 4,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=3",
+      textHPos : 3,
+      textVPos : 4,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		},
+		{
+			text : "textHPos=4",
+      textHPos : 4,
+      textVPos : 4,
+			elementWidth: "allsame",
+			elementHeight : "allsame",
+			element : "shapeText",
+      shape : "rectangle",
+      shapeWidth : 120,
+      shapeHeight : 40
+		}
+
+    
+	],
+}
+
+
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+  <canvas id="canvas_Line" height="600" width="1300"></canvas>
+    <script>
+  var opts= {animation : false,legend : 
+  true,annotateDisplay:true,
+  inGraphDataShow : true, 
+  datasetFill : false,
+  // maxLegendCols : 3,
+  showXLabels : 3,
+  showYLabels : 5,
+//  legendBlockSize :40, 
+//legendPosX : 4, 
+//legendPosY : 3, 
+//  datasetStrokeWidth : 5,
+//  barStrokeWidth : 4,
+  legendBlockSize : 40,
+  legendFontSize : 15,
+//  legendSpaceBetweenTextVertical : 10,
+  barValueSpacing : 10
+//  legendFontSize : 40,
+//  legendSpaceBetweenBoxAndText : -300,
+//  maxLegendCols : 3
+};  
+
+window.onload = function() {
+	var bar = new Chart(document.getElementById("canvas_Line").getContext("2d")).Bar(BarLineData,opts);
+
+ }
+    </script>
+  </body>
+</html>

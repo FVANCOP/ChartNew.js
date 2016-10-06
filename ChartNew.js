@@ -18,7 +18,7 @@
  * Added items compared to Chart.js:
  *
  *     Title, Subtitle, footnotes, axis labels, unit label
- *     Y Axis on the right and/or the left
+ *     Y Axis on the right and/or the left                                                                                     
  *     canvas Border
  *     Legend
  *     crossText, crossImage
@@ -1476,6 +1476,7 @@ window.Chart = function(context) {
 			scaleOverlay: false,
 			scaleOverride: false,
 			scaleOverride2: false,
+			forceSecondScale : false,
 			scaleSteps: null,
 			scaleStepWidth: null,
 			scaleStartValue: null,
@@ -1568,6 +1569,7 @@ window.Chart = function(context) {
 			scaleOverlay: false,
 			scaleOverride: false,
 			scaleOverride2: false,
+			forceSecondScale : false,
 			scaleSteps: null,
 			scaleStepWidth: null,
 			scaleStartValue: null,
@@ -1617,7 +1619,8 @@ window.Chart = function(context) {
 			extrapolateMissingData: true,
 			onAnimationComplete: null,
 			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3%>",
-			pointHitDetectionRadius : 10
+			pointHitDetectionRadius : 10,
+      xAxisMiddle : false
 		};
 		// merge annotate defaults
 		if(isIE()<9 && isIE() != false)chart.Line.defaults = mergeChartConfig(chart.defaults.IExplorer8, chart.Line.defaults);
@@ -1648,6 +1651,7 @@ window.Chart = function(context) {
 			scaleOverlay: false,
 			scaleOverride: false,
 			scaleOverride2: false,
+			forceSecondScale : false,
 			scaleSteps: null,
 			scaleStepWidth: null,
 			scaleStartValue: null,
@@ -1680,7 +1684,6 @@ window.Chart = function(context) {
 			pointDotStrokeStyle: "solid",
 			pointDotStrokeWidth: 2,
 			barShowStroke: true,
-			barStrokeWidth: 2,
 			barValueSpacing: 5,
 			barDatasetSpacing: 1,
 			spaceBetweenBar : 0,
@@ -1723,6 +1726,7 @@ window.Chart = function(context) {
 			scaleOverlay: false,
 			scaleOverride: false,
 			scaleOverride2: false,
+			forceSecondScale : false,
 			scaleSteps: null,
 			scaleStepWidth: null,
 			scaleStartValue: null,
@@ -1750,7 +1754,6 @@ window.Chart = function(context) {
 			rotateLabels: "smart", // smart <=> 0 degre if space enough; otherwise 45 degres if space enough otherwise90 degre; 
 			rotateTLabels: "smart", // smart <=> 0 degre if space enough; otherwise 45 degres if space enough otherwise90 degre; 
 			barShowStroke: true,
-			barStrokeWidth: 2,
 			barValueSpacing: 5,
 			barDatasetSpacing: 1,
 			spaceBetweenBar : 0,
@@ -1790,6 +1793,7 @@ window.Chart = function(context) {
 			scaleOverlay: false,
 			scaleOverride: false,
 			scaleOverride2: false,
+			forceSecondScale : false,
 			scaleSteps: null,
 			scaleStepWidth: null,
 			scaleStartValue: null,
@@ -1824,7 +1828,6 @@ window.Chart = function(context) {
 			scaleTickSizeBottom: 5,
 			scaleTickSizeTop: 5,
 			barShowStroke: true,
-			barStrokeWidth: 2,
 			barValueSpacing: 5,
 			barDatasetSpacing: 1,
 			barBorderRadius: 0,
@@ -1876,6 +1879,7 @@ window.Chart = function(context) {
 			scaleOverlay: false,
 			scaleOverride: false,
 			scaleOverride2: false,
+			forceSecondScale : false,
 			scaleSteps: null,
 			scaleStepWidth: null,
 			scaleStartValue: null,
@@ -1903,7 +1907,6 @@ window.Chart = function(context) {
 			rotateLabels: "smart", // smart <=> 0 degre if space enough; otherwise 45 degres if space enough otherwise90 degre; 
 			rotateTLabels: "smart", // smart <=> 0 degre if space enough; otherwise 45 degres if space enough otherwise90 degre; 
 			barShowStroke: true,
-			barStrokeWidth: 2,
 			barValueSpacing: 5,
 			barDatasetSpacing: 1,
 			barBorderRadius: 0,
@@ -2164,7 +2167,8 @@ window.Chart = function(context) {
 		maintainAspectRatio: true,
 		responsiveScaleContent : false,
 		responsiveWindowInitialWidth : false,
-		pointMarker : "circle",    // "circle","cross","plus","diamond","triangle","square"
+		markerShape : "circle",    // "circle","cross","plus","diamond","triangle","square"
+		barStrokeWidth: 2,
 		initFunction : null,
 		beforeDrawFunction : null,
 		endDrawDataFunction : null,
@@ -2200,6 +2204,7 @@ window.Chart = function(context) {
 		scaleOverlay: true,
 		scaleOverride: false,
 		scaleOverride2: false,
+		forceSecondScale : false,
 		scaleGridLinesStep : 1,
 		scaleSteps: null,
 		scaleStepWidth: null,
@@ -2386,7 +2391,7 @@ window.Chart = function(context) {
 			ctx.ChartNewId = ctx.tpchart + '_' + cvmillsec;
 			ctx._eventListeners = {};
 		}
-
+			  
 		resizeCtx(ctx,config);
 
 		if (!dynamicFunction(data, config, ctx)) return false;   // if config.dynamicDisplay=true, chart has to be displayed only if in current screen;  
@@ -3313,7 +3318,7 @@ window.Chart = function(context) {
 			populateLabels(1, config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, scaleStartValue, calculatedScale.graphMax, scaleStepWidth);
 		}
 
-		if (valueBounds.dbAxis) {
+		if (valueBounds.dbAxis || config.forceSecondScale) {
 			if (!config.scaleOverride2) {
 				if(valueBounds.maxSteps>0 && valueBounds.minSteps>0) {
 					calculatedScale2 = calculateScale(2, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue2, valueBounds.minValue2, labelTemplateString2);
@@ -3492,15 +3497,21 @@ window.Chart = function(context) {
 					} else {
 						ctx.textAlign = "center";
 					}
-					for (var i = 0; i < data.labels.length; i++) {
+          var decal=0;
+          var subloop=0;
+          if(config.xAxisMiddle==true) {
+            decal=valueHop/2;
+            subloop=1;
+          }
+					for (var i = 0; i < data.labels.length-subloop; i++) {
 						if(showLabels(ctx,data,config,i)){
 							ctx.save();
 							if (msr.rotateLabels > 0) {
-								ctx.translate(yAxisPosX + i * valueHop - msr.highestXLabel / 2, msr.xLabelPos);
+								ctx.translate(yAxisPosX + i * valueHop - msr.highestXLabel / 2 + decal, msr.xLabelPos);
 								ctx.rotate(-((msr.rotateLabels + 180*(msr.rotateLabels>90)) * (Math.PI / 180)));
-								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XSCALE_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + i * valueHop - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
+								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XSCALE_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + i * valueHop - msr.highestXLabel / 2 + decal, msr.xLabelPos,i,-1);
 							} else {
-								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), yAxisPosX + i * valueHop, msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XSCALE_TEXTMOUSE",0,0,0,i,-1);
+								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), yAxisPosX + i * valueHop + decal, msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XSCALE_TEXTMOUSE",0,0,0,i,-1);
 							}
 							ctx.restore();
 						}
@@ -3545,14 +3556,14 @@ window.Chart = function(context) {
 							ctx.textAlign = "right";
 							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
 						}
-						if (config.yAxisRight && !valueBounds.dbAxis) {
+						if (config.yAxisRight && !(valueBounds.dbAxis || config.forceSecondScale)) {
 							ctx.textAlign = "left";
 							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
 						}
 					}
 				}
 			}
-			if (config.yAxisRight && valueBounds.dbAxis) {
+			if (config.yAxisRight && (valueBounds.dbAxis || config.forceSecondScale)) {
 				for (j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale2.steps; j++) {
 					if (config.scaleShowLabels) {
 						ctx.textAlign = "left";
@@ -4497,6 +4508,7 @@ window.Chart = function(context) {
 		var bufferDataset, l = 0;
 		
 		msr = setMeasures(data, config, ctx, ctx.canvas.height, ctx.canvas.width, "nihil", "nihil", true, false, true, true, "Bar");
+
 		valueBounds = getValueBounds();
 		if(valueBounds.minValue<=0)config.logarithmic=false;
 		if(valueBounds.maxSteps>0 && valueBounds.minSteps>0) {
@@ -4541,14 +4553,13 @@ window.Chart = function(context) {
 				}
 				populateLabels(1, config, labelTemplateString, calculatedScale.labels, calculatedScale.steps, scaleStartValue, calculatedScale.graphMax, scaleStepWidth);
 			}
-			if (valueBounds.dbAxis) {
+			if (valueBounds.dbAxis || config.forceSecondScale) {
 				if (!config.scaleOverride2) {
 					calculatedScale2 = calculateScale(2, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue2, valueBounds.minValue2, labelTemplateString2);
 				} else {
 					var scaleStartValue2= setOptionValue(true,true,1,"SCALESTARTVALUE2",ctx,data,statData,undefined,config.scaleStartValue2,"scaleStartValue2",-1,-1,{nullValue : true} );
 					var scaleSteps2 =setOptionValue(true,true,1,"SCALESTEPS2",ctx,data,statData,undefined,config.scaleSteps2,"scaleSteps2",-1,-1,{nullValue : true} );
 					var scaleStepWidth2 = setOptionValue(true,true,1,"SCALESTEPWIDTH2",ctx,data,statData,undefined,config.scaleStepWidth2,"scaleStepWidth2",-1,-1,{nullValue : true} );
-
 					calculatedScale2 = {
 						steps: scaleSteps2,
 						stepValue: scaleStepWidth2,
@@ -4887,14 +4898,14 @@ window.Chart = function(context) {
 							ctx.textAlign = "right";
 							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
 						}
-						if (config.yAxisRight && !valueBounds.dbAxis) {
+						if (config.yAxisRight && !(valueBounds.dbAxis || config.forceSecondScale)) {
 							ctx.textAlign = "left";
 							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
 						}
 					}
 				}
 			}
-			if (config.yAxisRight && valueBounds.dbAxis) {
+			if (config.yAxisRight && (valueBounds.dbAxis || config.forceSecondScale)) {
 				for (j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale2.steps; j++) {
 					if (config.scaleShowLabels) {
 						ctx.textAlign = "left";
@@ -6073,7 +6084,7 @@ window.Chart = function(context) {
                 //// Step 5  : compute widest text legend;
 
 		var nbeltLegend =0;
-		var widestLegend=0;
+		var widestLegend=-99999999;
 		var highestLegend=0;
 		
 		if (typeof(config.legend) != "undefined") {
@@ -6109,7 +6120,7 @@ window.Chart = function(context) {
                	var legendHeight = 0;
 		var legendWidth =0;
 		var msrLegend;
-		if (widestLegend > 0) {
+		if (widestLegend > -99999998) {
 			if (config.legendPosY==0 || config.legendPosY==4) {
 				
 		               	var availableLegendWidth,maxLegendOnLine;
@@ -6122,7 +6133,7 @@ window.Chart = function(context) {
 				maxLegendOnLine = Min([Math.floor((availableLegendWidth + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextHorizontal)) / (widestLegend + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextHorizontal))),config.maxLegendCols]);
 				nbLegendLines = Math.ceil(nbeltLegend / maxLegendOnLine);
 				nbLegendCols = Math.ceil(nbeltLegend / nbLegendLines);
-				msrLegend=measureLegend(ctx,config,widestLegend,highestLegend,nbLegendLines,nbLegendCols);
+				msrLegend=measureLegend(data,ctx,config,widestLegend,highestLegend,nbLegendLines,nbLegendCols,availableLegendWidth);
 				legendHeight = msrLegend.legendHeight;
 				if (config.legendPosY==0) {
 					yLegendPos=topNotUsableHeight-Math.ceil(ctx.chartSpaceScale*config.graphSpaceBefore);
@@ -6136,11 +6147,12 @@ window.Chart = function(context) {
 			} else if (config.legendPosX==0 || config.legendPosX==4) {
 		               	var availableLegendHeight,maxLegendOnCols;
 				availableLegendHeight = availableHeight - Math.ceil(ctx.chartSpaceScale*Math.ceil(ctx.chartSpaceScale*config.legendSpaceBeforeText)) - Math.ceil(ctx.chartSpaceScale*config.legendSpaceAfterText);
+				availableLegendWidth = availableWidth - Math.ceil(ctx.chartSpaceScale*Math.ceil(ctx.chartSpaceScale*config.legendSpaceLeftText)) - Math.ceil(ctx.chartSpaceScale*config.legendSpaceRightText);
 				if (config.legendBorders == true || config.legendFillColor!="rgba(0,0,0,0)") availableLegendHeight -= (config.legendBorders*(isBorder(config.legendBordersSelection,"BOTTOM")+isBorder(config.legendBordersSelection,"TOP")) * (Math.ceil(ctx.chartLineScale*config.legendBordersWidth)) + Math.ceil(ctx.chartSpaceScale*config.legendBordersSpaceBefore) + Math.ceil(ctx.chartSpaceScale*config.legendBordersSpaceAfter));
 				maxLegendOnCols = Min([Math.floor((availableLegendHeight + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextVertical)) / (highestLegend + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextVertical))),config.maxLegendCols]);
 				nbLegendCols = Math.ceil(nbeltLegend / maxLegendOnCols);
 				nbLegendLines = Math.ceil(nbeltLegend / nbLegendCols);
-				msrLegend=measureLegend(ctx,config,widestLegend,highestLegend,nbLegendLines,nbLegendCols);
+				msrLegend=measureLegend(data,ctx,config,widestLegend,highestLegend,nbLegendLines,nbLegendCols,availableLegendWidth);
 				legendWidth=msrLegend.legendWidth;
 				if (config.legendPosX==0) {
 					xLegendPos=leftNotUsableWidth;
@@ -6150,6 +6162,7 @@ window.Chart = function(context) {
 					xLegendPos=width-rightNotUsableWidth-legendWidth;
 					rightNotUsableWidth +=legendWidth;
 				}
+
 				availableWidth -=legendWidth;
 			}
 		}
@@ -6467,14 +6480,14 @@ window.Chart = function(context) {
 
                 availableHeight=height-topNotUsableHeight-bottomNotUsableHeight;	
 		// compute space for Legend
-		
-		if (widestLegend > 0 ) {
+
+		if (widestLegend > -99999998 ) {
 			if(nbLegendLines==0) {  // compute nbLegendLines/nbLegendCols if not yet done;
 				availableLegendWidth = availableWidth - Math.ceil(ctx.chartSpaceScale*Math.ceil(ctx.chartSpaceScale*config.legendSpaceLeftText)) - Math.ceil(ctx.chartSpaceScale*config.legendSpaceRightText);
 				maxLegendOnLine = Min([Math.floor((availableLegendWidth + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextHorizontal)) / (widestLegend + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextHorizontal))),config.maxLegendCols]);
 				nbLegendLines = Math.ceil(nbeltLegend / maxLegendOnLine);
 				nbLegendCols = Math.ceil(nbeltLegend / nbLegendLines);
-				msrLegend=measureLegend(ctx,config,widestLegend,highestLegend,nbLegendLines,nbLegendCols);
+				msrLegend=measureLegend(data,ctx,config,widestLegend,highestLegend,nbLegendLines,nbLegendCols,availableLegendWidth);
 			}	
 			legendHeight = msrLegend.legendHeight;
 			legendWidth = msrLegend.legendWidth;
@@ -6734,10 +6747,11 @@ window.Chart = function(context) {
 						legendBackgroundColorXPos:msrLegend.legendBackgroundColorXPos,
 						legendBackgroundColorYPos:msrLegend.legendBackgroundColorYPos,
 						legendBorderXPos:msrLegend.legendBorderXPos,
-						legendBorderYPos:msrLegend.legendBorderYPos
+						legendBorderYPos:msrLegend.legendBorderYPos,
+						elementMsr : msrLegend.elementMsr
 
 					    };
-					   
+
 				if(config.legendPosY==0 || config.legendPosY==4 || config.legendPosX==0 || config.legendPosX==4) {
 					drawLegend(legendMsr,data,config,ctx,typegraph,-1);
 					legendMsr={dispLegend : false};
@@ -7141,14 +7155,14 @@ window.Chart = function(context) {
 		// ----------------------------------------------------		
                 // highLight : false, 	highLightMouseFunction : "mousemove",
 		// ----------------------------------------------------		
-		// - mouse sortir ou entrer dans une piÃƒÂ¨ce => Pas d'influence sur une action de souris. C'est liÃƒÂ© ÃƒÂ  l'action de annotateFunction
+		// - mouse sortir ou entrer dans une piÃƒÆ’Ã‚Â¨ce => Pas d'influence sur une action de souris. C'est liÃƒÆ’Ã‚Â© ÃƒÆ’Ã‚Â  l'action de annotateFunction
 		//      	annotateFunctionIn : inBar,
       		//		annotateFunctionOut : outBar,
 		// ----------------------------------------------------		
 		// - mouseDownRight	mouseDownLeft: null  mouseDownMiddle: null  
 		// - mouseMove: null 	mouseWheel : null    mouseOut: null (lorsque la souris sort du canvas) 	
 		// ----------------------------------------------------		
-		//  mouse sur texte : detectMouseOnText => Pas d'influence sur une action de souris. C'est liÃƒÂ© ÃƒÂ  une autre action;
+		//  mouse sur texte : detectMouseOnText => Pas d'influence sur une action de souris. C'est liÃƒÆ’Ã‚Â© ÃƒÆ’Ã‚Â  une autre action;
 		// ----------------------------------------------------		
 
 		function setAction(ctx,action){
@@ -7243,7 +7257,7 @@ window.Chart = function(context) {
 			};
 		}
 		
-		// initialiser les variables nÃƒÂ©cessaires pour l'action doMouseAction;
+		// initialiser les variables nÃƒÆ’Ã‚Â©cessaires pour l'action doMouseAction;
                 inMouseAction[ctx.ChartNewId]=false;
 		mouseActionData[ctx.ChartNewId]={ data : data, config: config, prevShow : -1 };
 	};
@@ -7362,6 +7376,7 @@ function showYLabels(ctx,data,config,i,text) {
 
 function drawLegend(legendMsr,data,config,ctx,typegraph,cntiter) {
 
+
 	if(config.legendPosY==0 || config.legendPosY==4 || config.legendPosX==0 || config.legendPosX==4){
 		if(cntiter!=-1) return;
 	}
@@ -7375,7 +7390,6 @@ function drawLegend(legendMsr,data,config,ctx,typegraph,cntiter) {
 			else if (cntiter != config.animationSteps && config.legendWhenToDraw=="last")return;
 		}
 	}
-	
 	ctx.save();
 	if (config.legendFillColor != "rgba(0,0,0,0)") {
 		// fill color;
@@ -7394,95 +7408,94 @@ function drawLegend(legendMsr,data,config,ctx,typegraph,cntiter) {
 	ctx.setLineDash([]);
 	ctx.restore();
 
-	var xpos,ypos,fromi,orderi,i,tpof,lgtxt,nbcols;
-	var lgdbox=legendMsr.legendBox;
 
-	nbcols = legendMsr.nbLegendCols - 1;
-	var yFirstLegendTextPos=legendMsr.yLegendPos+legendMsr.legendFirstTextYPos+legendMsr.highestLegend;
-	var xFirstLegendTextPos=legendMsr.xLegendPos+legendMsr.legendFirstTextXPos;
-	ypos = yFirstLegendTextPos - ((Math.ceil(ctx.chartTextScale*config.legendFontSize)) + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextVertical));
-	xpos = 0;
-	fromi = data.datasets.length;
-	for (i = fromi - 1; i >= 0; i--) {
-		orderi = i;
-		if (legendMsr.reverseLegend) {
-			orderi = data.datasets.length - i - 1;
-		}
-		tpof = typeof(data.datasets[orderi].title);
-		if (tpof == "string") {
-			lgtxt = fmtChartJS(config, data.datasets[orderi].title, config.fmtLegend).trim();
-			if (lgtxt != "") {
-				nbcols++;
-				if (nbcols == legendMsr.nbLegendCols) {
-					nbcols = 0;
-					xpos = xFirstLegendTextPos;
-					ypos += (Math.ceil(ctx.chartTextScale*config.legendFontSize)) + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextVertical);
-				} else {
-					xpos += legendMsr.widestLegend + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextHorizontal);
-				}
-				ctx.save();
-				ctx.beginPath();
-				if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") if (data.datasets[orderi].type=="Line" && (!config.datasetFill || setOptionValue(true,false,1,"LINKTYPE",ctx,data,undefined,data.datasets[orderi].linkType,config.linkType,"linkType",orderi,-1,{nullvalue : null} )==1)) lgdbox=false;
-				if (lgdbox) {
- 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*setOptionValue(true,false,1,"LINEWIDTH",ctx,data,undefined,data.datasets[orderi].datasetStrokeWidth,config.datasetStrokeWidth,"datasetStrokeWidth",orderi,-1,{nullvalue : null} ));
+		var xpos,ypos,fromi,orderi,i,tpof,lgtxt,nbcols;
+		var lgdbox=legendMsr.legendBox;
+
+		nbcols = legendMsr.nbLegendCols - 1;
+		var yFirstLegendTextPos=legendMsr.yLegendPos+legendMsr.legendFirstTextYPos+legendMsr.highestLegend;
+		var xFirstLegendTextPos=legendMsr.xLegendPos+legendMsr.legendFirstTextXPos;
+		ypos = yFirstLegendTextPos - ((Math.ceil(ctx.chartTextScale*config.legendFontSize)) + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextVertical));
+		xpos = 0;
+		fromi = data.datasets.length;
+		for (i = fromi - 1; i >= 0; i--) {
+			orderi = i;
+			if (legendMsr.reverseLegend) {
+				orderi = data.datasets.length - i - 1;
+			}
+			tpof = typeof(data.datasets[orderi].title);
+			if (tpof == "string") {
+				lgtxt = fmtChartJS(config, data.datasets[orderi].title, config.fmtLegend).trim();
+				if (lgtxt != "") {
+					nbcols++;
+					if (nbcols == legendMsr.nbLegendCols) {
+						nbcols = 0;
+						xpos = xFirstLegendTextPos;
+						ypos += (Math.ceil(ctx.chartTextScale*config.legendFontSize)) + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextVertical);
+					} else {
+						xpos += legendMsr.widestLegend + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextHorizontal);
+					}
+					ctx.save();
 					ctx.beginPath();
-					ctx.strokeStyle=setOptionValue(true,false,1,"LEGENDSTROKECOLOR",ctx,data,undefined,data.datasets[orderi].strokeColor,config.defaultFillColor,"strokeColor",orderi,-1,{animationValue: 1, xPosLeft : xpos, yPosBottom : ypos, xPosRight : xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), yPosTop : ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize))} );
-					ctx.setLineDash(lineStyleFn(setOptionValue(true,false,1,"LEGENDLINEDASH",ctx,data,undefined,data.datasets[orderi].datasetStrokeStyle,config.datasetStrokeStyle,"datasetStrokeStyle",orderi,-1,{animationValue: 1, xPosLeft : xpos, yPosBottom : ypos, xPosRight : xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), yPosTop : ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize))} )));
-					ctx.moveTo(xpos, ypos);
-					ctx.lineTo(xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), ypos);
-					ctx.lineTo(xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize)));
-					ctx.lineTo(xpos, ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize)));
-					ctx.lineTo(xpos, ypos);
-					ctx.stroke();
-					ctx.closePath();
-					ctx.fillStyle=setOptionValue(true,false,1,"LEGENDFILLCOLOR",ctx,data,undefined,data.datasets[orderi].fillColor,config.defaultFillColor,"fillColor",orderi,-1,{animationValue: 1, xPosLeft : xpos, yPosBottom : ypos, xPosRight : xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), yPosTop : ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize))} );
-					ctx.fill();
-				} else {
-					ctx.lineWidth = config.legendColorIndicatorStrokeWidth ?
-						config.legendColorIndicatorStrokeWidth : Math.ceil(ctx.chartLineScale*setOptionValue(true,false,1,"LINEWIDTH",ctx,data,undefined,data.datasets[orderi].datasetStrokeWidth,config.datasetStrokeWidth,"datasetStrokeWidth",orderi,-1,{nullvalue : null} ));
-					if (config.legendColorIndicatorStrokeWidth && config.legendColorIndicatorStrokeWidth > (Math.ceil(ctx.chartTextScale*config.legendFontSize))) {
-						ctx.lineWidth = (Math.ceil(ctx.chartTextScale*config.legendFontSize));
-					}
-					ctx.strokeStyle=setOptionValue(true,false,1,"LEGENDSTROKECOLOR",ctx,data,undefined,data.datasets[orderi].strokeColor,config.defaultFillColor,"strokeColor",orderi,-1,{animationValue: 1, xPosLeft : xpos, yPosBottom : ypos, xPosRight : xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), yPosTop : ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize))} );
-					ctx.setLineDash(lineStyleFn(setOptionValue(true,false,1,"LEGENDLINEDASH",ctx,data,undefined,data.datasets[orderi].datasetStrokeStyle,config.datasetStrokeStyle,"datasetStrokeStyle",orderi,-1,{animationValue: 1, xPosLeft : xpos, yPosBottom : ypos, xPosRight : xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), yPosTop : ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize))} )));
-
-					ctx.moveTo(xpos + 2, ypos - ((Math.ceil(ctx.chartTextScale*config.legendFontSize)) / 2));
-					ctx.lineTo(xpos + 2 + Math.ceil(ctx.chartTextScale*config.legendBlockSize), ypos - ((Math.ceil(ctx.chartTextScale*config.legendFontSize)) / 2));
-					ctx.stroke();
-
-					
-					ctx.fill();
-
-					if(config.pointDot) {
+					if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") if (data.datasets[orderi].type=="Line" && (!config.datasetFill || setOptionValue(true,false,1,"LINKTYPE",ctx,data,undefined,data.datasets[orderi].linkType,config.linkType,"linkType",orderi,-1,{nullvalue : null} )==1)) lgdbox=false;
+					if (lgdbox) {
+ 						ctx.lineWidth = Math.ceil(ctx.chartLineScale*setOptionValue(true,false,1,"LINEWIDTH",ctx,data,undefined,data.datasets[orderi].datasetStrokeWidth,config.datasetStrokeWidth,"datasetStrokeWidth",orderi,-1,{nullvalue : null} ));
 						ctx.beginPath();
-				 		ctx.fillStyle=setOptionValue(true,false,1,"LEGENDMARKERFILLCOLOR",ctx,data,undefined,data.datasets[orderi].pointColor,config.defaultStrokeColor,"pointColor",orderi,-1,{nullvalue: true} );
-						ctx.strokeStyle=setOptionValue(true,false,1,"LEGENDMARKERSTROKESTYLE",ctx,data,undefined,data.datasets[orderi].pointStrokeColor,config.defaultStrokeColor,"pointStrokeColor",orderi,-1,{nullvalue: true} );
-						ctx.lineWidth=setOptionValue(true,false,ctx.chartLineScale,"LEGENDMARKERLINEWIDTH",ctx,data,undefined,data.datasets[orderi].pointDotStrokeWidth,config.pointDotStrokeWidth,"pointDotStrokeWidth",orderi,-1,{nullvalue: true} );
-                        	
-						var markerShape=setOptionValue(true,false,1,"LEGENDMARKERSHAPE",ctx,data,undefined,data.datasets[orderi].markerShape,config.markerShape,"markerShape",orderi,-1,{nullvalue: true} );
-						var markerRadius=setOptionValue(true,false,ctx.chartSpaceScale,"LEGENDMARKERRADIUS",ctx,data,undefined,data.datasets[orderi].pointDotRadius,config.pointDotRadius,"pointDotRadius",orderi,-1,{nullvalue: true} );
-						var markerStrokeStyle=setOptionValue(true,false,1,"LEGENDMARKERSTROKESTYLE",ctx,data,undefined,data.datasets[orderi].pointDotStrokeStyle,config.pointDotStrokeStyle,"pointDotStrokeStyle",orderi,-1,{nullvalue: true} );
-						drawMarker(ctx,xpos + 2 + Math.ceil(ctx.chartTextScale*config.legendBlockSize)/2, ypos - ((Math.ceil(ctx.chartTextScale*config.legendFontSize)) / 2), markerShape,markerRadius,markerStrokeStyle);							
-					}
-					ctx.fill();
+						ctx.strokeStyle=setOptionValue(true,false,1,"LEGENDSTROKECOLOR",ctx,data,undefined,data.datasets[orderi].strokeColor,config.defaultFillColor,"strokeColor",orderi,-1,{animationValue: 1, xPosLeft : xpos, yPosBottom : ypos, xPosRight : xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), yPosTop : ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize))} );
+						ctx.setLineDash(lineStyleFn(setOptionValue(true,false,1,"LEGENDLINEDASH",ctx,data,undefined,data.datasets[orderi].datasetStrokeStyle,config.datasetStrokeStyle,"datasetStrokeStyle",orderi,-1,{animationValue: 1, xPosLeft : xpos, yPosBottom : ypos, xPosRight : xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), yPosTop : ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize))} )));
+						ctx.moveTo(xpos, ypos);
+						ctx.lineTo(xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), ypos);
+						ctx.lineTo(xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize)));
+						ctx.lineTo(xpos, ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize)));
+						ctx.lineTo(xpos, ypos);
+						ctx.stroke();
+						ctx.closePath();
+						ctx.fillStyle=setOptionValue(true,false,1,"LEGENDFILLCOLOR",ctx,data,undefined,data.datasets[orderi].fillColor,config.defaultFillColor,"fillColor",orderi,-1,{animationValue: 1, xPosLeft : xpos, yPosBottom : ypos, xPosRight : xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), yPosTop : ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize))} );
+						ctx.fill();
+					} else {
+						ctx.lineWidth = config.legendColorIndicatorStrokeWidth ?
+							config.legendColorIndicatorStrokeWidth : Math.ceil(ctx.chartLineScale*setOptionValue(true,false,1,"LINEWIDTH",ctx,data,undefined,data.datasets[orderi].datasetStrokeWidth,config.datasetStrokeWidth,"datasetStrokeWidth",orderi,-1,{nullvalue : null} ));
+						if (config.legendColorIndicatorStrokeWidth && config.legendColorIndicatorStrokeWidth > (Math.ceil(ctx.chartTextScale*config.legendFontSize))) {
+							ctx.lineWidth = (Math.ceil(ctx.chartTextScale*config.legendFontSize));
+						}
+						ctx.strokeStyle=setOptionValue(true,false,1,"LEGENDSTROKECOLOR",ctx,data,undefined,data.datasets[orderi].strokeColor,config.defaultFillColor,"strokeColor",orderi,-1,{animationValue: 1, xPosLeft : xpos, yPosBottom : ypos, xPosRight : xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), yPosTop : ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize))} );
+						ctx.setLineDash(lineStyleFn(setOptionValue(true,false,1,"LEGENDLINEDASH",ctx,data,undefined,data.datasets[orderi].datasetStrokeStyle,config.datasetStrokeStyle,"datasetStrokeStyle",orderi,-1,{animationValue: 1, xPosLeft : xpos, yPosBottom : ypos, xPosRight : xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize), yPosTop : ypos - (Math.ceil(ctx.chartTextScale*config.legendFontSize))} )));
+     						ctx.moveTo(xpos + 2, ypos - ((Math.ceil(ctx.chartTextScale*config.legendFontSize)) / 2));
+						ctx.lineTo(xpos + 2 + Math.ceil(ctx.chartTextScale*config.legendBlockSize), ypos - ((Math.ceil(ctx.chartTextScale*config.legendFontSize)) / 2));
+						ctx.stroke();
+				
+						ctx.fill();
 
+						if(config.pointDot) {
+							ctx.beginPath();
+				 			ctx.fillStyle=setOptionValue(true,false,1,"LEGENDMARKERFILLCOLOR",ctx,data,undefined,data.datasets[orderi].pointColor,config.defaultStrokeColor,"pointColor",orderi,-1,{nullvalue: true} );
+							ctx.strokeStyle=setOptionValue(true,false,1,"LEGENDMARKERSTROKESTYLE",ctx,data,undefined,data.datasets[orderi].pointStrokeColor,config.defaultStrokeColor,"pointStrokeColor",orderi,-1,{nullvalue: true} );
+							ctx.lineWidth=setOptionValue(true,false,ctx.chartLineScale,"LEGENDMARKERLINEWIDTH",ctx,data,undefined,data.datasets[orderi].pointDotStrokeWidth,config.pointDotStrokeWidth,"pointDotStrokeWidth",orderi,-1,{nullvalue: true} );
+        	               	
+							var markerShape=setOptionValue(true,false,1,"LEGENDMARKERSHAPE",ctx,data,undefined,data.datasets[orderi].markerShape,config.markerShape,"markerShape",orderi,-1,{nullvalue: true} );
+							var markerRadius=setOptionValue(true,false,ctx.chartSpaceScale,"LEGENDMARKERRADIUS",ctx,data,undefined,data.datasets[orderi].pointDotRadius,config.pointDotRadius,"pointDotRadius",orderi,-1,{nullvalue: true} );
+							var markerStrokeStyle=setOptionValue(true,false,1,"LEGENDMARKERSTROKESTYLE",ctx,data,undefined,data.datasets[orderi].pointDotStrokeStyle,config.pointDotStrokeStyle,"pointDotStrokeStyle",orderi,-1,{nullvalue: true} );
+							drawMarker(ctx,xpos + 2 + Math.ceil(ctx.chartTextScale*config.legendBlockSize)/2, ypos - ((Math.ceil(ctx.chartTextScale*config.legendFontSize)) / 2), markerShape,markerRadius,markerStrokeStyle);							
+						}
+						ctx.fill();
+        				}
+					ctx.restore();
+					ctx.save();
+					ctx.beginPath();
+					ctx.font = config.legendFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.legendFontSize)).toString() + "px " + config.legendFontFamily;
+					ctx.fillStyle = setOptionValue(true,false,1,"LEGENDFONTCOLOR",ctx,data,undefined,undefined,config.legendFontColor,"legendFontColor",orderi,-1,{nullvalue: true} );
+					ctx.textAlign = "left";
+					ctx.textBaseline = "bottom";
+					ctx.translate(xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize) + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenBoxAndText), ypos);
+					ctx.fillTextMultiLine(lgtxt, 0, 0, ctx.textBaseline, Math.ceil(ctx.chartTextScale*config.legendFontSize), true,config.detectMouseOnText,ctx,"LEGEND_TEXTMOUSE",0,xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize) + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenBoxAndText), ypos,orderi,-1);
+					ctx.restore();
 				}
-				ctx.restore();
-				ctx.save();
-				ctx.beginPath();
-				ctx.font = config.legendFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.legendFontSize)).toString() + "px " + config.legendFontFamily;
-				ctx.fillStyle = setOptionValue(true,false,1,"LEGENDFONTCOLOR",ctx,data,undefined,undefined,config.legendFontColor,"legendFontColor",orderi,-1,{nullvalue: true} );
-				ctx.textAlign = "left";
-				ctx.textBaseline = "bottom";
-				ctx.translate(xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize) + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenBoxAndText), ypos);
-				ctx.fillTextMultiLine(lgtxt, 0, 0, ctx.textBaseline, Math.ceil(ctx.chartTextScale*config.legendFontSize), true,config.detectMouseOnText,ctx,"LEGEND_TEXTMOUSE",0,xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize) + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenBoxAndText), ypos,orderi,-1);
-				ctx.restore();
 			}
 		}
-	}
 };
 
-function measureLegend(ctx,config,widestLegend,highestLegend,nbLegendLines,nbLegendCols) {
+function measureLegend(data,ctx,config,widestLegend,highestLegend,nbLegendLines,nbLegendCols,availableLegendWidth) {
+
 
 	var legendWidth=0;
 	var legendHeight=0;
@@ -7570,7 +7583,8 @@ function measureLegend(ctx,config,widestLegend,highestLegend,nbLegendLines,nbLeg
 		legendBackgroundColorXPos:legendBackgroundColorXPos,
 		legendBackgroundColorYPos:legendBackgroundColorYPos,
 		legendBorderXPos:legendBorderXPos,
-		legendBorderYPos:legendBorderYPos
+		legendBorderYPos:legendBorderYPos,
+		elementMsr : null
 	};
 };
 
@@ -8677,3 +8691,4 @@ if(generate){
 if(generate)console.log("};");
 	return newData;
 }
+
