@@ -356,8 +356,7 @@ function measureLegend(data,ctx,config,widestLegend,highestLegend,nbLegendLines,
 				}
 			} else if(elementMsr[i].width > 0 && typeof elementMsr[i].element.elementWidth=="string") {
 
- console.log("Correct width of elt  "+i+" "+elementMsr[i].element.elementWidth+" "+elementMsr[i].width);
-
+ 
 				for(j=i+1;j<cntLegend;j++) {
 					if(elementMsr[j].width>0 && typeof elementMsr[j].element.elementWidth=="string" && elementMsr[i].element.elementWidth==elementMsr[j].element.elementWidth) {
 						if(elementMsr[j].width>elementMsr[i].width) {
@@ -371,8 +370,7 @@ function measureLegend(data,ctx,config,widestLegend,highestLegend,nbLegendLines,
 						}
 					}					
 				}
- console.log("After : "+elementMsr[i].width);
-			}
+ 			}
 			if(typeof elementMsr[i].element.elementHeight=="number" && elementMsr[i].height>0)
 			{
 				if(elementMsr[i].height < elementMsr[i].element.elementHeight) {
