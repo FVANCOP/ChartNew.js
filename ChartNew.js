@@ -1619,7 +1619,8 @@ window.Chart = function(context) {
 			extrapolateMissingData: true,
 			onAnimationComplete: null,
 			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3%>",
-			pointHitDetectionRadius : 10
+			pointHitDetectionRadius : 10,
+      xAxisMiddle : false
 		};
 		// merge annotate defaults
 		if(isIE()<9 && isIE() != false)chart.Line.defaults = mergeChartConfig(chart.defaults.IExplorer8, chart.Line.defaults);
@@ -3496,15 +3497,21 @@ window.Chart = function(context) {
 					} else {
 						ctx.textAlign = "center";
 					}
-					for (var i = 0; i < data.labels.length; i++) {
+          var decal=0;
+          var subloop=0;
+          if(config.xAxisMiddle==true) {
+            decal=valueHop/2;
+            subloop=1;
+          }
+					for (var i = 0; i < data.labels.length-subloop; i++) {
 						if(showLabels(ctx,data,config,i)){
 							ctx.save();
 							if (msr.rotateLabels > 0) {
-								ctx.translate(yAxisPosX + i * valueHop - msr.highestXLabel / 2, msr.xLabelPos);
+								ctx.translate(yAxisPosX + i * valueHop - msr.highestXLabel / 2 + decal, msr.xLabelPos);
 								ctx.rotate(-((msr.rotateLabels + 180*(msr.rotateLabels>90)) * (Math.PI / 180)));
-								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XSCALE_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + i * valueHop - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
+								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XSCALE_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + i * valueHop - msr.highestXLabel / 2 + decal, msr.xLabelPos,i,-1);
 							} else {
-								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), yAxisPosX + i * valueHop, msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XSCALE_TEXTMOUSE",0,0,0,i,-1);
+								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), yAxisPosX + i * valueHop + decal, msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XSCALE_TEXTMOUSE",0,0,0,i,-1);
 							}
 							ctx.restore();
 						}
@@ -7402,9 +7409,6 @@ function drawLegend(legendMsr,data,config,ctx,typegraph,cntiter) {
 	ctx.restore();
 
 
-	if(typeof addInsDrawLegend=="function" && typeof data.legend=="object") {
-		addInsDrawLegend(legendMsr,data,config,ctx,typegraph,cntiter);
-	} else {
 		var xpos,ypos,fromi,orderi,i,tpof,lgtxt,nbcols;
 		var lgdbox=legendMsr.legendBox;
 
@@ -7488,7 +7492,6 @@ function drawLegend(legendMsr,data,config,ctx,typegraph,cntiter) {
 				}
 			}
 		}
-	}
 };
 
 function measureLegend(data,ctx,config,widestLegend,highestLegend,nbLegendLines,nbLegendCols,availableLegendWidth) {
