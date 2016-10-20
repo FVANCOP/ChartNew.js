@@ -1939,6 +1939,7 @@ window.Chart = function(context) {
 	chart.defaults.commonOptions = {
 		generateConvertedData : false,
 		displayData : true,
+    showZeroValue : true,
 		chartTextScale : 1,
 		chartLineScale : 1,
 		chartSpaceScale : 1,
@@ -3765,6 +3766,7 @@ window.Chart = function(context) {
 					var currentAnimPc = animationCorrection(animPc, data, config, i, j, false).animVal;
 					if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
 					if ((typeof data.datasets[i].data[j] == 'undefined') || 1*data.datasets[i].data[j] == 0 ) continue;
+			    if (Math.abs(data.datasets[i].data[j]) < config.zeroValue && config.showZeroValue==false) continue;
 					if(typeof prevTopPos[j]=="undefined"){
 						prevTopPos[j]=statData[statData[i][j].firstNotMissing][j].yPosBottom;
 						prevTopNeg[j]=statData[statData[i][j].firstNotMissing][j].yPosBottom;
@@ -4215,6 +4217,8 @@ window.Chart = function(context) {
 					var currentAnimPc = animationCorrection(animPc, data, config, i, j, false).animVal;
 					if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
 					if ((typeof(data.datasets[i].data[j]) == 'undefined') || 1*data.datasets[i].data[j] == 0 ) continue;
+			    if (Math.abs(data.datasets[i].data[j]) < config.zeroValue && config.showZeroValue==false) continue;
+
 					if(typeof prevLeftPos[j]=="undefined"){
 						prevLeftPos[j]=statData[statData[i][j].firstNotMissing][j].xPosLeft;
 						prevLeftNeg[j]=statData[statData[i][j].firstNotMissing][j].xPosLeft;
@@ -4620,6 +4624,7 @@ window.Chart = function(context) {
 					ctx.save();
 					ctx.lineWidth=Math.ceil(ctx.chartLineScale*setOptionValue(true,true,1,"BARSTROKEWIDTH",ctx,data,statData,data.datasets[i].barStrokeWidth,config.barStrokeWidth,"barStrokeWidth",i,j,{animationValue: currentAnimPc, xPosLeft : statData[i][j].xPosLeft, yPosBottom : statData[i][j].yPosBottom, xPosRight : statData[i][j].xPosLeft+barWidth, yPosTop : statData[i][j].yPosBottom-barHeight} ));				
 					if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
+					  if (Math.abs(data.datasets[i].data[j]) >= config.zeroValue || config.showZeroValue==true) {
 						currentAnimPc = animationCorrection(animPc, data, config, i, j, false).animVal;
 						if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
 						if(1*data.datasets[i].data[j]>=0) barHeight = currentAnimPc * (statData[i][j].barHeight) - (Math.ceil(ctx.chartLineScale*ctx.lineWidth) / 2);
@@ -4627,6 +4632,7 @@ window.Chart = function(context) {
 						ctx.fillStyle=setOptionValue(true,true,1,"COLOR",ctx,data,statData,data.datasets[i].fillColor,config.defaultFillColor,"fillColor",i,j,{animationValue: currentAnimPc, xPosLeft : statData[i][j].xPosLeft, yPosBottom : statData[i][j].yPosBottom, xPosRight : statData[i][j].xPosLeft+barWidth, yPosTop : statData[i][j].yPosBottom-barHeight} );
 						ctx.strokeStyle=setOptionValue(true,true,1,"STROKECOLOR",ctx,data,statData,data.datasets[i].strokeColor,config.defaultStrokeColor,"strokeColor",i,j,{nullvalue : null} );
 						roundRect(ctx, statData[i][j].xPosLeft, statData[i][j].yPosBottom, barWidth, barHeight, config.barShowStroke, config.barBorderRadius,i,j,(data.datasets[i].data[j] < 0 ? -1  : 1));
+            }
 					}
 					ctx.restore();
 				}
@@ -5035,6 +5041,7 @@ window.Chart = function(context) {
 			var i,j,currentAnimPc,barHeight,fullHeight,sizeTop,sizeBottom,otherBarHeight,otherBarHeight2,decal;
 			for (i = 0; i < data.datasets.length; i++) {
 				for (j = 0; j < data.datasets[i].data.length; j++) {
+        
 					if(setOptionValue(true,true,1,"DISPLAYDATA",ctx,data,statData,data.datasets[i].displayData,config.displayData,"displayData",i,j,{nullvalue : null} )== false) continue;
 					if(setOptionValue(true,true,1,"DISPLAYDATA",ctx,data,statData,data.displayData,config.displayData,"displayData",j,-1,{nullvalue : null} )== false) continue;
 					ctx.save();
@@ -5047,8 +5054,10 @@ window.Chart = function(context) {
 					ctx.fillStyle=setOptionValue(true,true,1,"COLOR",ctx,data,statData,data.datasets[i].fillColor,config.defaultFillColor,"fillColor",i,j,{animationValue: currentAnimPc, xPosLeft : statData[i][j].xPosLeft, yPosBottom : statData[i][j].yPosBottom, xPosRight : statData[i][j].xPosLeft+barHeight, yPosTop : statData[i][j].yPosBottom} );
 					ctx.strokeStyle=setOptionValue(true,true,1,"STROKECOLOR",ctx,data,statData,data.datasets[i].strokeColor,config.defaultStrokeColor,"strokeColor",i,j,{nullvalue : null} );
 					if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
-						roundRect(ctx, statData[i][j].yPosTop, statData[i][j].xPosLeft , barWidth, barHeight, config.barShowStroke, config.barBorderRadius, 0,i,j,(data.datasets[i].data[j] < 0 ? -1  : 1));
-					}
+					  if (Math.abs(data.datasets[i].data[j]) >= config.zeroValue || config.showZeroValue==true) {
+  						roundRect(ctx, statData[i][j].yPosTop, statData[i][j].xPosLeft , barWidth, barHeight, config.barShowStroke, config.barBorderRadius, 0,i,j,(data.datasets[i].data[j] < 0 ? -1  : 1));
+            }	
+  				}
 					ctx.restore();
 				}
 			}
