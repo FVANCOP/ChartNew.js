@@ -1563,9 +1563,6 @@ window.Chart = function(context) {
 			inGraphDataFontSize: 12,
 			inGraphDataFontStyle: "normal",
 			inGraphDataFontColor: "#666",
-			drawXScaleLine: [{
-				position: "bottom"
-			}],
 			scaleOverlay: false,
 			scaleOverride: false,
 			scaleOverride2: false,
@@ -1655,12 +1652,16 @@ window.Chart = function(context) {
 			scaleSteps: null,
 			scaleStepWidth: null,
 			scaleStartValue: null,
+			scaleSteps2: null,
+			scaleStepWidth2: null,
+			scaleStartValue2: null,
 			scaleLineColor: "rgba(0,0,0,.1)",
 			scaleLineStyle: "solid",
 			scaleLineWidth: 1,
 			scaleShowLabels: true,
 			scaleShowLabels2: true,
 			scaleLabel: "<%=value%>",
+			scaleLabel2: "<%=value%>",
 			scaleFontFamily: "'Arial'",
 			scaleFontSize: 12,
 			scaleFontStyle: "normal",
@@ -2285,7 +2286,10 @@ window.Chart = function(context) {
 
 	chart.defaults.xyAxisCommonOptions = {
 		maxBarWidth : -1,
-		yAxisMinimumInterval: "none",
+  	drawXScaleLine: [{
+				position: "bottom"
+		}],
+    yAxisMinimumInterval: "none",
 		yAxisMinimumInterval2: "none",
 		yScaleLabelsMinimumWidth: 0,
 		xScaleLabelsMinimumWidth: 0,
@@ -2348,13 +2352,24 @@ window.Chart = function(context) {
 		yAxisUnitSpaceAfter: 5,
 		yAxisUnitBorders : false,
 		yAxisUnitBordersColor : "black",
-                yAxisUnitBordersradius : 0,
+    yAxisUnitBordersradius : 0,
 		yAxisUnitBordersXSpace : 3,
 		yAxisUnitBordersYSpace : 3,
 		yAxisUnitBordersSelection : 15,
 		yAxisUnitBordersWidth : 1,
 		yAxisUnitBordersStyle : "solid",
-		yAxisUnitBackgroundColor : "none"
+		yAxisUnitBackgroundColor : "none",
+    scaleMinorTickWidth : 1,
+    scaleMinorTickColor : "rgba(0,0,0,.05)",
+    scaleMinorTickStyle : "solid",
+    scaleMinorTickSizeTop : 3,
+    scaleMinorTickSizeBottom : 3,
+    scaleMinorTickSizeRight : 3,
+    scaleMinorTickSizeLeft : 3,
+    scaleMinorTickHorizontalCount : 0,
+    scaleMinorTickVerticalCount : 0,
+    scaleMinorTickVerticalLines : true,
+    scaleMinorTickHorizontalLines : true
 	};
 	var clear = function(c) {
 		c.clearRect(0, 0, width, height);
@@ -3349,8 +3364,8 @@ window.Chart = function(context) {
 		if(valueBounds.maxSteps>0 && valueBounds.minSteps>0) {
 			msr = setMeasures(data, config, ctx, ctx.canvas.height, ctx.canvas.width, calculatedScale.labels, calculatedScale2.labels, false, false, true, config.datasetFill, "Line");
 			var prevHeight=msr.availableHeight;
-			msr.availableHeight = msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom) - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop);
-			msr.availableWidth = msr.availableWidth - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) - Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight);
+			msr.availableHeight = msr.availableHeight - Math.ceil(ctx.chartLineScale*Math.max(config.scaleTickSizeBottom,config.scaleMinorTickSizeBottom*(config.scaleMinorTickHorizontalCount>0))) - Math.ceil(ctx.chartLineScale*Math.max(config.scaleTickSizeTop,config.scaleMinorTickSizeTop*(config.scaleMinorTickHorizontalCount>0)));
+			msr.availableWidth = msr.availableWidth - Math.ceil(ctx.chartLineScale*Math.max(config.scaleTickSizeLeft,config.scaleMinorTickSizeLeft*(config.scaleMinorTickVerticalCount>0))) - Math.ceil(ctx.chartLineScale*Math.max(config.scaleTickSizeRight,config.scaleMinorTickSizeRight*(config.scaleMinorTickVerticalCount>0)));
 			scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
 			scaleHop2 = Math.floor(msr.availableHeight / calculatedScale2.steps);
 			valueHop = Math.floor(msr.availableWidth / (data.labels.length - 1));
@@ -3360,10 +3375,9 @@ window.Chart = function(context) {
 			msr.rightNotUsableWidth+= (msr.availableWidth - (data.labels.length - 1) * valueHop);
 			msr.availableWidth = (data.labels.length - 1) * valueHop;
 			msr.availableHeight = (calculatedScale.steps) * scaleHop;
-  			yAxisPosX = msr.leftNotUsableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft);
-			xAxisPosY = msr.topNotUsableHeight + msr.availableHeight + Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop);
+ 			yAxisPosX = msr.leftNotUsableWidth + Math.ceil(ctx.chartLineScale*Math.max(config.scaleTickSizeLeft,config.scaleMinorTickSizeLeft*(config.scaleMinorTickVerticalCount>0)));
+			xAxisPosY = msr.topNotUsableHeight + msr.availableHeight + Math.ceil(ctx.chartLineScale*Math.max(config.scaleTickSizeTop,config.scaleMinorTickSizeTop*(config.scaleMinorTickHorizontalCount>0)));
 			drawLabels();
-
 			zeroY = calculateOffset(config.logarithmic, 0, calculatedScale, scaleHop);
 			if(typeof calculatedScale2 ==="object")zeroY2 = calculateOffset(config.logarithmic2, 0, calculatedScale2, scaleHop2);
 			initPassVariableData_part2(statData,data,config,ctx,{
@@ -3388,7 +3402,6 @@ window.Chart = function(context) {
 
 
 		function drawLines(animPc) {
-		
 			drawLinesDataset(animPc, data, config, ctx, statData,{xAxisPosY : xAxisPosY,yAxisPosX : yAxisPosX, valueHop : valueHop, nbValueHop : data.labels.length - 1 });
 			if (animPc >= 1) {
 				if (typeof drawMath == "function") {
@@ -3406,79 +3419,11 @@ window.Chart = function(context) {
 				}
 			}
 		};
+    
+    function drawScale() {
+      drawGridScale(ctx,data,config,msr,yAxisPosX,xAxisPosY,zeroY,valueHop,scaleHop,calculatedScale.steps,data.labels.length+0);
+    };
 
-		function drawScale() {
-			//X axis line
-			// if the xScale should be drawn
-			if (config.drawXScaleLine !== false) {
-				for (var s = 0; s < config.drawXScaleLine.length; s++) {
-					// get special lineWidth and lineColor for this xScaleLine
-					ctx.lineWidth = config.drawXScaleLine[s].lineWidth ? config.drawXScaleLine[s].lineWidth : Math.ceil(ctx.chartLineScale*config.scaleLineWidth);
-					ctx.strokeStyle = config.drawXScaleLine[s].lineColor ? config.drawXScaleLine[s].lineColor : config.scaleLineColor;
-					ctx.beginPath();
-					var yPosXScale;
-					switch (config.drawXScaleLine[s].position) {
-						case "bottom":
-							yPosXScale = xAxisPosY;
-							break;
-						case "top":
-							yPosXScale = xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop);
-							break;
-						case "0":
-						case 0:
-							// check if zero exists
-							if (zeroY != 0) yPosXScale = xAxisPosY - zeroY;
-							break;
-					}
-					// draw the scale line
-					ctx.moveTo(yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), yPosXScale);
-					ctx.lineTo(yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), yPosXScale);
-					ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
-					ctx.stroke();
-					ctx.setLineDash([]);
- 
-				}
-			}
-			for (var i = 0; i < data.labels.length; i++) {
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom));
-				ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth);
-				ctx.strokeStyle = config.scaleGridLineColor;
-				//Check i isnt 0, so we dont go over the Y axis twice.
-				if (config.scaleShowGridLines && i > 0 && i % config.scaleXGridLinesStep == 0) {
-					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop));
-				} else {
-					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY);
-				}
-				ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
-				ctx.stroke();
-            			ctx.setLineDash([]);
-            			
-			}
-			//Y axis
-			ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleLineWidth);
-			ctx.strokeStyle = config.scaleLineColor;
-			ctx.beginPath();
-			ctx.moveTo(yAxisPosX, xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom));
-			ctx.lineTo(yAxisPosX, xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop));
-			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
-			ctx.stroke();
-			ctx.setLineDash([]);
-			for (var j = 0; j < calculatedScale.steps; j++) {
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), xAxisPosY - ((j + 1) * scaleHop));
-				ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth);
-				ctx.strokeStyle = config.scaleGridLineColor;
-				if (config.scaleShowGridLines && (j+1) % config.scaleYGridLinesStep == 0) {
-					ctx.lineTo(yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), xAxisPosY - ((j + 1) * scaleHop));
-				} else {
-					ctx.lineTo(yAxisPosX, xAxisPosY - ((j + 1) * scaleHop));
-				}
-				ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
-				ctx.stroke();
-            			ctx.setLineDash([]);
-			}
-		};
 
 		function drawLabels() {
 			ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
@@ -3675,7 +3620,7 @@ window.Chart = function(context) {
 		};
 	};
 	var StackedBar = function(data, config, ctx) {
-		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
+		var maxSize, scaleHop, scaleHop2, calculatedScale,calculatedScale2, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
 
 		ctx.tpchart="StackedBar";
@@ -3695,9 +3640,10 @@ window.Chart = function(context) {
 		if(valueBounds.maxSteps>0 && valueBounds.minSteps>0) {
 			//Check and set the scale
 			labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
+			labelTemplateString2 = (config.scaleShowLabels2) ? config.scaleLabel2 : "";
+      
 			if (!config.scaleOverride) {
-				calculatedScale = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
-				msr = setMeasures(data, config, ctx, ctx.canvas.height, ctx.canvas.width, calculatedScale.labels, null, true, false, true, true, "StackedBar");
+        calculatedScale = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
 			} else {
 				var scaleStartValue= setOptionValue(true,true,1,"SCALESTARTVALUE",ctx,data,statData,undefined,config.scaleStartValue,"scaleStartValue",-1,-1,{nullValue : true} );
 				var scaleSteps =setOptionValue(true,true,1,"SCALESTEPS",ctx,data,statData,undefined,config.scaleSteps,"scaleSteps",-1,-1,{nullValue : true} );
@@ -3717,13 +3663,50 @@ window.Chart = function(context) {
 						},config));
 					}
 				}
-				msr = setMeasures(data, config, ctx, ctx.canvas.height, ctx.canvas.width, calculatedScale.labels, null, true, false, true, true, "StackedBar");
-			}
+        
+      }
+	    if (valueBounds.dbAxis || config.forceSecondScale) {
+
+  			if (!config.scaleOverride2) {
+          calculatedScale2 = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue2, valueBounds.minValue2, labelTemplateString2);
+  			} else {
+  				var scaleStartValue2= setOptionValue(true,true,1,"SCALESTARTVALUE2",ctx,data,statData,undefined,config.scaleStartValue2,"scaleStartValue2",-1,-1,{nullValue : true} );
+	  			var scaleSteps2 =setOptionValue(true,true,1,"SCALESTEPS2",ctx,data,statData,undefined,config.scaleSteps2,"scaleSteps2",-1,-1,{nullValue : true} );
+				  var scaleStepWidth2 = setOptionValue(true,true,1,"SCALESTEPWIDTH2",ctx,data,statData,undefined,config.scaleStepWidth2,"scaleStepWidth2",-1,-1,{nullValue : true} );
+
+			  	calculatedScale2 = {
+		  			steps: scaleSteps2,
+	  				stepValue: scaleStepWidth2,
+  					graphMin: scaleStartValue2,
+					  labels: []
+				  }
+
+				  for (var i = 0; i <= calculatedScale2.steps; i++) {
+					  if (labelTemplateString2) {
+						  calculatedScale2.labels.push(tmpl(labelTemplateString2, {
+							  value: fmtChartJS(config, 1 * ((scaleStartValue2 + (scaleStepWidth2 * i)).toFixed(getDecimalPlaces(scaleStepWidth2))), config.fmtYLabel)
+						  },config));
+					  }
+				  }
+
+			  }
+      } else {
+   				calculatedScale2 = {
+					steps: 0,
+					stepValue: 0,
+					graphMin: 0,
+					graphMax: 0,
+					labels: null
+				}
+
+      } 
+			msr = setMeasures(data, config, ctx, ctx.canvas.height, ctx.canvas.width, calculatedScale.labels, calculatedScale2.labels, true, false, true, true, "StackedBar");
 			var prevHeight=msr.availableHeight;
        	
 			msr.availableHeight = msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom) - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop);
 			msr.availableWidth = msr.availableWidth - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) - Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight);
 			scaleHop = Math.floor(msr.availableHeight / calculatedScale.steps);
+			scaleHop2 = Math.floor(msr.availableHeight / calculatedScale2.steps);
 			valueHop = Math.floor(msr.availableWidth / (data.labels.length));
 			if (valueHop == 0 || config.fullWidthGraph) valueHop = (msr.availableWidth / data.labels.length);
 			
@@ -3747,7 +3730,6 @@ window.Chart = function(context) {
 
 			var zeroY = 0;
 			var zeroY2 = 0;
-
 			zeroY = calculateOffset(false, 0, calculatedScale, scaleHop);
 			if(typeof calculatedScale2 ==="object") zeroY2 = calculateOffset(config.logarithmic2, 0, calculatedScale2, scaleHop2);       	
 			drawLabels();
@@ -3758,8 +3740,10 @@ window.Chart = function(context) {
 				logarithmic  : false,
 				logarithmic2 : false,
 				calculatedScale : calculatedScale,
+				calculatedScale2 : calculatedScale2,
 				additionalSpaceBetweenBars : additionalSpaceBetweenBars,
 				scaleHop : scaleHop,
+				scaleHop2 : scaleHop2,
 				valueHop : valueHop,
 				yAxisPosX : yAxisPosX,
 				xAxisPosY : xAxisPosY,
@@ -3868,58 +3852,10 @@ window.Chart = function(context) {
 				}
 			}
 		};
-
-		function drawScale() {
-			//X axis line                                                          
-			ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleLineWidth);
-			ctx.strokeStyle = config.scaleLineColor;
-			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
-			ctx.beginPath();
-			ctx.moveTo(yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), xAxisPosY);
-			ctx.lineTo(yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), xAxisPosY);
-			ctx.stroke();
-			ctx.setLineDash([]);
-			ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
-			for (var i = 0; i < data.labels.length; i++) {
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom));
-				ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth);
-				ctx.strokeStyle = config.scaleGridLineColor;
-				//Check i isnt 0, so we dont go over the Y axis twice.
-				if (config.scaleShowGridLines && i > 0 && i % config.scaleXGridLinesStep == 0) {
-					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop));
-				} else {
-					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY);
-				}
-				ctx.stroke();
-			}
-			ctx.setLineDash([]);
-			
-			//Y axis
-			ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleLineWidth);
-			ctx.strokeStyle = config.scaleLineColor;
-			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
-			ctx.beginPath();
-			ctx.moveTo(yAxisPosX, xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom));
-			ctx.lineTo(yAxisPosX, xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop));
-			ctx.stroke();
-			ctx.setLineDash([]);
-			
-			ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
-			for (var j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale.steps; j++) {
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), xAxisPosY - ((j + 1) * scaleHop));
-				ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth);
-				ctx.strokeStyle = config.scaleGridLineColor;
-				if (config.scaleShowGridLines && (j+1) % config.scaleYGridLinesStep == 0) {
-					ctx.lineTo(yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), xAxisPosY - ((j + 1) * scaleHop));
-				} else {
-					ctx.lineTo(yAxisPosX, xAxisPosY - ((j + 1) * scaleHop));
-				}
-				ctx.stroke();
-			}
-			ctx.setLineDash([]);
-		};
+    
+    function drawScale() {
+      drawGridScale(ctx,data,config,msr,yAxisPosX,xAxisPosY,zeroY,valueHop,scaleHop,calculatedScale.steps,data.labels.length+1);
+    };
 
 		function drawLabels() {
 			ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
@@ -3991,13 +3927,23 @@ window.Chart = function(context) {
 							ctx.textAlign = "right";
 							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
 						}
-						if (config.yAxisRight) {
+						if (config.yAxisRight && !(valueBounds.dbAxis || config.forceSecondScale) ) {
 							ctx.textAlign = "left";
 							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
 						}
 					}
 				}
 			}
+
+			if (config.yAxisRight && (valueBounds.dbAxis || config.forceSecondScale)) {
+				for (j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale2.steps; j++) {
+					if (config.scaleShowLabels) {
+						ctx.textAlign = "left";
+						ctx.fillTextMultiLine(calculatedScale2.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop2), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+					}
+				}
+			}
+
 		};
 
 		function getValueBounds() {
@@ -4006,32 +3952,79 @@ window.Chart = function(context) {
 			var maxValn = -Number.MAX_VALUE;
 			var minValn = Number.MAX_VALUE;
 
+			var maxValp2 = -Number.MAX_VALUE;
+			var minValp2 = Number.MAX_VALUE;
+			var maxValn2 = -Number.MAX_VALUE;
+			var minValn2 = Number.MAX_VALUE;
+
+			var secondAxis = false;
+			var firstAxis = false;
+
+
 			var tempp=[];
 			var tempn=[];
+			var tempp2=[];
+			var tempn2=[];
+      
 			var inp=0;
 			var inn=0;
+			var inp2=0;
+			var inn2=0;
 
 			for (var i = 0; i < data.datasets.length; i++) {
 				for (var j = 0; j < data.datasets[i].data.length; j++) {
-					if(1 * data.datasets[i].data[j] > 0) {
-						if(statData[i][0].tpchart=="Bar") {
-							if(typeof tempp[j] == "undefined") tempp[j]=0;
-							tempp[j] += 1 * data.datasets[i].data[j];
-							maxValp=Math.max(maxValp,tempp[j]);
-						} else maxValp=Math.max(maxValp,1 * data.datasets[i].data[j]);
-						minValp=Math.min(minValp,1 * data.datasets[i].data[j]);
-						inp=1;
-					} else if(typeof (1 * data.datasets[i].data[j])==="number" && typeof data.datasets[i].data[j]!="undefined") {
-						if(statData[i][0].tpchart=="Bar") {
-							if(typeof tempn[j] == "undefined") tempn[j]=0;
-							tempn[j] += (1 * data.datasets[i].data[j]);
-							minValn=Math.min(minValn,tempn[j]);
-						} else minValn=Math.min(minValn,1 * data.datasets[i].data[j]);
-						maxValn=Math.max(maxValn,1 * data.datasets[i].data[j]);
-						inn=1;
-					}
+
+          if (data.datasets[i].axis == 2 && statData[i][0].tpchart=="Line") {
+           secondAxis=true;
+					 if(1 * data.datasets[i].data[j] > 0) {
+					 	 if(statData[i][0].tpchart=="Bar") {
+						   if(typeof tempp[j] == "undefined") tempp2[j]=0;
+							 tempp2[j] += 1 * data.datasets[i].data[j];
+							 maxValp2=Math.max(maxValp2,tempp2[j]);
+						 } else maxValp2=Math.max(maxValp2,1 * data.datasets[i].data[j]);
+						 minValp2=Math.min(minValp2,1 * data.datasets[i].data[j]);
+						 inp2=1;
+					 } else if(typeof (1 * data.datasets[i].data[j])==="number" && typeof data.datasets[i].data[j]!="undefined") {
+					   if(statData[i][0].tpchart=="Bar") {
+							 if(typeof tempn2[j] == "undefined") tempn2[j]=0;
+							 tempn2[j] += (1 * data.datasets[i].data[j]);
+							 minValn2=Math.min(minValn2,tempn2[j]);
+						 } else minValn2=Math.min(minValn2,1 * data.datasets[i].data[j]);
+						 maxValn2=Math.max(maxValn2,1 * data.datasets[i].data[j]);
+						 inn2=1;
+					 }
+
+
+          } else {
+           firstAxis=true;
+					 if(1 * data.datasets[i].data[j] > 0) {
+					 	 if(statData[i][0].tpchart=="Bar") {
+						   if(typeof tempp[j] == "undefined") tempp[j]=0;
+							 tempp[j] += 1 * data.datasets[i].data[j];
+							 maxValp=Math.max(maxValp,tempp[j]);
+						 } else maxValp=Math.max(maxValp,1 * data.datasets[i].data[j]);
+						 minValp=Math.min(minValp,1 * data.datasets[i].data[j]);
+						 inp=1;
+					 } else if(typeof (1 * data.datasets[i].data[j])==="number" && typeof data.datasets[i].data[j]!="undefined") {
+					   if(statData[i][0].tpchart=="Bar") {
+							 if(typeof tempn[j] == "undefined") tempn[j]=0;
+							 tempn[j] += (1 * data.datasets[i].data[j]);
+							 minValn=Math.min(minValn,tempn[j]);
+						 } else minValn=Math.min(minValn,1 * data.datasets[i].data[j]);
+						 maxValn=Math.max(maxValn,1 * data.datasets[i].data[j]);
+						 inn=1;
+					 }
+         }
+
 				}
 			};
+
+ 			if (!firstAxis && secondAxis) {
+				upperValue = upperValue2;
+				lowerValue = lowerValue2;
+			}
+
+
 			var upperValue, lowerValue;
 			if (inp==0){upperValue=maxValn;lowerValue=minValn;}
 			else if(inn==0) { upperValue=maxValp;lowerValue=minValp;}
@@ -4054,15 +4047,44 @@ window.Chart = function(context) {
 				}
 			}
 
+			var upperValue2, lowerValue2;
+      if(secondAxis) {
+			  if (inp2==0){upperValue2=maxValn2;lowerValue2=minValn2;}
+			  else if(inn2==0) { upperValue2=maxValp2;lowerValue2=minValp2;}
+			  else { upperValue2=maxValp2;lowerValue2=minValn2; }
+
+			  if(typeof config.graphMin2=="function")lowerValue2= setOptionValue(true,true,1,"GRAPHMIN2",ctx,data,statData,undefined,config.graphMin2,"graphMin2",-1,-1,{nullValue : true})
+			  else if (!isNaN(config.graphMin2)) lowerValue2 = config.graphMin2;
+			  if(typeof config.graphMax2=="function") upperValue2= setOptionValue(true,true,1,"GRAPHMAX2",ctx,data,statData,undefined,config.graphMax2,"graphMax2",-1,-1,{nullValue : true})
+			  else if (!isNaN(config.graphMax2)) upperValue2 = config.graphMax2;
+
+			  if(upperValue2<lowerValue2){upperValue2=0;lowerValue2=0;}
+			  if (Math.abs(upperValue2 - lowerValue2) < config.zeroValue) {
+				  if(Math.abs(upperValue2)< config.zeroValue) upperValue2 = .9;
+				  if(upperValue2>0) {
+					  upperValue2=upperValue2*1.1;
+					  lowerValue2=lowerValue2*0.9;
+				  } else {
+					  upperValue2=upperValue2*0.9;
+					  lowerValue2=lowerValue2*1.1;
+				  }
+			  }
+      }
+
 			labelHeight = (Math.ceil(ctx.chartTextScale*config.scaleFontSize));
 			scaleHeight = msr.availableHeight;
 			var maxSteps = Math.floor((scaleHeight / (labelHeight * 0.66)));
 			var minSteps = Math.floor((scaleHeight / labelHeight * 0.5));
+
 			if(upperValue<lowerValue){lowerValue=upperValue-1;}
+			if(upperValue2<lowerValue2){lowerValue2=upperValue2-1;}
 
 			return {
 				maxValue: upperValue,
 				minValue: lowerValue,
+				maxValue2: upperValue2,
+				minValue2: lowerValue2,
+				dbAxis: secondAxis,
 				maxSteps: maxSteps,
 				minSteps: minSteps
 			};
@@ -4274,57 +4296,10 @@ window.Chart = function(context) {
 		};
 
 		function drawScale() {
-			//X axis line                                                          
-			ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleLineWidth);
-			ctx.strokeStyle = config.scaleLineColor;
-			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
-			ctx.beginPath();
-			ctx.moveTo(yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), xAxisPosY);
-			ctx.lineTo(yAxisPosX + msr.availableWidth, xAxisPosY);
-			ctx.stroke();
-			ctx.setLineDash([]);
-			
-			ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
-			for (var i = ((config.showYAxisMin) ? -1 : 0); i < calculatedScale.steps; i++) {
-				if (i >= 0) {
-					ctx.beginPath();
-					ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom));
-					ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth);
-					ctx.strokeStyle = config.scaleGridLineColor;
-					//Check i isnt 0, so we dont go over the Y axis twice.
-					if (config.scaleShowGridLines && i > 0 && i % config.scaleXGridLinesStep == 0) {
-						ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop));
-					} else {
-						ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY);
-					}
-					ctx.stroke();
-				}
-				ctx.setLineDash([]);
-			}
-			//Y axis
-			ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleLineWidth);
-			ctx.strokeStyle = config.scaleLineColor;
-			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
-			ctx.beginPath();
-			ctx.moveTo(yAxisPosX, xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom));
-			ctx.lineTo(yAxisPosX, xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop));
-			ctx.stroke();
-			ctx.setLineDash([]);
-			ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
-			for (var j = 0; j < data.labels.length; j++) {
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), xAxisPosY - ((j + 1) * scaleHop));
-				ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth);
-				ctx.strokeStyle = config.scaleGridLineColor;
-				if (config.scaleShowGridLines && (j+1) % config.scaleYGridLinesStep == 0) {
-					ctx.lineTo(yAxisPosX + msr.availableWidth, xAxisPosY - ((j + 1) * scaleHop));
-				} else {
-					ctx.lineTo(yAxisPosX, xAxisPosY - ((j + 1) * scaleHop));
-				}
-				ctx.stroke();
-			}
-			ctx.setLineDash([]);
-		};
+      drawGridScale(ctx,data,config,msr,yAxisPosX,xAxisPosY,zeroY,valueHop,scaleHop,data.labels.length+0,calculatedScale.steps+1);
+    };
+
+
 
 		function drawLabels() {
 			ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
@@ -4775,59 +4750,10 @@ window.Chart = function(context) {
 			ctx.setLineDash([]);
 		};
 
-		function drawScale() {
-			//X axis line                                                          
-			ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleLineWidth);
-			ctx.strokeStyle = config.scaleLineColor;
-			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
+    function drawScale() {
+      drawGridScale(ctx,data,config,msr,yAxisPosX,xAxisPosY,zeroY,valueHop,scaleHop,calculatedScale.steps,data.labels.length+1);
+    };
 
-			ctx.beginPath();
-			ctx.moveTo(yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), xAxisPosY);
-			ctx.lineTo(yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), xAxisPosY);
-			ctx.stroke();
-			ctx.setLineDash([]);
-			
-			ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
-			for (var i = 0; i < data.labels.length; i++) {
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom));
-				ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth);
-				ctx.strokeStyle = config.scaleGridLineColor;
-				//Check i isnt 0, so we dont go over the Y axis twice.
-				if (config.scaleShowGridLines && i > 0 && i % config.scaleXGridLinesStep == 0) {
-					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop));
-				} else {
-					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY);
-				}
-				ctx.stroke();
-			}
-			ctx.setLineDash([]);
-			
-			//Y axis
-			ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleLineWidth);
-			ctx.strokeStyle = config.scaleLineColor;
-			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
-			ctx.beginPath();
-			ctx.moveTo(yAxisPosX, xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom));
-			ctx.lineTo(yAxisPosX, xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop));
-			ctx.stroke();
-			ctx.setLineDash([]);
-			
-			ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
-			for (var j = 0; j < calculatedScale.steps; j++) {
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), xAxisPosY - ((j + 1) * scaleHop));
-				ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth);
-				ctx.strokeStyle = config.scaleGridLineColor;
-				if (config.scaleShowGridLines && (j+1) % config.scaleYGridLinesStep == 0) {
-					ctx.lineTo(yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), xAxisPosY - ((j + 1) * scaleHop));
-				} else {
-					ctx.lineTo(yAxisPosX, xAxisPosY - ((j + 1) * scaleHop));
-				}
-				ctx.stroke();
-			}
-			ctx.setLineDash([]);
-		};
 
 		function drawLabels() {
 			ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
@@ -4916,6 +4842,7 @@ window.Chart = function(context) {
 		};
 
 		function getValueBounds() {
+
 			var upperValue = -Number.MAX_VALUE;
 			var lowerValue = Number.MAX_VALUE;
 			var upperValue2 = -Number.MAX_VALUE;
@@ -4971,7 +4898,6 @@ window.Chart = function(context) {
 			else if (!isNaN(config.graphMin)) lowerValue = config.graphMin;
 			if(typeof config.graphMax=="function") upperValue= setOptionValue(true,true,1,"GRAPHMAX",ctx,data,statData,undefined,config.graphMax,"graphMax",-1,-1,{nullValue : true})
 			else if (!isNaN(config.graphMax)) upperValue = config.graphMax;
-
 			if (secondAxis) {
 				if(upperValue2<lowerValue2){upperValue2=0;lowerValue2=0;}
 				if (Math.abs(upperValue2 - lowerValue2) < config.zeroValue) {
@@ -4984,9 +4910,9 @@ window.Chart = function(context) {
 						lowerValue2=lowerValue2*1.1;
 					}
 				}
-				if(typeof config.graphMin2=="function")lowerValue2= setOptionValue(true,true,1,"GRAPHMIN",ctx,data,statData,undefined,config.graphMin2,"graphMin2",-1,-1,{nullValue : true})
+				if(typeof config.graphMin2=="function")lowerValue2= setOptionValue(true,true,1,"GRAPHMIN2",ctx,data,statData,undefined,config.graphMin2,"graphMin2",-1,-1,{nullValue : true})
 				else if (!isNaN(config.graphMin2)) lowerValue2 = config.graphMin2;
-				if(typeof config.graphMax2=="function") upperValue2= setOptionValue(true,true,1,"GRAPHMAX",ctx,data,statData,undefined,config.graphMax2,"graphMax2",-1,-1,{nullValue : true})
+				if(typeof config.graphMax2=="function") upperValue2= setOptionValue(true,true,1,"GRAPHMAX2",ctx,data,statData,undefined,config.graphMax2,"graphMax2",-1,-1,{nullValue : true})
 				else if (!isNaN(config.graphMax2)) upperValue2 = config.graphMax2;
 			}
 			if (!firstAxis && secondAxis) {
@@ -5229,58 +5155,9 @@ window.Chart = function(context) {
 		};
 
 		function drawScale() {
-			//X axis line                                                          
-			ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleLineWidth);
-			ctx.strokeStyle = config.scaleLineColor;
-			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
-			ctx.beginPath();
-			ctx.moveTo(yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), xAxisPosY);
-			ctx.lineTo(yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), xAxisPosY);
-			ctx.stroke();
-			ctx.setLineDash([]);
-			
-			ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
-			for (var i = ((config.showYAxisMin) ? -1 : 0); i < calculatedScale.steps; i++) {
-				if (i >= 0) {
-					ctx.beginPath();
-					ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom));
-					ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth);
-					ctx.strokeStyle = config.scaleGridLineColor;
-					//Check i isnt 0, so we dont go over the Y axis twice.
-					if (config.scaleShowGridLines && i > 0 && i % config.scaleXGridLinesStep == 0) {
-						ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop));
-					} else {
-						ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY);
-					}
-					ctx.stroke();
-				}
-
-			}
-			ctx.setLineDash([]);
-			//Y axis
-			ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleLineWidth);
-			ctx.strokeStyle = config.scaleLineColor;
-			ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
-			ctx.beginPath();
-			ctx.moveTo(yAxisPosX, xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom));
-			ctx.lineTo(yAxisPosX, xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop));
-			ctx.stroke();
-			ctx.setLineDash([]);
-			ctx.setLineDash(lineStyleFn(config.scaleGridLineStyle));
-			for (var j = 0; j < data.labels.length; j++) {
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), xAxisPosY - ((j + 1) * scaleHop));
-				ctx.lineWidth = Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth);
-				ctx.strokeStyle = config.scaleGridLineColor;
-				if (config.scaleShowGridLines && (j+1) % config.scaleYGridLinesStep == 0) {
-					ctx.lineTo(yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), xAxisPosY - ((j + 1) * scaleHop));
-				} else {
-					ctx.lineTo(yAxisPosX, xAxisPosY - ((j + 1) * scaleHop));
-				}
-				ctx.stroke();
-			}
-			ctx.setLineDash([]);
-		};
+      drawGridScale(ctx,data,config,msr,yAxisPosX,xAxisPosY,zeroY,valueHop,scaleHop,data.labels.length+0,calculatedScale.steps+1);
+    };
+    
 
 		function drawLabels() {
 			ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
@@ -7155,14 +7032,14 @@ window.Chart = function(context) {
 		// ----------------------------------------------------		
                 // highLight : false, 	highLightMouseFunction : "mousemove",
 		// ----------------------------------------------------		
-		// - mouse sortir ou entrer dans une piÃƒÆ’Ã‚Â¨ce => Pas d'influence sur une action de souris. C'est liÃƒÆ’Ã‚Â© ÃƒÆ’Ã‚Â  l'action de annotateFunction
+		// - mouse sortir ou entrer dans une piÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨ce => Pas d'influence sur une action de souris. C'est liÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  l'action de annotateFunction
 		//      	annotateFunctionIn : inBar,
       		//		annotateFunctionOut : outBar,
 		// ----------------------------------------------------		
 		// - mouseDownRight	mouseDownLeft: null  mouseDownMiddle: null  
 		// - mouseMove: null 	mouseWheel : null    mouseOut: null (lorsque la souris sort du canvas) 	
 		// ----------------------------------------------------		
-		//  mouse sur texte : detectMouseOnText => Pas d'influence sur une action de souris. C'est liÃƒÆ’Ã‚Â© ÃƒÆ’Ã‚Â  une autre action;
+		//  mouse sur texte : detectMouseOnText => Pas d'influence sur une action de souris. C'est liÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  une autre action;
 		// ----------------------------------------------------		
 
 		function setAction(ctx,action){
@@ -7257,7 +7134,7 @@ window.Chart = function(context) {
 			};
 		}
 		
-		// initialiser les variables nÃƒÆ’Ã‚Â©cessaires pour l'action doMouseAction;
+		// initialiser les variables nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©cessaires pour l'action doMouseAction;
                 inMouseAction[ctx.ChartNewId]=false;
 		mouseActionData[ctx.ChartNewId]={ data : data, config: config, prevShow : -1 };
 	};
@@ -8586,6 +8463,128 @@ function calculatePieDrawingSize(ctx,msr,config,data,statData) {
 		midPieY : midPieY
 	};
 };
+
+function drawGridScale(ctx,data,config,msr,yAxisPosX,xAxisPosY,zeroY,valueHop,scaleHop,nbxlines,nbylines) {
+  var i,j,tickHop;
+
+  // draw X Scale
+  if (config.drawXScaleLine !== false) {
+	  for (var s = 0; s < config.drawXScaleLine.length; s++) {
+		  // get special lineWidth and lineColor for this xScaleLine
+			var yPosXScale;
+			switch (config.drawXScaleLine[s].position) {
+				case "bottom": yPosXScale = xAxisPosY; break;
+				case "top": 	 yPosXScale = xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop); break;
+				case "0":
+				case 0: 
+        	// check if zero exists
+          yPosXScale=xAxisPosY;
+					if (zeroY != 0) yPosXScale = xAxisPosY - zeroY;
+					break;
+			}
+      if(xAxisPosY!=yPosXScale)drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), xAxisPosY,yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), xAxisPosY ,Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
+      drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), yPosXScale,yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), yPosXScale,config.drawXScaleLine[s].lineWidth ? config.drawXScaleLine[s].lineWidth : Math.ceil(ctx.chartLineScale*config.scaleLineWidth),config.drawXScaleLine[s].lineColor ? config.drawXScaleLine[s].lineColor : config.scaleLineColor,config.scaleGridLineStyle);
+		}
+	}
+	// draw line parallel to X Scale;
+	for (i = 0; i < nbxlines; i++) {
+		if ((i==nbxlines-1 && config.scaleTickSizeTop>0) ||  config.scaleShowGridLines && (i+1) % config.scaleYGridLinesStep == 0) {
+      drawFirst=false;
+      drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), xAxisPosY - ((i + 1) * scaleHop),yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), xAxisPosY - ((i + 1) * scaleHop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
+	  } else {
+      if(config.scaleTickSizeLeft>0) {
+        drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft),xAxisPosY - ((i + 1) * scaleHop),yAxisPosX,xAxisPosY - ((i + 1) * scaleHop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
+      }
+      if(config.scaleTickSizeRight>0) {
+        drawScaleLine(ctx,yAxisPosX + msr.availableWidth,xAxisPosY - ((i + 1) * scaleHop),yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight),xAxisPosY - ((i + 1) * scaleHop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
+      }
+	  }          
+       
+    // Minor ticks ;
+    if(config.scaleMinorTickVerticalCount>0) {
+      tickHop=scaleHop/(config.scaleMinorTickVerticalCount+1);
+      for(j=1;j<config.scaleMinorTickVerticalCount+1;j++){
+        if(config.scaleMinorTickHorizontalLines) {
+          drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeLeft),xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeRight), xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.scaleMinorTickColor,config.scaleMinorTickStyle);
+        } else {
+          if(config.scaleMinorTickSizeLeft>0) {
+            drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeLeft),xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,yAxisPosX, xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.scaleMinorTickColor,config.scaleMinorTickStyle);
+          } 
+          if(config.scaleMinorTickSizeRight>0) {
+            drawScaleLine(ctx,yAxisPosX + msr.availableWidth,xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeRight), xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.scaleMinorTickColor,config.scaleMinorTickStyle);
+          } 
+        }
+      }
+    }
+  }
+
+	// Y Axis and lines parallel to Y axis;
+	for (i = 0; i < nbylines; i++) {
+		ctx.beginPath();
+		if (i==0 || (i==nbylines-1 && config.scaleTickSizeRight >0)  || (config.scaleShowGridLines && i % config.scaleXGridLinesStep == 0)) {
+      drawScaleLine(ctx,yAxisPosX + i * valueHop, xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom),yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
+		} else {
+      if(config.scaleTickSizeBottom>0) {
+        drawScaleLine(ctx,yAxisPosX + i * valueHop,xAxisPosY,yAxisPosX + i * valueHop,xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
+      }
+      if(config.scaleTickSizeTop>0) {
+        drawScaleLine(ctx,yAxisPosX + i * valueHop,xAxisPosY - msr.availableHeight ,yAxisPosX + i * valueHop,xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
+      }
+		}
+
+    // Minor ticks ;
+    if(i<nbylines-1) {
+      if(config.scaleMinorTickHorizontalCount>0) {
+        tickHop=valueHop/(config.scaleMinorTickHorizontalCount+1);
+        for(j=1;j<config.scaleMinorTickHorizontalCount+1;j++){
+          if(config.scaleMinorTickVerticalLines) {
+            drawScaleLine(ctx,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY - msr.availableHeight-Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeTop),yAxisPosX + i*valueHop+j*tickHop,xAxisPosY +Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeBottom),Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.scaleMinorTickColor,config.scaleMinorTickStyle);
+          } else {
+            if(config.scaleMinorTickSizeTop>0) {
+              drawScaleLine(ctx,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY - msr.availableHeight-Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeTop),yAxisPosX + i*valueHop+j*tickHop,xAxisPosY - msr.availableHeight,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.scaleMinorTickColor,config.scaleMinorTickStyle);
+            } 
+            if(config.scaleMinorTickSizeBottom>0) {
+              drawScaleLine(ctx,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY +Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeBottom),Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.scaleMinorTickColor,config.scaleMinorTickStyle);
+            } 
+          }
+        }
+      }
+    }
+	}
+};
+
+function drawScaleLine(ctx,x_start,y_start,x_end,y_end,lineWidth,lineColor,lineStyle) {
+	ctx.beginPath();
+	ctx.moveTo(x_start, y_start);
+	ctx.lineWidth = lineWidth;
+	ctx.strokeStyle = lineColor;
+	ctx.lineTo(x_end,y_end);
+	ctx.setLineDash(lineStyleFn(lineStyle));
+	ctx.stroke();
+  ctx.setLineDash([]);
+};
+
+
+function drawTick(ctx,direction,x_start,x_end,y_start,y_end,tickCount,tickSize,tickWidth,tickColor,tickStyle) {
+  var tickHop,i;
+  if(direction==0) tickHop=(x_end-x_start)/(tickCount+1);
+  else             tickHop=(y_end-y_start)/(tickCount+1);  
+  for(i=1;i<=tickCount;i++) {
+    ctx.beginPath();
+	  ctx.moveTo(x_start+i*tickHop*(direction==0),y_start+i*tickHop*(direction==1));
+	  ctx.lineWidth = Math.ceil(ctx.chartLineScale*tickWidth);
+	  ctx.strokeStyle = tickColor;
+	  //Check i isnt 0, so we dont go over the Y axis twice.
+	  ctx.lineTo(x_start+i*tickHop*(direction==0)+tickSize*(direction==1),y_start+i*tickHop*(direction==1)-tickSize*(direction==0));
+	  ctx.setLineDash(lineStyleFn(tickStyle));
+	  ctx.stroke();
+    ctx.setLineDash([]);
+          
+  }
+        
+        
+};
+
 
 function isBorder(option,position) {
 	var voption=option;
