@@ -191,12 +191,13 @@ Change history
 
 Future Improvements
 -------------------
+- add-ins with more possibilities for annotateDisplay (see issue #460)
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
 - non evolutive animation in Pie/Doughnut (https://github.com/nnnick/Chart.js/issues/357)
 - code reduction
 - dynamicDisplay defines a canvas.id when not defined; Avoid defining a canvas.id (issue 35)
 - see issue #128
-- doughnut(s) around Pie - see issue #227
+
 
 Known Bugs
 ----------
