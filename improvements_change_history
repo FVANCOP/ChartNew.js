@@ -1,7 +1,8 @@
 Change history
 --------------
 
-28/06/2016 - Vancoppenolle Francois - Version 3 is published
+23/10/2016 - Vancoppenolle Francois - minor ticks implemented; double axis implemented for stacked bar charts
+28/06/2016 - Vancoppenolle Francois - Version 3 is published : same data structure for all charts
 01/03/2016 - Vancoppenolle Francois - code associated to mouse actions rewritten
 24/02/2016 - Vancoppenolle Francois - special highLight through shapesInChart.js module
 16/02/2016 - Vancoppenolle Francois - highLight option added
