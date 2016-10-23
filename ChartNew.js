@@ -8526,12 +8526,14 @@ function drawGridScale(ctx,data,config,msr,yAxisPosX,xAxisPosY,zeroY,valueHop,sc
       }
     }
   }
-
+  var lineColor;
 	// Y Axis and lines parallel to Y axis;
 	for (i = 0; i < nbylines; i++) {
 		ctx.beginPath();
+    if(i==0)lineColor=config.scaleLineColor;
+    else lineColor=config.scaleGridLineColor; 
 		if (i==0 || (i==nbylines-1 && config.scaleTickSizeRight >0)  || (config.scaleShowGridLines && i % config.scaleXGridLinesStep == 0)) {
-      drawScaleLine(ctx,yAxisPosX + i * valueHop, xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom),yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
+      drawScaleLine(ctx,yAxisPosX + i * valueHop, xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom),yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop),Math.ceil(ctx.chartLineScale*(i==0 ? config.scaleLineWidth : config.scaleGridLineWidth)),i==0 ? config.scaleLineColor : config.scaleGridLineColor,config.scaleGridLineStyle);
 		} else {
       if(config.scaleTickSizeBottom>0) {
         drawScaleLine(ctx,yAxisPosX + i * valueHop,xAxisPosY,yAxisPosX + i * valueHop,xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
