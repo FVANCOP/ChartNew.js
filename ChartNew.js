@@ -2370,7 +2370,9 @@ window.Chart = function(context) {
     scaleMinorTickHorizontalCount : 0,
     scaleMinorTickVerticalCount : 0,
     scaleMinorTickVerticalLines : true,
-    scaleMinorTickHorizontalLines : true
+    scaleMinorTickHorizontalLines : true,
+    tickColor : "gridLine",
+    minorTickColor : "gridLine"
 	};
 	var clear = function(c) {
 		c.clearRect(0, 0, width, height);
@@ -8475,71 +8477,97 @@ function calculatePieDrawingSize(ctx,msr,config,data,statData) {
 
 function drawGridScale(ctx,data,config,msr,yAxisPosX,xAxisPosY,zeroY,valueHop,scaleHop,nbxlines,nbylines) {
   var i,j,tickHop;
+  var lineColor;
+  var lineWidth;
 
   // draw X Scale
+  var bottomDrawn=false;
+  var topDrawn=false;
   if (config.drawXScaleLine !== false) {
 	  for (var s = 0; s < config.drawXScaleLine.length; s++) {
 		  // get special lineWidth and lineColor for this xScaleLine
 			var yPosXScale;
 			switch (config.drawXScaleLine[s].position) {
-				case "bottom": yPosXScale = xAxisPosY; break;
-				case "top": 	 yPosXScale = xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop); break;
+				case "bottom": yPosXScale = xAxisPosY; bottomDrawn=true; break;
+				case "top": 	 yPosXScale = xAxisPosY - (nbxlines * scaleHop); topDrawn=true; break;
 				case "0":
 				case 0: 
         	// check if zero exists
           yPosXScale=xAxisPosY;
 					if (zeroY != 0) yPosXScale = xAxisPosY - zeroY;
+          else bottomDrawn=true;
+          if(Math.abs(yPosXScale - (xAxisPosY - (nbxlines * scaleHop)))<config.zeroValue)topDrawn=true;
 					break;
 			}
-      if(xAxisPosY!=yPosXScale)drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), xAxisPosY,yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), xAxisPosY ,Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
       drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), yPosXScale,yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), yPosXScale,config.drawXScaleLine[s].lineWidth ? config.drawXScaleLine[s].lineWidth : Math.ceil(ctx.chartLineScale*config.scaleLineWidth),config.drawXScaleLine[s].lineColor ? config.drawXScaleLine[s].lineColor : config.scaleLineColor,config.scaleGridLineStyle);
 		}
 	}
 	// draw line parallel to X Scale;
-	for (i = 0; i < nbxlines; i++) {
-		if ((i==nbxlines-1 && config.scaleTickSizeTop>0) ||  config.scaleShowGridLines && (i+1) % config.scaleYGridLinesStep == 0) {
-      drawFirst=false;
-      drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), xAxisPosY - ((i + 1) * scaleHop),yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), xAxisPosY - ((i + 1) * scaleHop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
-	  } else {
-      if(config.scaleTickSizeLeft>0) {
-        drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft),xAxisPosY - ((i + 1) * scaleHop),yAxisPosX,xAxisPosY - ((i + 1) * scaleHop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
-      }
-      if(config.scaleTickSizeRight>0) {
-        drawScaleLine(ctx,yAxisPosX + msr.availableWidth,xAxisPosY - ((i + 1) * scaleHop),yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight),xAxisPosY - ((i + 1) * scaleHop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
-      }
-	  }          
+  for (i = -1 + (bottomDrawn==true); i < nbxlines; i++) {
+    if(i< nbxlines-(topDrawn==true)) {
+		  if ((i==-1 && config.xAxisBottom) || (i==nbxlines-1 && config.xAxisTop) ||  config.scaleShowGridLines && (i+1) % config.scaleYGridLinesStep == 0) {
+        drawFirst=false;
+        if(config.scaleTickSizeLeft>0) {
+          drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft), xAxisPosY - ((i + 1) * scaleHop),yAxisPosX, xAxisPosY - ((i + 1) * scaleHop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.tickColor != "gridLine" && config.yAxisLeft ? config.scaleLineColor : config.scaleGridLineColor,config.scaleGridLineStyle);
+        }
+        drawScaleLine(ctx,yAxisPosX, xAxisPosY - ((i + 1) * scaleHop),yAxisPosX + msr.availableWidth, xAxisPosY - ((i + 1) * scaleHop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
+        if(config.scaleTickSizeRight>0) {
+          drawScaleLine(ctx,yAxisPosX + msr.availableWidth, xAxisPosY - ((i + 1) * scaleHop),yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), xAxisPosY - ((i + 1) * scaleHop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.tickColor != "gridLine" && config.yAxisRight ? config.scaleLineColor : config.scaleGridLineColor,config.scaleGridLineStyle);
+        }
+	    } else {
+        if(config.scaleTickSizeLeft>0) {
+          drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft),xAxisPosY - ((i + 1) * scaleHop),yAxisPosX,xAxisPosY - ((i + 1) * scaleHop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.tickColor != "gridLine" && config.yAxisLeft ? config.scaleLineColor : config.scaleGridLineColor,config.scaleGridLineStyle);
+        }
+        if(config.scaleTickSizeRight>0) {
+          drawScaleLine(ctx,yAxisPosX + msr.availableWidth,xAxisPosY - ((i + 1) * scaleHop),yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight),xAxisPosY - ((i + 1) * scaleHop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.tickColor != "gridLine" && config.yAxisRight ? config.scaleLineColor : config.scaleGridLineColor,config.scaleGridLineStyle);
+        }
+	    }          
+    }
        
     // Minor ticks ;
-    if(config.scaleMinorTickVerticalCount>0) {
+    if(config.scaleMinorTickVerticalCount>0 &&  i != -1) {
       tickHop=scaleHop/(config.scaleMinorTickVerticalCount+1);
       for(j=1;j<config.scaleMinorTickVerticalCount+1;j++){
         if(config.scaleMinorTickHorizontalLines) {
-          drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeLeft),xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeRight), xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.scaleMinorTickColor,config.scaleMinorTickStyle);
+          if(config.scaleMinorTickSizeLeft>0) {
+            drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeLeft),xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,yAxisPosX, xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.minorTickColor != "gridLine" && config.yAxisLeft  ? config.scaleLineColor :  config.scaleMinorTickColor,config.scaleMinorTickStyle);
+          }
+          drawScaleLine(ctx,yAxisPosX,xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,yAxisPosX + msr.availableWidth , xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.scaleMinorTickColor,config.scaleMinorTickStyle);
+          if(config.scaleMinorTickSizeRight>0) {
+            drawScaleLine(ctx,yAxisPosX + msr.availableWidth,xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeRight), xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.minorTickColor != "gridLine" && config.yAxisRight  ? config.scaleLineColor : config.scaleMinorTickColor,config.scaleMinorTickStyle);
+          }
         } else {
           if(config.scaleMinorTickSizeLeft>0) {
-            drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeLeft),xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,yAxisPosX, xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.scaleMinorTickColor,config.scaleMinorTickStyle);
+            drawScaleLine(ctx,yAxisPosX - Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeLeft),xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,yAxisPosX, xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.minorTickColor != "gridLine" && config.yAxisLeft ? config.scaleLineColor : config.scaleMinorTickColor,config.scaleMinorTickStyle);
           } 
           if(config.scaleMinorTickSizeRight>0) {
-            drawScaleLine(ctx,yAxisPosX + msr.availableWidth,xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeRight), xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.scaleMinorTickColor,config.scaleMinorTickStyle);
+            drawScaleLine(ctx,yAxisPosX + msr.availableWidth,xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeRight), xAxisPosY - ((i + 1) * scaleHop)+j*tickHop,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.minorTickColor != "gridLine" && config.yAxisRight  ? config.scaleLineColor :  config.scaleMinorTickColor,config.scaleMinorTickStyle);
           } 
         }
       }
     }
   }
   var lineColor;
+  var lineWidth;
 	// Y Axis and lines parallel to Y axis;
 	for (i = 0; i < nbylines; i++) {
 		ctx.beginPath();
-    if(i==0)lineColor=config.scaleLineColor;
-    else lineColor=config.scaleGridLineColor; 
-		if (i==0 || (i==nbylines-1 && config.scaleTickSizeRight >0)  || (config.scaleShowGridLines && i % config.scaleXGridLinesStep == 0)) {
-      drawScaleLine(ctx,yAxisPosX + i * valueHop, xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom),yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop),Math.ceil(ctx.chartLineScale*(i==0 ? config.scaleLineWidth : config.scaleGridLineWidth)),i==0 ? config.scaleLineColor : config.scaleGridLineColor,config.scaleGridLineStyle);
+    if((i==0 && config.yAxisLeft) || (i==(nbylines-1) && config.yAxisRight)){lineColor=config.scaleLineColor;lineWidth=config.scaleLineWidth;}
+    else {lineColor=config.scaleGridLineColor; lineWidth=config.scaleGridLineWidth }
+		if ((i==0 && config.yAxisLeft) || (i==(nbylines-1) && config.yAxisRight) || (i==nbylines-1 && config.scaleTickSizeRight >0)  || (config.scaleShowGridLines && i % config.scaleXGridLinesStep == 0)) {
+      if(config.scaleTickSizeBottom>0) {
+        drawScaleLine(ctx,yAxisPosX + i * valueHop, xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom),yAxisPosX + i * valueHop, xAxisPosY ,Math.ceil(ctx.chartLineScale*lineWidth),config.tickColor != "gridLine" && bottomDrawn  ? config.scaleLineColor : lineColor,config.scaleGridLineStyle);
+      }
+      drawScaleLine(ctx,yAxisPosX + i * valueHop, xAxisPosY ,yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight,Math.ceil(ctx.chartLineScale*lineWidth),lineColor,config.scaleGridLineStyle);
+      if(config.scaleTickSizeTop>0) {
+        drawScaleLine(ctx,yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight,yAxisPosX + i * valueHop, xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop),Math.ceil(ctx.chartLineScale*lineWidth),config.tickColor != "gridLine" && topDrawn  ? config.scaleLineColor : lineColor,config.scaleGridLineStyle);
+      }
 		} else {
       if(config.scaleTickSizeBottom>0) {
-        drawScaleLine(ctx,yAxisPosX + i * valueHop,xAxisPosY,yAxisPosX + i * valueHop,xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
+        drawScaleLine(ctx,yAxisPosX + i * valueHop,xAxisPosY,yAxisPosX + i * valueHop,xAxisPosY + Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.tickColor != "gridLine" && bottomDrawn  ? config.scaleLineColor : config.scaleGridLineColor,config.scaleGridLineStyle);
       }
       if(config.scaleTickSizeTop>0) {
-        drawScaleLine(ctx,yAxisPosX + i * valueHop,xAxisPosY - msr.availableHeight ,yAxisPosX + i * valueHop,xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
+        drawScaleLine(ctx,yAxisPosX + i * valueHop,xAxisPosY - msr.availableHeight ,yAxisPosX + i * valueHop,xAxisPosY - msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.tickColor != "gridLine" && topDrawn ? config.scaleLineColor : config.scaleGridLineColor,config.scaleGridLineStyle);
       }
 		}
 
@@ -8549,14 +8577,20 @@ function drawGridScale(ctx,data,config,msr,yAxisPosX,xAxisPosY,zeroY,valueHop,sc
         tickHop=valueHop/(config.scaleMinorTickHorizontalCount+1);
         for(j=1;j<config.scaleMinorTickHorizontalCount+1;j++){
           if(config.scaleMinorTickVerticalLines) {
-            drawScaleLine(ctx,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY - msr.availableHeight-Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeTop),yAxisPosX + i*valueHop+j*tickHop,xAxisPosY +Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeBottom),Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.scaleMinorTickColor,config.scaleMinorTickStyle);
-          } else {
             if(config.scaleMinorTickSizeTop>0) {
-              drawScaleLine(ctx,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY - msr.availableHeight-Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeTop),yAxisPosX + i*valueHop+j*tickHop,xAxisPosY - msr.availableHeight,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.scaleMinorTickColor,config.scaleMinorTickStyle);
-            } 
+              drawScaleLine(ctx,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY - msr.availableHeight-Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeTop),yAxisPosX + i*valueHop+j*tickHop,xAxisPosY - msr.availableHeight,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.minorTickColor != "gridLine" && bottomDrawn ? config.scaleLineColor : config.scaleMinorTickColor,config.scaleMinorTickStyle);
+            }
+            drawScaleLine(ctx,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY - msr.availableHeight,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.scaleMinorTickColor,config.scaleMinorTickStyle);
             if(config.scaleMinorTickSizeBottom>0) {
-              drawScaleLine(ctx,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY +Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeBottom),Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.scaleMinorTickColor,config.scaleMinorTickStyle);
+              drawScaleLine(ctx,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY ,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY +Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeBottom),Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.minorTickColor != "gridLine" && bottomDrawn ? config.scaleLineColor : config.scaleMinorTickColor,config.scaleMinorTickStyle);
+            }
+          } else {
+            if(config.scaleMinorTickSizeBottom>0) {
+              drawScaleLine(ctx,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY +Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeBottom),Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.minorTickColor != "gridLine" && bottomDrawn ? config.scaleLineColor :  config.scaleMinorTickColor,config.scaleMinorTickStyle);
             } 
+            if(config.scaleMinorTickSizeTop>0) {
+              drawScaleLine(ctx,yAxisPosX + i*valueHop+j*tickHop,xAxisPosY - msr.availableHeight-Math.ceil(ctx.chartLineScale*config.scaleMinorTickSizeTop),yAxisPosX + i*valueHop+j*tickHop,xAxisPosY - msr.availableHeight,Math.ceil(ctx.chartLineScale*config.scaleMinorTickWidth),config.minorTickColor != "gridLine" && topDrawn ? config.scaleLineColor :  config.scaleMinorTickColor,config.scaleMinorTickStyle);
+            }                                                                                                                                                                                                                                                                                                     
           }
         }
       }
