@@ -1,6 +1,7 @@
 Change history
 --------------
 
+03/11/2016 - Vancoppenolle Francois - option tickColor and minorTickColor added (requested by Youri V. Kravatsky)
 23/10/2016 - Vancoppenolle Francois - Fix issue with axis
 20/10/2016 - Vancoppenolle Francois - minor ticks implemented; double axis implemented for stacked bar charts
 06/10/2016 - Vancoppenolle Francois - new drawLegend.js add-ins + fix for issue 462
