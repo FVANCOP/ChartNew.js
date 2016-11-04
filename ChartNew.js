@@ -1960,6 +1960,8 @@ window.Chart = function(context) {
 		canvasBordersColor: "black",
 		zeroValue : 0.0000000001,
 		graphTitle: "",
+    graphTitleAlign: "center",
+    graphTitleShift : 10,
 		graphTitleFontFamily: "'Arial'",
 		graphTitleFontSize: 24,
 		graphTitleFontStyle: "bold",
@@ -1975,7 +1977,9 @@ window.Chart = function(context) {
 		graphTitleBordersWidth : 1,
 		graphTitleBordersStyle : "solid",
 		graphTitleBackgroundColor : "none",
-   		graphSubTitle: "",
+ 		graphSubTitle: "",
+    graphSubTitleAlign: "center",
+    graphSubTitleShift : 10,
 		graphSubTitleFontFamily: "'Arial'",
 		graphSubTitleFontSize: 18,
 		graphSubTitleFontStyle: "normal",
@@ -1991,7 +1995,9 @@ window.Chart = function(context) {
 		graphSubTitleBordersWidth : 1,
 		graphSubTitleBordersStyle : "solid",
 		graphSubTitleBackgroundColor : "none",
-		footNote: "",
+		footNote: "footNote",
+    footNoteAlign : "left",
+    footNoteShift : 10,
 		footNoteFontFamily: "'Arial'",
 		footNoteFontSize: 8,
 		footNoteFontStyle: "bold",
@@ -2011,6 +2017,7 @@ window.Chart = function(context) {
 		legendWhenToDraw: "all",
 		showSingleLegend: false,
 		maxLegendCols : 999,
+    maxLegendLines : 999,
 		legendPosY :4,
 		legendPosX : -2, 
 		legendFontFamily: "'Arial'",
@@ -6037,7 +6044,7 @@ window.Chart = function(context) {
 				availableLegendHeight = availableHeight - Math.ceil(ctx.chartSpaceScale*Math.ceil(ctx.chartSpaceScale*config.legendSpaceBeforeText)) - Math.ceil(ctx.chartSpaceScale*config.legendSpaceAfterText);
 				availableLegendWidth = availableWidth - Math.ceil(ctx.chartSpaceScale*Math.ceil(ctx.chartSpaceScale*config.legendSpaceLeftText)) - Math.ceil(ctx.chartSpaceScale*config.legendSpaceRightText);
 				if (config.legendBorders == true || config.legendFillColor!="rgba(0,0,0,0)") availableLegendHeight -= (config.legendBorders*(isBorder(config.legendBordersSelection,"BOTTOM")+isBorder(config.legendBordersSelection,"TOP")) * (Math.ceil(ctx.chartLineScale*config.legendBordersWidth)) + Math.ceil(ctx.chartSpaceScale*config.legendBordersSpaceBefore) + Math.ceil(ctx.chartSpaceScale*config.legendBordersSpaceAfter));
-				maxLegendOnCols = Min([Math.floor((availableLegendHeight + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextVertical)) / (highestLegend + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextVertical))),config.maxLegendCols]);
+				maxLegendOnCols = Min([Math.floor((availableLegendHeight + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextVertical)) / (highestLegend + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenTextVertical))),config.maxLegendLines]);
 				nbLegendCols = Math.ceil(nbeltLegend / maxLegendOnCols);
 				nbLegendLines = Math.ceil(nbeltLegend / nbLegendCols);
 				msrLegend=measureLegend(data,ctx,config,widestLegend,highestLegend,nbLegendLines,nbLegendCols,availableLegendWidth);
@@ -6483,11 +6490,28 @@ window.Chart = function(context) {
 				ctx.beginPath();
 				ctx.font = config.graphTitleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.graphTitleFontSize)).toString() + "px " + config.graphTitleFontFamily;
 				ctx.fillStyle = config.graphTitleFontColor;
-				ctx.textAlign = "center";
 				ctx.textBaseline = "top";
-				setTextBordersAndBackground(ctx,config.graphTitle,(Math.ceil(ctx.chartTextScale*config.graphTitleFontSize)),borderLHeight+Math.ceil(ctx.chartSpaceScale*config.spaceLeft) + (width - borderRHeight - borderLHeight - Math.ceil(ctx.chartSpaceScale*config.spaceLeft) - Math.ceil(ctx.chartSpaceScale*config.spaceRight)) / 2,graphTitlePosY,config.graphTitleBorders,config.graphTitleBordersSelection,config.graphTitleBordersColor,Math.ceil(ctx.chartLineScale*config.graphTitleBordersWidth),Math.ceil(ctx.chartSpaceScale*config.graphTitleBordersXSpace),Math.ceil(ctx.chartSpaceScale*config.graphTitleBordersYSpace),config.graphTitleBordersStyle,config.graphTitleBackgroundColor,"GRAPHTITLE",config.graphTitleBordersRadius);
-				ctx.translate(borderLHeight+Math.ceil(ctx.chartSpaceScale*config.spaceLeft) + (width - borderRHeight - borderLHeight - Math.ceil(ctx.chartSpaceScale*config.spaceLeft) - Math.ceil(ctx.chartSpaceScale*config.spaceRight)) / 2, graphTitlePosY);
-				ctx.fillTextMultiLine(config.graphTitle, 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.graphTitleFontSize)),true,config.detectMouseOnText,ctx,"TITLE_TEXTMOUSE",0,Math.ceil(ctx.chartSpaceScale*config.spaceLeft) + (width - Math.ceil(ctx.chartSpaceScale*config.spaceLeft) - Math.ceil(ctx.chartSpaceScale*config.spaceRight)) / 2, graphTitlePosY,-1,-1);
+        var textPos;
+        switch (config.graphTitleAlign) {
+          case "right" : 
+  				  ctx.textAlign = "right";
+            textPos=Math.ceil(ctx.chartSpaceScale*config.spaceLeft) + (width - Math.ceil(ctx.chartSpaceScale*config.spaceLeft) - Math.ceil(ctx.chartSpaceScale*config.spaceRight)) / 2;
+            textPos=width-Math.ceil(ctx.chartSpaceScale*(config.spaceRight+config.graphTitleShift))-borderRHeight;
+
+            break; 
+          case "left" :
+            ctx.textAlign="left";
+            textPos=borderLHeight+Math.ceil(ctx.chartSpaceScale*(config.spaceLeft+config.graphTitleShift));
+            break;
+          default: 
+  				  ctx.textAlign = "center";
+            textPos=borderLHeight+Math.ceil(ctx.chartSpaceScale*config.spaceLeft) + (width - borderRHeight - borderLHeight - Math.ceil(ctx.chartSpaceScale*config.spaceLeft) - Math.ceil(ctx.chartSpaceScale*config.spaceRight)) / 2;
+            break;
+        }
+        
+				setTextBordersAndBackground(ctx,config.graphTitle,(Math.ceil(ctx.chartTextScale*config.graphTitleFontSize)),textPos,graphTitlePosY,config.graphTitleBorders,config.graphTitleBordersSelection,config.graphTitleBordersColor,Math.ceil(ctx.chartLineScale*config.graphTitleBordersWidth),Math.ceil(ctx.chartSpaceScale*config.graphTitleBordersXSpace),Math.ceil(ctx.chartSpaceScale*config.graphTitleBordersYSpace),config.graphTitleBordersStyle,config.graphTitleBackgroundColor,"GRAPHTITLE",config.graphTitleBordersRadius);
+				ctx.translate(textPos, graphTitlePosY);
+				ctx.fillTextMultiLine(config.graphTitle, 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.graphTitleFontSize)),true,config.detectMouseOnText,ctx,"TITLE_TEXTMOUSE",0,textPos, graphTitlePosY,-1,-1);
 				ctx.stroke();
 				ctx.restore();
 			}
@@ -6497,11 +6521,24 @@ window.Chart = function(context) {
 				ctx.beginPath();
 				ctx.font = config.graphSubTitleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.graphSubTitleFontSize)).toString() + "px " + config.graphSubTitleFontFamily;
 				ctx.fillStyle = config.graphSubTitleFontColor;
-				ctx.textAlign = "center";
+        switch (config.graphSubTitleAlign) {
+          case "right" : 
+  				  ctx.textAlign = "right";
+            textPos=width-Math.ceil(ctx.chartSpaceScale*(config.spaceRight+config.graphSubTitleShift))-borderRHeight;
+            break; 
+          case "left" :
+            ctx.textAlign="left";
+            textPos=borderLHeight+Math.ceil(ctx.chartSpaceScale*(config.spaceLeft+config.graphSubTitleShift));
+            break;
+          default: 
+  				  ctx.textAlign = "center";
+            textPos=borderLHeight+Math.ceil(ctx.chartSpaceScale*config.spaceLeft) + (width - borderRHeight - borderLHeight - Math.ceil(ctx.chartSpaceScale*config.spaceLeft) - Math.ceil(ctx.chartSpaceScale*config.spaceRight)) / 2;
+            break;
+        }
 				ctx.textBaseline = "top";
-				setTextBordersAndBackground(ctx,config.graphSubTitle,(Math.ceil(ctx.chartTextScale*config.graphSubTitleFontSize)),borderLHeight+Math.ceil(ctx.chartSpaceScale*config.spaceLeft) + (width - borderLHeight -borderRHeight - Math.ceil(ctx.chartSpaceScale*config.spaceLeft) - Math.ceil(ctx.chartSpaceScale*config.spaceRight)) / 2,graphSubTitlePosY,config.graphSubTitleBorders,config.graphSubTitleBordersSelection,config.graphSubTitleBordersColor,Math.ceil(ctx.chartLineScale*config.graphSubTitleBordersWidth),Math.ceil(ctx.chartSpaceScale*config.graphSubTitleBordersXSpace),Math.ceil(ctx.chartSpaceScale*config.graphSubTitleBordersYSpace),config.graphSubTitleBordersStyle,config.graphSubTitleBackgroundColor,"GRAPHSUBTITLE",config.graphSubTitleBordersRadius);
-				ctx.translate(borderLHeight+Math.ceil(ctx.chartSpaceScale*config.spaceLeft) + (width - borderRHeight- borderLHeight - Math.ceil(ctx.chartSpaceScale*config.spaceLeft) - Math.ceil(ctx.chartSpaceScale*config.spaceRight)) / 2, graphSubTitlePosY);
-				ctx.fillTextMultiLine(config.graphSubTitle, 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.graphSubTitleFontSize)),true,config.detectMouseOnText,ctx,"SUBTITLE_TEXTMOUSE",0,Math.ceil(ctx.chartSpaceScale*config.spaceLeft) + (width - Math.ceil(ctx.chartSpaceScale*config.spaceLeft) - Math.ceil(ctx.chartSpaceScale*config.spaceRight)) / 2, graphSubTitlePosY,-1,-1);
+				setTextBordersAndBackground(ctx,config.graphSubTitle,(Math.ceil(ctx.chartTextScale*config.graphSubTitleFontSize)),textPos,graphSubTitlePosY,config.graphSubTitleBorders,config.graphSubTitleBordersSelection,config.graphSubTitleBordersColor,Math.ceil(ctx.chartLineScale*config.graphSubTitleBordersWidth),Math.ceil(ctx.chartSpaceScale*config.graphSubTitleBordersXSpace),Math.ceil(ctx.chartSpaceScale*config.graphSubTitleBordersYSpace),config.graphSubTitleBordersStyle,config.graphSubTitleBackgroundColor,"GRAPHSUBTITLE",config.graphSubTitleBordersRadius);
+				ctx.translate(textPos, graphSubTitlePosY);
+				ctx.fillTextMultiLine(config.graphSubTitle, 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.graphSubTitleFontSize)),true,config.detectMouseOnText,ctx,"SUBTITLE_TEXTMOUSE",0,textPos, graphSubTitlePosY,-1,-1);
 				ctx.stroke();
 				ctx.restore();
 			}
@@ -6511,11 +6548,24 @@ window.Chart = function(context) {
 				ctx.save();
 				ctx.font = config.footNoteFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.footNoteFontSize)).toString() + "px " + config.footNoteFontFamily;
 				ctx.fillStyle = config.footNoteFontColor;
-				ctx.textAlign = "center";
+        switch (config.footNoteAlign) {
+          case "right" : 
+  				  ctx.textAlign = "right";
+            textPos=width-Math.ceil(ctx.chartSpaceScale*(config.spaceRight+config.footNoteShift))-borderRHeight;
+            break; 
+          case "left" :
+            ctx.textAlign="left";
+            textPos=borderLHeight+Math.ceil(ctx.chartSpaceScale*(config.spaceLeft+config.footNoteShift));
+            break;
+          default: 
+  				  ctx.textAlign = "center";
+            textPos=leftNotUsableWidth + (availableWidth / 2);
+            break;
+        }
 				ctx.textBaseline = "bottom";
-				setTextBordersAndBackground(ctx,config.footNote,(Math.ceil(ctx.chartTextScale*config.footNoteFontSize)),borderLHeight+Math.ceil(ctx.chartSpaceScale*config.spaceLeft) + (width - borderRHeight - borderLHeight - Math.ceil(ctx.chartSpaceScale*config.spaceLeft) - Math.ceil(ctx.chartSpaceScale*config.spaceRight)) / 2,footNotePosY,config.footNoteBorders,config.footNoteBordersSelection,config.footNoteBordersColor,Math.ceil(ctx.chartLineScale*config.footNoteBordersWidth),Math.ceil(ctx.chartSpaceScale*config.footNoteBordersXSpace),Math.ceil(ctx.chartSpaceScale*config.footNoteBordersYSpace),config.footNoteBordersStyle,config.footNoteBackgroundColor,"FOOTNOTE",config.footNoteBordersRadius);
-				ctx.translate(borderLHeight+Math.ceil(ctx.chartSpaceScale*config.spaceLeft) + (width - borderRHeight- borderLHeight - Math.ceil(ctx.chartSpaceScale*config.spaceLeft) - Math.ceil(ctx.chartSpaceScale*config.spaceRight)) / 2, footNotePosY);
-				ctx.fillTextMultiLine(config.footNote, 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.footNoteFontSize)),true,config.detectMouseOnText,ctx,"FOOTNOTE_TEXTMOUSE",0,leftNotUsableWidth + (availableWidth / 2), footNotePosY,-1,-1);
+				setTextBordersAndBackground(ctx,config.footNote,(Math.ceil(ctx.chartTextScale*config.footNoteFontSize)),textPos,footNotePosY,config.footNoteBorders,config.footNoteBordersSelection,config.footNoteBordersColor,Math.ceil(ctx.chartLineScale*config.footNoteBordersWidth),Math.ceil(ctx.chartSpaceScale*config.footNoteBordersXSpace),Math.ceil(ctx.chartSpaceScale*config.footNoteBordersYSpace),config.footNoteBordersStyle,config.footNoteBackgroundColor,"FOOTNOTE",config.footNoteBordersRadius);
+				ctx.translate(textPos, footNotePosY);
+				ctx.fillTextMultiLine(config.footNote, 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.footNoteFontSize)),true,config.detectMouseOnText,ctx,"FOOTNOTE_TEXTMOUSE",0,textPos, footNotePosY,-1,-1);
 				ctx.stroke();
 				ctx.restore();
 			}
@@ -8512,7 +8562,7 @@ function drawGridScale(ctx,data,config,msr,yAxisPosX,xAxisPosY,zeroY,valueHop,sc
         }
         drawScaleLine(ctx,yAxisPosX, xAxisPosY - ((i + 1) * scaleHop),yAxisPosX + msr.availableWidth, xAxisPosY - ((i + 1) * scaleHop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.scaleGridLineColor,config.scaleGridLineStyle);
         if(config.scaleTickSizeRight>0) {
-          drawScaleLine(ctx,yAxisPosX + msr.availableWidth, xAxisPosY - ((i + 1) * scaleHop),yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), xAxisPosY - ((i + 1) * scaleHop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.tickColor != "gridLine" && config.yAxisRight ? config.scaleLineColor : config.scaleGridLineColor,config.scaleGridLineStyle);
+          drawScaleLine(ctx,yAxisPosX + msr.availableWidth, xAxisPosY - ((i + 1) * scaleHop),yAxisPosX + msr.availableWidth + Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight), xAxisPosY - ((i + 1) * scaleHop),Math.ceil(ctx.chartLineScale*config.scaleGridLineWidth),config.tickColor != "gridLine" && config.yAxisRight ? config.scaleLineColor : config.scaleGridLineColor ,config.scaleGridLineStyle);
         }
 	    } else {
         if(config.scaleTickSizeLeft>0) {
