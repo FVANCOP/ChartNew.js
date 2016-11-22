@@ -567,11 +567,17 @@ function resizeCtx(ctx,config)
 		if(typeof config.responsiveMinHeight  == "undefined")config.responsiveMinHeight=0;
 		if(typeof config.responsiveMaxWidth  == "undefined")config.responsiveMaxWidth=9999999;
 		if(typeof config.responsiveMaxHeight  == "undefined")config.responsiveMaxHeight=9999999;
-		var canvas = ctx.canvas;
+		var canvas;
+    if(typeof ctx.vctx != "undefined"){
+      canvas=ctx.vctx.canvas;
+    }
+    else {
+      canvas=ctx.canvas;
+    }
 		if(typeof ctx.aspectRatio == "undefined") {
 			ctx.aspectRatio = canvas.width / canvas.height;
 		}
-  		var newWidth = getMaximumWidth(canvas);
+  	var newWidth = getMaximumWidth(canvas);
 		var newHeight = config.maintainAspectRatio ? newWidth / ctx.aspectRatio : getMaximumHeight(canvas);
 		newWidth=Math.min(config.responsiveMaxWidth,Math.max(config.responsiveMinWidth,newWidth));
 		newHeight=Math.min(config.responsiveMaxHeight,Math.max(config.responsiveMinHeight,newHeight));
@@ -585,7 +591,7 @@ function resizeCtx(ctx,config)
 			ctx.chartLineScale=ctx.DefaultchartLineScale*(newWidth/ctx.initialWidth);
 			ctx.chartSpaceScale=ctx.DefaultchartSpaceScale*(newWidth/ctx.initialWidth);
 		}
-		
+		                                                                                                            
 		if (window.devicePixelRatio>1) {
 			ctx.canvas.style.width = newWidth + "px";
 			ctx.canvas.style.height = newHeight + "px";
@@ -632,10 +638,9 @@ function testRedraw(ctx,data,config) {
 };
 
 function updateChart(ctx,data,config,animation,runanimationcompletefunction) {
-
 	if (ctx.firstPass==9)
 	{
-		
+
 		ctx.runanimationcompletefunction=runanimationcompletefunction;
 
 		if(animation)ctx.firstPass=1;
@@ -656,8 +661,58 @@ function updateChart(ctx,data,config,animation,runanimationcompletefunction) {
 
 
 function redrawGraph(ctx,data,config) {
-	var myGraph = new Chart(ctx);	
-        eval("myGraph."+ctx.tpchart+"(data,config);");
+
+  if((ctx.firstPass==2 || ctx.firstPass==9) && !(isIE() < 9 && isIE() != false) && (navigator.userAgent.indexOf("Safari")==-1)) {    
+    var OSC;
+    var tmpctx;
+    OSC=  document.createElement("canvas");
+    tmpctx=OSC.getContext("2d");
+    tmpctx.vctx=ctx;
+
+    OSC.width=ctx.canvas.width;
+    OSC.height=ctx.canvas.height;
+    tmpctx.ChartNewId=ctx.ChartNewId;
+    tmpctx.tpchart=ctx.tpchart;
+    tmpctx.tpdata=ctx.tpdata;
+    tmpctx.initialWidth=ctx.initialWidth;
+    tmpctx.chartTextScale=ctx.chartTextScale;
+    tmpctx.chartLineScale=ctx.chartLineScale;
+    tmpctx.chartSpaceScale=ctx.chartSpaceScale;
+    tmpctx.firstPass=ctx.firstPass;
+    tmpctx.runanimationcompletefunction=ctx.runanimationcompletefunction;
+    tmpctx.aspectRatio=ctx.aspectRatio;
+    tmpctx.widthAtSetMeasures=ctx.widthAtSetMeasures;
+    tmpctx.heightAtSetMeasures=ctx.heightAtSetMeasures;
+
+
+
+ 	 var myGraph = new Chart(tmpctx);	
+        eval("myGraph."+tmpctx.tpchart+"(data,config);");
+
+    ctx.tpchart=tmpctx.tpchart;
+    ctx.tpdata=tmpctx.tpdata;
+    ctx.initialWidth=tmpctx.initialWidth;
+    ctx.chartTextScale=tmpctx.chartTextScale;
+    ctx.chartLineScale=tmpctx.chartLineScale;
+    ctx.chartSpaceScale=tmpctx.chartSpaceScale;
+    ctx.firstPass=tmpctx.firstPass;
+    ctx.runanimationcompletefunction=tmpctx.runanimationcompletefunction;
+    ctx.ChartNewId=tmpctx.ChartNewId;
+    ctx.aspectRatio=tmpctx.aspectRatio;
+    ctx.widthAtSetMeasures=tmpctx.widthAtSetMeasures;
+    ctx.heightAtSetMeasures=tmpctx.heightAtSetMeasures;
+    ctx.canvas.width=tmpctx.canvas.width;
+    ctx.canvas.height=tmpctx.canvas.height;
+
+
+   ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+   ctx.drawImage(OSC,0,0); 
+  
+   } else {
+     	 var myGraph = new Chart(ctx);	
+          eval("myGraph."+ctx.tpchart+"(data,config);");
+   }
+
 };
 
 
@@ -873,8 +928,12 @@ function deleteHighLight(ctx,data) {
 	}
 };
 
+
+
 function highLightAction(action,ctx,data,config,v1,v2) {
+
 	if (ctx.firstPass!=9)return;
+
 
 	var currentlyDisplayed=[-1,-1];
 	var redisplay=false;
@@ -890,6 +949,8 @@ function highLightAction(action,ctx,data,config,v1,v2) {
 	var addNew=false;
 	var property;
 	var output;
+  var fndoldspec=false;
+  var fndnewspec=false;
 
 	if(action=="HIDE" && currentlyDisplayed[0]!=-1)deleteOld=true;
 	else if(action!="HIDE" && config.highLightFullLine== "group" && (currentlyDisplayed[1]!=v2 )) { if(currentlyDisplayed[0]!=-1)deleteOld=true; addNew=true;}
@@ -899,7 +960,7 @@ function highLightAction(action,ctx,data,config,v1,v2) {
 	if(deleteOld) {
 		redisplay=true;
 		for(i=data.special.length-1;i>=0;i--){
-			if(data.special[i].typespecial=="highLight") data.special.splice(i,1);
+			if(data.special[i].typespecial=="highLight") { data.special.splice(i,1); fndoldspec=true; }
 		}
 	}
 	if(addNew) {
@@ -914,7 +975,8 @@ function highLightAction(action,ctx,data,config,v1,v2) {
 						if(typeof config.highLightSet[property]=="string")output += property + ': "' + config.highLightSet[property]+'"';
 						else output += property + ': ' + config.highLightSet[property];
 					}
-        				eval("data.special[data.special.length]={"+output+"};");
+          fndnewspec=true;
+   				eval("data.special[data.special.length]={"+output+"};");
 					data.special[data.special.length-1].posi=j;
 					data.special[data.special.length-1].posj=v2;
 					data.special[data.special.length-1].typespecial="highLight";
@@ -929,7 +991,8 @@ function highLightAction(action,ctx,data,config,v1,v2) {
 						if(typeof config.highLightSet[property]=="string")output += property + ': "' + config.highLightSet[property]+'"';
 						else output += property + ': ' + config.highLightSet[property];
 					}
-       					eval("data.special[data.special.length]={"+output+"};");
+          fndnewspec=true;
+ 					eval("data.special[data.special.length]={"+output+"};");
 					data.special[data.special.length-1].posi=v1;
 					data.special[data.special.length-1].posj=j;
 					data.special[data.special.length-1].typespecial="highLight";
@@ -942,16 +1005,18 @@ function highLightAction(action,ctx,data,config,v1,v2) {
 				if(typeof config.highLightSet[property]=="string")output += property + ': "' + config.highLightSet[property]+'"';
 				else output += property + ': ' + config.highLightSet[property];
 			}
-       			eval("data.special[data.special.length]={"+output+"};");
+      fndnewspec=true;
+      eval("data.special[data.special.length]={"+output+"};");
 			data.special[data.special.length-1].posi=v1;
 			data.special[data.special.length-1].posj=v2;
 			data.special[data.special.length-1].typespecial="highLight";
 		}
 	}
 	if(redisplay==true) {
-		updateChart(ctx,data,config,false,config.highLightRerunEndFunction);
+ 		updateChart(ctx,data,config,false,config.highLightRerunEndFunction);
 	}
 };
+
 
 var inMouseAction=new Array();
 
@@ -1988,15 +2053,15 @@ window.Chart = function(context) {
 		graphSubTitleSpaceAfter: 5,
 		graphSubTitleBorders : false,
 		graphSubTitleBordersColor : "black",
-                graphSubTitleBordersRadius : 0,
+    graphSubTitleBordersRadius : 0,
 		graphSubTitleBordersXSpace : 3,
 		graphSubTitleBordersYSpace : 3,
 		graphSubTitleBordersSelection : 15,
 		graphSubTitleBordersWidth : 1,
 		graphSubTitleBordersStyle : "solid",
 		graphSubTitleBackgroundColor : "none",
-		footNote: "footNote",
-    footNoteAlign : "left",
+		footNote: "",
+    footNoteAlign : "center",
     footNoteShift : 10,
 		footNoteFontFamily: "'Arial'",
 		footNoteFontSize: 8,
@@ -4476,6 +4541,7 @@ window.Chart = function(context) {
 		};
 	};
 	var Bar = function(data, config, ctx) {
+         
 		var maxSize, scaleHop, scaleHop2, calculatedScale, calculatedScale2, labelHeight, scaleHeight, valueBounds, labelTemplateString, labelTemplateString2, valueHop, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
 		ctx.tpchart="Bar";
@@ -4567,17 +4633,15 @@ window.Chart = function(context) {
 				}
 			}
 			msr = setMeasures(data, config, ctx, ctx.canvas.height, ctx.canvas.width, calculatedScale.labels, calculatedScale2.labels, true, false, true, true, "Bar");
-
 			var prevHeight=msr.availableHeight;
 
 			msr.availableHeight = msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom) - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop);
 			msr.availableWidth = msr.availableWidth - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) - Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight);
 
 			scaleHop = Math.floor(msr.availableHeight  / calculatedScale.steps);
-			scaleHop2 = Math.floor(msr.availableHeight  / calculatedScale2.steps);
+			if(calculatedScale2.steps !="undefined" && calculatedScale2.steps > 0)scaleHop2 = Math.floor(msr.availableHeight  / calculatedScale2.steps);
 			valueHop = Math.floor(msr.availableWidth  / data.labels.length);
 			if (valueHop == 0 || config.fullWidthGraph) valueHop = (msr.availableWidth / data.labels.length);
-
 			msr.topNotUsableHeight += (msr.availableHeight - (calculatedScale.steps) * scaleHop);
 			msr.rightNotUsableWidth += (msr.availableWidth - (data.labels.length) * valueHop);
 			msr.clrwidth = msr.clrwidth - (msr.availableWidth - ((data.labels.length) * valueHop));
@@ -4615,7 +4679,9 @@ window.Chart = function(context) {
 				scaleHop2 : scaleHop2	
 			});
 			drawLabels();
+
 			animationLoop(config,msr.legendMsr, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
+
 		} else {
 			testRedraw(ctx,data,config);
 			ctx.firstPass=9;
@@ -4766,6 +4832,9 @@ window.Chart = function(context) {
 		};
 
     function drawScale() {
+
+//drawLinesTest(ctx);
+
       drawGridScale(ctx,data,config,msr,yAxisPosX,xAxisPosY,zeroY,valueHop,scaleHop,calculatedScale.steps,data.labels.length+1);
     };
 
@@ -5314,6 +5383,7 @@ window.Chart = function(context) {
 	};
 
 	function animationLoop(config, legendMsr, drawScale, drawData, ctx, clrx, clry, clrwidth, clrheight, midPosX, midPosY, borderX, borderY, data, statData) {
+
 		var cntiter = 0;
 		var animationCount = 1;
 		var multAnim = 1;
@@ -5334,11 +5404,19 @@ window.Chart = function(context) {
 		var beginAnimPct = percentAnimComplete;
 		if (typeof drawScale !== "function") drawScale = function() {};
 		if (config.clearRect) {
-			if(config.animationForceSetTimeOut)requestAnimFrameSetTimeOut(animLoop);
-			else requestAnimFrame(animLoop);
+      if(ctx.firstPass%10!=1 || config.animation==false)animLoop();
+      else {
+			   if(config.animationForceSetTimeOut)requestAnimFrameSetTimeOut(animLoop);
+			   else requestAnimFrame(animLoop);
+      }
 		} else animLoop();
 
+    
+//				drawData(1);
+//				drawScale();
+
 		function animateFrame() {
+
 			var easeAdjustedAnimationPercent = (config.animation) ? CapValue(easingFunction(percentAnimComplete), null, 0) : 1;
 			if (1 * cntiter >= 1 * CapValue(config.animationSteps, Number.MAX_VALUE, 1) || config.animation == false || ctx.firstPass%10!=1) easeAdjustedAnimationPercent = 1;
 			else if (easeAdjustedAnimationPercent >= 1) easeAdjustedAnimationPercent = 0.9999;
@@ -5365,8 +5443,11 @@ window.Chart = function(context) {
 		};
 
 		function animLoop() {
+
 			//We need to check if the animation is incomplete (less than 1), or complete (1).
 			cntiter += multAnim;
+
+      
 			percentAnimComplete += multAnim * animFrameAmount;
 			if (cntiter == config.animationSteps || config.animation == false || ctx.firstPass%10!=1) percentAnimComplete = 1;
 			else if (percentAnimComplete >= 1) percentAnimComplete = 0.999;
@@ -6461,7 +6542,7 @@ window.Chart = function(context) {
 			availableHeight=height-topNotUsableHeight-bottomNotUsableHeight;
 		}
 
-
+    
 		// ----------------------- DRAW EXTERNAL ELEMENTS -------------------------------------------------
 		dispCrossImage(ctx, config, width / 2, height / 2, width / 2, height / 2, false, data, -1, -1);
 
@@ -6668,7 +6749,7 @@ window.Chart = function(context) {
 			}
 
 			// Draw Legend
-                        var legendMsr;
+      var legendMsr;
 			if (nbeltLegend > 1 || (nbeltLegend == 1 && config.showSingleLegend)) {
 				legendMsr={dispLegend : true, xLegendPos : xLegendPos, yLegendPos : yLegendPos,
 						nbLegendLines: nbLegendLines, nbLegendCols: nbLegendCols, reverseLegend : reverseLegend, 
