@@ -1,0 +1,126 @@
+  <!doctype html>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]-->
+<SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+<SCRIPT src='../Add-ins/specialInChartData.js'></script>
+<SCRIPT src='../Add-ins/stats.js'></script>
+
+
+<SCRIPT>
+
+
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+var mydata1 = { 
+     labels : ["2015","2016"], 
+     datasets : [ 
+           { 
+      data : [0,30], 
+      fillColor : "rgba(220,0,220,0.2)", 
+      title : "data1", 
+           }, 
+           { 
+      data : [30,90], 
+      fillColor : "rgba(220,0,220,0.2)", 
+      title : "data2", 
+           }, 
+           { 
+      data : [90,0], 
+      fillColor : "rgba(0,0,220,0.2)", 
+      title : "data3", 
+           }, 
+           { 
+      data : [0,0], 
+      fillColor : "rgba(220,0,220,0.2)", 
+      title : "data4", 
+           }, 
+           { 
+      data : [0,24], 
+      fillColor : "rgba(220,0,220,0.2)", 
+      title : "data5", 
+           }, 
+           { 
+      data : [24,58], 
+      fillColor : "rgba(220,0,0,0.2)", 
+      title : "data6", 
+           }, 
+           { 
+      data : [58,82], 
+      fillColor : "rgba(0,220,220,0.2)", 
+      title : "data7", 
+           }, 
+           { 
+      data : [82,8], 
+      fillColor : "rgba(0,220,0,0.2)", 
+      title : "data8", 
+           }, 
+           { 
+      data : [8,2], 
+      fillColor : "rgba(50,100,150,0.2)", 
+      title : "data9", 
+           } 
+] 
+};
+
+
+var opt1 = {
+	animation : false,
+	canvasBorders : true,
+	spaceBottom : 65,
+	spaceTop : 55,
+	endDrawDataFunction: drawShapes
+
+};
+
+function roundtonumber(num, place) {
+    var newval=1*num;
+
+    if(typeof(newval)=="number"){
+      if(place<=0){
+        var roundVal=-place;
+        newval= +(Math.round(newval + "e+" + roundVal) + "e-" + roundVal);
+      }
+      else {
+        var roundVal=place;
+        var divval= "1e+"+roundVal;
+        newval= +(Math.round(newval/divval))*divval;
+      }
+    }
+    return(newval);
+} ;
+
+pushInGraphData("Pie",mydata1,opt1,{text : "<Title> (#variable_roundtonumber(100*mydata1.datasets[<i>].data[<j>]/mydata1.stats.data_sum[<j>],-1)# %)"});
+
+
+
+
+stats(mydata1,opt1);
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine = new Chart(document.getElementById("canvas_Line").getContext("2d")).Pie(mydata1,opt1);
+}
+    </script>
+  </body>
+</html>
