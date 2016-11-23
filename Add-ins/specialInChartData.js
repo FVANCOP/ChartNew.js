@@ -144,14 +144,16 @@ function pushInGraphData(type_chart,data,config,pushInfoDefault) {
         	var addRadius;
 		shapesInChart[shapesInChart.length]=mergeOptionConfig(resconfig,pushInfoI,j);
 		// push shapesInChart info for the pointer;
-
+                          
 		var newShapes=shapesInChart[shapesInChart.length-1];
 
-		if (newShapes.text.indexOf("<Title>") >= 0) newShapes.text=newShapes.text.replace("<Title>",pushInfoI.title);
+		if (newShapes.text.indexOf("<Title>") >= 0) newShapes.text=newShapes.text.replace(/<Title>/g,pushInfoI.title);
 		if (newShapes.text.indexOf("<Value>") >= 0){
-			if(j==-1)newShapes.text=newShapes.text.replace("<Value>",""+pushInfoI.value);
-			else newShapes.text=newShapes.text.replace("<Value>",""+pushInfoI.data[j]);
+		  if(j==-1)newShapes.text=newShapes.text.replace(/<Value>/g,""+pushInfoI.value);
+			else newShapes.text=newShapes.text.replace(/<Value>/g,""+pushInfoI.data[j]);
 		}
+		if (newShapes.text.indexOf("<i>") >= 0) newShapes.text=newShapes.text.replace(/<i>/g,i);
+		if (newShapes.text.indexOf("<j>") >= 0) newShapes.text=newShapes.text.replace(/<j>/g,j);
 		switch(newShapes.link.toUpperCase()) {
 			case  "TRIANGLE" :
 				var cumval=0;
