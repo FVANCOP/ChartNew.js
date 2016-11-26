@@ -683,6 +683,7 @@ function redrawGraph(ctx,data,config) {
     tmpctx.aspectRatio=ctx.aspectRatio;
     tmpctx.widthAtSetMeasures=ctx.widthAtSetMeasures;
     tmpctx.heightAtSetMeasures=ctx.heightAtSetMeasures;
+    tmpctx.pieces_drawn=ctx.pieces_drawn;
 
 
 
@@ -703,6 +704,7 @@ function redrawGraph(ctx,data,config) {
     ctx.heightAtSetMeasures=tmpctx.heightAtSetMeasures;
     ctx.canvas.width=tmpctx.canvas.width;
     ctx.canvas.height=tmpctx.canvas.height;
+    ctx.pieces_drawn=tmpctx.pieces_drawn;
 
 
    ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
@@ -1579,6 +1581,7 @@ window.Chart = function(context) {
 			animationSteps: 60,
 			animationEasing: "easeOutQuart",
 			onAnimationComplete: null,
+      alwaysRunFunctionAtCompletion: false,
 			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3%>",
 			pointHitDetectionRadius : 10,
 			startAngle: 90
@@ -1680,6 +1683,7 @@ window.Chart = function(context) {
 			animationEasing: "easeOutQuart",
 			extrapolateMissingData: true,
 			onAnimationComplete: null,
+      alwaysRunFunctionAtCompletion: false,
 			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3%>",
 			pointHitDetectionRadius : 10,
       xAxisMiddle : false
@@ -1757,6 +1761,7 @@ window.Chart = function(context) {
 			animationSteps: 60,
 			animationEasing: "easeOutQuart",
 			onAnimationComplete: null,
+      alwaysRunFunctionAtCompletion: false,
 			bezierCurve: true,
 			linkType : 0,   //0 : direct point to point; 1 = vertical lines; 2=angular link;
 			bezierCurveTension : 0.4,
@@ -1827,6 +1832,7 @@ window.Chart = function(context) {
 			animationSteps: 60,
 			animationEasing: "easeOutQuart",
 			onAnimationComplete: null,
+      alwaysRunFunctionAtCompletion: false,
 			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + v6 + ' %)'%>",
 			reverseOrder: false
 		};
@@ -1910,6 +1916,7 @@ window.Chart = function(context) {
 			animationSteps: 60,
 			animationEasing: "easeOutQuart",
 			onAnimationComplete: null,
+      alwaysRunFunctionAtCompletion: false,
 			bezierCurve: true,
 			linkType : 0,   //0 : direct point to point; 1 = vertical lines; 2=angular link;
 			bezierCurveTension : 0.4,
@@ -1983,6 +1990,7 @@ window.Chart = function(context) {
 			animationSteps: 60,
 			animationEasing: "easeOutQuart",
 			onAnimationComplete: null,
+      alwaysRunFunctionAtCompletion: false,
 			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3 + ' (' + v6 + ' %)'%>",
 			reverseOrder: false
 		};
@@ -2309,6 +2317,7 @@ window.Chart = function(context) {
 		animateRotate: true,
 		animateScale: false,
 		onAnimationComplete: null,
+    alwaysRunFunctionAtCompletion: false,
 		startAngle: 90,
 		totalAmplitude : 360,
 		radiusScale : 1
@@ -2350,6 +2359,7 @@ window.Chart = function(context) {
 			animateRotate: true,
 			animateScale: false,
 			onAnimationComplete: null,
+      alwaysRunFunctionAtCompletion: false,
 			startAngle: 90,
 			totalAmplitude : 360,
 			radiusScale: 1,
@@ -2513,15 +2523,58 @@ window.Chart = function(context) {
 		
 		return true;
 	} ;
+
+  function init_result(ctx,data,statData) {
+    var i,j;
+    var total_data=0;
+    var total_non_missing_data=0;
+    for(i=0;i<data.datasets.length;i++) {
+      if(typeof data.datasets[i].xPos !== "undefined" && ctx.tpchart=="line") {
+        total_data+=data.datasets[i].xPos.length;
+        for(j=0;j<data.datasets[i].xPos.length;j++) {
+          total_nom_missing_data+=(!(typeof(data.datasets[i].xPos[j]) == 'undefined'));
+        }
+      } else {
+        total_data+=data.labels.length;
+        for(j=0;j<data.datasets[i].data.length;j++) {
+          if(((ctx.tpchart=="Pie" || ctx.tpchart=="Doughnut") && 1*data.datasets[i].data[j] <=0) || ((ctx.tpchart=="StackedBar" || ctx.tpchart=="HorizontalStackedBar") && Math.abs(1*data.datasets[i].data[j]) <= 0.001) || typeof data.datasets[i].data[j] == 'undefined') continue;
+          total_non_missing_data++;
+        }
+      }
+    };
+  
+    ctx.pieces_drawn ={
+      total_data : total_data,
+      total_non_missing_data : total_non_missing_data,
+      total_missing_data : (total_data-total_non_missing_data),
+      all_drawn : false,
+      completed : false,
+      total_drawn : 0,
+      points : 0,
+      rectangles : 0,
+      slices : 0
+    };
+  };
+  
+  function close_result(ctx) {
+    ctx.pieces_drawn.completed=true;
+    if(ctx.pieces_drawn.total_non_missing_data==ctx.pieces_drawn.total_drawn){
+        ctx.pieces_drawn.all_drawn=true;
+    }
+  }
+
+
 	var MPolarArea = function(data, config, ctx) {  
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, msr, midPosX, midPosY;
 
 		ctx.tpchart="PolarArea";
 		ctx.tpdata=0;
+    
 		
-	        if (!init_and_start(ctx,data,config)) return;
+    if (!init_and_start(ctx,data,config)) return;
 
 		var statData=initPassVariableData_part1(data,config,ctx);
+    init_result(ctx,data,statData);
 
 		var realCumulativeAngle = (((config.startAngle * (Math.PI / 180) + 2 * Math.PI) % (2 * Math.PI)) + 2* Math.PI) % (2* Math.PI) ; 
 		config.logarithmic = false;
@@ -2567,7 +2620,12 @@ window.Chart = function(context) {
 			animationLoop(config,msr.legendMsr,drawScale, drawAllSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPosX, midPosY, midPosX - ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), midPosY + ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), data, statData);
 		} else {
 			testRedraw(ctx,data,config);
+			if (typeof config.onAnimationComplete == "function" && (config.alwaysRunFunctionAtCompletion==true || ctx.runanimationcompletefunction==true)) {
+			   config.onAnimationComplete(ctx, config, data, 1, 0,statData);
+				 ctx.runanimationcompletefunction=false;
+			}
 			ctx.firstPass=9;
+      close_result(ctx);
 		}
 
 		function drawAllSegments(animationDecimal) {
@@ -2606,7 +2664,7 @@ window.Chart = function(context) {
 						ctx.arc(midPosX, midPosY, scaleAnimation * statData[i][j].radiusOffset, statData[i][j].startAngle, endAngle, false);
 					} else if(config.animationByData) {
 	
-					        if (i<1*config.animationStartWithData-1) {
+					  if (i<1*config.animationStartWithData-1) {
 							ctx.arc(midPieX, midPieY, scaleAnimation * statData[i][j].radiusOffset, statData[i][j].startAngle, statData[i][j].endAngle,false);
 						} else if(statData[i][j].startAngle <= firstAngle+correctedRotateAnimation*(2*Math.PI-fixAngle) ) {
 							endAngle=statData[i][j].endAngle;
@@ -2623,6 +2681,8 @@ window.Chart = function(context) {
 					}
 					ctx.lineTo(midPosX, midPosY);
 					ctx.closePath();
+          if (animationDecimal >= config.animationStopValue){ctx.pieces_drawn.slices++;ctx.pieces_drawn.total_drawn++;}
+      
 					ctx.fillStyle=setOptionValue(true,true,1,"FILLCOLOR",ctx,data,statData,data.datasets[i].fillColor,config.defaultFillColor,"fillColor",i,j,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
 					ctx.fill();
 
@@ -2789,8 +2849,11 @@ window.Chart = function(context) {
 		ctx.tpchart="Radar";
 		ctx.tpdata=0;
 
-	        if (!init_and_start(ctx,data,config)) return;
+	  if (!init_and_start(ctx,data,config)) return;
+
 		var statData=initPassVariableData_part1(data,config,ctx);
+    init_result(ctx,data,statData);
+
 		valueBounds = getValueBounds();
 
 		config.logarithmic = false;
@@ -2843,6 +2906,8 @@ window.Chart = function(context) {
 						} else {
 							ctx.lineTo(midPosX + currentAnimPc * statData[i][j].offsetX, midPosY - currentAnimPc * statData[i][j].offsetY);
 						}
+            if (animationDecimal >= config.animationStopValue){ctx.pieces_drawn.points++;ctx.pieces_drawn.total_drawn++;}
+
 					}
 				}
 				ctx.closePath();
@@ -3135,9 +3200,10 @@ window.Chart = function(context) {
 
 		ctx.tpdata=0;
 
-	        if (!init_and_start(ctx,data,config)) return;
+	  if (!init_and_start(ctx,data,config)) return;
 
 		var statData=initPassVariableData_part1(data,config,ctx);
+    init_result(ctx,data,statData);
 
 		var realCumulativeAngle = (((config.startAngle * (Math.PI / 180) + 2 * Math.PI) % (2 * Math.PI)) + 2* Math.PI) % (2* Math.PI) ; 
 		config.logarithmic = false;
@@ -3159,7 +3225,13 @@ window.Chart = function(context) {
 			animationLoop(config,msr.legendMsr, null, drawPieSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPieX, midPieY, midPieX - doughnutRadius, midPieY + doughnutRadius, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
+			if (typeof config.onAnimationComplete == "function" && (config.alwaysRunFunctionAtCompletion==true || ctx.runanimationcompletefunction==true)) {
+			   config.onAnimationComplete(ctx, config, data, 1, 0,statData);
+				 ctx.runanimationcompletefunction=false;
+			}
 			ctx.firstPass=9;
+      close_result(ctx);
+
 		}
 
 		function drawPieSegments(animationDecimal) {
@@ -3253,6 +3325,8 @@ window.Chart = function(context) {
 					ctx.fillStyle=setOptionValue(false,true,1,"FILLCOLOR",ctx,data,statData,data.datasets[i].fillColor,config.defaultFillColor,"fillColor",i,j,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
 	
 					ctx.fill();
+          if (animationDecimal >= config.animationStopValue){ctx.pieces_drawn.slices++;ctx.pieces_drawn.total_drawn++;}
+
 					if(config.segmentShowStroke=="merge") { /* avoid blank stripes between piece of chart */
 						ctx.lineWidth =1.5;
 						ctx.strokeStyle =setOptionValue(false,true,1,"FILLCOLOR",ctx,data,statData,data.datasets[i].fillColor,config.defaultFillColor,"fillColor",i,j,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
@@ -3363,6 +3437,8 @@ window.Chart = function(context) {
 			mxlgt=3;
 		}
 		var statData=initPassVariableData_part1(data,config,ctx);
+    init_result(ctx,data,statData);
+
 		for (i = 0; i < data.datasets.length; i++) statData[i][0].tpchart="Line";
 		msr = setMeasures(data, config, ctx, ctx.canvas.height, ctx.canvas.width, "nihil", "nihil", false, false, true, config.datasetFill, "Line");
 		valueBounds = getValueBounds();
@@ -3472,7 +3548,13 @@ window.Chart = function(context) {
 			animationLoop(config,msr.legendMsr, drawScale, drawLines, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
+			if (typeof config.onAnimationComplete == "function" && (config.alwaysRunFunctionAtCompletion==true || ctx.runanimationcompletefunction==true)) {
+			   config.onAnimationComplete(ctx, config, data, 1, 0,statData);
+				 ctx.runanimationcompletefunction=false;
+			}
 			ctx.firstPass=9;
+      close_result(ctx);
+
 		}
 
 
@@ -3703,6 +3785,7 @@ window.Chart = function(context) {
 
 	        if (!init_and_start(ctx,data,config)) return;
 		var statData=initPassVariableData_part1(data,config,ctx);
+    init_result(ctx,data,statData);
 
 		var nrOfBars = data.datasets.length;
 		for (var i = 0; i < data.datasets.length; i++) {
@@ -3827,7 +3910,13 @@ window.Chart = function(context) {
 			animationLoop(config,msr.legendMsr, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
+			if (typeof config.onAnimationComplete == "function" && (config.alwaysRunFunctionAtCompletion==true || ctx.runanimationcompletefunction==true)) {
+			   config.onAnimationComplete(ctx, config, data, 1, 0,statData);
+				 ctx.runanimationcompletefunction=false;
+			}
 			ctx.firstPass=9;
+      close_result(ctx);
+
 		}
 		function drawBars(animPc) {
 			var prevTopPos = new Array();
@@ -3875,7 +3964,9 @@ window.Chart = function(context) {
 						};
 						ctx.closePath();
 						ctx.fill();
+
 					}
+          if (animPc >= config.animationStopValue){ctx.pieces_drawn.rectangles++;ctx.pieces_drawn.total_drawn++;}
 					ctx.restore();
 				}
 			}
@@ -4201,6 +4292,7 @@ window.Chart = function(context) {
 		ctx.tpdata=0;
 	        if (!init_and_start(ctx,data,config)) return;
 		var statData=initPassVariableData_part1(data,config,ctx);
+    init_result(ctx,data,statData);
 
 		config.logarithmic = false;
 		msr = setMeasures(data, config, ctx, ctx.canvas.height, ctx.canvas.width, "nihil", "nihil", true, true, true,  true, "HorizontalStackedBar");
@@ -4271,7 +4363,13 @@ window.Chart = function(context) {
 			animationLoop(config,msr.legendMsr, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
+			if (typeof config.onAnimationComplete == "function" && (config.alwaysRunFunctionAtCompletion==true || ctx.runanimationcompletefunction==true)) {
+			   config.onAnimationComplete(ctx, config, data, 1, 0,statData);
+				 ctx.runanimationcompletefunction=false;
+			}
 			ctx.firstPass=9;
+      close_result(ctx);
+
 		}
 		function HorizontalCalculateOffset(val, calculatedScale, scaleHop) {
 			var outerValue = calculatedScale.steps * calculatedScale.stepValue;
@@ -4326,6 +4424,7 @@ window.Chart = function(context) {
 						ctx.closePath();
 						ctx.fill();
 					}
+          if (animPc >= config.animationStopValue){ctx.pieces_drawn.rectangles++;ctx.pieces_drawn.total_drawn++;}
 				}
 			}
 			if (animPc >= config.animationStopValue) {
@@ -4550,6 +4649,7 @@ window.Chart = function(context) {
 	        if (!init_and_start(ctx,data,config)) return;
 
 		var statData=initPassVariableData_part1(data,config,ctx);
+    init_result(ctx,data,statData);
 
 		var nrOfBars = data.datasets.length;
 		for (var i = 0; i < data.datasets.length; i++) {
@@ -4684,7 +4784,13 @@ window.Chart = function(context) {
 
 		} else {
 			testRedraw(ctx,data,config);
+			if (typeof config.onAnimationComplete == "function" && (config.alwaysRunFunctionAtCompletion==true || ctx.runanimationcompletefunction==true)) {
+			   config.onAnimationComplete(ctx, config, data, 1, 0,statData);
+				 ctx.runanimationcompletefunction=false;
+			}
 			ctx.firstPass=9;
+      close_result(ctx);
+
 		}
 
 		function drawBars(animPc) {
@@ -4707,6 +4813,7 @@ window.Chart = function(context) {
 						ctx.fillStyle=setOptionValue(true,true,1,"COLOR",ctx,data,statData,data.datasets[i].fillColor,config.defaultFillColor,"fillColor",i,j,{animationValue: currentAnimPc, xPosLeft : statData[i][j].xPosLeft, yPosBottom : statData[i][j].yPosBottom, xPosRight : statData[i][j].xPosLeft+barWidth, yPosTop : statData[i][j].yPosBottom-barHeight} );
 						ctx.strokeStyle=setOptionValue(true,true,1,"STROKECOLOR",ctx,data,statData,data.datasets[i].strokeColor,config.defaultStrokeColor,"strokeColor",i,j,{nullvalue : null} );
 						roundRect(ctx, statData[i][j].xPosLeft, statData[i][j].yPosBottom, barWidth, barHeight, config.barShowStroke, config.barBorderRadius,i,j,(data.datasets[i].data[j] < 0 ? -1  : 1));
+            if (animPc >= config.animationStopValue){ctx.pieces_drawn.rectangles++;ctx.pieces_drawn.total_drawn++;}
             }
 					}
 					ctx.restore();
@@ -5042,6 +5149,7 @@ window.Chart = function(context) {
 		}
 
 		var statData=initPassVariableData_part1(data,config,ctx);
+    init_result(ctx,data,statData);
 
 		msr = setMeasures(data, config, ctx, ctx.canvas.height, ctx.canvas.width, "nihil", "nihil", true, true, true,  true, "StackedBar");
 		valueBounds = getValueBounds();
@@ -5112,7 +5220,13 @@ window.Chart = function(context) {
 			animationLoop(config,msr.legendMsr, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
+			if (typeof config.onAnimationComplete == "function" && (config.alwaysRunFunctionAtCompletion==true || ctx.runanimationcompletefunction==true)) {
+			   config.onAnimationComplete(ctx, config, data, 1, 0,statData);
+				 ctx.runanimationcompletefunction=false;
+			}
 			ctx.firstPass=9;
+      close_result(ctx);
+
 		}
 
 		function drawBars(animPc) {
@@ -5134,6 +5248,7 @@ window.Chart = function(context) {
 					if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
 					  if (Math.abs(data.datasets[i].data[j]) >= config.zeroValue || config.showZeroValue==true) {
   						roundRect(ctx, statData[i][j].yPosTop, statData[i][j].xPosLeft , barWidth, barHeight, config.barShowStroke, config.barBorderRadius, 0,i,j,(data.datasets[i].data[j] < 0 ? -1  : 1));
+              if (animPc >= config.animationStopValue){ctx.pieces_drawn.rectangles++;ctx.pieces_drawn.total_drawn++;}
             }	
   				}
 					ctx.restore();
@@ -5171,6 +5286,8 @@ window.Chart = function(context) {
 					ctx.fillStyle=setOptionValue(true,true,1,"COMPLEMENTARYCOLOR",ctx,data,statData,data.datasets[i].complementaryColor,config.complementaryColor,"complementaryColor",i,j,{animationValue: currentAnimPc, xPosLeft : statData[i][j].xPosLeft+barHeight, yPosBottom : statData[i][j].yPosBottom, xPosRight : statData[i][j].xPosLeft+barHeight+otherBarHeight, yPosTop : statData[i][j].yPosBottom});
 					ctx.strokeStyle=setOptionValue(true,true,1,"COMPLEMENTARYSTROKECOLOR",ctx,data,statData,data.datasets[i].complementaryStrokeColor,config.complementaryStrokeColor,"strokeColor",i,j,{nullvalue : null} );
 					roundRect(ctx, statData[i][j].yPosTop, statData[i][j].xPosLeft+barHeight+2*decal, barWidth,otherBarHeight, config.barShowStroke, config.barBorderRadius,0, i,j,(data.datasets[i].data[j] < 0 ? -1  : 1));
+          if (animPc >= config.animationStopValue){ctx.pieces_drawn.rectangles++;ctx.pieces_drawn.total_drawn++;}
+
 					if(config.complementaryBarFullHeight) {
 						roundRect(ctx, statData[i][j].yPosTop, statData[i][j].xPosLeft-2*decal, barWidth,otherBarHeight2, config.barShowStroke, config.barBorderRadius,0, i,j,(data.datasets[i].data[j] < 0 ? -1  : 1));
 					}
@@ -5454,7 +5571,7 @@ window.Chart = function(context) {
 			animateFrame();
 			//Stop the loop continuing forever
 			if (multAnim == -1 && cntiter <= beginAnim) {
-				if (typeof config.onAnimationComplete == "function" && ctx.runanimationcompletefunction==true) config.onAnimationComplete(ctx, config, data, 0, animationCount + 1,statData);
+				if (typeof config.onAnimationComplete == "function" && (config.alwaysRunFunctionAtCompletion==true || ctx.runanimationcompletefunction==true)) config.onAnimationComplete(ctx, config, data, 0, animationCount + 1,statData);
 				multAnim = 1;
 				if(config.animationForceSetTimeOut)requestAnimFrameSetTimeOut(animLoop);
 				else requestAnimFrame(animLoop);
@@ -5475,13 +5592,13 @@ window.Chart = function(context) {
 					window.setTimeout(animLoop, config.animationPauseTime*1000);
 				} else {
 					if(!testRedraw(ctx,data,config)) {
-						if (typeof config.onAnimationComplete == "function" && ctx.runanimationcompletefunction==true) {
+						if (typeof config.onAnimationComplete == "function" && (config.alwaysRunFunctionAtCompletion==true || ctx.runanimationcompletefunction==true)) {
 							config.onAnimationComplete(ctx, config, data, 1, animationCount + 1,statData);
-
 							ctx.runanimationcompletefunction=false;
 						}
 					}
 					ctx.firstPass=9;
+          close_result(ctx);
 				}
 				
 			}
@@ -6840,7 +6957,6 @@ window.Chart = function(context) {
 					if(typeof(data.datasets[i].data[j])=="undefined")todisplay=false;
 					if(prevAnimPc.animVal==0 && j>statData[i][0].firstNotMissing) continue;	
 					currentAnimPc = animationCorrection(animPc, data, config, i, j, true);
-
 					if (currentAnimPc.mainVal == 0  && (prevAnimPc.mainVal > 0 && firstpt !=-1)) {
 						ctx.setLineDash(lineStyleFn(setOptionValue(true,true,1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,"datasetStrokeStyle",i,j,{nullvalue : null} )));
 						ctx.stroke();
@@ -6953,6 +7069,8 @@ window.Chart = function(context) {
 							}
 							break
 					}
+          if (todisplay && animPc >= config.animationStopValue){ctx.pieces_drawn.points++;ctx.pieces_drawn.total_drawn++;}
+
 				}
 				closebz(pts,ctx,config,i);
 				ctx.setLineDash(lineStyleFn(setOptionValue(true,true,1,"LINEDASH",ctx,data,statData,data.datasets[i].datasetStrokeStyle,config.datasetStrokeStyle,"datasetStrokeStyle",i,j,{nullvalue : null} )));
@@ -7174,14 +7292,14 @@ window.Chart = function(context) {
 		// ----------------------------------------------------		
                 // highLight : false, 	highLightMouseFunction : "mousemove",
 		// ----------------------------------------------------		
-		// - mouse sortir ou entrer dans une piÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨ce => Pas d'influence sur une action de souris. C'est liÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  l'action de annotateFunction
+		// - mouse sortir ou entrer dans une piÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨ce => Pas d'influence sur une action de souris. C'est liÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  l'action de annotateFunction
 		//      	annotateFunctionIn : inBar,
       		//		annotateFunctionOut : outBar,
 		// ----------------------------------------------------		
 		// - mouseDownRight	mouseDownLeft: null  mouseDownMiddle: null  
 		// - mouseMove: null 	mouseWheel : null    mouseOut: null (lorsque la souris sort du canvas) 	
 		// ----------------------------------------------------		
-		//  mouse sur texte : detectMouseOnText => Pas d'influence sur une action de souris. C'est liÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  une autre action;
+		//  mouse sur texte : detectMouseOnText => Pas d'influence sur une action de souris. C'est liÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  une autre action;
 		// ----------------------------------------------------		
 
 		function setAction(ctx,action){
@@ -7276,7 +7394,7 @@ window.Chart = function(context) {
 			};
 		}
 		
-		// initialiser les variables nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©cessaires pour l'action doMouseAction;
+		// initialiser les variables nÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©cessaires pour l'action doMouseAction;
                 inMouseAction[ctx.ChartNewId]=false;
 		mouseActionData[ctx.ChartNewId]={ data : data, config: config, prevShow : -1 };
 	};
