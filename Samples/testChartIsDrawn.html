@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<script src="../ChartNew.js"></script>
+
+
+	<script>
+	var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+
+	var barChartData = {
+		labels : ["January","February","March","April","May","June","July"],
+		datasets : [
+			{
+				fillColor : "rgba(220,220,220,0.5)",
+				strokeColor : "rgba(220,220,220,0.8)",
+				highlightFill: "rgba(220,220,220,0.75)",
+				highlightStroke: "rgba(220,220,220,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+			},
+			{
+				fillColor : "rgba(151,187,205,0.5)",
+				strokeColor : "rgba(151,187,205,0.8)",
+				highlightFill : "rgba(151,187,205,0.75)",
+				highlightStroke : "rgba(151,187,205,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+			}
+		]
+
+	}
+
+</script>
+	<head>
+	
+		<title>
+			Responsive Chart 
+		</title>
+    
+		
+<style type="text/css" media="screen"><!--
+
+
+mark {
+    background-color: red;
+    color: white;
+}
+#page
+	{
+	font-size: 11px;
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	line-height: 14px;
+	text-align: left;
+	visibility: visible;
+	margin-top: 40px;
+	margin-right: auto;
+	margin-left: auto;
+	position: relative;
+	width: 85%
+	}
+
+#en_tete
+	{
+	font-size: 20px;
+	position: relative;
+	text-align: center;
+	font-family: verdana, geneva, arial, sans-serif;
+	font-size: 42px;
+	font-weight: bold
+	}
+
+#boite1 
+	{
+	font-size: 20px;
+	background-color: #f6f6b8;
+	position: relative;
+	text-align: center
+	}
+
+#boite2 
+	{
+	padding: 10px;
+	position: relative
+	}
+
+#boite3  
+	{
+	font-size: 20px;
+	background-color: #f6c3f6;
+	margin-top: 10px;
+	position: relative;
+	text-align: center
+	}
+
+
+#boite5
+	{
+	position: relative;
+//	padding: 10px;
+	margin-top: 10px;
+	width: 49%;
+	float: left
+	}
+
+#boite6
+	{
+	position: relative;
+//	padding: 10px;
+	margin-top: 10px;
+	width: 49%;
+	float: left;
+	margin-left: 2%;
+	margin-bottom: 10px;
+	line-height: 16px
+	}
+
+
+
+
+
+--></style> 
+	</head>
+
+	<body>
+
+  <table width=100% border=1 id="myTable">
+<tr>
+<th width=33%>
+Chart 1
+</th>
+<th width=33%>
+Chart 2
+</th>
+<th width=33%>
+Chart 3
+</th>
+</tr>
+<tr>
+<td>
+Animation ongoing
+</td>
+<td>
+Animation ongoing
+</td>
+<td>
+Animation ongoing
+</td>
+</tr>
+<tr>
+<th colspan=3>
+<center>
+Iteration : 0
+</center>
+</th>
+</tr>
+</table>
+
+
+		<div align="center">
+			<div id="en_tete">
+				Responsive Chart 
+			</div>
+			<div id="page">
+
+				<div id="boite1"><BR>1st graph<BR><BR></div>
+				<div id="boite2"><center>
+				<canvas id="canvas1" height="300" width="600"></canvas>
+				</center></div>
+
+  				<div id="boite3"><BR>Graph 2 & 3<BR><BR></div>
+
+				  <div id="boite5"><center>
+				  <canvas id="canvas2" height="300" width="600"></canvas>
+				  </center></div>
+
+				  <div id="boite6"><center>
+				  <canvas id="canvas3" height="300" width="600"></canvas>
+				  </center></div>
+
+			</div>
+
+		</div>
+
+
+<script>
+  function drawInfo(ctx,cell) {
+    var pieces_drawn ={
+      total_data : "?",
+      total_non_missing_data : "?",
+      total_missing_data : "?",
+      all_drawn : false,
+      completed : false,
+      total_drawn : 0,
+      points : 0,       
+      rectangles : 0,
+      slices : 0
+    };
+    if (typeof ctx.pieces_drawn!="undefined"){
+        pieces_drawn=ctx.pieces_drawn;
+    }
+    line="";
+    
+    line=line+"Chart is completely drawn :"+pieces_drawn.completed;
+    line=line+"<BR>Total data : "+pieces_drawn.total_data;
+    line=line+"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;non missing data:"+pieces_drawn.total_non_missing_data;
+    line=line+"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;missing data:"+pieces_drawn.total_missing_data;
+    line=line+"<BR>All pieces have been drawn :"+pieces_drawn.all_drawn;
+    line=line+"<BR>Detail of the "+pieces_drawn.total_drawn+" pieces drawn:";
+    line=line+"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Points:"+pieces_drawn.points;
+    line=line+"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rectangles:"+pieces_drawn.rectangles;
+    line=line+"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Slices:"+pieces_drawn.slices;
+    
+    line=line.replace(/false/g,"<mark>false</mark>");
+    
+    var myTable = document.getElementById('myTable');
+    myTable.rows[1].cells[cell].innerHTML = line;   
+  }
+
+
+var cnt=0;
+
+function refreshInfo(ctx1,ctx2,ctx3) {
+  drawInfo(ctx1,0);
+  drawInfo(ctx2,1);
+  drawInfo(ctx3,2);
+  cnt=cnt+1;
+
+  var myTable = document.getElementById('myTable');
+  myTable.rows[2].cells[0].innerHTML = "<center>Iteration: "+cnt+"</center>";   
+  setTimeout(function (){refreshInfo(ctx1,ctx2,ctx3);}, 500);
+
+}
+
+ 
+ 
+  
+	window.onload = function(){
+		var ctx1 = document.getElementById("canvas1").getContext("2d");
+
+		window.myBar = new Chart(ctx1).Bar(barChartData, {
+			responsive : true, maintainAspectRatio : true
+		});
+		var ctx2 = document.getElementById("canvas2").getContext("2d");
+		window.myBar = new Chart(ctx2).Line(barChartData, {
+			responsive : true, maintainAspectRatio : true
+		});
+		var ctx3 = document.getElementById("canvas3").getContext("2d");                                               
+ 		window.myBar = new Chart(ctx3).HorizontalBar(barChartData, {
+			responsive : true, maintainAspectRatio : true
+		});
+//    if(ctx1.pieces_drawn.completed==false || ctx2.pieces_drawn.completed==false || ctx3.pieces_drawn.completed==false) setTimeout(function (){refreshInfo(ctx1,ctx2,ctx3);}, 1000);
+    refreshInfo(ctx1,ctx2,ctx3);
+	}
+
+	</script>
+
+	</body>
+</html>
