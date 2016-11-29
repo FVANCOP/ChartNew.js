@@ -8460,8 +8460,9 @@ var i,j;
 			if (!(typeof data.datasets[ival].xPos[Math.floor(iteration + config.zeroValue)] == "undefined")) {
 				var width = valueHop * nbValueHop;
 
-				var deb = (typeof data.xBegin != "undefined") ? data.xBegin : 1 * data.labels[0];
-				var fin = (typeof data.xEnd != "undefined") ? data.xEnd : 1 * data.labels[data.labels.length - 1];
+				var deb = (typeof data.xBegin != "undefined") ? data.xBegin : (typeof (1 * data.labels[0])=="number" && !isNaN(1 * data.labels[0])? 1 * data.labels[0] : 0);
+				var fin = (typeof data.xEnd != "undefined") ? data.xEnd : ((typeof (1 * data.labels[data.labels.length - 1])=="number") && !isNaN(1 * data.labels[data.labels.length - 1]) ? 1 * data.labels[data.labels.length - 1] : data.labels.length-1) ;
+
 				if (fin <= deb) fin = deb + 100;
 				if (1 * data.datasets[ival].xPos[Math.floor(iteration + config.zeroValue)] >= deb && data.datasets[ival].xPos[Math.floor(iteration + config.zeroValue)] <= fin) {
 					var p1 = yAxisPosX + width * ((1 * data.datasets[ival].xPos[Math.floor(iteration + config.zeroValue)] - deb) / (fin - deb));
