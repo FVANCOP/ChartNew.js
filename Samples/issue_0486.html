@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+  <meta name="generator" content="PSPad editor, www.pspad.com">
+  <!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+  <title></title>
+  </head>
+  <body>
+
+<SCRIPT>
+
+var clickPosI=-1;
+var colorList=["rgba(220,220,220,1)","rgba(151,187,205,1)"];
+
+function fnMouseDownLeft(event,ctx,config,data,other){
+  if(clickPosI!=-1) {
+	   data.datasets[clickPosI].strokeColor=colorList[clickPosI];
+     clickPosI=-1;
+  }
+
+  if(other != null){
+	   data.datasets[other.v11].strokeColor="red";
+     clickPosI=other.v11;
+     window.alert("Line Selected : "+other.v11+"; Point selected : ["+data.datasets[other.v11].data[other.v12]+" "+data.datasets[other.v11].xPos[other.v12]);
+  } 
+  updateChart(ctx,data,config,false,false)
+}
+
+var mydata1 = {
+  labels : ["-2PI","-3PI/2","-PI","-PI/2","0","PI/2","PI","3PI/2","2PI"],
+  xBegin : -4*Math.PI/2,
+  xEnd :  4*Math.PI/2,   
+	datasets : [
+		{
+			strokeColor : colorList[0],
+      data : [],
+      xPos : [],
+      title : "Sinus"
+		},
+		{
+			strokeColor : colorList[1],
+      data : [],
+      xPos : [],
+      title : "Cosinus"
+		}
+	]
+}               
+var nbiter=400;
+for(var i=0;i<nbiter;i++)
+{
+  mydata1.datasets[0].xPos[i]=mydata1.xBegin+i*(mydata1.xEnd-mydata1.xBegin)/nbiter;
+  mydata1.datasets[0].data[i]=Math.sin(mydata1.datasets[0].xPos[i]);
+  mydata1.datasets[1].xPos[i]=mydata1.xBegin+i*(mydata1.xEnd-mydata1.xBegin)/nbiter;
+  mydata1.datasets[1].data[i]=Math.cos(mydata1.datasets[1].xPos[i]);
+}
+
+
+var setopts1 = {
+    animation : false,
+    mouseDownLeft : fnMouseDownLeft,
+    datasetFill : false,
+    pointDot :false
+
+}
+
+
+
+document.write("<canvas id=\"canvas_1\" height=\"600\" width=\"1200\"></canvas>");
+var Cht1 = new Chart(document.getElementById("canvas_1").getContext("2d")).Line(mydata1,setopts1);
+
+
+/* **************************************************** */
+
+</SCRIPT>
+
+
+  </body>
+</html>
