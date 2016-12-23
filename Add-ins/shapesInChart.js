@@ -762,6 +762,10 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 
 };
 
+function addIns_HighLight_endDraw(when,ctx,data,statData,i,j,other) {
+  addIns_highLight(ctx, other.config, data, 1, other.animationValue,statData);
+}
+
 function addIns_highLight(ctx, config, data, movement, animationCount,statData){
 	var special;
 	var shapesVar,shapeAddins;
@@ -781,6 +785,47 @@ function addIns_highLight(ctx, config, data, movement, animationCount,statData){
 			if(typeof special[i].addIns_shape== "undefined")shapeAddins="ARROW" ;
 			else shapeAddins=special[i].addIns_shape.toUpperCase();
 			switch(shapeAddins) {
+				case "RECTANGLE" :
+					switch(tpdraw(ctx,(typeof data.datasets == "object") ? data.datasets[special[i].posi] : undefined)) {
+						case "Line" :
+						case "Bar" :
+						case "StackedBar" :
+							totreat=true;
+							addHighLight=true;
+							shapesVar[shapesVar.length]={hightLight : true };
+							shapesVar[shapesVar.length-1].shape= special[i].addIns_shape;
+							shapesVar[shapesVar.length-1].position= "inchart";
+							shapesVar[shapesVar.length-1].x1= special[i].posj-0.5;
+							shapesVar[shapesVar.length-1].y1= data.datasets[special[i].posi].data[special[i].posj];
+							shapesVar[shapesVar.length-1].y1= -Number.MAX_VALUE;
+							shapesVar[shapesVar.length-1].x2= special[i].posj+0.5;
+							shapesVar[shapesVar.length-1].y2= data.datasets[special[i].posi].data[special[i].posj];
+							shapesVar[shapesVar.length-1].y2= Number.MAX_VALUE;
+
+							break;
+						case "HorizontalBar" :
+						case "HorizontalStackedBar" :
+							totreat=true;
+							addHighLight=true;
+							shapesVar[shapesVar.length]={hightLight : true };
+							shapesVar[shapesVar.length-1].shape= special[i].addIns_shape;
+							shapesVar[shapesVar.length-1].position= "inchart";
+							shapesVar[shapesVar.length-1].y1= special[i].posj-0.5;
+							shapesVar[shapesVar.length-1].x1= -Number.MAX_VALUE;
+							shapesVar[shapesVar.length-1].y2= special[i].posj+0.5;
+							shapesVar[shapesVar.length-1].x2= Number.MAX_VALUE;
+							break;
+						case "Radar" :
+						case "Pie" :
+						case "Doughnut" :
+						case "PolarArea" :
+						default:
+							break;
+					}				
+					shapesVar[shapesVar.length-1].strokeColor= "black";
+					shapesVar[shapesVar.length-1].fillColor= "black";    
+					break;
+
 				case "ELLIPSE" :
 					switch(tpdraw(ctx,(typeof data.datasets == "object") ? data.datasets[special[i].posi] : undefined)) {
 						case "Line" :
