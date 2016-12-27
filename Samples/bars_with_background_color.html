@@ -1,0 +1,199 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+<SCRIPT src='../Add-ins/drawLegend.js'></script>
+
+
+<SCRIPT>
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June","July"],
+	datasets : [
+		{
+			fillColor : "black",
+			strokeColor : "rgba(220,220,220,1)",
+			data : [95,53,99,,73,27,82],
+			axis : 1,
+      title : "2012"
+		},
+		{
+			fillColor : "yellow",
+			strokeColor : "rgba(151,187,205,1)",
+			data : [35,43,59,,31,50,66],
+			axis : 1,
+      title : "2013"
+		},
+		{
+			fillColor : "red",
+			strokeColor : "rgba(220,220,220,1)",
+			data : [58,47,124,41,67,91,115],
+			axis : 1,
+      title : "2014"
+		},
+	]
+}               
+
+var mydata2 = {
+	labels : ["January","February","March","April","May","June","July"],
+	datasets : [
+		{
+			fillColor : "black",
+			strokeColor : "rgba(220,220,220,1)",
+			data : [95,53,99,,73,27,82],
+			axis : 1,
+      title : "2012"
+		},
+		{
+			fillColor : "yellow",
+			strokeColor : "rgba(151,187,205,1)",
+			data : [35,43,59,,31,50,66],
+			axis : 1,
+      title : "2013"
+		},
+		{
+			fillColor : "red",
+			strokeColor : "rgba(220,220,220,1)",
+			data : [58,47,124,41,67,91,115],
+			axis : 1,
+      title : "2014"
+		},
+	]
+}               
+
+
+
+var i,j;
+var decal=0.00;
+
+mydata1.shapesInChart=[];
+
+var fillColorList1=["rgba(220,200,230,0.3)","rgba(220,0,230,0.3)","rgba(0,200,230,0.3)","rgba(220,200,0,0.3)","rgba(220,100,230,0.3)","rgba(120,200,230,0.3)","rgba(220,200,130,0.3)","rgba(120,100,230,0.3)"];
+var strokeColorList1=["rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)"];
+for(i=0;i<mydata1.labels.length;i++) {
+	mydata1.shapesInChart[mydata1.shapesInChart.length]= {
+		        position : "INCHART",
+        		shape: "RECTANGLE",
+        		fillColor: fillColorList1[i],
+        		strokeColor : strokeColorList1[i],
+        		animate : false,
+        		x1: -0.5+i+decal,
+        		y1: -Number.MAX_VALUE,
+        		x2: 0.50+i-decal    ,
+        		y2: Number.MAX_VALUE
+	}
+};
+
+mydata2.shapesInChart=[];
+var fillColorList2=["rgba(220,200,230,0.3)","rgba(220,0,230,0.3)","rgba(0,200,230,0.3)","rgba(220,200,0,0.3)","rgba(220,100,230,0.3)","rgba(120,200,230,0.3)","rgba(220,200,130,0.3)","rgba(120,100,230,0.3)","rgba(220,200,230,0.3)","rgba(220,0,230,0.3)","rgba(0,200,230,0.3)","rgba(220,200,0,0.3)","rgba(220,100,230,0.3)","rgba(120,200,230,0.3)","rgba(220,200,130,0.3)","rgba(120,100,230,0.3)","rgba(220,200,230,0.3)","rgba(220,0,230,0.3)","rgba(0,200,230,0.3)","rgba(220,200,0,0.3)","rgba(220,100,230,0.3)","rgba(120,200,230,0.3)","rgba(220,200,130,0.3)","rgba(120,100,230,0.3)"];
+var strokeColorList2=["rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)"];
+var cnt=-1;
+for(i=0;i<mydata2.datasets.length;i++) {
+  for(j=0;j<mydata2.datasets[i].data.length;j++) {
+   cnt++;
+	 mydata2.shapesInChart[mydata2.shapesInChart.length]= {
+		        position : "INCHART",
+        		shape: "RECTANGLE",
+        		fillColor: fillColorList2[cnt],
+        		strokeColor : strokeColorList2[cnt],
+        		animate : false,
+        		x1: -0.5+j+i*(1/mydata2.datasets.length)+decal,
+        		y1: -Number.MAX_VALUE,
+        		x2: -0.50+j+(i+1)*(1/mydata2.datasets.length)-decal,
+        		y2: Number.MAX_VALUE
+	   }
+  }
+};
+
+
+var mydata3 = {
+	labels : ["January","February","March","April","May","June","July"],
+	datasets : [
+		{
+			fillColor : "black",
+			strokeColor : "rgba(220,220,220,1)",
+			data : [95,53,99,,73,27,82],
+			axis : 1,
+      title : "2012"
+		},
+		{
+			fillColor : "yellow",
+			strokeColor : "rgba(151,187,205,1)",
+			data : [35,43,59,,31,50,66],
+			axis : 1,
+      title : "2013"
+		},
+		{
+			fillColor : "red",
+			strokeColor : "rgba(220,220,220,1)",
+			data : [58,47,124,41,67,91,115],
+			axis : 1,
+      title : "2014"
+		},
+	]
+}               
+
+function setComplColor(area, ctx, data,statData, posi,posj,othervars) {
+  return(fillColorList2[posj+posi*data.datasets[posi].data.length]);
+};
+
+
+var opt1 = {
+      canvasBorders : true,
+      graphTitle : "third bar",
+      legend : true,
+      inGraphDataShow : true,
+      annotateDisplay : true,
+      graphTitleFontSize: 18,
+      endDrawScaleFunction : drawShapes
+}
+
+var opt2 = {
+      canvasBorders : true,
+      graphTitle : "third bar",
+      legend : true,
+      inGraphDataShow : true,
+      annotateDisplay : true,
+      graphTitleFontSize: 18,
+      complementaryBar : true,
+      complementaryColor : setComplColor
+      
+}
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Bar1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Bar2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Bar3\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+
+
+    var myBar1 = new Chart(document.getElementById("canvas_Bar1").getContext("2d")).Bar(mydata1,opt1);
+    var myBar2 = new Chart(document.getElementById("canvas_Bar2").getContext("2d")).Bar(mydata2,opt1);
+    var myBar3 = new Chart(document.getElementById("canvas_Bar3").getContext("2d")).Bar(mydata3,opt2);
+
+}
+
+    </script>
+  </body>
+</html>
