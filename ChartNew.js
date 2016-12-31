@@ -37,7 +37,7 @@
 
 
 // non standard functions;
-
+var annotate_shape='divCursor'
 var chartJSLineStyle=[];
 chartJSLineStyle["solid"]=[];
 chartJSLineStyle["dotted"]=[1,4];
@@ -516,10 +516,10 @@ if (typeof CanvasRenderingContext2D !== 'undefined') {
 
 cursorDivCreated = false;
 
-function createCursorDiv() {
+function createCursorDiv(config) {
 	if (cursorDivCreated == false) {
-		var div = document.createElement('divCursor');
-		div.id = 'divCursor';
+		var div = document.createElement(annotate_shape);
+		div.id = annotate_shape;
 		div.style.position = 'absolute';
 		document.body.appendChild(div);
 		cursorDivCreated = true;
@@ -743,8 +743,8 @@ function cursorInit() {
 /********************************************************************
 Contructs the cursorobjects
 *********************************************************************/
-function makeCursorObj(obj, nest) {
-	createCursorDiv();
+function makeCursorObj(config,obj, nest) {
+	createCursorDiv(config);
 	nest = (!nest) ? '' : 'document.' + nest + '.'
 	this.css = bw.dom ? document.getElementById(obj).style : bw.ie4 ? document.all[obj].style : bw.ns4 ? eval(nest + "document.layers." + obj) : 0;
 	this.moveIt = b_moveIt;
@@ -1022,6 +1022,42 @@ function highLightAction(action,ctx,data,config,v1,v2) {
 
 var inMouseAction=new Array();
 
+function initAnnotateDiv(annotateDIV,config,ctx) {   
+ 			annotateDIV.className = (config.annotateClassName) ? config.annotateClassName : '';
+  		annotateDIV.style.border = (config.annotateClassName) ? '' : config.annotateBorder;
+			annotateDIV.style.padding = (config.annotateClassName) ? '' : config.annotatePadding;
+			annotateDIV.style.borderRadius = (config.annotateClassName) ? '' : config.annotateBorderRadius;
+			annotateDIV.style.backgroundColor = (config.annotateClassName) ? '' : config.annotateBackgroundColor;
+			annotateDIV.style.color = (config.annotateClassName) ? '' : config.annotateFontColor;
+			annotateDIV.style.fontFamily = (config.annotateClassName) ? '' : config.annotateFontFamily;
+			annotateDIV.style.fontSize = (config.annotateClassName) ? '' : (Math.ceil(ctx.chartTextScale*config.annotateFontSize)).toString() + "pt";
+			annotateDIV.style.fontStyle = (config.annotateClassName) ? '' : config.annotateFontStyle;
+			annotateDIV.style.zIndex = 999;
+};
+
+function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,piece,myStatData,statData) {
+
+					if (jsGraphAnnotate[ctx.ChartNewId][piece.piece][0] == "ARC") dispString = tmplbis(setOptionValue(true,true,1,"ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][piece.piece][3],undefined,config.annotateLabel,"annotateLabel",jsGraphAnnotate[ctx.ChartNewId][piece.piece][1],-1,{otherVal:true}), myStatData,config);
+					else dispString = tmplbis(setOptionValue(true,true,1,"ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][piece.piece][3],undefined,config.annotateLabel,"annotateLabel",jsGraphAnnotate[ctx.ChartNewId][piece.piece][1],jsGraphAnnotate[ctx.ChartNewId][piece.piece][2],{otherVal:true}), myStatData,config);
+					textMsr=ctx.measureTextMultiLine(dispString,1*annotateDIV.style.fontSize.replace("pt",""));
+					ctx.restore();
+
+					annotateDIV.innerHTML = dispString;
+					x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
+					y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
+					if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
+					if(config.annotateRelocate===true) {
+						var relocateX, relocateY;
+						relocateX=0;relocateY=0;
+				 		if(x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-fromLeft)relocateX=-textMsr.textWidth;
+		 				if(y+fromTop+textMsr.textHeight > 1*window.innerHeight-1*rect.top+fromTop)relocateY-=(textMsr.textHeight+2*fromTop);
+						oCursor.moveIt(Math.max(8-rect.left,x + fromLeft+relocateX), Math.max(8-rect.top,y + fromTop + relocateY));
+					} else oCursor.moveIt(x + fromLeft, y + fromTop);
+					annotateDIV.style.display = true ? '' : 'none'; 
+};       
+
+
+
 function doMouseAction(event, ctx, action) {
 	if (ctx.firstPass != 9)return;
 	if(action=="mousedown") action=action+" "+event.which;
@@ -1063,6 +1099,8 @@ function doMouseAction(event, ctx, action) {
 					myStatData.graphPosY = canvas_pos.y;
 					pieceOfChartFound[pieceOfChartFound.length]={
 						piece : i,
+            i : jsGraphAnnotate[ctx.ChartNewId][i][1],
+            j : jsGraphAnnotate[ctx.ChartNewId][i][2],
 						myStatData: myStatData
 					};
 				}
@@ -1085,6 +1123,8 @@ function doMouseAction(event, ctx, action) {
 					myStatData.graphPosY = canvas_pos.y;
 					pieceOfChartFound[pieceOfChartFound.length]={
 						piece : i,
+            i : jsGraphAnnotate[ctx.ChartNewId][i][1],
+            j : jsGraphAnnotate[ctx.ChartNewId][i][2],
 						myStatData: myStatData
 					};
 				}
@@ -1108,6 +1148,8 @@ function doMouseAction(event, ctx, action) {
 				myStatData.graphPosY = canvas_pos.y;
 				pieceOfChartFound[pieceOfChartFound.length]={
 					piece : i,
+          i : jsGraphAnnotate[ctx.ChartNewId][i][1],
+          j : jsGraphAnnotate[ctx.ChartNewId][i][2],
 					myStatData: myStatData
 				};
 			}
@@ -1136,6 +1178,8 @@ function doMouseAction(event, ctx, action) {
 				myStatData.graphPosY = canvas_pos.y;
 				pieceOfChartFound[pieceOfChartFound.length]={
 					piece : i,
+          i : jsGraphAnnotate[ctx.ChartNewId][i][1],
+          j : jsGraphAnnotate[ctx.ChartNewId][i][2],
 					myStatData: myStatData
 				};
 			}
@@ -1219,41 +1263,17 @@ function doMouseAction(event, ctx, action) {
 	
 	if(config.annotateDisplay && isAction(config.annotateFunction,realAction)) {
 		// annotate display functionality;
-		annotateDIV = document.getElementById('divCursor');
+		annotateDIV = document.getElementById(annotate_shape);
 		annotateDIV.style.display = false ? '' : 'none';
 		if(pieceOfChartFound.length>0) {
-			annotateDIV.className = (config.annotateClassName) ? config.annotateClassName : '';
-			annotateDIV.style.border = (config.annotateClassName) ? '' : config.annotateBorder;
-			annotateDIV.style.padding = (config.annotateClassName) ? '' : config.annotatePadding;
-			annotateDIV.style.borderRadius = (config.annotateClassName) ? '' : config.annotateBorderRadius;
-			annotateDIV.style.backgroundColor = (config.annotateClassName) ? '' : config.annotateBackgroundColor;
-			annotateDIV.style.color = (config.annotateClassName) ? '' : config.annotateFontColor;
-			annotateDIV.style.fontFamily = (config.annotateClassName) ? '' : config.annotateFontFamily;
-			annotateDIV.style.fontSize = (config.annotateClassName) ? '' : (Math.ceil(ctx.chartTextScale*config.annotateFontSize)).toString() + "pt";
-			annotateDIV.style.fontStyle = (config.annotateClassName) ? '' : config.annotateFontStyle;
-			annotateDIV.style.zIndex = 999;
+      initAnnotateDiv(annotateDIV,config,ctx);
 			ctx.save();
 			ctx.font= annotateDIV.style.fontStyle+" "+ annotateDIV.style.fontSize+" "+annotateDIV.style.fontFamily;
 			var rect = ctx.canvas.getBoundingClientRect();
 			showDiv=false;
 			if(whoToReferAnnotate!=-1) {
 				if (jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][4]) {
-					if (jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][0] == "ARC") dispString = tmplbis(setOptionValue(true,true,1,"ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][3],undefined,config.annotateLabel,"annotateLabel",jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][1],-1,{otherVal:true}), pieceOfChartFound[whoToReferAnnotate].myStatData,config);
-					else dispString = tmplbis(setOptionValue(true,true,1,"ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][3],undefined,config.annotateLabel,"annotateLabel",jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][1],jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][2],{otherVal:true}), pieceOfChartFound[whoToReferAnnotate].myStatData,config);
-					textMsr=ctx.measureTextMultiLine(dispString,1*annotateDIV.style.fontSize.replace("pt",""));
-					ctx.restore();
-					annotateDIV.innerHTML = dispString;
-					x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
-					y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
-					if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
-					if(config.annotateRelocate===true) {
-						var relocateX, relocateY;
-						relocateX=0;relocateY=0;
-				 		if(x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-fromLeft)relocateX=-textMsr.textWidth;
-		 				if(y+fromTop+textMsr.textHeight > 1*window.innerHeight-1*rect.top+fromTop)relocateY-=(textMsr.textHeight+2*fromTop);
-						oCursor.moveIt(Math.max(8-rect.left,x + fromLeft+relocateX), Math.max(8-rect.top,y + fromTop + relocateY));
-					} else oCursor.moveIt(x + fromLeft, y + fromTop);
-					annotateDIV.style.display = true ? '' : 'none'; 
+          displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,pieceOfChartFound[whoToReferAnnotate],pieceOfChartFound[whoToReferAnnotate].myStatData,jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][3]);
 					showDiv=true;
 				}
 			}
@@ -2529,10 +2549,10 @@ window.Chart = function(context) {
     var total_data=0;
     var total_non_missing_data=0;
     for(i=0;i<data.datasets.length;i++) {
-      if(typeof data.datasets[i].xPos !== "undefined" && ctx.tpchart=="line") {
+      if(typeof data.datasets[i].xPos !== "undefined" && ctx.tpchart=="Line") {
         total_data+=data.datasets[i].xPos.length;
         for(j=0;j<data.datasets[i].xPos.length;j++) {
-          total_nom_missing_data+=(!(typeof(data.datasets[i].xPos[j]) == 'undefined'));
+          total_non_missing_data+=(!(typeof(data.datasets[i].xPos[j]) == 'undefined'));
         }
       } else {
         total_data+=data.labels.length;
@@ -3217,7 +3237,7 @@ window.Chart = function(context) {
 		doughnutRadius=drwSize.radius;
 
 		
-                if(chartType == "Pie")cutoutRadius=0;
+    if(chartType == "Pie")cutoutRadius=0;
 		else cutoutRadius = doughnutRadius * (config.percentageInnerCutout / 100);
 
 		if(doughnutRadius > 0) {
@@ -3266,7 +3286,7 @@ window.Chart = function(context) {
 
 				if (chartType=="Pie")dataCutoutRadius=cutoutRadius;
 				else dataCutoutRadius=cutoutRadius
-                	        dataDoughnutRadius=doughnutRadius
+        dataDoughnutRadius=doughnutRadius
 
 
 				// correct radius for Multiple Doughnuts;
@@ -3277,7 +3297,7 @@ window.Chart = function(context) {
 				dataDoughnutRadius=rdataDoughnutRadius;
 
 				if (chartType!="Pie" || j>0)rdataCutoutRadius=dataCutoutRadius-(dataDoughnutRadius-dataCutoutRadius)*setOptionValue(false,true,1,"EXPANDINRADIUS",ctx,data,statData,data.datasets[i].expandInRadius,0,"expandInRadius",i,j,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
-                	        rdataDoughnutRadius=dataDoughnutRadius+(dataDoughnutRadius-dataCutoutRadius)*setOptionValue(false,true,1,"EXPANDOUTRADIUS",ctx,data,statData,data.datasets[i].expandOutRadius,0,"expandOutRadius",i,j,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
+        rdataDoughnutRadius=dataDoughnutRadius+(dataDoughnutRadius-dataCutoutRadius)*setOptionValue(false,true,1,"EXPANDOUTRADIUS",ctx,data,statData,data.datasets[i].expandOutRadius,0,"expandOutRadius",i,j,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
 
 				dataCutoutRadius=rdataCutoutRadius;
 				dataDoughnutRadius=rdataDoughnutRadius;
@@ -7326,7 +7346,7 @@ window.Chart = function(context) {
 
 		// - annotateDisplay : true, annotateFunction: "mousemove"
 		if(config.annotateDisplay==true) {
-			if (cursorDivCreated == false) oCursor = new makeCursorObj('divCursor');
+			if (cursorDivCreated == false) oCursor = new makeCursorObj(config,annotate_shape);
 			     if(config.annotateFunction=="mousedown left")setAction(ctx,"mousedown 1");
 			else if(config.annotateFunction=="mousedown middle")setAction(ctx,"mousedown 2");
 			else if(config.annotateFunction=="mousedown right")setAction(ctx,"mousedown 3");
@@ -7816,7 +7836,7 @@ var startRadius,stopRadius;
 		prevpos[0]=[];
 		prevpos[1]=[];
 		grandtotal=0;
-		MstartAngle=[];
+		MstartAngle=[];                               
 		McumulativeAngle=[];
 		MrealCumulativeAngle=[];
 		startRadius=[];
