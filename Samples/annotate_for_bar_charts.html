@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+  <title></title>
+  <SCRIPT src='../ChartNew.js'></script>
+  <SCRIPT src='../Add-ins/annotate.js'></script>  
+<SCRIPT>
+
+var annotate_shape='ARROW';
+
+</SCRIPT>
+  </head>
+
+  <body>
+  <center><FONT size=25>some sample tooltip position for (stacked)bar charts</FONT></CENTER>
+  <canvas id="mycanvas0" height="400" width="400"></canvas>
+  <canvas id="mycanvas1" height="400" width="400"></canvas>
+  <canvas id="mycanvas2" height="400" width="400"></canvas>
+  <canvas id="mycanvas3" height="400" width="400"></canvas>
+  <canvas id="mycanvas4" height="400" width="400"></canvas>
+  <canvas id="mycanvas5" height="400" width="400"></canvas>
+  <canvas id="mycanvas6" height="400" width="400"></canvas>
+  <canvas id="mycanvas7" height="400" width="400"></canvas>
+  <canvas id="mycanvas8" height="400" width="400"></canvas>
+  <canvas id="mycanvas9" height="400" width="400"></canvas>
+  <script>
+ var LineData = {
+	labels : ["January","February","March","April","May","June","July"],
+	datasets : [
+		{
+			fillColor : "rgba(129, 172, 123, 0.5)",
+			strokeColor : "rgba(129, 172, 123, 1)",
+			pointColor : "rgba(129, 172, 123, 1)",
+			pointStrokeColor : "#fff",
+			data : [30,44,42,-90,90,-37,20],
+      title : "Line 1"
+		},
+		{
+			fillColor : "rgba(159, 90, 90, 0.5)",
+			strokeColor : "rgba(159, 90, 90, 1)",
+			pointColor : "rgba(159, 90, 90, 1)",
+//      type :"Line" ,
+			pointStrokeColor : "#fff",
+			data : [65,59,40,77,56,-10,40],
+      title : "Line 2"
+		}
+	]
+};
+
+
+
+
+  window.onload = function() {
+    var myChart0 = new Chart(document.getElementById("mycanvas0").getContext("2d")).Bar(LineData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 0, annotatePaddingY : -10, annotatePositionX : "center", annotatePositionY : "top" });
+    var myChart1 = new Chart(document.getElementById("mycanvas1").getContext("2d")).Bar(LineData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: -10, annotatePaddingY : -10, annotatePositionX : "right", annotatePositionY : "Stop" });
+    var myChart2 = new Chart(document.getElementById("mycanvas2").getContext("2d")).Bar(LineData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 10, annotatePaddingY : -10, annotatePositionX : "left", annotatePositionY : "SXtop" });
+    var myChart3 = new Chart(document.getElementById("mycanvas3").getContext("2d")).Bar(LineData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 0, annotatePaddingY : 10, annotatePositionX : "center", annotatePositionY : "Sbottom" });
+    var myChart4 = new Chart(document.getElementById("mycanvas4").getContext("2d")).Bar(LineData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 0, annotatePaddingY : 10, annotatePositionX : "Xcenter", annotatePositionY : "SXbottom" });
+    var myChart5 = new Chart(document.getElementById("mycanvas5").getContext("2d")).Bar(LineData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 5, annotatePaddingY : 0, annotatePositionX : "right", annotatePositionY : "center" });
+    var myChart6 = new Chart(document.getElementById("mycanvas6").getContext("2d")).Bar(LineData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 0, annotatePaddingY : 20, annotatePositionX : "center", annotatePositionY : "MXbottom" });
+    var myChart7 = new Chart(document.getElementById("mycanvas7").getContext("2d")).Bar(LineData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 0, annotatePaddingY : 0, annotatePositionY : 5, annotatePositionX : 5, graphSpaceBefore: 30 });
+    var myChart8 = new Chart(document.getElementById("mycanvas8").getContext("2d")).Bar(LineData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 0, annotatePaddingY : 0, annotatePositionY : 5, annotatePositionX : "50%", graphSpaceBefore: 30 });
+    }
+    </script>
+
+  </body>
+</html>
