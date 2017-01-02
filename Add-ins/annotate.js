@@ -16,13 +16,10 @@
 //		annotateClassName: "",
 //		annotateFunctionIn: null,
 //		annotateFunctionOut : null,
-
 //			annotateBarMinimumDetectionHeight : 0,
-      
 //	chart.defaults.IExplorer8 ={
 //		annotateBackgroundColor : "black",
 //		annotateFontColor: "white"
-//	};
 
 var style = document.createElement('style');
 style.type = 'text/css';
@@ -270,7 +267,6 @@ line=line+'} ';
 style.innerHTML = line
 document.getElementsByTagName('head')[0].appendChild(style);
 
-
 /////
 
 var style = document.createElement('style');
@@ -307,21 +303,15 @@ line=line+"height:44px; ";
 line=line+"position:relative; ";
 line=line+"top:-6px; ";
 line=line+"} ";
+
 style.innerHTML = line
 document.getElementsByTagName('head')[0].appendChild(style);
 
-
 /////
-
-
  
 function createCursorDiv(config) {
-
-
 	if (cursorDivCreated == false) {
- 
     cursorDivCreated=true;
-    
     if(annotate_shape=="bubble_tooltip") {
    		var div = document.createElement('div');
 		  div.id = 'bubble_tooltip';
@@ -336,7 +326,6 @@ function createCursorDiv(config) {
 		  subdiv2.id = 'bubble_middle';
 		  subdiv2.className = 'bubble_middle';
       div.appendChild(subdiv2);
-
 
 		  var subdiv3 = document.createElement('div');
 		  subdiv3.id = 'bubble_bottom';
@@ -360,7 +349,6 @@ function createCursorDiv(config) {
       updateClass(".toolTipLeftBottom","font-size:"+config.annotateFontSize+"pt;font-style:"+config.annotateFontStyle+";font-family:"+config.annotateFontFamily+";background-color:"+config.annotateBackgroundColor+";padding:"+config.annotatePadding+"; border-style: "+config.annotateBorder+"; border-radius:"+config.annotateBorderRadius+"; color:"+config.annotateFontColor+";");
       updateClass(".toolTipLeftCenter","font-size:"+config.annotateFontSize+"pt;font-style:"+config.annotateFontStyle+";font-family:"+config.annotateFontFamily+";background-color:"+config.annotateBackgroundColor+";padding:"+config.annotatePadding+"; border-style: "+config.annotateBorder+"; border-radius:"+config.annotateBorderRadius+"; color:"+config.annotateFontColor+";");
       updateClass(".toolTipNone","font-size:"+config.annotateFontSize+"pt;font-style:"+config.annotateFontStyle+";font-family:"+config.annotateFontFamily+";background-color:"+config.annotateBackgroundColor+";padding:"+config.annotatePadding+"; border-style: "+config.annotateBorder+"; border-radius:"+config.annotateBorderRadius+"; color:"+config.annotateFontColor+";");
-
       updateClass(".toolTipTopRight .toolTipTopRightText::after","border-bottom: 5px solid " +config.annotateBackgroundColor+"; color:"+config.annotateFontColor+";");
       updateClass(".toolTipTopLeft .toolTipTopLeftText::after","border-bottom: 5px solid " +config.annotateBackgroundColor+"; color:"+config.annotateFontColor+";");
       updateClass(".toolTipTopCenter .toolTipTopCenterText::after","border-bottom: 5px solid " +config.annotateBackgroundColor+"; color:"+config.annotateFontColor+";");
@@ -377,37 +365,28 @@ function createCursorDiv(config) {
 
   		var div = document.createElement(annotate_shape);
 		  div.id = annotate_shape;
-//		  div.className = 'toolTipTopRight';
   	  div.style.position = 'absolute';
 		  document.body.appendChild(div);
 
       var spa = document.createElement('span');
       spa.id = "arrow_content";
-//		  spa.className = 'toolTipTopRightText';
       div.appendChild(spa);
-
     } else {
   		var div = document.createElement(annotate_shape);
 		  div.id = annotate_shape;
 		  div.style.position = 'absolute';
 		  document.body.appendChild(div);
     }   
-
 	}
 };
-
 
 function updateClass(name,rules){
 	var style = document.createElement('style');
 	style.type = 'text/css';
 	document.getElementsByTagName('head')[0].appendChild(style);
-	if(!(style.sheet||{}).insertRule) 
-		(style.styleSheet || style.sheet).addRule(name, rules);
-	else
-		style.sheet.insertRule(name+"{"+rules+"}",0);
+	if(!(style.sheet||{}).insertRule) (style.styleSheet || style.sheet).addRule(name, rules);
+	else style.sheet.insertRule(name+"{"+rules+"}",0);
 }
-
-//var arrow_class="TopCenter";
 
 function initAnnotateDiv(annotateDIV,config,ctx) { 
       if(annotate_shape == "ARROW") {
@@ -435,16 +414,12 @@ function initAnnotateDiv(annotateDIV,config,ctx) {
 			annotateDIV.style.zIndex = 999;
 };
 
-
-
 function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,piece,myStatData,statData) {
   var arrow_class;
   var dispString,newPosX,newPosY,decalX,decalY;
   var addDecalX,addDecalY;
   decalX=0;
   decalY=0;                                                   
-
-//  initAnnotateDiv(annotateDIV,config,ctx);
 
   if(typeof config.annotatePaddingX==="number") addDecalX=1*config.annotatePaddingX;
   else addDecalX=fromLeft;
@@ -457,22 +432,17 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
   if(annotate_shape=="bubble_tooltip") {
 	   document.getElementById('bubble_tooltip_content').innerHTML = dispString;
      annotateDIV.style.display='block';
-//	   if(document.all)e = event;
 	   var st = Math.max(document.body.scrollTop,document.documentElement.scrollTop);
 	   if(navigator.userAgent.toLowerCase().indexOf('safari')>=0)st=0; 
 	   var leftPos = event.clientX - 100;
 	   if(leftPos<0)leftPos = 0;
 	   annotateDIV.style.left = leftPos+'px';
-     
 	   annotateDIV.style.top = event.clientY - annotateDIV.offsetHeight -1 + st + 'px';
-
   } else if(annotate_shape == "ARROW") {
 	   document.getElementById('arrow_content').innerHTML = dispString;
   } else {
 	   annotateDIV.innerHTML = dispString;
-
   }
-
   
   if(annotate_shape=="bubble_tooltip") {
     var textMsr={textHeight: 100, textWidth : 147};
@@ -506,17 +476,13 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
   
   var mouse_posrect = getMousePos(ctx.canvas, event);
   var vj;
-
   var debj=piece.j;
   var endj=piece.j+1;
-
   var refpiecei=piece.i;
   var refpiecej=piece.j;
-
   var rayVal=-1;
   var midPosX=0;
   var midPosY=0;
-
   var minDecalY,minDecalX,maxDecalY,maxDecalX,maxRayVal,minRayVal;
   var angle=9999;
   var minAngle, maxAngle;
@@ -524,7 +490,6 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
   var forceX=false;
   var multX=0;
   var multY=0;
-
     
   tpchart=ctx.tpchart;
   if(data.datasets[piece.i].type=="Line" && (ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar"))tpchart="Line";
@@ -538,12 +503,6 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
         case "PolarArea" :
           angle=(myStatData.startAngle+myStatData.endAngle)/2;
           break;
-        case "StackedBar" :
-        case "Bar" :
-        case "HorizontalBar" :
-        case "HorizontalStackedBar" :
-        case "Line" :
-        case "Radar" :
         default:
            break;
       }
@@ -555,12 +514,6 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
         case "PolarArea" :
           angle=myStatData.startAngle;
           break;
-        case "StackedBar" :
-        case "Bar" :
-        case "HorizontalBar" :
-        case "HorizontalStackedBar" :
-        case "Line" :
-        case "Radar" :
         default:
            break;
       }
@@ -572,12 +525,6 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
         case "PolarArea" :
           angle=myStatData.endAngle;
           break;
-        case "StackedBar" :
-        case "Bar" :
-        case "HorizontalBar" :
-        case "HorizontalStackedBar" :
-        case "Line" :
-        case "Radar" :
         default:
            break;
       }
@@ -594,7 +541,8 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
           else angle=Math.atan((midPosY-mouse_posrect.y)/(midPosX-mouse_posrect.x));
           if(midPosX>mouse_posrect.x)angle+=Math.PI;
           break;
-          
+        default:
+          break;
       }
       break;
   }
@@ -603,12 +551,6 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
     case "MXout" :
     case "Xout" :
       switch(tpchart) {
-        case "StackedBar" :
-        case "Bar" :
-        case "HorizontalBar" :
-        case "HorizontalStackedBar" :
-        case "Line" :
-          break;
         case "Radar" :
           decalY=myStatData.posY-mouse_posrect.y - textMsr.textHeight;
           decalX=myStatData.posX-mouse_posrect.x;
@@ -641,7 +583,6 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
           };
           debj=piece.j;endj=piece.j+1;
           break;
-        case "PolarArea" :
         default: 
           break;
       };
@@ -649,12 +590,6 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
     case "MXin" :
     case "Xin" :
       switch(tpchart) {
-        case "StackedBar" :
-        case "Bar" :
-        case "HorizontalBar" :
-        case "HorizontalStackedBar" :
-        case "Line" :
-          break;
         case "Radar" :
           decalY=myStatData.posY-mouse_posrect.y - textMsr.textHeight;
           decalX=myStatData.posX-mouse_posrect.x;
@@ -693,12 +628,6 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
       break;
     case "in" :
       switch(tpchart) {
-        case "StackedBar" :
-        case "Bar" :
-        case "HorizontalBar" :
-        case "HorizontalStackedBar" :
-        case "Line" :
-          break;
         case "Radar" :
           decalY=myStatData.posY-mouse_posrect.y - textMsr.textHeight;
           decalX=myStatData.posX-mouse_posrect.x;
@@ -718,12 +647,6 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
       break;
     case "out" :
       switch(tpchart) {
-        case "StackedBar" :
-        case "Bar" :
-        case "HorizontalBar" :
-        case "HorizontalStackedBar" :
-        case "Line" :
-          break;
         case "Radar" :
           decalY=myStatData.posY-mouse_posrect.y - textMsr.textHeight;
           decalX=myStatData.posX-mouse_posrect.x;
@@ -746,12 +669,6 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
      case "Lcenter" :
      case "Lmiddle" :
       switch(tpchart) {
-        case "StackedBar" :
-        case "Bar" :
-        case "HorizontalBar" :
-        case "HorizontalStackedBar" :
-        case "Line" :
-          break;
         case "Radar" :
           minDecalY=myStatData.posY-mouse_posrect.y - textMsr.textHeight;
           minDecalX=myStatData.posX-mouse_posrect.x;
@@ -807,12 +724,6 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
      case "center" :
      case "middle" :
       switch(tpchart) {
-        case "StackedBar" :
-        case "Bar" :
-        case "HorizontalBar" :
-        case "HorizontalStackedBar" :
-        case "Line" :
-          break;
         case "Radar" :
           decalY=myStatData.posY-mouse_posrect.y - textMsr.textHeight;
           decalX=myStatData.posX-mouse_posrect.x;
@@ -848,11 +759,6 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
       };
       break;
   }  
-  
-
-
-  
-
   
   switch(config.annotatePositionY)  {
       case "LXtop" :
@@ -931,9 +837,7 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
           case "Line" :
             decalY=myStatData.posY-mouse_posrect.y - textMsr.textHeight;
             break;
-          case "Pie" :
-          case "Doughnut" :
-          case "PolarArea" :
+          default:
             break;
         };
         break;
@@ -1024,9 +928,7 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
           case "Line" :
             decalY=myStatData.posY-mouse_posrect.y - 0*textMsr.textHeight;
             break;
-          case "Pie" :
-          case "Doughnut" :
-          case "PolarArea" :
+          default :
             break;
         };
         break;
@@ -1067,9 +969,7 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
           case "Line" :
             decalY=myStatData.posY-mouse_posrect.y - 0.5*textMsr.textHeight;
             break;
-          case "Pie" :
-          case "Doughnut" :
-          case "PolarArea" :
+          default :
             break;
         };
         break;
@@ -1162,9 +1062,7 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
           case "Line" :
             decalX=myStatData.xPos-mouse_posrect.x;
             break;
-          case "Pie" :
-          case "Doughnut" :
-          case "PolarArea" :
+          default :
             break;
         };
         break;
@@ -1239,9 +1137,7 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
           case "Line" :
             decalX=myStatData.xPos-mouse_posrect.x-textMsr.textWidth;
             break;
-          case "Pie" :
-          case "Doughnut" :
-          case "PolarArea" :
+          default:
             break;
         };
         break;
@@ -1282,9 +1178,7 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
           case "Line" :
             decalX=myStatData.xPos-mouse_posrect.x-(textMsr.textWidth/2);
             break;
-          case "Pie" :
-          case "Doughnut" :
-          case "PolarArea" :
+          default: 
             break;
         };
         break;
@@ -1302,12 +1196,14 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
             decalX=decalX-textMsr.textWidth;
           }
           forceX=true;
-
         } 
         break;
   }  
   
   if(tpchart=="Pie" || tpchart=="Doughnut" || tpchart=="PolarArea") {
+
+    if(typeof config.annotatePaddingAngle=="number" )angle+=Math.PI*(1*config.annotatePaddingAngle)/180;
+    if(typeof config.annotatePaddingRadius=="number")rayVal+=(1*config.annotatePaddingRadius);
 
     while(angle<0){angle+=2*Math.PI;}
     while(angle>2*Math.PI){angle-=2*Math.PI;}
@@ -1341,19 +1237,22 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
     }
 
   }
-  
 
-      if(annotate_shape!='bubble_tooltip') {
-        if(annotate_shape == "ARROW") {
-          var lrect = ctx.canvas.getBoundingClientRect();
-          arrow_class=arrowDirection(newPosX+decalX+addDecalX-(lrect.left+window.pageXOffset), newPosY+decalY+addDecalY-(lrect.top+window.pageYOffset), angle, rayVal, textMsr.textWidth,textMsr.textHeight,ctx,jsGraphAnnotate[ctx.ChartNewId][piece.piece],myStatData);
-          annotateDIV.className = "toolTip"+arrow_class;
-          document.getElementById('arrow_content').className="toolTip"+arrow_class+"Text";
-        }
-      
-        oCursor.moveIt(newPosX+decalX+addDecalX, newPosY+decalY+addDecalY);
-      	annotateDIV.style.display = true ? '' : 'none'; 
+  if(annotate_shape!='bubble_tooltip') {
+    if(annotate_shape == "ARROW") {
+      if(config.annotateClassName =="") {
+        var lrect = ctx.canvas.getBoundingClientRect();
+        arrow_class=arrowDirection(newPosX+decalX+addDecalX-(lrect.left+window.pageXOffset), newPosY+decalY+addDecalY-(lrect.top+window.pageYOffset), angle, rayVal, textMsr.textWidth,textMsr.textHeight,ctx,jsGraphAnnotate[ctx.ChartNewId][piece.piece],myStatData);
+        annotateDIV.className = "toolTip"+arrow_class;
+        document.getElementById('arrow_content').className="toolTip"+arrow_class+"Text";
+      } else {
+        annotateDIV.className = "toolTip"+config.annotateClassName;
+        document.getElementById('arrow_content').className="toolTip"+config.annotateClassName+"Text";
       }
+    }
+    oCursor.moveIt(newPosX+decalX+addDecalX, newPosY+decalY+addDecalY);
+   	annotateDIV.style.display = true ? '' : 'none'; 
+  }
 };	
 
 
@@ -1408,63 +1307,6 @@ function arrowDirection(x,y,angle,rayVal,width,height,ctx,jsGraphAnnotate,myStat
       if(rightBottomPos.distCenter < minDist){ arrow="RightBottom"; minDist=rightBottomPos.distCenter; }
 
       return(arrow);
-
-      var topCenterPos=compAnglPos((2*x+width)/2,y-5,myStatData,centerPosX,centerPosY);
-      if(inArc(topCenterPos,myStatData))return("TopCenter");
-      var bottomCenterPos=compAnglPos((2*x+width)/2,y+height+5,myStatData,centerPosX,centerPosY);
-      if(inArc(bottomCenterPos,myStatData))return("BottomCenter");
-      var topLeftPos=compAnglPos(x+5+2.5,y-5,myStatData,centerPosX,centerPosY);
-      if(inArc(topLeftPos,myStatData))return("TopLeft");
-      var topRightPos=compAnglPos(x+width-5-2.5,y-5,myStatData,centerPosX,centerPosY);
-      if(inArc(topRightPos,myStatData))return("TopRight");
-      var bottomLeftPos=compAnglPos(x+5+2.5,y+height+5,myStatData,centerPosX,centerPosY);
-      if(inArc(bottomLeftPos,myStatData))return("BottomLeft");
-      var bottomRightPos=compAnglPos(x+width-5-2.5,y+height+5,myStatData,centerPosX,centerPosY);
-      if(inArc(bottomRightPos,myStatData))return("BottomRight");
-      var leftCenterPos=compAnglPos(x-5,(2*y+height)/2,myStatData,centerPosX,centerPosY);
-      if(inArc(leftCenterPos,myStatData))return("LeftCenter");
-      var leftTopPos=compAnglPos(x-5,y+5+2.5,myStatData,centerPosX,centerPosY);
-      if(inArc(leftTopPos,myStatData))return("LeftTop");
-      var leftBottomPos=compAnglPos(x-5,y+height-5-2.5,myStatData,centerPosX,centerPosY);
-      if(inArc(leftBottomPos,myStatData))return("LeftBottom");
-      var rightCenterPos=compAnglPos(x+width+5,(2*y+height)/2,myStatData,centerPosX,centerPosY);
-      if(inArc(rightCenterPos,myStatData))return("RightCenter");
-      var rightTopPos=compAnglPos(x+width+5,y+5+2.5,myStatData,centerPosX,centerPosY);
-      if(inArc(rightTopPos,myStatData))return("RightTop");
-      var rightBottomPos=compAnglPos(x+width+5,y+height-5-2.5,myStatData,centerPosX,centerPosY);
-      if(inArc(rightBottomPos,myStatData))return("RightBottom");
-      
-      return("None");
-
-
-      var rightCenterPos=compAnglPos((2*x+height)/2,y,myStatData);
-      var topLeftPos=compAnglPos((2*x+height)/2,y,myStatData);
-      var topLeftPos=compAnglPos((2*x+height)/2,y,myStatData);
-      var topLeftPos=compAnglPos((2*x+height)/2,y,myStatData);
-           if(angle < Math.PI*1/6) { 
-        if(rayVal> myStatData.radiusOffset)return("LeftCenter"); 
-      } else if(angle < Math.PI*2/6) { 
-        return("LeftTop"); 
-      } else if(angle < Math.PI*3/6) { 
-        return("TopLeft"); 
-      } else if(angle < Math.PI*4/6) { 
-        return("TopRight"); 
-      } else if(angle < Math.PI*5/6) { 
-        return("RightTop"); 
-      } else if(angle < Math.PI*7/6) { 
-        return("RightCenter"); 
-      } else if(angle < Math.PI*8/6) { 
-        return("RightBottom"); 
-      } else if(angle < Math.PI*9/6) { 
-        return("BottomRight"); 
-      } else if(angle < Math.PI*10/6) { 
-        return("BottomLeft"); 
-      } else if(angle < Math.PI*11/6) { 
-        return("LeftBottom"); 
-      } else if(angle < Math.PI*12/6) { 
-        return("LeftBottom"); 
-      }
-      return("None");
       break;
     case "RECT" :
       var xright=Math.min(myStatData.xPosRight,myStatData.xPosLeft);
@@ -1547,9 +1389,7 @@ function inAngle(angle,startAngle,stopAngle){
   else return(false); 
 };
 
-
 function compAnglPos(x,y,myStatData,centerX,centerY) {
-//  distCenter=Math.sqrt(Math.pow(x-centerX,2)+Math.pow(y-centerY,2));
   rayVal=Math.sqrt(Math.pow(x-myStatData.midPosX,2)+Math.pow(y-myStatData.midPosY,2));
   angle=Math.acos((x-myStatData.midPosX)/rayVal);
   if(y<myStatData.midPosY)angle=2*Math.PI-angle;
@@ -1573,10 +1413,7 @@ function compAnglPos(x,y,myStatData,centerX,centerY) {
         distCenter*=2;
         if(angle<myStatData.startAngle)distCenter+=Math.sqrt(2*rayVal*rayVal*(1-Math.cos(myStatData.startAngle-angle)));
         else distCenter+=Math.sqrt(2*rayVal*rayVal*(1-Math.cos(angle-myStatData.endAngle)));
-//    distCenter+=Math.sqrt(Math.pow(x-centerX,2)+Math.pow(y-centerY,2));
     }
-//    distCenter+=Math.sqrt(Math.pow(myStatData.midPosX-centerX,2)+Math.pow(myStatData.midPosY-centerY,2));
   } else distCenter=Math.sqrt(Math.pow(x-centerX,2)+Math.pow(y-centerY,2));
-
   return { angle:angle, rayVal: rayVal, distCenter : distCenter};
 };
