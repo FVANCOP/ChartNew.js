@@ -981,7 +981,7 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
         } else if (typeof config.annotatePositionY!="undefined" && config.annotatePositionY.indexOf("%")>0) {
           var lrect = ctx.canvas.getBoundingClientRect();
           var pct=1*config.annotatePositionY.substr(0,config.annotatePositionY.indexOf("%"));
-          decalY=-newPosY+1*ctx.canvas.height*pct/100+lrect.top+window.pageYOffset;
+          decalY=-newPosY+(1*ctx.canvas.height*pct/100)/window.devicePixelRatio+lrect.top+window.pageYOffset;
           if(Math.abs(pct-50) < config.zeroValue) {
             decalY=decalY-textMsr.textHeight/2;
           } else if(pct > 50) {
@@ -1189,7 +1189,7 @@ function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,
           forceX=true;
         } else if (typeof config.annotatePositionX !="undefined" && config.annotatePositionX.indexOf("%")>0) {
           var pct=1*config.annotatePositionX.substr(0,config.annotatePositionX.indexOf("%"));
-          decalX=-newPosX+1*1*ctx.canvas.width*pct/100+lrect.left+window.pageXOffset;
+          decalX=-newPosX+(1*ctx.canvas.width*pct/100)/window.devicePixelRatio+lrect.left+window.pageXOffset;
           if(Math.abs(pct-50) < config.zeroValue) {
             decalX=decalX-textMsr.textWidth/2;
           } else if(pct > 50) {
