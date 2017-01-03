@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+  <meta name="generator" content="PSPad editor, www.pspad.com">
+  <title></title>
+
+  <!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+  <SCRIPT src='../Add-ins/shapesInChart.js'></script>
+  </head>
+  <body>
+  <canvas id="mycanvas" height="230" width="1800"></canvas>
+  <script>
+
+//******************************************************************************************
+//   CHANGE THE VALUES HERE AFTER;
+//******************************************************************************************
+
+// 1 January 2017;
+
+startDate=new Date(2017,0,1,0,0,0) ;  
+
+people_list=["Francois","Luc","Christophe"];
+
+allData=[
+[1,1,0,1,1,1,0,0,0,1,1,1,1,1,1,0,0,0,1,0,1,1,1,0,0,0,1,1,1,1,1,1,0,0,1,0,1,1,1,0,0,0,1,1,1,1,1,1,0,0,1,0,1,1,1,0,0,0,1,1,1,1,1,1,0,0,1,0,1,1,1,0,0,0,1,1,1,1,1,1,0,0,1,0,1,1,1,0,0,0,1,1,1,1,1,1,0,0],
+[0,0,0,1,1,1,0,0,0,1,1,1,1,1,1,0,0,0,1,1,1,0,0,0,1,1,1,1,1,1,0,0,0,1,1,1,0,0,0,1,1,1,1,1,1,0,0,0,1,1,1,0,0,0,1,1,1,1,1,1,0,0,0,1,1,1,0,0,0,1,1,1,1,1,1,0,0,0,1,1,1,0,0,0,1,1,1,1,1,1,0,0,0,1,1,1,0,0],
+[0,0,0,1,1,1,0,0,0,1,1,1,1,1,1,0,1,1,1,1,0,0,0,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1]
+];
+
+var backgroundColorWeek=["rgba(220,100,230,0.2)","rgba(110,200,230,0.2)"];
+var backgroundColorWeekend=["rgba(220,100,230,0.4)","rgba(110,200,230,0.4)"];
+
+var lineColors=["red","green","blue"];
+
+var labelsIteration=7;
+
+//******************************************************************************************
+
+function fmtChartJSPerso(config,value,fmt){
+
+if (fmt=="YDate") {
+
+if(value%labelsIteration==0) {
+  var dat = new Date();
+  dat.setDate(startDate.getDate() + value);
+  rtval=dat.getDate()+"/"+(dat.getMonth()+1)+"/"+dat.getFullYear();
+  return rtval;
+} else return "";
+
+};
+return value;
+};
+
+  
+function setColor(reference,ctx,data,statData,posi,posj,othervars) {
+if(data.datasets[posi].real_data[posj]==1) return lineColors[posj%lineColors.length];
+else return ("rgba(0,0,0,0)");
+};
+  
+var LineData = {
+	labels : people_list,
+	datasets : []
+};
+
+var i,j;
+
+for(i=0;i<allData.length;i++) {
+//  LineData.labels[i]="Data "+i;
+} ;
+
+
+for(j=0;j<allData[0].length;j++) {
+    LineData.datasets[j]= {
+      strokeColor: setColor,
+      fillColor : setColor,
+      data : [],
+      real_data : []
+    };
+    for(i=0;i<allData.length;i++) {
+      LineData.datasets[j].data[i]=1;
+      LineData.datasets[j].real_data[i]=allData[i][j];
+    }      
+};
+
+
+
+// create month background rectangle;
+
+LineData.shapesInChart=[];
+var dat = new Date();
+var decal=0.00;
+prevColor=0;
+prevMonth=startDate.getMonth();
+prevIsWeekend=(startDate.getDay()==0 || startDat.getDay()==6);
+deb=0;
+
+dat.setDate(startDate.getDate()-1);
+for(i=0;i<allData[0].length+1;i++){
+  dat.setDate(dat.getDate()+1);
+
+  if(prevMonth!=dat.getMonth() || prevIsWeekend !=(dat.getDay()==0 || dat.getDay()==6)|| i==allData[0].length ) {
+    if(i!=0) {
+      if(prevIsWeekend) {
+        LineData.shapesInChart[LineData.shapesInChart.length]= {
+		          position : "INCHART",
+        	 	  shape: "RECTANGLE",
+        	 	  fillColor: backgroundColorWeekend[prevColor],
+        		  strokeColor : backgroundColorWeekend[prevColor],
+        		  animate : false,
+        		  x1: (deb)+decal,
+        		  y1: -Number.MAX_VALUE,
+        		  x2: (i)-decal    ,
+        		  y2: Number.MAX_VALUE
+        };
+       } else {
+        LineData.shapesInChart[LineData.shapesInChart.length]= {
+		          position : "INCHART",
+        	 	  shape: "RECTANGLE",
+        	 	  fillColor: backgroundColorWeek[prevColor],
+        		  strokeColor : backgroundColorWeek[prevColor],
+        		  animate : false,
+        		  x1: (deb)+decal,
+        		  y1: -Number.MAX_VALUE,
+        		  x2: (i)-decal    ,
+        		  y2: Number.MAX_VALUE
+        };
+      }
+    };
+    deb=i;
+  }
+  if(prevMonth!=dat.getMonth())prevColor=(prevColor+1)%backgroundColorWeek.length;  
+  prevMonth=  dat.getMonth();
+  prevIsWeekend=(dat.getDay()==0 || dat.getDay()==6);
+  
+};
+
+var opts = {
+    graphTitle : "Attendance Chart",
+    graphTitleBorders : true,
+    graphTitleBordersSelection : 1,
+    graphTitleBordersWidth : 3,
+    graphTitleAlign: "left",
+    graphTitleShift : 10,
+    animation : false,
+    yAxisMiddle : true,
+ //   xAxisTop : true,
+ //   xAxisBottom : false,
+    barValueSpacing : 5,
+    rotateLabels : 45,
+    rotateTLabels : 90,
+    scaleOverride : true,
+    scaleStartValue : 0,
+    scaleSteps : allData[0].length,
+    scaleStepWidth : 1,
+    scaleOverride2 : true,
+    scaleStartValue2 : 0,
+    scaleSteps2 : allData[0].length,
+    scaleStepWidth2 : 1,
+    fmtYLabel : "YDate",
+    endDrawScaleFunction : drawShapes
+}
+
+  window.onload = function() {
+    var myBar = new Chart(document.getElementById("mycanvas").getContext("2d")).HorizontalStackedBar(LineData,opts);
+    }
+    </script>
+
+  </body>
+</html>

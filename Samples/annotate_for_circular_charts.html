@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+  <title></title>
+  <SCRIPT src='../ChartNew.js'></script>
+  <SCRIPT src='../Add-ins/annotate.js'></script>  
+<SCRIPT>
+
+</SCRIPT>
+  </head>
+
+  <body>
+  <center><FONT size=25>some sample tooltip position for circular charts</FONT></CENTER>
+  <canvas id="mycanvas0" height="400" width="400"></canvas>
+  <canvas id="mycanvas1" height="400" width="400"></canvas>
+  <canvas id="mycanvas2" height="400" width="400"></canvas>
+  <canvas id="mycanvas3" height="400" width="400"></canvas>
+  <canvas id="mycanvas4" height="400" width="400"></canvas>
+  <canvas id="mycanvas5" height="400" width="400"></canvas>
+  <canvas id="mycanvas6" height="400" width="400"></canvas>
+  <canvas id="mycanvas7" height="400" width="400"></canvas>
+  <canvas id="mycanvas8" height="400" width="400"></canvas>
+  <canvas id="mycanvas9" height="400" width="400"></canvas>
+  <script>
+
+ var PieData = {
+	labels : [""],
+	datasets : [
+		{
+			fillColor : "red",
+			strokeColor : "red",
+			data : [30],
+      title : "Piece 1"
+		},
+		{
+			fillColor : "blue",
+			strokeColor : "blue",
+			data : [50],
+      title : "Piece 2"
+		},
+		{
+			fillColor : "green",
+			strokeColor : "green",
+			data : [20],
+      title : "Piece 3"
+		},
+		{
+			fillColor : "yellow",
+			strokeColor : "yellow",
+			data : [40],
+      title : "Piece 4"
+		}
+	]
+};
+
+
+
+
+
+
+
+  window.onload = function() {
+    var myDoughnut0 = new Chart(document.getElementById("mycanvas0").getContext("2d")).Doughnut(PieData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 0, annotatePaddingY : 0, annotatePositionAngle : "atMousePosition", annotatePositionRadius : "out", annotatePaddingAngle : 0, annotatePaddingRadius : 0 });
+    var myDoughnut1 = new Chart(document.getElementById("mycanvas1").getContext("2d")).Doughnut(PieData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 0, annotatePaddingY : 0, annotatePositionAngle : "center", annotatePositionRadius : "center", annotatePaddingAngle : 0, annotatePaddingRadius : 0 });
+    var myDoughnut2 = new Chart(document.getElementById("mycanvas2").getContext("2d")).Doughnut(PieData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 0, annotatePaddingY : 0, annotatePositionAngle : "center", annotatePositionRadius : "out", annotatePaddingAngle : 0, annotatePaddingRadius : 5 });
+    var myDoughnut3 = new Chart(document.getElementById("mycanvas3").getContext("2d")).Doughnut(PieData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 0, annotatePaddingY : 0, annotatePositionAngle : "center", annotatePositionRadius : "in", annotatePaddingAngle : 0, annotatePaddingRadius : -5 });
+    var myDoughnut4 = new Chart(document.getElementById("mycanvas4").getContext("2d")).Doughnut(PieData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 0, annotatePaddingY : 0, annotatePositionAngle : "start", annotatePositionRadius : "out", annotatePaddingAngle : 5, annotatePaddingRadius : 5 });
+    var myDoughnut5 = new Chart(document.getElementById("mycanvas5").getContext("2d")).Doughnut(PieData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 0, annotatePaddingY : 0, annotatePositionAngle : "end", annotatePositionRadius : "out", annotatePaddingAngle : -5, annotatePaddingRadius : 5 });
+    var myDoughnut6 = new Chart(document.getElementById("mycanvas6").getContext("2d")).Doughnut(PieData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 0, annotatePaddingY : 0, annotatePositionY : 5, annotatePositionX : 5, graphSpaceBefore: 30 });
+    var myDoughnut7 = new Chart(document.getElementById("mycanvas7").getContext("2d")).Doughnut(PieData,{animation: false, canvasBorders: true, annotateDisplay: true, annotatePaddingX: 0, annotatePaddingY : 0, annotatePositionY : 5, annotatePositionX : "50%", graphSpaceBefore: 30 });
+    }
+    </script>
+
+  </body>
+</html>

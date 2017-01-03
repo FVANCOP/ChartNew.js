@@ -37,7 +37,7 @@
 
 
 // non standard functions;
-
+var annotate_shape='divCursor'
 var chartJSLineStyle=[];
 chartJSLineStyle["solid"]=[];
 chartJSLineStyle["dotted"]=[1,4];
@@ -516,10 +516,10 @@ if (typeof CanvasRenderingContext2D !== 'undefined') {
 
 cursorDivCreated = false;
 
-function createCursorDiv() {
+function createCursorDiv(config) {
 	if (cursorDivCreated == false) {
-		var div = document.createElement('divCursor');
-		div.id = 'divCursor';
+		var div = document.createElement(annotate_shape);
+		div.id = annotate_shape;
 		div.style.position = 'absolute';
 		document.body.appendChild(div);
 		cursorDivCreated = true;
@@ -743,8 +743,8 @@ function cursorInit() {
 /********************************************************************
 Contructs the cursorobjects
 *********************************************************************/
-function makeCursorObj(obj, nest) {
-	createCursorDiv();
+function makeCursorObj(config,obj, nest) {
+	createCursorDiv(config);
 	nest = (!nest) ? '' : 'document.' + nest + '.'
 	this.css = bw.dom ? document.getElementById(obj).style : bw.ie4 ? document.all[obj].style : bw.ns4 ? eval(nest + "document.layers." + obj) : 0;
 	this.moveIt = b_moveIt;
@@ -1022,6 +1022,42 @@ function highLightAction(action,ctx,data,config,v1,v2) {
 
 var inMouseAction=new Array();
 
+function initAnnotateDiv(annotateDIV,config,ctx) {   
+ 			annotateDIV.className = (config.annotateClassName) ? config.annotateClassName : '';
+  		annotateDIV.style.border = (config.annotateClassName) ? '' : config.annotateBorder;
+			annotateDIV.style.padding = (config.annotateClassName) ? '' : config.annotatePadding;
+			annotateDIV.style.borderRadius = (config.annotateClassName) ? '' : config.annotateBorderRadius;
+			annotateDIV.style.backgroundColor = (config.annotateClassName) ? '' : config.annotateBackgroundColor;
+			annotateDIV.style.color = (config.annotateClassName) ? '' : config.annotateFontColor;
+			annotateDIV.style.fontFamily = (config.annotateClassName) ? '' : config.annotateFontFamily;
+			annotateDIV.style.fontSize = (config.annotateClassName) ? '' : (Math.ceil(ctx.chartTextScale*config.annotateFontSize)).toString() + "pt";
+			annotateDIV.style.fontStyle = (config.annotateClassName) ? '' : config.annotateFontStyle;
+			annotateDIV.style.zIndex = 999;
+};
+
+function displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,piece,myStatData,statData) {
+
+					if (jsGraphAnnotate[ctx.ChartNewId][piece.piece][0] == "ARC") dispString = tmplbis(setOptionValue(true,true,1,"ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][piece.piece][3],undefined,config.annotateLabel,"annotateLabel",jsGraphAnnotate[ctx.ChartNewId][piece.piece][1],-1,{otherVal:true}), myStatData,config);
+					else dispString = tmplbis(setOptionValue(true,true,1,"ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][piece.piece][3],undefined,config.annotateLabel,"annotateLabel",jsGraphAnnotate[ctx.ChartNewId][piece.piece][1],jsGraphAnnotate[ctx.ChartNewId][piece.piece][2],{otherVal:true}), myStatData,config);
+					textMsr=ctx.measureTextMultiLine(dispString,1*annotateDIV.style.fontSize.replace("pt",""));
+					ctx.restore();
+
+					annotateDIV.innerHTML = dispString;
+					x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
+					y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
+					if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
+					if(config.annotateRelocate===true) {
+						var relocateX, relocateY;
+						relocateX=0;relocateY=0;
+				 		if(x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-fromLeft)relocateX=-textMsr.textWidth;
+		 				if(y+fromTop+textMsr.textHeight > 1*window.innerHeight-1*rect.top+fromTop)relocateY-=(textMsr.textHeight+2*fromTop);
+						oCursor.moveIt(Math.max(8-rect.left,x + fromLeft+relocateX), Math.max(8-rect.top,y + fromTop + relocateY));
+					} else oCursor.moveIt(x + fromLeft, y + fromTop);
+					annotateDIV.style.display = true ? '' : 'none'; 
+};       
+
+
+
 function doMouseAction(event, ctx, action) {
 	if (ctx.firstPass != 9)return;
 	if(action=="mousedown") action=action+" "+event.which;
@@ -1063,6 +1099,8 @@ function doMouseAction(event, ctx, action) {
 					myStatData.graphPosY = canvas_pos.y;
 					pieceOfChartFound[pieceOfChartFound.length]={
 						piece : i,
+            i : jsGraphAnnotate[ctx.ChartNewId][i][1],
+            j : jsGraphAnnotate[ctx.ChartNewId][i][2],
 						myStatData: myStatData
 					};
 				}
@@ -1085,6 +1123,8 @@ function doMouseAction(event, ctx, action) {
 					myStatData.graphPosY = canvas_pos.y;
 					pieceOfChartFound[pieceOfChartFound.length]={
 						piece : i,
+            i : jsGraphAnnotate[ctx.ChartNewId][i][1],
+            j : jsGraphAnnotate[ctx.ChartNewId][i][2],
 						myStatData: myStatData
 					};
 				}
@@ -1108,6 +1148,8 @@ function doMouseAction(event, ctx, action) {
 				myStatData.graphPosY = canvas_pos.y;
 				pieceOfChartFound[pieceOfChartFound.length]={
 					piece : i,
+          i : jsGraphAnnotate[ctx.ChartNewId][i][1],
+          j : jsGraphAnnotate[ctx.ChartNewId][i][2],
 					myStatData: myStatData
 				};
 			}
@@ -1136,6 +1178,8 @@ function doMouseAction(event, ctx, action) {
 				myStatData.graphPosY = canvas_pos.y;
 				pieceOfChartFound[pieceOfChartFound.length]={
 					piece : i,
+          i : jsGraphAnnotate[ctx.ChartNewId][i][1],
+          j : jsGraphAnnotate[ctx.ChartNewId][i][2],
 					myStatData: myStatData
 				};
 			}
@@ -1219,41 +1263,17 @@ function doMouseAction(event, ctx, action) {
 	
 	if(config.annotateDisplay && isAction(config.annotateFunction,realAction)) {
 		// annotate display functionality;
-		annotateDIV = document.getElementById('divCursor');
+		annotateDIV = document.getElementById(annotate_shape);
 		annotateDIV.style.display = false ? '' : 'none';
 		if(pieceOfChartFound.length>0) {
-			annotateDIV.className = (config.annotateClassName) ? config.annotateClassName : '';
-			annotateDIV.style.border = (config.annotateClassName) ? '' : config.annotateBorder;
-			annotateDIV.style.padding = (config.annotateClassName) ? '' : config.annotatePadding;
-			annotateDIV.style.borderRadius = (config.annotateClassName) ? '' : config.annotateBorderRadius;
-			annotateDIV.style.backgroundColor = (config.annotateClassName) ? '' : config.annotateBackgroundColor;
-			annotateDIV.style.color = (config.annotateClassName) ? '' : config.annotateFontColor;
-			annotateDIV.style.fontFamily = (config.annotateClassName) ? '' : config.annotateFontFamily;
-			annotateDIV.style.fontSize = (config.annotateClassName) ? '' : (Math.ceil(ctx.chartTextScale*config.annotateFontSize)).toString() + "pt";
-			annotateDIV.style.fontStyle = (config.annotateClassName) ? '' : config.annotateFontStyle;
-			annotateDIV.style.zIndex = 999;
+      initAnnotateDiv(annotateDIV,config,ctx);
 			ctx.save();
 			ctx.font= annotateDIV.style.fontStyle+" "+ annotateDIV.style.fontSize+" "+annotateDIV.style.fontFamily;
 			var rect = ctx.canvas.getBoundingClientRect();
 			showDiv=false;
 			if(whoToReferAnnotate!=-1) {
 				if (jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][4]) {
-					if (jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][0] == "ARC") dispString = tmplbis(setOptionValue(true,true,1,"ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][3],undefined,config.annotateLabel,"annotateLabel",jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][1],-1,{otherVal:true}), pieceOfChartFound[whoToReferAnnotate].myStatData,config);
-					else dispString = tmplbis(setOptionValue(true,true,1,"ANNOTATELABEL",ctx,data,jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][3],undefined,config.annotateLabel,"annotateLabel",jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][1],jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][2],{otherVal:true}), pieceOfChartFound[whoToReferAnnotate].myStatData,config);
-					textMsr=ctx.measureTextMultiLine(dispString,1*annotateDIV.style.fontSize.replace("pt",""));
-					ctx.restore();
-					annotateDIV.innerHTML = dispString;
-					x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
-					y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
-					if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
-					if(config.annotateRelocate===true) {
-						var relocateX, relocateY;
-						relocateX=0;relocateY=0;
-				 		if(x+fromLeft+textMsr.textWidth > window.innerWidth-rect.left-fromLeft)relocateX=-textMsr.textWidth;
-		 				if(y+fromTop+textMsr.textHeight > 1*window.innerHeight-1*rect.top+fromTop)relocateY-=(textMsr.textHeight+2*fromTop);
-						oCursor.moveIt(Math.max(8-rect.left,x + fromLeft+relocateX), Math.max(8-rect.top,y + fromTop + relocateY));
-					} else oCursor.moveIt(x + fromLeft, y + fromTop);
-					annotateDIV.style.display = true ? '' : 'none'; 
+          displayAnnotate(ctx,data,config,rect,event,annotateDIV,jsGraphAnnotate,pieceOfChartFound[whoToReferAnnotate],pieceOfChartFound[whoToReferAnnotate].myStatData,jsGraphAnnotate[ctx.ChartNewId][pieceOfChartFound[whoToReferAnnotate].piece][3]);
 					showDiv=true;
 				}
 			}
@@ -1685,8 +1705,7 @@ window.Chart = function(context) {
 			onAnimationComplete: null,
       alwaysRunFunctionAtCompletion: false,
 			annotateLabel: "<%=(v1 == '' ? '' : v1) + (v1!='' && v2 !='' ? ' - ' : '')+(v2 == '' ? '' : v2)+(v1!='' || v2 !='' ? ':' : '') + v3%>",
-			pointHitDetectionRadius : 10,
-      xAxisMiddle : false
+			pointHitDetectionRadius : 10
 		};
 		// merge annotate defaults
 		if(isIE()<9 && isIE() != false)chart.Line.defaults = mergeChartConfig(chart.defaults.IExplorer8, chart.Line.defaults);
@@ -2454,7 +2473,9 @@ window.Chart = function(context) {
     scaleMinorTickVerticalLines : true,
     scaleMinorTickHorizontalLines : true,
     tickColor : "gridLine",
-    minorTickColor : "gridLine"
+    minorTickColor : "gridLine",
+    xAxisMiddle : false,
+    yAxisMiddle : false
 	};
 	var clear = function(c) {
 		c.clearRect(0, 0, width, height);
@@ -2529,10 +2550,10 @@ window.Chart = function(context) {
     var total_data=0;
     var total_non_missing_data=0;
     for(i=0;i<data.datasets.length;i++) {
-      if(typeof data.datasets[i].xPos !== "undefined" && ctx.tpchart=="line") {
+      if(typeof data.datasets[i].xPos !== "undefined" && ctx.tpchart=="Line") {
         total_data+=data.datasets[i].xPos.length;
         for(j=0;j<data.datasets[i].xPos.length;j++) {
-          total_nom_missing_data+=(!(typeof(data.datasets[i].xPos[j]) == 'undefined'));
+          total_non_missing_data+=(!(typeof(data.datasets[i].xPos[j]) == 'undefined'));
         }
       } else {
         total_data+=data.labels.length;
@@ -3217,7 +3238,7 @@ window.Chart = function(context) {
 		doughnutRadius=drwSize.radius;
 
 		
-                if(chartType == "Pie")cutoutRadius=0;
+    if(chartType == "Pie")cutoutRadius=0;
 		else cutoutRadius = doughnutRadius * (config.percentageInnerCutout / 100);
 
 		if(doughnutRadius > 0) {
@@ -3266,7 +3287,7 @@ window.Chart = function(context) {
 
 				if (chartType=="Pie")dataCutoutRadius=cutoutRadius;
 				else dataCutoutRadius=cutoutRadius
-                	        dataDoughnutRadius=doughnutRadius
+        dataDoughnutRadius=doughnutRadius
 
 
 				// correct radius for Multiple Doughnuts;
@@ -3277,7 +3298,7 @@ window.Chart = function(context) {
 				dataDoughnutRadius=rdataDoughnutRadius;
 
 				if (chartType!="Pie" || j>0)rdataCutoutRadius=dataCutoutRadius-(dataDoughnutRadius-dataCutoutRadius)*setOptionValue(false,true,1,"EXPANDINRADIUS",ctx,data,statData,data.datasets[i].expandInRadius,0,"expandInRadius",i,j,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
-                	        rdataDoughnutRadius=dataDoughnutRadius+(dataDoughnutRadius-dataCutoutRadius)*setOptionValue(false,true,1,"EXPANDOUTRADIUS",ctx,data,statData,data.datasets[i].expandOutRadius,0,"expandOutRadius",i,j,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
+        rdataDoughnutRadius=dataDoughnutRadius+(dataDoughnutRadius-dataCutoutRadius)*setOptionValue(false,true,1,"EXPANDOUTRADIUS",ctx,data,statData,data.datasets[i].expandOutRadius,0,"expandOutRadius",i,j,{animationDecimal: animationDecimal, scaleAnimation : scaleAnimation} );
 
 				dataCutoutRadius=rdataCutoutRadius;
 				dataDoughnutRadius=rdataDoughnutRadius;
@@ -3583,6 +3604,7 @@ window.Chart = function(context) {
 
 
 		function drawLabels() {
+      var decal, subloop;
 			ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
 			//X Labels     
 			if (config.xAxisTop || config.xAxisBottom) {
@@ -3599,8 +3621,8 @@ window.Chart = function(context) {
 					} else {
 						ctx.textAlign = "center";
 					}
-          var decal=0;
-          var subloop=0;
+          decal=0;
+          subloop=0;
           if(config.xAxisMiddle==true) {
             decal=valueHop/2;
             subloop=1;
@@ -3633,11 +3655,17 @@ window.Chart = function(context) {
 					if(typeof data.labels2 =="object")label=data.labels2;
 					else label=data.labels;
 
-					for (var i = 0; i < label.length; i++) {
+          decal=0;
+          subloop=0;
+          if(config.xAxisMiddle==true) {
+            decal=valueHop/2;
+            subloop=1;
+          }
+					for (var i = 0; i < label.length-subloop; i++) {
 						if(showLabels(ctx,data,config,i)){
 							ctx.save();
 							if (msr.rotateTLabels > 0) {
-								ctx.translate(yAxisPosX + i * valueHop - msr.highestXLabel / 2, msr.xTLabelPos);
+								ctx.translate(yAxisPosX + i * valueHop - msr.highestXLabel / 2+decal, msr.xTLabelPos);
 								ctx.rotate(-((msr.rotateTLabels + 180*(msr.rotateTLabels>90)) * (Math.PI / 180)));
 								ctx.fillTextMultiLine(fmtChartJS(config, label[i], config.fmtXLabel), 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XSCALE_TEXTMOUSE",-(msr.rotateTLabels * (Math.PI / 180)),yAxisPosX + i * valueHop - msr.highestXLabel / 2, msr.xTLabelPos,i,-1);
 							} else {
@@ -3651,16 +3679,22 @@ window.Chart = function(context) {
 			//Y Labels
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
-			for (var j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale.steps; j++) {
+      decal=0;
+      subloop=0;
+      if(config.yAxisMiddle==true) {
+        decal=scaleHop/2;
+        subloop=1;
+        }
+			for (var j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale.steps-subloop; j++) {
 				if (config.scaleShowLabels) {
 					if(showYLabels(ctx,data,config,j+1,calculatedScale.labels[j + 1])) {				
 						if (config.yAxisLeft) {
 							ctx.textAlign = "right";
-							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
+							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop)-decal, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
 						}
 						if (config.yAxisRight && !(valueBounds.dbAxis || config.forceSecondScale)) {
 							ctx.textAlign = "left";
-							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop)-decal, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
 						}
 					}
 				}
@@ -4087,26 +4121,38 @@ window.Chart = function(context) {
 			//Y axis
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
-			for (var j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale.steps; j++) {
+      subloop=0;
+      decal=0;          
+      if(config.yAxisMiddle==true) {
+        decal=scaleHop/2;
+        subloop=1;
+      }
+			for (var j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale.steps-subloop; j++) {
 				if (config.scaleShowLabels) {
 					if(showYLabels(ctx,data,config,j+1,calculatedScale.labels[j + 1])) {				
 						if (config.yAxisLeft) {
 							ctx.textAlign = "right";
-							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
+							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop)-decal, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
 						}
 						if (config.yAxisRight && !(valueBounds.dbAxis || config.forceSecondScale) ) {
 							ctx.textAlign = "left";
-							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop)-decal, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
 						}
 					}
 				}
 			}
 
 			if (config.yAxisRight && (valueBounds.dbAxis || config.forceSecondScale)) {
-				for (j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale2.steps; j++) {
+        subloop=0;
+        decal=0;          
+        if(config.yAxisMiddle==true) {
+          decal=valueHop/2;
+          subloop=1;
+        }
+				for (j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale2.steps-subloop; j++) {
 					if (config.scaleShowLabels) {
 						ctx.textAlign = "left";
-						ctx.fillTextMultiLine(calculatedScale2.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop2), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+						ctx.fillTextMultiLine(calculatedScale2.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop2)-decal, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
 					}
 				}
 			}
@@ -4303,7 +4349,6 @@ window.Chart = function(context) {
 			labelTemplateString = (config.scaleShowLabels) ? config.scaleLabel : "";
 			if (!config.scaleOverride) {
 				calculatedScale = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
-				msr = setMeasures(data, config, ctx, ctx.canvas.height, ctx.canvas.width, calculatedScale.labels, calculatedScale.labels, true, true, true, true, "HorizontalStackedBar");
 			} else {
 				var scaleStartValue= setOptionValue(true,true,1,"SCALESTARTVALUE",ctx,data,statData,undefined,config.scaleStartValue,"scaleStartValue",-1,-1,{nullValue : true} );
 				var scaleSteps =setOptionValue(true,true,1,"SCALESTEPS",ctx,data,statData,undefined,config.scaleSteps,"scaleSteps",-1,-1,{nullValue : true} );
@@ -4322,8 +4367,31 @@ window.Chart = function(context) {
 						},config));
 					}
 				}
-				msr = setMeasures(data, config, ctx, ctx.canvas.height, ctx.canvas.width, calculatedScale.labels, null, true, true, true, true, "HorizontalStackedBar");
 			}
+      
+  		if (!config.scaleOverride2) {
+				calculatedScale2 = calculateScale(1, config, valueBounds.maxSteps, valueBounds.minSteps, valueBounds.maxValue, valueBounds.minValue, labelTemplateString);
+			} else {
+				var scaleStartValue2= setOptionValue(true,true,1,"SCALESTARTVALUE",ctx,data,statData,undefined,config.scaleStartValue2,"scaleStartValue2",-1,-1,{nullValue : true} );
+				var scaleSteps2 =setOptionValue(true,true,1,"SCALESTEPS",ctx,data,statData,undefined,config.scaleSteps2,"scaleSteps2",-1,-1,{nullValue : true} );
+				var scaleStepWidth2 = setOptionValue(true,true,1,"SCALESTEPWIDTH",ctx,data,statData,undefined,config.scaleStepWidth2,"scaleStepWidth2",-1,-1,{nullValue : true} );
+
+				calculatedScale2 = {
+					steps: scaleSteps2,
+					stepValue: scaleStepWidth2,
+					graphMin: scaleStartValue2,
+					labels: []
+				}
+				for (var i = 0; i <= calculatedScale2.steps; i++) {
+					if (labelTemplateString) {
+						calculatedScale2.labels.push(tmpl(labelTemplateString, {
+							value: fmtChartJS(config, 1 * ((scaleStartValue2 + (scaleStepWidth2 * i)).toFixed(getDecimalPlaces(scaleStepWidth2))), config.fmtYLabel)
+						},config));
+					}
+				}
+			}
+  		msr = setMeasures(data, config, ctx, ctx.canvas.height, ctx.canvas.width, calculatedScale.labels, calculatedScale2.labels, true, true, true, true, "HorizontalStackedBar");
+
 			msr.availableHeight = msr.availableHeight - Math.ceil(ctx.chartLineScale*config.scaleTickSizeBottom) - Math.ceil(ctx.chartLineScale*config.scaleTickSizeTop);
 			msr.availableWidth = msr.availableWidth - Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) - Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight);
 			scaleHop = Math.floor(msr.availableHeight / data.labels.length);
@@ -4494,15 +4562,21 @@ window.Chart = function(context) {
 					} else {
 						ctx.textAlign = "center";
 					}
-					for (var i = ((config.showYAxisMin) ? -1 : 0); i < calculatedScale.steps; i++) {
+          subloop=0;
+          decal=0;          
+          if(config.yAxisMiddle==true) {
+            decal=valueHop/2;
+            subloop=1;
+          }
+					for (var i = ((config.showYAxisMin) ? -1 : 0); i < calculatedScale.steps-subloop; i++) {
 						if(showYLabels(ctx,data,config,i+1,calculatedScale.labels[i+ 1])) {				
 							ctx.save();
 							if (msr.rotateLabels > 0) {
-								ctx.translate(yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2, msr.xLabelPos);
+								ctx.translate(yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2+decal, msr.xLabelPos);
 								ctx.rotate(-((msr.rotateLabels + 180*(msr.rotateLabels > 90)) * (Math.PI / 180)));
 								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
 							} else {
-								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], yAxisPosX + ((i + 1) * valueHop), msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
+								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], yAxisPosX + ((i + 1) * valueHop)+decal, msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
 							}
 							ctx.restore();
 						}
@@ -4518,16 +4592,21 @@ window.Chart = function(context) {
 					} else {
 						ctx.textAlign = "center";
 					}
-					
-					for (var i = ((config.showYAxisMin) ? -1 : 0); i < calculatedScale.steps; i++) {
+          subloop=0;
+          decal=0;          
+          if(config.yAxisMiddle==true) {
+            decal=valueHop/2;
+            subloop=1;
+          }
+					for (var i = ((config.showYAxisMin) ? -1 : 0); i < calculatedScale.steps-subloop; i++) {
 						if(showYLabels(ctx,data,config,i+1,calculatedScale.labels[i+ 1])) {				
 							ctx.save();
 							if (msr.rotateTLabels > 0) {
-								ctx.translate(yAxisPosX + (i + 1) * valueHop - msr.highestTXLabel / 2, msr.xTLabelPos);
+								ctx.translate(yAxisPosX + (i + 1) * valueHop - msr.highestTXLabel / 2+decal, msr.xTLabelPos);
 								ctx.rotate(-((msr.rotateTLabels + 180* (msr.rotateTLabels >90))* (Math.PI / 180)));
 								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
 							} else {
-								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], yAxisPosX + ((i + 1) * valueHop), msr.xTLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
+								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], yAxisPosX + ((i + 1) * valueHop)+decal, msr.xTLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
 							}
 							ctx.restore();
 						}
@@ -4535,8 +4614,7 @@ window.Chart = function(context) {
 				}
 			}
 			//Y axis
-			ctx.textAlign = "right";
-			ctx.textBaseline = "middle";
+
 			for (var j = 0; j < data.labels.length; j++) {
 				if(showLabels(ctx,data,config,j)){
 					if (config.yAxisLeft) {
@@ -4947,6 +5025,7 @@ window.Chart = function(context) {
 
 
 		function drawLabels() {
+      var decal,subloop;
 			ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
 			//X axis line                                                          
 			if (config.xAxisTop || config.xAxisBottom) {
@@ -4962,15 +5041,17 @@ window.Chart = function(context) {
 					} else {
 						ctx.textAlign = "center";
 					}
+          subloop=0;
+          decal=0;          
 					for (var i = 0; i < data.labels.length; i++) {
 						if(showLabels(ctx,data,config,i)){
 							ctx.save();
 							if (msr.rotateLabels > 0) {
-								ctx.translate(yAxisPosX + i * valueHop + (valueHop / 2) - msr.highestXLabel / 2, msr.xLabelPos);
+								ctx.translate(yAxisPosX + i * valueHop + (valueHop / 2) - msr.highestXLabel / 2 , msr.xLabelPos);
 								ctx.rotate(-((msr.rotateLabels + 180*(msr.rotateLabels>90)) * (Math.PI / 180)));
 								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + i * valueHop + (valueHop / 2) - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
 							} else {
-								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), yAxisPosX + i * valueHop + (valueHop / 2), msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
+								ctx.fillTextMultiLine(fmtChartJS(config, data.labels[i], config.fmtXLabel), yAxisPosX + i * valueHop + (valueHop / 2)+decal, msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
 							}
 							ctx.restore();
 						}
@@ -5008,25 +5089,38 @@ window.Chart = function(context) {
 			//Y axis
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
-			for (var j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale.steps; j++) {
+      subloop=0;
+      decal=0;          
+      if(config.yAxisMiddle==true) {
+        decal=scaleHop/2;
+        subloop=1;
+      }
+			for (var j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale.steps-subloop; j++) {
 				if (config.scaleShowLabels) {
 					if(showYLabels(ctx,data,config,j+1,calculatedScale.labels[j+ 1])) {				
 						if (config.yAxisLeft) {
 							ctx.textAlign = "right";
-							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
+							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop)-decal, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
 						}
 						if (config.yAxisRight && !(valueBounds.dbAxis || config.forceSecondScale)) {
 							ctx.textAlign = "left";
-							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+							ctx.fillTextMultiLine(calculatedScale.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop)-decal, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
 						}
 					}
 				}
 			}
 			if (config.yAxisRight && (valueBounds.dbAxis || config.forceSecondScale)) {
-				for (j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale2.steps; j++) {
+        subloop=0;
+        decal=0;          
+        if(config.yAxisMiddle==true) {
+          decal=scaleHop/2;
+          subloop=1;
+        }
+
+				for (j = ((config.showYAxisMin) ? -1 : 0); j < calculatedScale2.steps-subloop; j++) {
 					if (config.scaleShowLabels) {
 						ctx.textAlign = "left";
-						ctx.fillTextMultiLine(calculatedScale2.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop2), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+						ctx.fillTextMultiLine(calculatedScale2.labels[j + 1], yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight))-decal, xAxisPosY - ((j + 1) * scaleHop2), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
 					}
 				}
 			}
@@ -5379,15 +5473,21 @@ window.Chart = function(context) {
 					} else {
 						ctx.textAlign = "center";
 					}
-					for (var i = ((config.showYAxisMin) ? -1 : 0); i < calculatedScale.steps; i++) {
+          subloop=0;
+          decal=0;          
+          if(config.yAxisMiddle==true) {
+            decal=valueHop/2;
+            subloop=1;
+          }
+					for (var i = ((config.showYAxisMin) ? -1 : 0); i < calculatedScale.steps-subloop; i++) {
 						if(showYLabels(ctx,data,config,i+1,calculatedScale.labels[i+ 1])) {				
 							ctx.save();
 							if (msr.rotateLabels > 0) {
-								ctx.translate(yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2, msr.xLabelPos);
+								ctx.translate(yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2+decal, msr.xLabelPos);
 								ctx.rotate(-((msr.rotateLabels + 180*(msr.rotateLabels>90)) * (Math.PI / 180)));
 								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
 							} else {
-								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], yAxisPosX + (i + 1) * valueHop, msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
+								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], yAxisPosX + (i + 1) * valueHop+decal, msr.xLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
 							}
 							ctx.restore();
 						}
@@ -5403,16 +5503,22 @@ window.Chart = function(context) {
 					} else {
 						ctx.textAlign = "center";
 					}
+          subloop=0;
+          decal=0;          
+          if(config.yAxisMiddle==true) {
+            decal=valueHop/2;
+            subloop=1;
+          }
 					
-					for (var i = ((config.showYAxisMin) ? -1 : 0); i < calculatedScale.steps; i++) {
+					for (var i = ((config.showYAxisMin) ? -1 : 0); i < calculatedScale.steps-subloop; i++) {
 						if(showYLabels(ctx,data,config,i+1,calculatedScale.labels[i+ 1])) {				
 							ctx.save();
 							if (msr.rotateTLabels > 0) {
-								ctx.translate(yAxisPosX + (i + 1) * valueHop - msr.highestTXLabel / 2, msr.xTLabelPos);
+								ctx.translate(yAxisPosX + (i + 1) * valueHop - msr.highestTXLabel / 2+decal, msr.xTLabelPos);
 								ctx.rotate(-((msr.rotateTLabels + 180*(msr.rotateTLabels>90))* (Math.PI / 180)));
 								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",-(msr.rotateLabels * (Math.PI / 180)),yAxisPosX + (i + 1) * valueHop - msr.highestXLabel / 2, msr.xLabelPos,i,-1);
 							} else {
-								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], yAxisPosX + ((i + 1) * valueHop), msr.xTLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
+								ctx.fillTextMultiLine(calculatedScale.labels[i + 1], yAxisPosX + ((i + 1) * valueHop)+decal, msr.xTLabelPos, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"XAXIS_TEXTMOUSE",0,0,0,i,-1);
 							}
 							ctx.restore();
 						}
@@ -6381,14 +6487,15 @@ window.Chart = function(context) {
 
 			widestYLabel = Math.max(1,Math.ceil(ctx.chartTextScale*config.yScaleLabelsMinimumWidth));
 			widestYLabel2=widestYLabel;
-			
+
 			if (ylabels != null && ylabels != "nihil") {
 				ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
 				for (i = ylabels.length - 1; i >= 0; i--) {
 					if (typeof(ylabels[i]) == "string") {
 						if(showYLabels(ctx,data,config,i,ylabels[i])) {
 							if (ylabels[i].trim() != "") {
-								textMsr = ctx.measureTextMultiLine(fmtChartJS(config, ylabels[i], config.fmtYLabel), (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
+//								textMsr = ctx.measureTextMultiLine(fmtChartJS(config, ylabels[i], config.fmtYLabel), (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
+								textMsr = ctx.measureTextMultiLine(ylabels[i], (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
 								widestYLabel = Math.max(widestYLabel,textMsr.textWidth);
 								highestYLabel = Math.max(highestYLabel,textMsr.textHeight);
 
@@ -6397,13 +6504,13 @@ window.Chart = function(context) {
 					}
 				}
 			}
-
 			if (ylabels2 != null && config.yAxisRight) {
 				ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
 				for (i = ylabels2.length - 1; i >= 0; i--) {
 					if (typeof(ylabels2[i]) == "string") {
 						if (showYLabels(ctx,data,config,i,ylabels2[i])) {
-							textMsr = ctx.measureTextMultiLine(fmtChartJS(config, ylabels2[i], config.fmtYLabel2), (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
+//							textMsr = ctx.measureTextMultiLine(fmtChartJS(config, ylabels2[i], config.fmtYLabel2), (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
+							textMsr = ctx.measureTextMultiLine(ylabels2[i], (Math.ceil(ctx.chartTextScale*config.scaleFontSize)));
 							widestYLabel2 = Math.max(textMsr.textWidth,widestYLabel2);
 							highestYLabel2 = Math.max(textMsr.textHeight,highestYLabel2);
 						}
@@ -7326,7 +7433,7 @@ window.Chart = function(context) {
 
 		// - annotateDisplay : true, annotateFunction: "mousemove"
 		if(config.annotateDisplay==true) {
-			if (cursorDivCreated == false) oCursor = new makeCursorObj('divCursor');
+			if (cursorDivCreated == false) oCursor = new makeCursorObj(config,annotate_shape);
 			     if(config.annotateFunction=="mousedown left")setAction(ctx,"mousedown 1");
 			else if(config.annotateFunction=="mousedown middle")setAction(ctx,"mousedown 2");
 			else if(config.annotateFunction=="mousedown right")setAction(ctx,"mousedown 3");
@@ -7816,7 +7923,7 @@ var startRadius,stopRadius;
 		prevpos[0]=[];
 		prevpos[1]=[];
 		grandtotal=0;
-		MstartAngle=[];
+		MstartAngle=[];                               
 		McumulativeAngle=[];
 		MrealCumulativeAngle=[];
 		startRadius=[];
