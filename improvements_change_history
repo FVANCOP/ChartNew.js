@@ -195,6 +195,11 @@ Change history
 
 Future Improvements
 -------------------
+- animate the inGraphData (text appears with animation; lines appears with animation)
+	animationInGraphData = [0,1]; animationChart = [0,1] => inGraphData and chart animation are animated at the sametime
+	                                                        and from the beginning up to the end
+
+	animationInGraphData = [0.7,1]; animationChart = [0,0.7] => chart is first animated and then the in inGraphData is animated;
 - add-ins with more possibilities for annotateDisplay (see issue #460)
 - small animation (https://github.com/nnnick/Chart.js/issues/357)
 - non evolutive animation in Pie/Doughnut (https://github.com/nnnick/Chart.js/issues/357)
