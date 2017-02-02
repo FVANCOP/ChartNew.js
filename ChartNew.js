@@ -554,14 +554,16 @@ function getMaximumHeight(domNode){
             if(domNode.parentNode!=undefined)
                 container = domNode.parentNode;
 	return container.clientHeight;
-};
+};                                                                                                                                                             
 
-function resizeCtx(ctx,config)
-{                                                                                                                                           
+function resizeCtx(ctx,config){
+
 	if (isIE() < 9 && isIE() != false) return(true);
 
 	if(config.responsive) {	
-                        
+
+    ctx.canvas.style.width=ctx.prevStyleWidth;
+    ctx.canvas.style.height=ctx.prevStyleHeight;
 		if(typeof config.maintainAspectRatio == "undefined")config.maintainAspectRatio=true;
 		if(typeof config.responsiveMinWidth == "undefined")config.responsiveMinWidth=0;
 		if(typeof config.responsiveMinHeight  == "undefined")config.responsiveMinHeight=0;
@@ -576,11 +578,23 @@ function resizeCtx(ctx,config)
     }
 		if(typeof ctx.aspectRatio == "undefined") {
 			ctx.aspectRatio = canvas.width / canvas.height;
+      if(1*config.forcedAspectRatio)ctx.aspectRatio=1/config.forcedAspectRatio;
 		}
-  	var newWidth = getMaximumWidth(canvas);
-		var newHeight = config.maintainAspectRatio ? newWidth / ctx.aspectRatio : getMaximumHeight(canvas);
-		newWidth=Math.min(config.responsiveMaxWidth,Math.max(config.responsiveMinWidth,newWidth));
+
+    var newWidth,newHeight;
+    if(window.devicePixelRatio>1 && typeof ctx.vWidth!="undefined") {
+      var canvasWidth=window.getComputedStyle(ctx.canvas).getPropertyValue('width');
+      newWidth=canvasWidth.substring(0,canvasWidth.indexOf("px"));
+    } else if(typeof ctx.vWidth=="undefined") newWidth = getMaximumWidth(canvas);
+    else newWidth=ctx.canvas.width;
+//newWidth=cw.substring(0,cw.length-2);
+    newWidth=Math.min(config.responsiveMaxWidth,Math.max(config.responsiveMinWidth,newWidth));
+
+	  if(typeof ctx.vWidth=="undefined")newHeight = config.maintainAspectRatio ? newWidth / ctx.aspectRatio : getMaximumHeight(canvas);
+    else newHeight = config.maintainAspectRatio ? newWidth / ctx.aspectRatio : ctx.canvas.height;
+    
 		newHeight=Math.min(config.responsiveMaxHeight,Math.max(config.responsiveMinHeight,newHeight));
+
 
 		if(typeof ctx.DefaultchartTextScale=="undefined")ctx.DefaultchartTextScale=config.chartTextScale;
 		if(typeof ctx.DefaultchartLineScale=="undefined")ctx.DefaultchartLineScale=config.chartLineScale;
@@ -592,11 +606,11 @@ function resizeCtx(ctx,config)
 			ctx.chartLineScale=ctx.DefaultchartLineScale*(newWidth/ctx.initialWidth);
 			ctx.chartSpaceScale=ctx.DefaultchartSpaceScale*(newWidth/ctx.initialWidth);
 		}
-		                                                                                                            
 		if (window.devicePixelRatio>1) {
 			ctx.canvas.style.width = newWidth + "px";
 			ctx.canvas.style.height = newHeight + "px";
 		}
+
 		ctx.canvas.height = newHeight * Math.max(1,window.devicePixelRatio);
 		ctx.canvas.width = newWidth * Math.max(1,window.devicePixelRatio);
 		ctx.scale(Math.max(1,window.devicePixelRatio), Math.max(1,window.devicePixelRatio));
@@ -604,14 +618,17 @@ function resizeCtx(ctx,config)
 		if(typeof ctx.original_width=="undefined") {
 			ctx.original_width=ctx.canvas.width;
 			ctx.original_height=ctx.canvas.height;
+
 		}
-		ctx.canvas.style.width = ctx.original_width + "px";
-		ctx.canvas.style.height = ctx.original_height + "px";
-		ctx.canvas.height = ctx.original_height * window.devicePixelRatio;
-		ctx.canvas.width = ctx.original_width * window.devicePixelRatio;
+		ctx.canvas.style.width = ctx.canvas.width + "px";
+    if(1*config.forcedAspectRatio)ctx.canvas.height=config.forcedAspectRatio*ctx.canvas.width;
+
+		ctx.canvas.style.height = ctx.canvas.height + "px";
+    
+		ctx.canvas.height = ctx.canvas.height * window.devicePixelRatio;
+		ctx.canvas.width = ctx.canvas.width * window.devicePixelRatio;
 		ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-	}
-  
+	} else if(1*config.forcedAspectRatio)ctx.canvas.height=config.forcedAspectRatio*ctx.canvas.width;
 };
 
 
@@ -664,16 +681,28 @@ function updateChart(ctx,data,config,animation,runanimationcompletefunction) {
 
 function redrawGraph(ctx,data,config) {
 
-  if((ctx.firstPass==2 || ctx.firstPass==9) && !(isIE() < 9 && isIE() != false) && (navigator.userAgent.indexOf("Safari")==-1)) {    
+
+//  if(typeof ctx.vWidth!="number" && (ctx.firstPass==2 || ctx.firstPass==9) && !(isIE() < 9 && isIE() != false) && (navigator.userAgent.indexOf("Safari")==-1)) {    
+  if(1==0 && (ctx.firstPass==2 || ctx.firstPass==9) && !(isIE() < 9 && isIE() != false) && (navigator.userAgent.indexOf("Safari")==-1)) {    
     var OSC;
     var tmpctx;
     OSC=  document.createElement("canvas");
     tmpctx=OSC.getContext("2d");
     tmpctx.vctx=ctx;
-
     OSC.width=ctx.canvas.width;
     OSC.height=ctx.canvas.height;
+
+
+
+    if(typeof ctx.vWidth=="number"){
+      var canvasWidth=window.getComputedStyle(ctx.canvas).getPropertyValue('width');
+      tmpctx.canvas.width=canvasWidth.substring(0,canvasWidth.indexOf("px"));
+      ctx.canvas.width=tmpctx.canvas.width;
+      tmpctx.vWidth=ctx.vWidth;      
+    } 
     tmpctx.ChartNewId=ctx.ChartNewId;
+    tmpctx.prevStyleWidth=ctx.prevStyleWidth;
+    tmpctx.prevStyleHeight=ctx.prevStyleHeight;
     tmpctx.tpchart=ctx.tpchart;
     tmpctx.tpdata=ctx.tpdata;
     tmpctx.initialWidth=ctx.initialWidth;
@@ -688,10 +717,10 @@ function redrawGraph(ctx,data,config) {
     tmpctx.pieces_drawn=ctx.pieces_drawn;
 
 
+ 	  var myGraph = new Chart(tmpctx);	
+    eval("myGraph."+tmpctx.tpchart+"(data,config);");
 
- 	 var myGraph = new Chart(tmpctx);	
-        eval("myGraph."+tmpctx.tpchart+"(data,config);");
-
+    if(typeof ctx.vWidth=="number")ctx.vWidth=tmpctx.vWidth;
     ctx.tpchart=tmpctx.tpchart;
     ctx.tpdata=tmpctx.tpdata;
     ctx.initialWidth=tmpctx.initialWidth;
@@ -701,9 +730,12 @@ function redrawGraph(ctx,data,config) {
     ctx.firstPass=tmpctx.firstPass;
     ctx.runanimationcompletefunction=tmpctx.runanimationcompletefunction;
     ctx.ChartNewId=tmpctx.ChartNewId;
+    ctx.prevStyleWidth=tmpctx.prevStyleWidth;
+    ctx.prevStyleHeight=tmpctx.prevStyleHeight;
     ctx.aspectRatio=tmpctx.aspectRatio;
     ctx.widthAtSetMeasures=tmpctx.widthAtSetMeasures;
     ctx.heightAtSetMeasures=tmpctx.heightAtSetMeasures;
+    
     ctx.canvas.width=tmpctx.canvas.width;
     ctx.canvas.height=tmpctx.canvas.height;
     ctx.pieces_drawn=tmpctx.pieces_drawn;
@@ -713,8 +745,12 @@ function redrawGraph(ctx,data,config) {
    ctx.drawImage(OSC,0,0); 
   
    } else {
-     	 var myGraph = new Chart(ctx);	
-          eval("myGraph."+ctx.tpchart+"(data,config);");
+     if(typeof ctx.vWidth=="number"){
+       var canvasWidth=window.getComputedStyle(ctx.canvas).getPropertyValue('width');
+       ctx.canvas.width=canvasWidth.substring(0,canvasWidth.indexOf("px"));
+     } 
+     var myGraph = new Chart(ctx);	
+     eval("myGraph."+ctx.tpchart+"(data,config);");
    }
 
 };
@@ -2275,6 +2311,7 @@ window.Chart = function(context) {
 		responsiveMaxWidth : 9999999,
 		responsiveMaxHeight : 9999999,
 		maintainAspectRatio: true,
+    forcedAspectRadio : 0,
 		responsiveScaleContent : false,
 		responsiveWindowInitialWidth : false,
 		markerShape : "circle",    // "circle","cross","plus","diamond","triangle","square"
@@ -2492,21 +2529,25 @@ window.Chart = function(context) {
 	
 
 
-	function init_and_start(ctx,data,config) {
-
+function init_and_start(ctx,data,config) {
 		var i;
-
 		if (typeof ctx.initialWidth == "undefined") {
-      if(typeof ctx.canvas.style.width=="string") {
-        if(ctx.canvas.style.width!="" && ctx.canvas.style.width.indexOf("px") > 0){
-          ctx.canvas.width=ctx.canvas.style.width.substring(0,ctx.canvas.style.width.indexOf("px"));
-        } 
+
+      ctx.prevStyleWidth=ctx.canvas.style.width;
+      ctx.prevStyleHeight=ctx.canvas.style.height;
+
+      var canvasWidth=window.getComputedStyle(ctx.canvas).getPropertyValue('width');
+      if(1*ctx.canvas.width!=1*canvasWidth.substring(0,canvasWidth.indexOf("px"))) {
+          if (typeof ctx.initialWidth == "undefined")ctx.vWidth=1;
+          ctx.canvas.width=canvasWidth.substring(0,canvasWidth.indexOf("px"));
+
       }
-      if(typeof ctx.canvas.style.height=="string") {
-        if(ctx.canvas.style.height!=""){
-          ctx.canvas.height=ctx.canvas.style.height.substring(0,ctx.canvas.style.height.indexOf("px"));
-        } 
-      }
+
+      var canvasHeight=window.getComputedStyle(ctx.canvas).getPropertyValue('height');
+      ctx.canvas.height=canvasHeight.substring(0,canvasHeight.indexOf("px"));
+    
+    }
+		if (typeof ctx.initialWidth == "undefined") {
       ctx.initialWidth =ctx.canvas.width;
     }
 		if (typeof ctx.chartTextScale == "undefined") ctx.chartTextScale=config.chartTextScale;
@@ -2533,7 +2574,6 @@ window.Chart = function(context) {
 			ctx.ChartNewId = ctx.tpchart + '_' + cvmillsec;
 			ctx._eventListeners = {};
 		}
-			  
 		resizeCtx(ctx,config);
 
 		if (!dynamicFunction(data, config, ctx)) return false;   // if config.dynamicDisplay=true, chart has to be displayed only if in current screen;  
@@ -2611,10 +2651,7 @@ window.Chart = function(context) {
 
 		ctx.tpchart="PolarArea";
 		ctx.tpdata=0;
-    
-		
     if (!init_and_start(ctx,data,config)) return;
-
 		var statData=initPassVariableData_part1(data,config,ctx);
     init_result(ctx,data,statData);
 
@@ -3151,7 +3188,6 @@ window.Chart = function(context) {
 		var msr, midPieX, midPieY, doughnutRadius,cutoutRadius;
 
 		ctx.tpdata=0;
-
 	  if (!init_and_start(ctx,data,config)) return;
 
 		var statData=initPassVariableData_part1(data,config,ctx);
@@ -3169,7 +3205,6 @@ window.Chart = function(context) {
 		
     if(chartType == "Pie")cutoutRadius=0;
 		else cutoutRadius = doughnutRadius * (config.percentageInnerCutout / 100);
-
 		if(doughnutRadius > 0) {
 			initPassVariableData_part2(statData,data,config,ctx,false,false,{midPosX : midPieX,midPosY : midPieY ,int_radius : cutoutRadius ,ext_radius : doughnutRadius,outerVal : -1});
 			animationLoop(config,msr.legendMsr, null, drawPieSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPieX, midPieY, midPieX - doughnutRadius, midPieY + doughnutRadius, data, statData);
@@ -4124,6 +4159,8 @@ window.Chart = function(context) {
 
 
 		function drawLabels() {
+    
+
 			ctx.font = config.scaleFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.scaleFontSize)).toString() + "px " + config.scaleFontFamily;
 			//X axis line                                                          
 			if (config.scaleShowLabels && (config.xAxisTop || config.xAxisBottom)) {
@@ -4196,11 +4233,13 @@ window.Chart = function(context) {
 				if(showLabels(ctx,data,config,j)){
 					if (config.yAxisLeft) {
 						ctx.textAlign = "right";
-						ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop) + additionalSpaceBetweenBars + (barWidth / 2), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
+            ctx.textBaseline="middle";
+						ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX - (Math.ceil(ctx.chartLineScale*config.scaleTickSizeLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY + Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) - scaleHop * (j + 1) + additionalSpaceBetweenBars+barWidth/2, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YLEFTAXIS_TEXTMOUSE",0,0,0,-1,j);
 					}
 					if (config.yAxisRight) {
 						ctx.textAlign = "left";
-						ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY - ((j + 1) * scaleHop) + additionalSpaceBetweenBars+ (barWidth / 2), ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
+            ctx.textBaseline="middle";
+						ctx.fillTextMultiLine(fmtChartJS(config, data.labels[j], config.fmtXLabel), yAxisPosX + msr.availableWidth + (Math.ceil(ctx.chartLineScale*config.scaleTickSizeRight) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight)), xAxisPosY + Math.ceil(ctx.chartSpaceScale*config.barValueSpacing) - scaleHop * (j + 1) + additionalSpaceBetweenBars+barWidth/2, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.scaleFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXIS_TEXTMOUSE",0,0,0,-1,j);
 					}
 				}
 			}
@@ -5829,8 +5868,8 @@ function calculateOrderOfMagnitude(val) {
 	//****************************************************************************************
 	function setMeasures(data, config, ctx, canvasheight, canvaswidth, ylabels, ylabels2, reverseLegend, reverseAxis, drawAxis, legendBox, typegraph) {
 
-        	var height=canvasheight;
-        	var width=canvaswidth;
+   	var height=canvasheight;
+   	var width=canvaswidth;
 		if (window.devicePixelRatio>1) {
 			height=height/window.devicePixelRatio;
 			width=width/window.devicePixelRatio;
@@ -6690,6 +6729,7 @@ function calculateOrderOfMagnitude(val) {
 		clry = topNotUsableHeight;
 		clrheight = availableHeight;
 
+
 		return {
 			leftNotUsableWidth: leftNotUsableWidth,
 			rightNotUsableWidth: rightNotUsableWidth,
@@ -7080,14 +7120,14 @@ function calculateOrderOfMagnitude(val) {
 		// ----------------------------------------------------		
                 // highLight : false, 	highLightMouseFunction : "mousemove",
 		// ----------------------------------------------------		
-		// - mouse sortir ou entrer dans une piÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨ce => Pas d'influence sur une action de souris. C'est liÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  l'action de annotateFunction
+		// - mouse sortir ou entrer dans une piÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨ce => Pas d'influence sur une action de souris. C'est liÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  l'action de annotateFunction
 		//      	annotateFunctionIn : inBar,
       		//		annotateFunctionOut : outBar,
 		// ----------------------------------------------------		
 		// - mouseDownRight	mouseDownLeft: null  mouseDownMiddle: null  
 		// - mouseMove: null 	mouseWheel : null    mouseOut: null (lorsque la souris sort du canvas) 	
 		// ----------------------------------------------------		
-		//  mouse sur texte : detectMouseOnText => Pas d'influence sur une action de souris. C'est liÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  une autre action;
+		//  mouse sur texte : detectMouseOnText => Pas d'influence sur une action de souris. C'est liÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  une autre action;
 		// ----------------------------------------------------		
 
 		function setAction(ctx,action){
@@ -7182,7 +7222,7 @@ function calculateOrderOfMagnitude(val) {
 			};
 		}
 		
-		// initialiser les variables nÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©cessaires pour l'action doMouseAction;
+		// initialiser les variables nÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©cessaires pour l'action doMouseAction;
                 inMouseAction[ctx.ChartNewId]=false;
 		mouseActionData[ctx.ChartNewId]={ data : data, config: config, prevShow : -1 };
 	};
