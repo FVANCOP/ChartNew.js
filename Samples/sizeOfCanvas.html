@@ -1,0 +1,234 @@
+
+<! faire test retina display : about:config et après "layout.css.devPixelsPerPx">
+<!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+<style>
+	#canvas_Type3 {
+		width: 400px;
+//		height: 600px;
+	}
+	#canvas_Type4 {
+		width: 50%;
+//		height: 600px;
+	}
+	#canvas_Type13 {
+		width: 400px;
+//		height: 600px;
+	}
+	#canvas_Type14 {
+		width: 50%;
+//		height: 600px;
+	}
+	#canvas_Type23 {
+		width: 400px;
+//		height: 600px;
+	}
+	#canvas_Type24 {
+		width: 50%;
+//		height: 600px;
+	}
+</style>
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=600;
+defCanvasHeight=600;
+var mydata = { 
+     labels : ["2015","2016"], 
+     datasets : [ 
+           { 
+      data : [30,90], 
+      fillColor : "#D97041", 
+      title : "data1" 
+           }, 
+           { 
+      data : [90], 
+      fillColor : "#C7604C", 
+      title : "data2"
+           }, 
+           { 
+      data : [24,58], 
+      fillColor : "#21323D", 
+      title : "data3"
+           }, 
+           { 
+      data : [58], 
+      fillColor : "#9D9B7F", 
+      title : "data4"
+           }, 
+           { 
+      data : [,82], 
+      fillColor : "#7D4F6D", 
+      title : "data5"
+           }, 
+           { 
+      data : [8], 
+      fillColor : "#584A5E", 
+      title : "data6"
+           } 
+] 
+};
+
+var Omydata = [
+	{
+		value : 30,
+		color: "#D97041",
+		title : "data1",
+	},
+	{
+		value : 90,
+		color: "#C7604C",
+		title : "data2"
+	},
+	{
+		value : 24,
+		color: "#21323D",
+		title : "data3"
+	},
+	{
+		value : 58,
+		color: "#9D9B7F",
+		title : "data4"
+	},
+	{
+		value : 82,
+		color: "#7D4F6D",
+		title : "data5"
+	},
+	{
+		value : 8,
+		color: "#584A5E",
+		title : "data6"
+	}
+]
+
+
+var opt1 = {
+      animation : false,
+      canvasBorders : true,
+      responsive :true,
+//      responsiveScaleContent:true,
+//      maintainAspectRatio:false,
+      forcedAspectRatio:0.5,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "animation With UpdateX",
+      inGraphDataShow : true,
+      inGraphDataTmpl: "<%=v3%>",
+      graphTitleFontSize: 18
+};
+
+var opt2 = {
+      animation : false,
+      canvasBorders : true,
+//      responsive :true,
+//      responsiveScaleContent:true,
+//      maintainAspectRatio:false,
+      forcedAspectRatio:0.5,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "animation With UpdateX",
+      inGraphDataShow : true,
+      inGraphDataTmpl: "<%=v3%>",
+      graphTitleFontSize: 18
+};
+
+
+function startUpdate(ctx, config, data, tp, count) {
+// console.log("onAnimationComplete Function executed");
+};
+
+
+function updt(ctx,data,config) {
+//	updtData(data);
+//	updateChart(ctx,data,config,true,true);
+//	setTimeout(function (){updt(ctx,data,config);}, 5000);
+}
+
+function updtData(data) {
+	var i,j;
+	for(i=0;i<data.datasets.length-1;i++){
+		for(j=0;j<data.labels.length;j++)			
+			data.datasets[i].data[j]=data.datasets[i+1].data[j];
+	}
+	for(j=0;j<data.labels.length;j++)			
+		data.datasets[data.datasets.length-1].data[j]=Math.floor(Math.random()*50);
+}
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+//  document.write("<canvas id=\"canvas_Pie\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+//  document.write("<canvas id=\"canvas_Pie\" style=\"height: "+defCanvasHeight+"px; width:"+defCanvasWidth+"px;\"></canvas>");
+//  document.write("<BR>No Chart<BR>");
+//  document.write("<canvas id=\"canvas_Type21\" height=\"20\" width=\""+defCanvasWidth+"\"  style=\"border-width:4;border-style:solid;boder-color:black;\"></canvas>");
+//  document.write("<BR>");
+//  document.write("<canvas id=\"canvas_Type22\" height=20 style=\"border-width:4;border-style:solid;boder-color:black;width: 50%;\"></canvas>");
+//  document.write("<BR>");
+//  document.write("<canvas id=\"canvas_Type23\" height=20  style=\"border-width:4;border-style:solid;boder-color:black;\"></canvas>");
+//  document.write("<BR>");
+//  document.write("<canvas id=\"canvas_Type24\" height=20 style=\"border-width:4;border-style:solid;boder-color:black;\"></canvas>");
+
+  document.write("<BR>");
+
+  document.write("<canvas id=\"canvas_Type1\" height=\"400\" width=\""+defCanvasWidth+"\"></canvas>");
+  document.write("<BR>");
+  document.write("<canvas id=\"canvas_Type2\" height=400 style=\"width: 50%;\"></canvas>");
+  document.write("<BR>");
+  document.write("<canvas id=\"canvas_Type3\" height=400></canvas>");
+  document.write("<BR>");
+  document.write("<canvas id=\"canvas_Type4\" height=400></canvas>");
+
+  document.write("<BR>NOT RESPONSIVE<BR>");
+  document.write("<canvas id=\"canvas_Type11\" height=\"400\" width=\""+defCanvasWidth+"\"></canvas>");
+  document.write("<BR>");
+  document.write("<canvas id=\"canvas_Type12\" height=400 style=\"width: 50%;\"></canvas>");
+  document.write("<BR>");
+  document.write("<canvas id=\"canvas_Type13\" height=400></canvas>");
+  document.write("<BR>");
+  document.write("<canvas id=\"canvas_Type14\" height=400></canvas>");
+
+
+
+
+//    document.write("<canvas id=\"canvas_Pie\" style=\"height: 50%; width: 50px;\"></canvas>");
+window.onload = function() {
+	var myPie1 = new Chart(document.getElementById("canvas_Type1").getContext("2d")).Pie(mydata,opt1);
+	var myPie2 = new Chart(document.getElementById("canvas_Type2").getContext("2d")).Pie(mydata,opt1);
+	var myPie3 = new Chart(document.getElementById("canvas_Type3").getContext("2d")).Pie(mydata,opt1);
+  var myPie4 = new Chart(document.getElementById("canvas_Type4").getContext("2d")).Pie(mydata,opt1);
+
+	var myPie11 = new Chart(document.getElementById("canvas_Type11").getContext("2d")).Pie(mydata,opt2);
+	var myPie12 = new Chart(document.getElementById("canvas_Type12").getContext("2d")).Pie(mydata,opt2);
+	var myPie13 = new Chart(document.getElementById("canvas_Type13").getContext("2d")).Pie(mydata,opt2);
+	var myPie14 = new Chart(document.getElementById("canvas_Type14").getContext("2d")).Pie(mydata,opt2);
+//	setTimeout(function (){updt(document.getElementById("canvas_Pie").getContext("2d"),mydata,opt);}, 5000);
+
+ }
+    </script>
+  </body>
+</html>
