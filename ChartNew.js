@@ -682,8 +682,7 @@ function updateChart(ctx,data,config,animation,runanimationcompletefunction) {
 function redrawGraph(ctx,data,config) {
 
 
-//  if(typeof ctx.vWidth!="number" && (ctx.firstPass==2 || ctx.firstPass==9) && !(isIE() < 9 && isIE() != false) && (navigator.userAgent.indexOf("Safari")==-1)) {    
-  if(1==0 && (ctx.firstPass==2 || ctx.firstPass==9) && !(isIE() < 9 && isIE() != false) && (navigator.userAgent.indexOf("Safari")==-1)) {    
+  if((ctx.firstPass==2 || ctx.firstPass==9) && !(isIE() < 9 && isIE() != false) && (navigator.userAgent.indexOf("Safari")==-1)) {    
     var OSC;
     var tmpctx;
     OSC=  document.createElement("canvas");
