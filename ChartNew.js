@@ -4253,10 +4253,7 @@ function init_and_start(ctx,data,config) {
 	};
   
 	var Bar = function(data, config, ctx) {
- 
-document.write("IN BAR");
-return;
-         
+        
 		var maxSize, scaleHop, scaleHop2, labelHeight, scaleHeight, labelTemplateString, labelTemplateString2, valueHop, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
 		ctx.tpchart="Bar";
