@@ -60,7 +60,7 @@ if (typeof String.prototype.trim !== 'function') {
 	}
 };
 if (!Array.prototype.indexOf) {
-	Array.prototype.indexOf = function(searchElement /*, fromIndex */ ) {
+	Array.prototype.indexOf = function(searchElement /*, fromIndex */ ) {                                                                                                              
 		"use strict";
 		if (this == null) {
 			throw new TypeError();
@@ -2534,16 +2534,17 @@ function init_and_start(ctx,data,config) {
 
       ctx.prevStyleWidth=ctx.canvas.style.width;
       ctx.prevStyleHeight=ctx.canvas.style.height;
-
-      var canvasWidth=window.getComputedStyle(ctx.canvas).getPropertyValue('width');
-      if(1*ctx.canvas.width!=1*canvasWidth.substring(0,canvasWidth.indexOf("px"))) {
+      if (isIE() < 9 && isIE() != false) {
+      } else {
+        var canvasWidth=window.getComputedStyle(ctx.canvas).getPropertyValue('width');
+        if(1*ctx.canvas.width!=1*canvasWidth.substring(0,canvasWidth.indexOf("px"))) {
           if (typeof ctx.initialWidth == "undefined")ctx.vWidth=1;
           ctx.canvas.width=canvasWidth.substring(0,canvasWidth.indexOf("px"));
-
+        }
+        var canvasHeight=window.getComputedStyle(ctx.canvas).getPropertyValue('height');
+        ctx.canvas.height=canvasHeight.substring(0,canvasHeight.indexOf("px"));
       }
 
-      var canvasHeight=window.getComputedStyle(ctx.canvas).getPropertyValue('height');
-      ctx.canvas.height=canvasHeight.substring(0,canvasHeight.indexOf("px"));
     
     }
 		if (typeof ctx.initialWidth == "undefined") {
@@ -3272,7 +3273,7 @@ function init_and_start(ctx,data,config) {
 					}
 					if (config.animateRotate) {
 						rotateAnimation = animationDecimal;
-					}
+					}                                                                                   
 				}
 
 				correctedRotateAnimation = animationCorrection(rotateAnimation, data, config, i, -1, false).mainVal;
@@ -4250,7 +4251,11 @@ function init_and_start(ctx,data,config) {
 			ctx:ctx
 		};
 	};
+  
 	var Bar = function(data, config, ctx) {
+ 
+document.write("IN BAR");
+return;
          
 		var maxSize, scaleHop, scaleHop2, labelHeight, scaleHeight, labelTemplateString, labelTemplateString2, valueHop, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0,
 			msr;
@@ -5952,6 +5957,7 @@ function calculateOrderOfMagnitude(val) {
 
 		topNotUsableHeight=currentPosition;
 		availableHeight -=topNotUsableHeight;
+
 		//// Step 2 : compute height/width and position of bottom elements;
 
 		currentPosition=height - borderBHeight - Math.ceil(ctx.chartSpaceScale*config.spaceBottom);
@@ -5999,7 +6005,7 @@ function calculateOrderOfMagnitude(val) {
 		availableHeight -=(Math.ceil(ctx.chartSpaceScale*config.graphSpaceBefore)+Math.ceil(ctx.chartSpaceScale*config.graphSpaceAfter));
 		
 
-                //// Step 5  : compute widest text legend;
+    //// Step 5  : compute widest text legend;
 
 		var nbeltLegend =0;
 		var widestLegend=-99999999;
@@ -6024,7 +6030,7 @@ function calculateOrderOfMagnitude(val) {
 			}
 		}
 		
-                //// Step 6  : compute legend heights and width if legendPosY = 0 or 4 or if legendPosX = 0 or 4; 
+    //// Step 6  : compute legend heights and width if legendPosY = 0 or 4 or if legendPosX = 0 or 4; 
 
 		var legendBorderHeight = 0;
 		var legendBorderWidth = 0;
@@ -6088,16 +6094,30 @@ function calculateOrderOfMagnitude(val) {
 
 		//// Step 7 - Compute Y Unit height and position;
 
+    var yAxisUnit2="";
+		if (config.yAxisRight) {
+      yAxisUnit2=config.yAxisUnit2;
+      if (yAxisUnit2 == '') yAxisUnit2 = config.yAxisUnit;
+    }
+
+
 		var yAxisUnitPosY = 0;
 		var yAxisUnitHeight = 0;
 		var yAxisUnitWidth = 0;
+		var yAxisUnit2Width = 0;
 	
-		if (drawAxis && config.yAxisUnit.trim() != "") {
+		if (drawAxis && ((config.yAxisUnit.trim() != "" && config.yAxisLeft) || (yAxisUnit2.trim() != "" && config.yAxisRight))) {
 		
 			yAxisUnitHeight = (Math.ceil(ctx.chartTextScale*config.yAxisUnitFontSize)) * (config.yAxisUnit.split("\n").length || 1) + Math.ceil(ctx.chartSpaceScale*config.yAxisUnitSpaceBefore) + Math.ceil(ctx.chartSpaceScale*config.yAxisUnitSpaceAfter);
 			ctx.font = config.yAxisUnitFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.yAxisUnitFontSize)).toString() + "px " + config.yAxisUnitFontFamily;
-			var yAxisUnitSize =ctx.measureTextMultiLine(config.yAxisUnit, (Math.ceil(ctx.chartTextScale*config.yAxisUnitFontSize)));
+
+			var yAxisUnitSize; 
+      yAxisUnitSize=ctx.measureTextMultiLine(config.yAxisUnit, (Math.ceil(ctx.chartTextScale*config.yAxisUnitFontSize)));
 			yAxisUnitWidth = yAxisUnitSize.textWidth;
+
+			yAxisUnitSize =ctx.measureTextMultiLine(yAxisUnit2, (Math.ceil(ctx.chartTextScale*config.yAxisUnitFontSize)));
+			yAxisUnit2Width = yAxisUnitSize.textWidth;
+
 			yAxisUnitPosY = topNotUsableHeight +  Math.ceil(ctx.chartSpaceScale*config.yAxisUnitSpaceBefore)+yAxisUnitSize.textHeight;
 			if(config.yAxisUnitBackgroundColor !="none" || config.yAxisUnitBorders) {
 				yAxisUnitHeight+=2*(Math.ceil(ctx.chartSpaceScale*config.yAxisUnitBordersYSpace));
@@ -6110,7 +6130,8 @@ function calculateOrderOfMagnitude(val) {
 			topNotUsableHeight+=yAxisUnitHeight;
 			availableHeight -=yAxisUnitHeight;
 		}
-		
+
+
 		//// Step 8 - compute Labels width;
 
 		var widestXLabel = 0;
@@ -6374,10 +6395,12 @@ function calculateOrderOfMagnitude(val) {
 			if (reverseAxis == false) leftNotUsableWidth += yAxisLabelWidth + widestYLabel + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight);
 			else                      leftNotUsableWidth += yAxisLabelWidth + widestXLabel + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight);
 		}
+
 		if (drawAxis && config.yAxisRight) {
 			if (reverseAxis == false) rightNotUsableWidth += yAxisLabelWidth + widestYLabel2 + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight);
 			else                      rightNotUsableWidth += yAxisLabelWidth + widestTXLabel + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceLeft) + Math.ceil(ctx.chartSpaceScale*config.yAxisSpaceRight);
 		}
+
 		availableWidth = width - leftNotUsableWidth - rightNotUsableWidth;
 
 		if(drawAxis && config.xAxisTop) {
@@ -6397,7 +6420,7 @@ function calculateOrderOfMagnitude(val) {
 		}
 
 
-                availableHeight=height-topNotUsableHeight-bottomNotUsableHeight;	
+    availableHeight=height-topNotUsableHeight-bottomNotUsableHeight;	
 		// compute space for Legend
 
 		if (widestLegend > -99999998 ) {
@@ -6460,31 +6483,32 @@ function calculateOrderOfMagnitude(val) {
 		}
 		
 		// correct space;
+
+
+    if(drawAxis && config.yAxisLeft && yAxisUnitWidth>0) leftNotUsableWidth=Math.max(leftNotUsableWidth,borderLHeight+config.spaceLeft+(config.yAxisUnitBorders && isBorder(config.yAxisUnitBordersSelection,"LEFT"))*(config.yAxisUnitBordersWidth)+(config.yAxisUnitBackgroundColor !="none" || config.yAxisUnitBorders)*Math.ceil(ctx.chartSpaceScale*config.yAxisUnitBordersYSpace)+1+yAxisUnitWidth/2);	
+		if(drawAxis && config.yAxisRight && yAxisUnit2Width>0) rightNotUsableWidth=Math.max(rightNotUsableWidth,borderRHeight+config.spaceRight+(config.yAxisUnitBorders && isBorder(config.yAxisUnitBordersSelection,"RIGHT"))*(config.yAxisUnitBordersWidth)+(config.yAxisUnitBackgroundColor !="none" || config.yAxisUnitBorders)*Math.ceil(ctx.chartSpaceScale*config.yAxisUnitBordersYSpace)+1+yAxisUnit2Width/2);	
 		
-		if(typegraph=="Line" || typegraph=="HorizontalBar" || typegraph=="HorizontalStackedBar") {
-			if(config.inGraphDataShow){
-				rightNotUsableWidth =Math.max(rightNotUsableWidth, Math.max(widestYLabel,widestYLabel2)+1+borderRHeight);
-				leftNotUsableWidth =Math.max(leftNotUsableWidth, Math.max(widestYLabel,widestYLabel2)+1+borderLHeight);
-			}
-			if(config.xAxisTop || config.xAxisBottom) {
-				rightNotUsableWidth =Math.max(rightNotUsableWidth, Math.max(widestXLabel/2,widestTXLabel/2)+1+borderRHeight);
-				leftNotUsableWidth =Math.max(leftNotUsableWidth, Math.max(widestXLabel/2,widestTXLabel/2)+1+borderLHeight);
-			}
-			availableWidth=width-rightNotUsableWidth-leftNotUsableWidth;
-		}
-		if(drawAxis && config.yAxisLeft && (config.yAxisUnitBorders || config.yAxisUnitBackgroundColor !="none")) {
-			if(config.yAxisLeft) leftNotUsableWidth=Math.max(leftNotUsableWidth,borderLHeight+config.spaceLeft+(config.yAxisUnitBorders && isBorder(config.yAxisUnitBordersSelection,"LEFT"))*(config.yAxisUnitBordersWidth)+(config.yAxisUnitBackgroundColor !="none" || config.yAxisUnitBorders)*Math.ceil(ctx.chartSpaceScale*config.yAxisUnitBordersYSpace)+1+yAxisUnitWidth/2);	
-			if(config.yAxisRight) rightNotUsableWidth=Math.max(rightNotUsableWidth,borderRHeight+config.spaceRight+(config.yAxisUnitBorders && isBorder(config.yAxisUnitBordersSelection,"RIGHT"))*(config.yAxisUnitBordersWidth)+(config.yAxisUnitBackgroundColor !="none" || config.yAxisUnitBorders)*Math.ceil(ctx.chartSpaceScale*config.yAxisUnitBordersYSpace)+1+yAxisUnitWidth/2);	
-			availableWidth=width-rightNotUsableWidth-leftNotUsableWidth;
+		if(config.inGraphDataShow && (typegraph=="Line" || typegraph=="HorizontalBar" || typegraph=="HorizontalStackedBar")) {
+			rightNotUsableWidth =Math.max(rightNotUsableWidth, Math.max(widestYLabel,widestYLabel2)+1+borderRHeight);
+			leftNotUsableWidth =Math.max(leftNotUsableWidth, Math.max(widestYLabel,widestYLabel2)+1+borderLHeight);
 		}
 
-		if(typegraph=="Line" || typegraph=="Bar" || typegraph=="StackedBar") {
-			if(config.inGraphDataShow){
-				topNotUsableHeight=Math.max(topNotUsableHeight,Math.max(highestYLabel,highestYLabel2)+1+borderTHeight);
-			}
-			availableHeight=height-topNotUsableHeight-bottomNotUsableHeight;
+		if(typegraph=="Line" && (config.xAxisTop || config.xAxisBottom)) {                              
+			rightNotUsableWidth =Math.max(rightNotUsableWidth, Math.max(config.xAxisBottom*Math.cos(rotateLabels)*widestXLabel/2,config.xAxisTop*Math.cos(rotateTLabels)*widestTXLabel/2)+1+borderRHeight);
+			leftNotUsableWidth =Math.max(leftNotUsableWidth, Math.max(config.xAxisBottom*Math.cos(rotateLabels)*widestXLabel/2,config.xAxisTop*Math.cos(rotateTLabels)*widestTXLabel/2)+1+borderLHeight);
 		}
 
+		if((typegraph=="HorizontalBar" || typegraph=="HorizontalStackedBar") && (config.xAxisTop || config.xAxisBottom)) {                              
+			rightNotUsableWidth =Math.max(rightNotUsableWidth, config.xAxisBottom*Math.cos(rotateLabels)*widestYLabel/2+1+borderRHeight);
+			leftNotUsableWidth =Math.max(leftNotUsableWidth  ,config.xAxisBottom*Math.cos(rotateLabels)*widestYLabel/2+1+borderLHeight);
+		}
+
+		if(typegraph=="Line" && config.inGraphDataShow){
+			topNotUsableHeight=Math.max(topNotUsableHeight,Math.max(highestYLabel,highestYLabel2)+1+borderTHeight);
+		}
+
+	  availableWidth=width-rightNotUsableWidth-leftNotUsableWidth;
+		availableHeight=height-topNotUsableHeight-bottomNotUsableHeight;
     
 		// ----------------------- DRAW EXTERNAL ELEMENTS -------------------------------------------------
 		dispCrossImage(ctx, config, width / 2, height / 2, width / 2, height / 2, false, data, -1, -1);
@@ -6610,17 +6634,17 @@ function calculateOrderOfMagnitude(val) {
 					ctx.stroke();
 					ctx.restore();
 				}
-				if (config.yAxisRight) {
-					if (config.yAxisUnit2 == '') config.yAxisUnit2 = config.yAxisUnit;
+
+				if (config.yAxisRight && yAxisUnit2 != "") {
 					ctx.save();
 					ctx.beginPath();
 					ctx.font = config.yAxisUnitFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.yAxisUnitFontSize)).toString() + "px " + config.yAxisUnitFontFamily;
 					ctx.fillStyle = config.yAxisUnitFontColor;
 					ctx.textAlign = "center";
 					ctx.textBaseline = "bottom";
-					setTextBordersAndBackground(ctx,config.yAxisUnit2,(Math.ceil(ctx.chartTextScale*config.yAxisUnitFontSize)),width - rightNotUsableWidth, yAxisUnitPosY,config.yAxisUnitBorders,config.yAxisUnitBordersSelection,config.yAxisUnitBordersColor,Math.ceil(ctx.chartLineScale*config.yAxisUnitBordersWidth),Math.ceil(ctx.chartSpaceScale*config.yAxisUnitBordersXSpace),Math.ceil(ctx.chartSpaceScale*config.yAxisUnitBordersYSpace),config.yAxisUnitBordersStyle,config.yAxisUnitBackgroundColor,"YAXISUNIT",config.yAxisUnitBordersRadius);
+					setTextBordersAndBackground(ctx,yAxisUnit2,(Math.ceil(ctx.chartTextScale*config.yAxisUnitFontSize)),width - rightNotUsableWidth, yAxisUnitPosY,config.yAxisUnitBorders,config.yAxisUnitBordersSelection,config.yAxisUnitBordersColor,Math.ceil(ctx.chartLineScale*config.yAxisUnitBordersWidth),Math.ceil(ctx.chartSpaceScale*config.yAxisUnitBordersXSpace),Math.ceil(ctx.chartSpaceScale*config.yAxisUnitBordersYSpace),config.yAxisUnitBordersStyle,config.yAxisUnitBackgroundColor,"YAXISUNIT",config.yAxisUnitBordersRadius);
 					ctx.translate(width - rightNotUsableWidth, yAxisUnitPosY);
-					ctx.fillTextMultiLine(config.yAxisUnit2, 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.yAxisUnitFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXISUNIT_TEXTMOUSE",0,width - rightNotUsableWidth, yAxisUnitPosY,-1,-1);
+					ctx.fillTextMultiLine(yAxisUnit2, 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale*config.yAxisUnitFontSize)),true,config.detectMouseOnText,ctx,"YRIGHTAXISUNIT_TEXTMOUSE",0,width - rightNotUsableWidth, yAxisUnitPosY,-1,-1);
 					ctx.stroke();
 					ctx.restore();
 				}
@@ -6727,7 +6751,6 @@ function calculateOrderOfMagnitude(val) {
 		clrwidth = availableWidth;
 		clry = topNotUsableHeight;
 		clrheight = availableHeight;
-
 
 		return {
 			leftNotUsableWidth: leftNotUsableWidth,
