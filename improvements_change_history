@@ -1,6 +1,13 @@
 Change history
 --------------
 
+15/02/2015 - Vancoppenolle Francois - Fix for issues 182 and 499 
+21/01/2017 - Vancoppenolle Francois - Code updated to allow more flexibility with the axis
+31/12/2016 - Vancoppenolle Francois - New Add-ins "annotate.js"
+29/11/2016 - Vancoppenolle Francois - Solution for issue 453 and 481
+26/11/2016 - Vancoppenolle François - Solution for issue 453
+22/11/2016 - Vancoppenolle François - Fix for issue 465
+04/11/2016 - Vancoppenolle Francois - solution for issue 469 and 458
 03/11/2016 - Vancoppenolle Francois - option tickColor and minorTickColor added (requested by Youri V. Kravatsky)
 23/10/2016 - Vancoppenolle Francois - Fix issue with axis
 20/10/2016 - Vancoppenolle Francois - minor ticks implemented; double axis implemented for stacked bar charts
@@ -195,6 +202,7 @@ Change history
 
 Future Improvements
 -------------------
+-bubble chart (see issue #500)
 - animate the inGraphData (text appears with animation; lines appears with animation)
 	animationInGraphData = [0,1]; animationChart = [0,1] => inGraphData and chart animation are animated at the sametime
 	                                                        and from the beginning up to the end
