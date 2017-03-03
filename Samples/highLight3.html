@@ -44,6 +44,40 @@ var mydata1 = {
 	]
 }
 
+var mydata3 = {
+	labels : ["January","February","March","April","May","June","July"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+      pointDotRadius : [10,20,15,21,7,34,26],
+			data : [0.65,0.59,-0.90,0.81,0.56,0.55,0.40],
+      			title : "pFirst data"
+		},
+		{
+			fillColor : "rgba(110,0,220,0.3)",
+			strokeColor : "rgba(110,0,220,1)",
+			pointColor : "rgba(110,0,220,1)",
+			pointStrokeColor : "#fff",
+      pointDotRadius : [10,20,15,21,7,34,26],
+			data : [-0.35,0.30,-0.54,0.18,0.7,,],
+      			title : "pFirst data"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			type : "Line",
+      pointDotRadius : 5,
+      data : [0.28,0.70,0.40,-0.19,-0.96,0.27,1.00],
+			title : "pSecond data"
+		}
+	]
+}
+
 
 var mydata2 = { 
      labels : [""], 
@@ -111,6 +145,34 @@ var newopts = {
 	dynamicDisplay : false
 }
 
+var newoptsBubble = {
+//	inGraphDataShow : isHighLighted,
+	highLight : true,
+	highLightSet : { pointStrokeColor : "red", pointStrokeWidth : 5, 
+			 addIns_shape : "ARROW", addIns_strokeColor : "red" 
+	               },
+	highLightRerunEndFunction : true,
+	onAnimationComplete : addIns_highLight,
+	datasetFill : true,
+	scaleLabel: "<%=value%>",
+	scaleFontSize : 16,
+	canvasBorders : true,
+	graphTitle : "Sample ChartNew.js",
+	graphTitleFontFamily : "'Arial'",
+	graphTitleFontSize : 24,
+	graphTitleFontStyle : "bold",
+	graphTitleFontColor : "#666",
+	inGraphDataShow : true,
+	footNote : "Footnote for the graph",
+	legend : true,
+	yAxisLabel : "Y Axis Label",
+	xAxisLabel : "X Axis Label",
+	yAxisUnit : "Y Unit",
+	annotateDisplay : false,
+	animation : false, 
+	barBorderRadius : 5,
+	dynamicDisplay : false
+}
 
 
 </SCRIPT>
@@ -133,6 +195,7 @@ var newopts = {
 
       document.write("<canvas id=\"canvas_radar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
       document.write("<canvas id=\"canvas_line\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_bubble\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
       document.write("<canvas id=\"canvas_bar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
       document.write("<canvas id=\"canvas_stackedbar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
       document.write("<canvas id=\"canvas_horizontalbar\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
@@ -147,6 +210,7 @@ window.onload = function() {
 
     if(1==1) {
     var myLine = new Chart(document.getElementById("canvas_line").getContext("2d")).Line(mydata1,newopts);
+    var myLine = new Chart(document.getElementById("canvas_bubble").getContext("2d")).Bubble(mydata3,newoptsBubble);
     var myLine = new Chart(document.getElementById("canvas_bar").getContext("2d")).Bar(mydata1,newopts);
     var myLine = new Chart(document.getElementById("canvas_stackedbar").getContext("2d")).StackedBar(mydata1,newopts);
     var myLine = new Chart(document.getElementById("canvas_horizontalbar").getContext("2d")).HorizontalBar(mydata1,newopts);
