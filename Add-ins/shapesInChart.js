@@ -44,7 +44,7 @@ var drawShape_default= {
 	paddingY3: 0,
 	paddingX4: 0,
 	paddingY4: 0,
-       	paddingX5: 0,
+  paddingX5: 0,
 	paddingY5: 0,
 	paddingX6: 0,
 	paddingY6: 0,
@@ -429,6 +429,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					ctx.setLineDash([]);
 					break;					
 				case "ELLIPSE" :
+console.log("DRAW ELLIPSE");
 					ctx.beginPath();
 					var xypos=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x1,drawShape_default.x1),1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1),1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					var height=realAnimation*1*drawShapeSetValue(shapesInChart[i].ellipseHeight,drawShape_default.ellipseHeight);
@@ -506,6 +507,7 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					ctx.setLineDash([]);
 					break;
 				case "CIRCLE" :
+console.log("draw CIRCLE");
 					ctx.beginPath();
 					var xypos=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x1,drawShape_default.x1),1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1),1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					var radius    = realAnimation*1*drawShapeSetValue(shapesInChart[i].radius,drawShape_default.radius);
@@ -752,7 +754,16 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 	};
 
 	function drawShapeSetValue(dataval,defval) {
-		if(typeof dataval != "undefined") return dataval;
+		if(typeof dataval != "undefined") {
+      if(typeof dataval=="string" && dataval.substring(0,6).toUpperCase()=="%EVAL("){
+        var rtval;
+        var toeval=dataval.substring(6,999);
+        toeval=toeval.substring(0,toeval.length-1);
+        eval("rtval="+toeval+";");
+        return rtval;
+      }
+      else return dataval;
+    }
 		else return defval;
 	};	
 	
@@ -833,13 +844,18 @@ function addIns_highLight(ctx, config, data, movement, animationCount,statData){
 							totreat=true;
 							addHighLight=true;
 							shapesVar[shapesVar.length]={hightLight : true };
-							shapesVar[shapesVar.length-1].shape= special[i].addIns_shape;
+						  shapesVar[shapesVar.length-1].shape= special[i].addIns_shape;
 							shapesVar[shapesVar.length-1].position= "inchart";
 							shapesVar[shapesVar.length-1].x1= special[i].posj;
 							shapesVar[shapesVar.length-1].y1= data.datasets[special[i].posi].data[special[i].posj];
-							shapesVar[shapesVar.length-1].ellipseHeight=30;
-							shapesVar[shapesVar.length-1].ellipseWidth=40;
-
+              if(ctx.tpchartSub=="Bubble" && data.datasets[special[i].posi].type !="Line" ) {
+                shapesVar[shapesVar.length-1].forcedShape="CIRCLE";
+							  shapesVar[shapesVar.length-1].radius=Math.sqrt(Math.pow(statData[special[i].posi][special[i].posj].markerRadius,2)/2)+10;
+							  shapesVar[shapesVar.length-1].radius=statData[special[i].posi][special[i].posj].markerRadius+10;
+              } else {
+							  shapesVar[shapesVar.length-1].ellipseHeight=30;
+							  shapesVar[shapesVar.length-1].ellipseWidth=40;
+              }
 							break;
 						case "Bar" :
 						case "StackedBar" :
@@ -877,12 +893,24 @@ function addIns_highLight(ctx, config, data, movement, animationCount,statData){
 						case "Line" :
 						case "Radar" :
 							shapesVar[shapesVar.length-1].position= "inchart";
-							shapesVar[shapesVar.length-1].x1= special[i].posj;
-							shapesVar[shapesVar.length-1].y1= data.datasets[special[i].posi].data[special[i].posj];
-							shapesVar[shapesVar.length-1].paddingX1= 30;
-							shapesVar[shapesVar.length-1].paddingY1= -30;
-							shapesVar[shapesVar.length-1].x2= special[i].posj;
-							shapesVar[shapesVar.length-1].y2= data.datasets[special[i].posi].data[special[i].posj];
+
+              if(ctx.tpchartSub=="Bubble" && data.datasets[special[i].posi].type !="Line" ) {
+							  shapesVar[shapesVar.length-1].x2= special[i].posj;
+							  shapesVar[shapesVar.length-1].y2= data.datasets[special[i].posi].data[special[i].posj];
+							  shapesVar[shapesVar.length-1].paddingX2= Math.sqrt(Math.pow(statData[special[i].posi][special[i].posj].markerRadius,2)/2);
+							  shapesVar[shapesVar.length-1].paddingY2= -shapesVar[shapesVar.length-1].paddingX2 ;
+							  shapesVar[shapesVar.length-1].x1= shapesVar[shapesVar.length-1].x2;
+							  shapesVar[shapesVar.length-1].y1= shapesVar[shapesVar.length-1].y2;
+							  shapesVar[shapesVar.length-1].paddingX1= shapesVar[shapesVar.length-1].paddingX2+30;
+							  shapesVar[shapesVar.length-1].paddingY1= shapesVar[shapesVar.length-1].paddingY2-30 ;
+              } else {
+							  shapesVar[shapesVar.length-1].x1= special[i].posj;
+							  shapesVar[shapesVar.length-1].y1= data.datasets[special[i].posi].data[special[i].posj];
+							  shapesVar[shapesVar.length-1].paddingX1= 30;
+							  shapesVar[shapesVar.length-1].paddingY1= -30;
+							  shapesVar[shapesVar.length-1].x2= special[i].posj;
+							  shapesVar[shapesVar.length-1].y2= data.datasets[special[i].posi].data[special[i].posj];
+              }
 							break;
 						case "Bar" :
 						case "StackedBar" :
@@ -943,9 +971,11 @@ function addIns_highLight(ctx, config, data, movement, animationCount,statData){
 					if(property.substring(0,7)=="addIns_") {			 
 						eval("shapesVar[shapesVar.length-1]."+property.substring(7,50)+"=config.highLightSet[property];");
 					}
+          if(typeof shapesVar[shapesVar.length-1].forcedShape != "undefined")shapesVar[shapesVar.length-1].shape=shapesVar[shapesVar.length-1].forcedShape
 				}
 			}
 		}
+
 
 		
 		if(addHighLight) {
