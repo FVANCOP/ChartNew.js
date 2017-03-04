@@ -429,7 +429,6 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 					ctx.setLineDash([]);
 					break;					
 				case "ELLIPSE" :
-console.log("DRAW ELLIPSE");
 					ctx.beginPath();
 					var xypos=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x1,drawShape_default.x1),1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1),1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					var height=realAnimation*1*drawShapeSetValue(shapesInChart[i].ellipseHeight,drawShape_default.ellipseHeight);
@@ -507,7 +506,6 @@ console.log("DRAW ELLIPSE");
 					ctx.setLineDash([]);
 					break;
 				case "CIRCLE" :
-console.log("draw CIRCLE");
 					ctx.beginPath();
 					var xypos=setXYpos(shape,shapesInChart[i],"","","",ctx,data,statData,othervars,1*drawShapeSetValue(shapesInChart[i].x1,drawShape_default.x1),1*drawShapeSetValue(shapesInChart[i].y1,drawShape_default.y1),1*drawShapeSetValue(shapesInChart[i].paddingX1,drawShape_default.paddingX1),1*drawShapeSetValue(shapesInChart[i].paddingY1,drawShape_default.paddingY1),drawShapeSetValue(shapesInChart[i].limitToChart,drawShape_default.limitToChart));
 					var radius    = realAnimation*1*drawShapeSetValue(shapesInChart[i].radius,drawShape_default.radius);
@@ -521,7 +519,6 @@ console.log("draw CIRCLE");
 					ctx.arc(xypos.xpos,xypos.ypos, realAnimation*1*radius, (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].startAngle,drawShape_default.startAngle), (Math.PI/180)*1*drawShapeSetValue(shapesInChart[i].endAngle,drawShape_default.endAngle),true);
 					ctx.closePath();
 					ctx.fillStyle=setOptionValue(true,true,1,"SHAPESINCHART_CIRCLE",ctx,data,statData,shapesInChart[i].fillColor,drawShape_default.fillColor,"fillColor",-1,-1,{gradientColors: shapesInChart[i].gradientColors,animationValue : realAnimation, midPosX : xypos.xpos, midPosY : xypos.ypos, radius : radius  });
-//					ctx.fillStyle=drawShapeSetValue(shapesInChart[i].fillColor,drawShape_default.fillColor);
 					ctx.fill();
 					ctx.lineWidth = Math.ceil(ctx.chartLineScale*drawShapeSetValue(shapesInChart[i].strokeSize,drawShape_default.strokeSize));
 					ctx.strokeStyle = drawShapeSetValue(shapesInChart[i].strokeColor,drawShape_default.strokeColor);
