@@ -143,7 +143,6 @@ function drawShapes(area, ctx, data,statData, posi,posj,othervars){
 				iter=drawShapeSetValue(shapesInChart[i].iter,drawShape_default.iter.toUpperCase());
 				if (typeof iter=="number" && iter != othervars.cntiter && othervars.config.animation==true) {continue;}
 				if (iter==="first" && othervars.cntiter != 1 && othervars.config.animation==true) {continue;}
-//				if (iter==="last" && othervars.cntiter != othervars.config.animationSteps && othervars.config.animation==true) {continue;}
 				if (iter==="last" && othervars.animationValue < 1 && othervars.config.animation==true) {continue;}
 			}
 
