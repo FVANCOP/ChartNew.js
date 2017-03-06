@@ -205,7 +205,6 @@ Change history
 
 Future Improvements
 -------------------
--bubble chart (see issue #500)
 - animate the inGraphData (text appears with animation; lines appears with animation)
 	animationInGraphData = [0,1]; animationChart = [0,1] => inGraphData and chart animation are animated at the sametime
 	                                                        and from the beginning up to the end
