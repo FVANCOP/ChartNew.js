@@ -1,7 +1,10 @@
 Change history
 --------------
 
-15/02/2015 - Vancoppenolle Francois - Fix for issues 182 and 499 
+06/03/2017 - Vancoppenolle François - Options legendDrawEmpty, beforeLabelsFunction and afterLabelsFunction added
+05/03/2017 - Vancoppenolle Francois - Code updated for enhancement #502
+03/03/2017 - Vancoppenolle François - Bubble chart integrated in ChartNew.js
+15/02/2017 - Vancoppenolle Francois - Fix for issues 182 and 499 
 21/01/2017 - Vancoppenolle Francois - Code updated to allow more flexibility with the axis
 31/12/2016 - Vancoppenolle Francois - New Add-ins "annotate.js"
 29/11/2016 - Vancoppenolle Francois - Solution for issue 453 and 481
