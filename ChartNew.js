@@ -2188,6 +2188,7 @@ window.Chart = function(context) {
 		footNoteBackgroundColor : "none",
 		legend : false,
 		legendWhenToDraw: "all",
+    legendDrawEmptyData : true,
 		showSingleLegend: false,
 		maxLegendCols : 999,
     maxLegendLines : 999,
@@ -2354,6 +2355,8 @@ window.Chart = function(context) {
 		markerShape : "circle",    // "circle","cross","plus","diamond","triangle","square"
 		barStrokeWidth: 2,
 		initFunction : null,
+		beforeLabelsFunction : null,
+		afterLabelsFunction : null,
 		beforeDrawFunction : null,
 		endDrawDataFunction : null,
 		endDrawScaleFunction : null
@@ -3527,7 +3530,6 @@ function init_and_start(ctx,data,config) {
 			msr.availableHeight = (scaleData.nbOfStepsAxis1) * scaleHop;
  			yAxisPosX = msr.leftNotUsableWidth + Math.ceil(ctx.chartLineScale*Math.max(config.scaleTickSizeLeft,config.scaleMinorTickSizeLeft*(config.scaleMinorTickVerticalCount>0)));
 			xAxisPosY = msr.topNotUsableHeight + msr.availableHeight + Math.ceil(ctx.chartLineScale*Math.max(config.scaleTickSizeTop,config.scaleMinorTickSizeTop*(config.scaleMinorTickHorizontalCount>0)));
-			drawLabels();
 			zeroY = calculateOffset(scaleData.logarithm1, 0, calculatedScale, scaleHop);
 			zeroY2 = calculateOffset(scaleData.logarithm2, 0, calculatedScale2, scaleHop2);
 			initPassVariableData_part2(statData,data,config,ctx,scaleData.logarithm1,scaleData.logarithm2,{
@@ -3548,6 +3550,10 @@ function init_and_start(ctx,data,config) {
 				msr : msr,
 				calculatedScale2: calculatedScale2,
 				logarithmic2: scaleData.logarithm12} );
+			
+			if(typeof config.beforeLabelsFunction== "function")config.beforeLabelsFunction("BEFORELABELSFUNCTION",ctx,data,statData,-1,-1,{animationValue : 1, cntiter: 0, config : config});
+      drawLabels();
+			if(typeof config.afterLabelsFunction== "function")config.afterLabelsFunction("AFTERLABELSFUNCTION",ctx,data,statData,-1,-1,{animationValue : 1, cntiter: 0, config : config});
 			animationLoop(config,msr.legendMsr, drawScale, drawLines, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
@@ -3785,7 +3791,6 @@ function init_and_start(ctx,data,config) {
 			var zeroY2 = 0;
 			zeroY = calculateOffset(scaleData.logarithm1, 0, calculatedScale, scaleHop);
 			zeroY2 = calculateOffset(scaleData.logarithm2, 0, calculatedScale2, scaleHop2);       	
-			drawLabels();
 			initPassVariableData_part2(statData,data,config,ctx,scaleData.logarithm1,scaleData.logarithm2,{ 
         graphMin : calculatedScale.graphMin,
         graphMax : calculatedScale.graphMax,
@@ -3806,6 +3811,9 @@ function init_and_start(ctx,data,config) {
 				xAxisPosY : xAxisPosY,
 				barWidth : barWidth
 			 });
+			if(typeof config.beforeLabelsFunction== "function")config.beforeLabelsFunction("BEFORELABELSFUNCTION",ctx,data,statData,-1,-1,{animationValue : 1, cntiter: 0, config : config});
+      drawLabels();
+			if(typeof config.afterLabelsFunction== "function")config.afterLabelsFunction("AFTERLABELSFUNCTION",ctx,data,statData,-1,-1,{animationValue : 1, cntiter: 0, config : config});
 			animationLoop(config,msr.legendMsr, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
@@ -4107,7 +4115,6 @@ function init_and_start(ctx,data,config) {
 				barWidth=1*config.maxBarWidth;
 			} else additionalSpaceBetweenBars=0;
 
-			drawLabels();
 			var zeroY=  HorizontalCalculateOffset(0 , calculatedScale, scaleHop);
 			initPassVariableData_part2(statData,data,config,ctx,scaleData.logarithm1,scaleData.logarithm2,{ 
         graphMin : calculatedScale.graphMin,
@@ -4122,6 +4129,9 @@ function init_and_start(ctx,data,config) {
 				calculatedScale : calculatedScale
 			});
 			
+			if(typeof config.beforeLabelsFunction== "function")config.beforeLabelsFunction("BEFORELABELSFUNCTION",ctx,data,statData,-1,-1,{animationValue : 1, cntiter: 0, config : config});
+      drawLabels();
+			if(typeof config.afterLabelsFunction== "function")config.afterLabelsFunction("AFTERLABELSFUNCTION",ctx,data,statData,-1,-1,{animationValue : 1, cntiter: 0, config : config});
 			animationLoop(config,msr.legendMsr, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
@@ -4432,8 +4442,9 @@ function init_and_start(ctx,data,config) {
 				scaleHop : scaleHop,	
 				scaleHop2 : scaleHop2	
 			});
-			drawLabels();
-
+			if(typeof config.beforeLabelsFunction== "function")config.beforeLabelsFunction("BEFORELABELSFUNCTION",ctx,data,statData,-1,-1,{animationValue : 1, cntiter: 0, config : config});
+      drawLabels();
+			if(typeof config.afterLabelsFunction== "function")config.afterLabelsFunction("AFTERLABELSFUNCTION",ctx,data,statData,-1,-1,{animationValue : 1, cntiter: 0, config : config});
 			animationLoop(config,msr.legendMsr, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
 
 		} else {
@@ -4772,7 +4783,6 @@ function init_and_start(ctx,data,config) {
 
 			var zeroY = 0;
 			zeroY = calculateOffset(scaleData.logarithm1, 0, calculatedScale, valueHop);
-			drawLabels();
 			initPassVariableData_part2(statData,data,config,ctx,scaleData.logarithm1,scaleData.logarithm2,{ 
         graphMin : calculatedScale.graphMin,
         graphMax : calculatedScale.graphMax,
@@ -4785,6 +4795,9 @@ function init_and_start(ctx,data,config) {
 				valueHop : valueHop,
 				calculatedScale : calculatedScale
 			});
+			if(typeof config.beforeLabelsFunction== "function")config.beforeLabelsFunction("BEFORELABELSFUNCTION",ctx,data,statData,-1,-1,{animationValue : 1, cntiter: 0, config : config});
+      drawLabels();
+			if(typeof config.afterLabelsFunction== "function")config.afterLabelsFunction("AFTERLABELSFUNCTION",ctx,data,statData,-1,-1,{animationValue : 1, cntiter: 0, config : config});
 			animationLoop(config,msr.legendMsr, drawScale, drawBars, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
 		} else {
 			testRedraw(ctx,data,config);
@@ -6110,13 +6123,20 @@ function calculateOrderOfMagnitude(val) {
 		var nbeltLegend =0;
 		var widestLegend=-99999999;
 		var highestLegend=0;
+    var drawLegendData;
+    
 		
 		if (typeof(config.legend) != "undefined") {
 			if (config.legend == true) {
 				ctx.font = config.legendFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.legendFontSize)).toString() + "px " + config.legendFontFamily;
 				var textLength;
 				for (i = 0;i < data.datasets.length; i++) {
-					if (typeof(data.datasets[i].title) == "string") {
+          if(!config.legendDrawEmptyData){
+            drawLegendData=false;
+            for(j=0;j<data.datasets[i].data.length;j++){if(typeof (1*data.datasets[i].data[j])=="number"){if(1*data.datasets[i].data[j]!=0) drawLegendData=true;}}
+          } else drawLegendData=true;
+
+					if (drawLegendData && typeof(data.datasets[i].title) == "string") {
 						if (data.datasets[i].title.trim() != "") {
 							nbeltLegend++;
 							textLength = ctx.measureTextMultiLine(fmtChartJS(config, data.datasets[i].title, config.fmtLegend),Math.ceil(ctx.chartTextScale*config.legendFontSize));
@@ -7615,6 +7635,7 @@ function drawLegend(legendMsr,data,config,ctx,typegraph,cntiter) {
 
 
 		var xpos,ypos,fromi,orderi,i,tpof,lgtxt,nbcols;
+    var drawLegendData;
 		var lgdbox=legendMsr.legendBox;
 
 		nbcols = legendMsr.nbLegendCols - 1;
@@ -7630,8 +7651,13 @@ function drawLegend(legendMsr,data,config,ctx,typegraph,cntiter) {
 			}
 			tpof = typeof(data.datasets[orderi].title);
 			if (tpof == "string") {
+          if(!config.legendDrawEmptyData){
+            drawLegendData=false;
+            for(j=0;j<data.datasets[orderi].data.length;j++){if(typeof (1*data.datasets[orderi].data[j])=="number"){if(1*data.datasets[orderi].data[j]!=0) drawLegendData=true;}}
+          } else drawLegendData=true;
+
 				lgtxt = fmtChartJS(config, data.datasets[orderi].title, config.fmtLegend).trim();
-				if (lgtxt != "") {
+				if (drawLegendData && lgtxt != "") {
 					nbcols++;
 					if (nbcols == legendMsr.nbLegendCols) {
 						nbcols = 0;
