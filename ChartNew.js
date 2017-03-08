@@ -657,6 +657,7 @@ function testRedraw(ctx,data,config) {
 };
 
 function updateChart(ctx,data,config,animation,runanimationcompletefunction) {
+  config.addListener=false;
 	if (ctx.firstPass==9)
 	{
 
@@ -2103,6 +2104,7 @@ window.Chart = function(context) {
 		};
 
 	chart.defaults.commonOptions = {
+    addListener: true,
 		saveBackImage : false,
     generateConvertedData : false,
 		displayData : true,
@@ -7360,6 +7362,8 @@ function calculateOrderOfMagnitude(val) {
 
 	function defMouse(ctx,data,config) {
 
+if(config.addListener==false) return;
+
 		var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel" 
 
 
@@ -7396,6 +7400,7 @@ function calculateOrderOfMagnitude(val) {
 		};
 		
 		function add_listener(ctx,action) {
+    
 			if (isIE() < 9 && isIE() != false) ctx.canvas.attachEvent("on" + action.split(' ')[0], function(event) {
 				doMouseAction(event,ctx.ChartNewId, action.split(' ')[0]);
 			});
