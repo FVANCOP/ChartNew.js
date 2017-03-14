@@ -4,48 +4,76 @@
 
 
 <SCRIPT>
-
-
 var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
-
 defCanvasWidth=1200;
 defCanvasHeight=600;
+
+
+function legendPersonnalFunction(reference,ctx,data,statData,posi,posj,othervars) {
+  if(reference=="LEGENDSTROKECOLOR"){
+    if(data.datasets[posi].hidden)return("rgba(0,0,0,0.4)");
+    else return("black");
+  };
+  if(reference=="LEGENDFONTCOLOR"){
+    if(data.datasets[posi].hidden)return("rgba(0,0,0,0.4)");
+    else return("black");
+  };
+  if(reference=="LEGENDFONTSTYLE"){
+    if(data.datasets[posi].hidden)return("italic");
+    else return("bold");
+  };
+  return("black");
+};
+
 
 var mydata2 = { 
      labels : [""], 
      datasets : [ 
            { 
       data : [30], 
-      fillColor : "#D97041", 
-      title : "data1" 
+      fillColor : "rgba(220,10,220,1)", 
+      fillColorHidden : "rgba(220,10,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data1"
            }, 
            { 
       data : [14], 
-      fillColor : "#C7604C", 
+      fillColor : "rgba(220,220,10,1)", 
+      fillColorHidden : "rgba(220,220,10,0.4)", 
+      strokeColor : legendPersonnalFunction,  
       title : "data2"
            }, 
            { 
       data : [24], 
-      fillColor : "#21323D", 
+      fillColor : "rgba(10,220,220,1)", 
+      fillColorHidden : "rgba(10,220,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
       title : "data3"
            }, 
            { 
       data : [58], 
-      fillColor : "#9D9B7F", 
+      fillColor : "rgba(10,10,220,1)", 
+      fillColorHidden : "rgba(10,10,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
       title : "data4"
            }, 
            { 
       data : [82], 
-      fillColor : "#7D4F6D", 
+      fillColor : "rgba(220,10,10,1)", 
+      fillColorHidden : "rgba(220,10,10,0.5)", 
+      strokeColor : legendPersonnalFunction, 
       title : "data5"
            }, 
            { 
       data : [8], 
-      fillColor : "#584A5E", 
+      fillColor : "rgba(10,220,10,1)", 
+      fillColorHidden : "rgba(10,220,10,0.4)", 
+      strokeColor : legendPersonnalFunction,  
       title : "data6"
            } 
 ] 
 };
+
 
 function displayText(event,ctx,config,data,other)
 {
@@ -64,7 +92,7 @@ function displayText(event,ctx,config,data,other)
               data.datasets[i].data[j]=0;
             }
             data.datasets[i].prevfillColor=data.datasets[i].fillColor;
-            data.datasets[i].fillColor="rgba(0,0,0,0)";
+            data.datasets[i].fillColor=data.datasets[i].fillColorHidden;
 //            data.datasets[i].prevtitle=data.datasets[i].title;
 //            data.datasets[i].title=data.datasets[i].title+" (Hidden)";
             data.datasets[i].hidden=true;
@@ -101,19 +129,18 @@ function displayText(event,ctx,config,data,other)
 	}
  
 }
-
 var opt1 = {
       animation : false,
 //      legendDrawEmptyData : false,
       legend : true,
+//      defaultFillColor :  legendPersonnalFunction,
+      legendFontStyle :  legendPersonnalFunction,
+      legendFontColor :  legendPersonnalFunction,
       detectMouseOnText : true,
       mouseDownLeft : displayText ,      
       annotateDisplay : true,
       inGraphDataShow : true
 }
-
-
-
 </SCRIPT>
 
 
@@ -128,13 +155,10 @@ var opt1 = {
     <FONT SIZE=6><B>Click on legend text to hide/show element (Multiple elements can be hidden)</B></FONT>    <BR>
 
     <script>
-
     document.write("<canvas id=\"canvas_Pie1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
-
 window.onload = function() {
     var myPie = new Chart(document.getElementById("canvas_Pie1").getContext("2d")).Pie(mydata2,opt1);
 	}
-
     </script>
   </body>
 </html>
