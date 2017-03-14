@@ -6130,7 +6130,8 @@ function calculateOrderOfMagnitude(val) {
 		
 		if (typeof(config.legend) != "undefined") {
 			if (config.legend == true) {
-				ctx.font = config.legendFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.legendFontSize)).toString() + "px " + config.legendFontFamily;
+				ctx.font = (Math.ceil(ctx.chartTextScale*config.legendFontSize)).toString() + "px " + config.legendFontFamily;
+//				ctx.font = config.legendFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.legendFontSize)).toString() + "px " + config.legendFontFamily;
 				var textLength;
 				for (i = 0;i < data.datasets.length; i++) {
           if(!config.legendDrawEmptyData){
@@ -7730,8 +7731,8 @@ function drawLegend(legendMsr,data,config,ctx,typegraph,cntiter) {
 					ctx.restore();
 					ctx.save();
 					ctx.beginPath();
-					ctx.font = config.legendFontStyle + " " + (Math.ceil(ctx.chartTextScale*config.legendFontSize)).toString() + "px " + config.legendFontFamily;
-					ctx.fillStyle = setOptionValue(true,false,1,"LEGENDFONTCOLOR",ctx,data,undefined,undefined,config.legendFontColor,"legendFontColor",orderi,-1,{nullvalue: true} );
+					ctx.font =  setOptionValue(true,false,1,"LEGENDFONTSTYLE",ctx,data,undefined,config.legendFontStyle,config.legendFontStyle,"config.legendFontStyle",orderi,-1,{nullvalue: true} ) + " " + (Math.ceil(ctx.chartTextScale*config.legendFontSize)).toString() + "px " + config.legendFontFamily;
+					ctx.fillStyle = setOptionValue(true,false,1,"LEGENDFONTCOLOR",ctx,data,undefined,config.legendFontColor,config.legendFontColor,"legendFontColor",orderi,-1,{nullvalue: true} );
 					ctx.textAlign = "left";
 					ctx.textBaseline = "bottom";
 					ctx.translate(xpos + Math.ceil(ctx.chartTextScale*config.legendBlockSize) + Math.ceil(ctx.chartSpaceScale*config.legendSpaceBetweenBoxAndText), ypos);
