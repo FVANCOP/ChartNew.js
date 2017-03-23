@@ -112,22 +112,43 @@ lstchart[lstchart.length]=[0,"Radar","mydata1P","opts_mydata1P",'{ graphTitle:"R
     
     	j=0;for(i=0;j<curChart;i++){if(lstchart[i][0]==1)j=j+1;} i=i-1;lstchart[i][0]=0;
     } else i=dispgraph;
+
+    if(typeof document.getElementById("canvas").getContext("2d").initialSize=="object") {
+
+      var oldcanv = document.getElementById("canvas");
+      oldcanv.parentNode.removeChild(oldcanv);
+
+      var canv = document.createElement("canvas");
+      canv.id = "canvas";
+      document.body.appendChild(canv);    
+    }
+if(1==0){    
+    if(typeof document.getElementById("canvas").getContext("2d").initialSize=="object") {
+      document.getElementById("canvas").getContext("2d").canvas.height=defCanvasHeight*document.getElementById("canvas").getContext("2d").initialSize.pxRatio;
+      document.getElementById("canvas").getContext("2d").canvas.width=defCanvasWidth*document.getElementById("canvas").getContext("2d").initialSize.pxRatio;
+    }
+    else {
+      document.getElementById("canvas").getContext("2d").canvas.height=defCanvasHeight;
+      document.getElementById("canvas").getContext("2d").canvas.width=defCanvasWidth;
+    }
+    document.getElementById("canvas").getContext("2d").initialSize=undefined;
     
-    document.getElementById("canvas").getContext("2d").canvas.height=defCanvasHeight;
-    document.getElementById("canvas").getContext("2d").canvas.width=defCanvasWidth;
-    
-    document.getElementById("canvas").getContext("2d").firstPass=undefined;
+    document.getElementById("canvas").getContext("2d").ChartNewId=undefined;
     document.getElementById("canvas").getContext("2d").runanimationcompletefunction=true;
     document.getElementById("canvas").getContext("2d").tpchart=undefined;
-    document.getElementById("canvas").getContext("2d").initialWidth=undefined;
+    document.getElementById("canvas").getContext("2d").tpchartSub=undefined;
+    document.getElementById("canvas").getContext("2d").tpdata=undefined;
+//    document.getElementById("canvas").getContext("2d").initialWidth=undefined;
     document.getElementById("canvas").getContext("2d").chartTextScale=undefined;
     document.getElementById("canvas").getContext("2d").chartLineScale=undefined;
     document.getElementById("canvas").getContext("2d").chartSpaceScale=undefined;
-    document.getElementById("canvas").getContext("2d").ChartNewId=undefined;
-    document.getElementById("canvas").getContext("2d").DefaultchartTextScale=undefined;
-    document.getElementById("canvas").getContext("2d").DefaultchartLineScale=undefined;
-    document.getElementById("canvas").getContext("2d").DefaultchartSpaceScale=undefined;
-    document.getElementById("canvas").getContext("2d").aspectRatio = undefined;    
+    document.getElementById("canvas").getContext("2d").firstPass=undefined;
+//    document.getElementById("canvas").getContext("2d").DefaultchartTextScale=undefined;
+//    document.getElementById("canvas").getContext("2d").DefaultchartLineScale=undefined;
+//    document.getElementById("canvas").getContext("2d").DefaultchartSpaceScale=undefined;
+//    document.getElementById("canvas").getContext("2d").aspectRatio = undefined;    
+}
+
     eval("var result_options = ("+lstchart[i][3]+") ? mergeChartConfig(demo_common_options,"+lstchart[i][3]+") : demo_common_options;");
     eval("result_options = ("+lstchart[i][4]+") ? mergeChartConfig(result_options,"+lstchart[i][4]+") : result_options;");
     eval("var myCanvas = new Chart(document.getElementById(\"canvas\").getContext(\"2d\"))."+lstchart[i][1]+"("+lstchart[i][2]+",result_options);");
