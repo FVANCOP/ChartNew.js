@@ -581,7 +581,6 @@ function resizeCtxFunction(iter,ctx,data,config) {
   if(typeof config.responsiveMaxHeight  == "undefined")responsiveMaxHeight=9999999;else responsiveMaxHeight=config.responsiveMaxHeight;
 
   if (typeof ctx.initialSize == "undefined") {// First Time entered;
-//  if (iter==0) {  // First Time entered;
 
     function getCSSText(className) {
       if(typeof document.styleSheets !="object")return "";
@@ -649,9 +648,9 @@ function resizeCtxFunction(iter,ctx,data,config) {
 		ctx.chartLineScale=config.chartLineScale;
 		ctx.chartSpaceScale=config.chartSpaceScale;
     
-		////// Pas nécessaire; Il suffit de prendre config.chartTextScale.... ctx.DefaultchartTextScale=config.chartTextScale;
-		////// Pas nécessaire; Il suffit de prendre config.chartTextScale.... ctx.DefaultchartLineScale=config.chartLineScale;
-		////// Pas nécessaire; Il suffit de prendre config.chartTextScale.... ctx.DefaultchartSpaceScale=config.chartSpaceScale;
+		////// Pas nÃ©cessaire; Il suffit de prendre config.chartTextScale.... ctx.DefaultchartTextScale=config.chartTextScale;
+		////// Pas nÃ©cessaire; Il suffit de prendre config.chartTextScale.... ctx.DefaultchartLineScale=config.chartLineScale;
+		////// Pas nÃ©cessaire; Il suffit de prendre config.chartTextScale.... ctx.DefaultchartSpaceScale=config.chartSpaceScale;
 
 	  ctx.initialSize.aspectRatio = ctx.canvas.width / ctx.canvas.height;
     if(1*config.forcedAspectRatio)ctx.initialSize.aspectRatio=1/config.forcedAspectRatio;
