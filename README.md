@@ -44,7 +44,7 @@ New Items in graph compared to Chart.js :
 * [etc](https://github.com/FVANCOP/ChartNew.js/wiki)
     
 
-A quick sample can be found on http://fvancop.github.io/ChartNew.js/
+A quick sample can be found on http://fvancop.github.io/ChartNew.js/demo_program/index.html
 
 
 This version is down-compatible (on PC) with the version of Chart.js available on 13 January 2014.
