@@ -77,6 +77,9 @@ datasets : [
 			}
 		]
 };
+ 
+ var pxRatio=1;
+ if(window.devicePixelRatio>1)pxRatio=window.devicePixelRatio;
 
  var opt1 = {
   multiGraph : true,
@@ -90,8 +93,8 @@ datasets : [
   annotateDisplay : true,
   graphTitleFontSize: 18,
   spaceTop : 30,
-  spaceBottom : (defCanvasHeight-30)/2,
-  spaceRight : defCanvasWidth/2,
+  spaceBottom : (defCanvasHeight/pxRatio-30)/2,
+  spaceRight : defCanvasWidth/(2*pxRatio),
 //  crossText : ["Multiple graph in a single Canvas"],
 //  crossTextIter : ["first"],
 //  crossTextRelativePosX : [-2],
@@ -116,8 +119,8 @@ datasets : [
   annotateDisplay : true,
   graphTitleFontSize: 18,
   spaceTop : 30,
-  spaceBottom : (defCanvasHeight-30)/2,
-  spaceLeft : defCanvasWidth/2
+  spaceBottom : (defCanvasHeight/pxRatio-30)/2,
+  spaceLeft : defCanvasWidth/(2*pxRatio)
  }
  var opt3 = {
   multiGraph : true,
@@ -130,8 +133,8 @@ datasets : [
   inGraphDataShow : true,
   annotateDisplay : true,
   graphTitleFontSize: 18,
-  spaceTop : 30 +(defCanvasHeight-30)/2,
-  spaceRight : defCanvasWidth/2+10
+  spaceTop : 30 +(defCanvasHeight/pxRatio-30)/2,
+  spaceRight : defCanvasWidth/(2*pxRatio)+10
  }
  var opt4 = {
   multiGraph : true,
@@ -144,8 +147,8 @@ datasets : [
   inGraphDataShow : true,
   annotateDisplay : true,
   graphTitleFontSize: 18,
-  spaceTop : 30 +(defCanvasHeight-30)/2,
-  spaceLeft : defCanvasWidth/2+10
+  spaceTop : 30 +(defCanvasHeight/pxRatio-30)/2,
+  spaceLeft : defCanvasWidth/(2*pxRatio)+10
  }
  </SCRIPT>
  <html>

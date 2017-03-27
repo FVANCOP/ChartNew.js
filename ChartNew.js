@@ -1,3 +1,4 @@
+                                                                                          
 /*              
  * ChartNew.js  
  *                                                                                                                                                                           
@@ -556,79 +557,176 @@ function getMaximumHeight(domNode){
 	return container.clientHeight;
 };                                                                                                                                                             
 
-function resizeCtx(ctx,config){
+function resizeCtxFunction(iter,ctx,data,config) {
 
-	if (isIE() < 9 && isIE() != false) return(true);
+ 	if (isIE() < 9 && isIE() != false) return(true);
 
-	if(config.responsive) {	
+  var beforeWidth,afterWidth;
+  var beforeHeight,afterHeight;
 
-    ctx.canvas.style.width=ctx.prevStyleWidth;
-    ctx.canvas.style.height=ctx.prevStyleHeight;
-		if(typeof config.maintainAspectRatio == "undefined")config.maintainAspectRatio=true;
-		if(typeof config.responsiveMinWidth == "undefined")config.responsiveMinWidth=0;
-		if(typeof config.responsiveMinHeight  == "undefined")config.responsiveMinHeight=0;
-		if(typeof config.responsiveMaxWidth  == "undefined")config.responsiveMaxWidth=9999999;
-		if(typeof config.responsiveMaxHeight  == "undefined")config.responsiveMaxHeight=9999999;
-		var canvas;
-    if(typeof ctx.vctx != "undefined"){
-      canvas=ctx.vctx.canvas;
+  beforeWidth=ctx.canvas.width;
+  beforeHeight=ctx.canvas.height;
+  afterWidth=beforeWidth;
+  afterHeight=beforeHeight;
+
+
+  var pxRatio=1;
+  if(window.devicePixelRatio>1)pxRatio=window.devicePixelRatio;
+
+  var maintainAspectRatio,responsiveMinWidth,responsiveMaxWidth,responsiveMaxHeight;
+  if(typeof config.maintainAspectRatio == "undefined")maintainAspectRatio=true;else maintainAspectRatio=config.maintainAspectRatio;
+  if(typeof config.responsiveMinWidth == "undefined")responsiveMinWidth=0;else responsiveMinWidth=config.responsiveMinWidth;
+  if(typeof config.responsiveMinHeight  == "undefined")responsiveMinHeight=0;else responsiveMinHeight=config.responsiveMinHeight;
+  if(typeof config.responsiveMaxWidth  == "undefined")responsiveMaxWidth=9999999;else responsiveMaxWidth=config.responsiveMaxWidth;
+  if(typeof config.responsiveMaxHeight  == "undefined")responsiveMaxHeight=9999999;else responsiveMaxHeight=config.responsiveMaxHeight;
+
+  if (typeof ctx.initialSize == "undefined") {// First Time entered;
+
+    function getCSSText(className) {
+      if(typeof document.styleSheets !="object")return "";
+      if(document.styleSheets.length <=0)return "";
+      var classes = document.styleSheets[0].rules || document.styleSheets[0].cssRules;
+      for (var x = 0; x < classes.length; x++) {
+        if (classes[x].selectorText == "."+className || classes[x].selectorText == "#"+className) {
+          return ((classes[x].cssText) ? (classes[x].cssText) : (classes[x].style.cssText));
+        }
+      }
+      return "";
     }
-    else {
-      canvas=ctx.canvas;
-    }
-		if(typeof ctx.aspectRatio == "undefined") {
-			ctx.aspectRatio = canvas.width / canvas.height;
-      if(1*config.forcedAspectRatio)ctx.aspectRatio=1/config.forcedAspectRatio;
-		}
-
-    var newWidth,newHeight;
-    if(window.devicePixelRatio>1 && typeof ctx.vWidth!="undefined") {
-      var canvasWidth=window.getComputedStyle(ctx.canvas).getPropertyValue('width');
-      newWidth=canvasWidth.substring(0,canvasWidth.indexOf("px"));
-    } else if(typeof ctx.vWidth=="undefined") newWidth = getMaximumWidth(canvas);
-    else newWidth=ctx.canvas.width;
-//newWidth=cw.substring(0,cw.length-2);
-    newWidth=Math.min(config.responsiveMaxWidth,Math.max(config.responsiveMinWidth,newWidth));
-
-	  if(typeof ctx.vWidth=="undefined")newHeight = config.maintainAspectRatio ? newWidth / ctx.aspectRatio : getMaximumHeight(canvas);
-    else newHeight = config.maintainAspectRatio ? newWidth / ctx.aspectRatio : ctx.canvas.height;
     
-		newHeight=Math.min(config.responsiveMaxHeight,Math.max(config.responsiveMinHeight,newHeight));
-
-
-		if(typeof ctx.DefaultchartTextScale=="undefined")ctx.DefaultchartTextScale=config.chartTextScale;
-		if(typeof ctx.DefaultchartLineScale=="undefined")ctx.DefaultchartLineScale=config.chartLineScale;
-		if(typeof ctx.DefaultchartSpaceScale=="undefined")ctx.DefaultchartSpaceScale=config.chartSpaceScale;
-		/* new ratio */
-		if(typeof ctx.chartTextScale != "undefined" && config.responsiveScaleContent) {
+    function getCSSVal(source,srch) {
+      if(source.indexOf(" "+srch+":")>=0) {
+        value=source.substring(source.indexOf(" "+srch+":")+srch.length+2,100);
+        value=value.substring(0,value.indexOf(";"));
+        return value;
+      }
+      return "";
       
-			ctx.chartTextScale=ctx.DefaultchartTextScale*(newWidth/ctx.initialWidth);
-			ctx.chartLineScale=ctx.DefaultchartLineScale*(newWidth/ctx.initialWidth);
-			ctx.chartSpaceScale=ctx.DefaultchartSpaceScale*(newWidth/ctx.initialWidth);
-		}
-		if (window.devicePixelRatio>1) {
-			ctx.canvas.style.width = newWidth + "px";
-			ctx.canvas.style.height = newHeight + "px";
-		}
-
-		ctx.canvas.height = newHeight * Math.max(1,window.devicePixelRatio);
-		ctx.canvas.width = newWidth * Math.max(1,window.devicePixelRatio);
-		ctx.scale(Math.max(1,window.devicePixelRatio), Math.max(1,window.devicePixelRatio));
-	} else if (window.devicePixelRatio>1) {
-		if(typeof ctx.original_width=="undefined") {
-			ctx.original_width=ctx.canvas.width;
-			ctx.original_height=ctx.canvas.height;
-
-		}
-		ctx.canvas.style.width = ctx.canvas.width + "px";
-    if(1*config.forcedAspectRatio)ctx.canvas.height=config.forcedAspectRatio*ctx.canvas.width;
-
-		ctx.canvas.style.height = ctx.canvas.height + "px";
+    }
     
-		ctx.canvas.height = ctx.canvas.height * window.devicePixelRatio;
-		ctx.canvas.width = ctx.canvas.width * window.devicePixelRatio;
-		ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-	} else if(1*config.forcedAspectRatio)ctx.canvas.height=config.forcedAspectRatio*ctx.canvas.width;
+    function getCSSWH(className) {
+      var styleVal=getCSSText(className);
+      var width=getCSSVal(styleVal,"width");
+      var height=getCSSVal(styleVal,"height");
+      return  {
+                width: width,
+                height: height
+              };
+             
+    }
+
+    // Save initial values before any change;
+    ctx.initialSize={};
+    ctx.initialSize.pxRatio=1;
+    ctx.initialSize.width=ctx.canvas.width;
+    ctx.initialSize.height=ctx.canvas.height;
+    ctx.initialSize.styleWidth=ctx.canvas.style.width;
+    ctx.initialSize.styleHeight=ctx.canvas.style.height;
+    var cssVal=getCSSWH(ctx.canvas.id);
+    ctx.initialSize.cssWidth=cssVal.width;
+    if(ctx.initialSize.cssWidth!="")ctx.initialSize.styleWidth="";
+    ctx.initialSize.cssHeight=cssVal.height;
+    if(ctx.initialSize.cssHeight!="")ctx.initialSize.styleHeight="";                                
+    ctx.initialSize.computedWidth=window.getComputedStyle(ctx.canvas).getPropertyValue('width');
+    ctx.initialSize.computedWidth=ctx.initialSize.computedWidth.substring(0,ctx.initialSize.computedWidth.indexOf("px"));
+
+    //  correct computedHeight (bad value if ctx.initial)
+    if (ctx.initialSize.cssHeight!="") ctx.initialSize.computedHeight=ctx.initialSize.cssHeight;
+    else if (ctx.initialSize.styleHeight!="")ctx.initialSize.computedHeight=ctx.initialSize.styleHeight;
+    else ctx.initialSize.computedHeight=ctx.initialSize.height;
+
+    if(typeof ctx.initialSize.computedHeight=="string"){
+      if(ctx.initialSize.computedHeight.indexOf("px")>=0) ctx.initialSize.computedHeight=ctx.initialSize.computedHeight.substring(0,ctx.initialSize.computedHeight.indexOf("px"));
+      if(ctx.initialSize.computedHeight.indexOf("%")>=0) ctx.initialSize.computedHeight="";
+    }
+    if(ctx.initialSize.computedHeight=="") {
+      ctx.initialSize.computedHeight=window.getComputedStyle(ctx.canvas).getPropertyValue('height');
+      ctx.initialSize.computedHeight=ctx.initialSize.computedHeight.substring(0,ctx.initialSize.computedHeight.indexOf("px"));
+    }
+
+		ctx.chartTextScale=config.chartTextScale;
+		ctx.chartLineScale=config.chartLineScale;
+		ctx.chartSpaceScale=config.chartSpaceScale;
+    
+		////// Pas nÃ©cessaire; Il suffit de prendre config.chartTextScale.... ctx.DefaultchartTextScale=config.chartTextScale;
+		////// Pas nÃ©cessaire; Il suffit de prendre config.chartTextScale.... ctx.DefaultchartLineScale=config.chartLineScale;
+		////// Pas nÃ©cessaire; Il suffit de prendre config.chartTextScale.... ctx.DefaultchartSpaceScale=config.chartSpaceScale;
+
+	  ctx.initialSize.aspectRatio = ctx.canvas.width / ctx.canvas.height;
+    if(1*config.forcedAspectRatio)ctx.initialSize.aspectRatio=1/config.forcedAspectRatio;
+
+    // Initialise Width Pct
+    ctx.initialSize.widthPct=0;
+    ctx.initialSize.heightPct=0;
+
+
+    if(ctx.initialSize.cssWidth.indexOf("%")>0)ctx.initialSize.widthPct=ctx.initialSize.cssWidth.substring(0,ctx.initialSize.cssWidth.indexOf("%"));
+    else if(ctx.initialSize.cssWidth=="" && ctx.initialSize.styleWidth.indexOf("%")>0)ctx.initialSize.widthPct=ctx.initialSize.styleWidth.substring(0,ctx.initialSize.styleWidth.indexOf("%"));
+    else if(ctx.initialSize.cssWidth=="" && ctx.initialSize.styleWidth=="" && config.responsive)ctx.initialSize.widthPct=100;
+    
+
+    if(ctx.initialSize.cssHeight.indexOf("%")>0)ctx.initialSize.heightPct=ctx.initialSize.cssHeight.substring(0,ctx.initialSize.cssHeight.indexOf("%"));
+    else if(ctx.initialSize.cssHeight=="" && ctx.canvas.style.height.indexOf("%")>0)ctx.initialSize.heightPct=ctx.canvas.style.height.substring(0,ctx.canvas.style.height.indexOf("%"));
+
+    // reset style width/height; style width/height can not be used because of responsiveMinWidth/Height , responsiveMaxWidth/Height, aspectRatio;
+    ctx.canvas.style.width="";
+    ctx.canvas.style.height="";
+
+    afterWidth=ctx.initialSize.computedWidth;
+    afterHeight=ctx.initialSize.computedHeight;
+
+
+  } else {
+    afterWidth=afterWidth/ctx.initialSize.pxRatio;
+    afterHeight=afterHeight/ctx.initialSize.pxRatio;
+  }
+  if(ctx.initialSize.widthPct>0){
+
+    afterWidth=(ctx.initialSize.widthPct/100)*(getMaximumWidth(ctx.canvas)*pxRatio);
+
+  }  
+  
+  if(ctx.initialSize.heightPct>0){
+    afterHeight=(ctx.initialSize.heightPct/100)*(getMaximumHeight(ctx.canvas)*pxRatio);
+  }  
+  
+  if(ctx.initialSize.cssHeight=="") {
+	  afterHeight = maintainAspectRatio ? afterWidth / ctx.initialSize.aspectRatio : afterHeight;
+  }
+
+	afterWidth=Math.min(responsiveMaxWidth,Math.max(responsiveMinWidth,afterWidth));
+  afterHeight=Math.min(responsiveMaxHeight,Math.max(responsiveMinHeight,afterHeight));
+
+	if(typeof ctx.chartTextScale != "undefined" && config.responsiveScaleContent) {
+		ctx.chartTextScale=config.chartTextScale*(afterWidth/ctx.initialSize.computedWidth);
+		ctx.chartLineScale=config.chartLineScale*(afterWidth/ctx.initialSize.computedWidth);
+		ctx.chartSpaceScale=config.chartSpaceScale*(afterWidth/ctx.initialSize.computedWidth);
+	}
+
+      
+  if(pxRatio>1 || afterWidth!=beforeWidth){
+    if(ctx.initialSize.cssWidth!="" && ctx.initialSize.widthPct==0){
+        ctx.canvas.width=afterWidth*pxRatio;
+        ctx.canvas.style.width=afterWidth+"px";
+    } else {
+      ctx.canvas.width=afterWidth;
+      ctx.canvas.style.width=eval(afterWidth/pxRatio)+"px";
+    }
+
+  }
+  
+  if(pxRatio > 1 || afterHeight!=beforeHeight){
+    if(ctx.initialSize.cssWidth!="" && ctx.initialSize.widthPct==0){
+      ctx.canvas.height=afterHeight*pxRatio;
+      ctx.canvas.style.height=afterHeight+"px";
+    } else {
+      ctx.canvas.height=afterHeight;
+      ctx.canvas.style.height=eval(afterHeight/pxRatio)+"px";
+    }
+
+  }
+  ctx.scale(pxRatio, pxRatio);
+  ctx.initialSize.pxRatio=pxRatio;
 };
 
 
@@ -639,6 +737,7 @@ function chartJsResize() {
 		if(jsGraphResize[i][2].firstPass ==0)  {
 		} else if(jsGraphResize[i][2].firstPass ==9) {
 			jsGraphResize[i][2].firstPass=2;
+      resizeCtxFunction(1,jsGraphResize[i][2],jsGraphResize[i][3],jsGraphResize[i][4]);
 			redrawGraph(jsGraphResize[i][2],jsGraphResize[i][3],jsGraphResize[i][4]);
 		} else if(jsGraphResize[i][2].firstPass < 10 ) {
 			jsGraphResize[i][2].firstPass+=10;
@@ -657,7 +756,7 @@ function testRedraw(ctx,data,config) {
 };
 
 function updateChart(ctx,data,config,animation,runanimationcompletefunction) {
-  config.addListener=false;
+  ctx.addListener=false;
 	if (ctx.firstPass==9)
 	{
 
@@ -682,8 +781,7 @@ function updateChart(ctx,data,config,animation,runanimationcompletefunction) {
 
 function redrawGraph(ctx,data,config) {
 
-
-  if((ctx.firstPass==2 || ctx.firstPass==9) && !(isIE() < 9 && isIE() != false) && (navigator.userAgent.indexOf("Safari")==-1)) {    
+  if(ctx.initialSize.pxRatio==1 && (ctx.firstPass==2 || ctx.firstPass==9) && !(isIE() < 9 && isIE() != false) && (navigator.userAgent.indexOf("Safari")==-1)) {    
     var OSC;
     var tmpctx;
     OSC=  document.createElement("canvas");
@@ -701,45 +799,48 @@ function redrawGraph(ctx,data,config) {
       tmpctx.vWidth=ctx.vWidth;      
     } 
     tmpctx.ChartNewId=ctx.ChartNewId;
-    tmpctx.prevStyleWidth=ctx.prevStyleWidth;
-    tmpctx.prevStyleHeight=ctx.prevStyleHeight;
     tmpctx.tpchart=ctx.tpchart;
     tmpctx.tpchartSub=ctx.tpchartSub;
     tmpctx.tpdata=ctx.tpdata;
-    tmpctx.initialWidth=ctx.initialWidth;
+    tmpctx.initialSize=ctx.initialSize;
     tmpctx.chartTextScale=ctx.chartTextScale;
     tmpctx.chartLineScale=ctx.chartLineScale;
     tmpctx.chartSpaceScale=ctx.chartSpaceScale;
     tmpctx.firstPass=ctx.firstPass;
     tmpctx.runanimationcompletefunction=ctx.runanimationcompletefunction;
-    tmpctx.aspectRatio=ctx.aspectRatio;
-    tmpctx.widthAtSetMeasures=ctx.widthAtSetMeasures;
-    tmpctx.heightAtSetMeasures=ctx.heightAtSetMeasures;
+//    tmpctx.aspectRatio=ctx.aspectRatio;
+//    tmpctx.widthAtSetMeasures=ctx.widthAtSetMeasures;
+//    tmpctx.heightAtSetMeasures=ctx.heightAtSetMeasures;
     tmpctx.pieces_drawn=ctx.pieces_drawn;
+//    tmpctx.scale(ctx.initialSize.pxRatio, ctx.initialSize.pxRatio);
+//    tmpctx.canvas.width=ctx.canvas.width;
+//    tmpctx.canvas.height=ctx.canvas.height;
+//    tmpctx.canvas.style.width=ctx.canvas.style.width;
+//    tmpctx.canvas.style.height=ctx.canvas.style.height;
 
 
  	  var myGraph = new Chart(tmpctx);	
     eval("myGraph."+tmpctx.tpchartSub+"(data,config);");
 
     if(typeof ctx.vWidth=="number")ctx.vWidth=tmpctx.vWidth;
+    ctx.ChartNewId=tmpctx.ChartNewId;
     ctx.tpchart=tmpctx.tpchart;
     ctx.tpchartSub=tmpctx.tpchartSub;
     ctx.tpdata=tmpctx.tpdata;
-    ctx.initialWidth=tmpctx.initialWidth;
+    ctx.initialSize=tmpctx.initialSize;
     ctx.chartTextScale=tmpctx.chartTextScale;
     ctx.chartLineScale=tmpctx.chartLineScale;
     ctx.chartSpaceScale=tmpctx.chartSpaceScale;
     ctx.firstPass=tmpctx.firstPass;
     ctx.runanimationcompletefunction=tmpctx.runanimationcompletefunction;
-    ctx.ChartNewId=tmpctx.ChartNewId;
-    ctx.prevStyleWidth=tmpctx.prevStyleWidth;
-    ctx.prevStyleHeight=tmpctx.prevStyleHeight;
-    ctx.aspectRatio=tmpctx.aspectRatio;
-    ctx.widthAtSetMeasures=tmpctx.widthAtSetMeasures;
-    ctx.heightAtSetMeasures=tmpctx.heightAtSetMeasures;
-    
-    ctx.canvas.width=tmpctx.canvas.width;
-    ctx.canvas.height=tmpctx.canvas.height;
+//    ctx.aspectRatio=tmpctx.aspectRatio;
+//    ctx.widthAtSetMeasures=tmpctx.widthAtSetMeasures;
+//    ctx.heightAtSetMeasures=tmpctx.heightAtSetMeasures;
+//    ctx.canvas.width=tmpctx.canvas.width;
+//    ctx.canvas.height=tmpctx.canvas.height;
+//    ctx.canvas.style.width=tmpctx.canvas.style.width;
+//    ctx.canvas.style.height=tmpctx.canvas.style.height;
+
     ctx.pieces_drawn=tmpctx.pieces_drawn;
 
 
@@ -747,10 +848,6 @@ function redrawGraph(ctx,data,config) {
    ctx.drawImage(OSC,0,0); 
   
    } else {
-     if(typeof ctx.vWidth=="number"){
-       var canvasWidth=window.getComputedStyle(ctx.canvas).getPropertyValue('width');
-       ctx.canvas.width=canvasWidth.substring(0,canvasWidth.indexOf("px"));
-     } 
      var myGraph = new Chart(ctx);	
      eval("myGraph."+ctx.tpchartSub+"(data,config);");
    }
@@ -1102,6 +1199,7 @@ function doMouseAction(event, ctx, action) {
 	if (ctx.firstPass != 9)return;
 	if(action=="mousedown") action=action+" "+event.which;
 	if(ctx.mouseAction.indexOf(action)<0){return;}
+
 	var config=mouseActionData[ctx.ChartNewId].config;
 	var data=mouseActionData[ctx.ChartNewId].data;
 	var i,prevShown,prevShowSaved;
@@ -2104,8 +2202,8 @@ window.Chart = function(context) {
 		};
 
 	chart.defaults.commonOptions = {
-    addListener: true,
-		saveBackImage : false,
+		addListener : true,
+    saveBackImage : false,
     generateConvertedData : false,
 		displayData : true,
     showZeroValue : true,
@@ -2573,29 +2671,9 @@ window.Chart = function(context) {
 
 function init_and_start(ctx,data,config) {
 		var i;
-		if (typeof ctx.initialWidth == "undefined") {
-
-      ctx.prevStyleWidth=ctx.canvas.style.width;
-      ctx.prevStyleHeight=ctx.canvas.style.height;
-      if (isIE() < 9 && isIE() != false) {
-      } else {
-        var canvasWidth=window.getComputedStyle(ctx.canvas).getPropertyValue('width');
-        if(1*ctx.canvas.width!=1*canvasWidth.substring(0,canvasWidth.indexOf("px"))) {
-          if (typeof ctx.initialWidth == "undefined")ctx.vWidth=1;
-          ctx.canvas.width=canvasWidth.substring(0,canvasWidth.indexOf("px"));
-        }
-        var canvasHeight=window.getComputedStyle(ctx.canvas).getPropertyValue('height');
-        ctx.canvas.height=canvasHeight.substring(0,canvasHeight.indexOf("px"));
-      }
-
-    
+		if (typeof ctx.initialSize == "undefined") {
+      resizeCtxFunction(0,ctx,data,config);
     }
-		if (typeof ctx.initialWidth == "undefined") {
-      ctx.initialWidth =ctx.canvas.width;
-    }
-		if (typeof ctx.chartTextScale == "undefined") ctx.chartTextScale=config.chartTextScale;
-		if (typeof ctx.chartLineScale == "undefined") ctx.chartLineScale=config.chartLineScale;
-		if (typeof ctx.chartSpaceScale == "undefined") 	ctx.chartSpaceScale=config.chartSpaceScale;
 	
 		if(typeof ctx.firstPass=="undefined"){
 			ctx.firstPass=0;
@@ -2617,7 +2695,6 @@ function init_and_start(ctx,data,config) {
 			ctx.ChartNewId = ctx.tpchart + '_' + cvmillsec;
 			ctx._eventListeners = {};
 		}
-		resizeCtx(ctx,config);
 
 		if (!dynamicFunction(data, config, ctx)) return false;   // if config.dynamicDisplay=true, chart has to be displayed only if in current screen;  
 
@@ -2734,7 +2811,7 @@ function init_and_start(ctx,data,config) {
 			initPassVariableData_part2(statData,data,config,ctx,scaleData.logarithm1,scaleData.logarithm2,{midPosX : midPosX,midPosY : midPosY,int_radius : 0,ext_radius : scaleHop*scaleData.nbOfStepsAxis1, calculatedScale : calculatedScale, scaleHop : scaleHop,outerVal : outerVal});
 			animationLoop(config,msr.legendMsr,drawScale, drawAllSegments, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, midPosX, midPosY, midPosX - ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), midPosY + ((Min([msr.availableHeight, msr.availableWidth]) / 2) - 5), data, statData);
 		} else {
-			testRedraw(ctx,data,config);
+      testRedraw(ctx,data,config);
 			if (typeof config.onAnimationComplete == "function" && (config.alwaysRunFunctionAtCompletion==true || ctx.runanimationcompletefunction==true)) {
 			   config.onAnimationComplete(ctx, config, data, 1, 0,statData);
 				 ctx.runanimationcompletefunction=false;
@@ -3558,7 +3635,7 @@ function init_and_start(ctx,data,config) {
 			if(typeof config.afterLabelsFunction== "function")config.afterLabelsFunction("AFTERLABELSFUNCTION",ctx,data,statData,-1,-1,{animationValue : 1, cntiter: 0, config : config});
 			animationLoop(config,msr.legendMsr, drawScale, drawLines, ctx, msr.clrx, msr.clry, msr.clrwidth, msr.clrheight, yAxisPosX + msr.availableWidth / 2, xAxisPosY - msr.availableHeight / 2, yAxisPosX, xAxisPosY, data, statData);
 		} else {
-			testRedraw(ctx,data,config);
+      testRedraw(ctx,data,config);
 			if (typeof config.onAnimationComplete == "function" && (config.alwaysRunFunctionAtCompletion==true || ctx.runanimationcompletefunction==true)) {
 			   config.onAnimationComplete(ctx, config, data, 1, 0,statData);
 				 ctx.runanimationcompletefunction=false;
@@ -6012,8 +6089,8 @@ function calculateOrderOfMagnitude(val) {
 		var footNoteHeight = 0;
 		var footNotePosY = 0;
 
-		ctx.widthAtSetMeasures=width;
-		ctx.heightAtSetMeasures=height;
+//		ctx.widthAtSetMeasures=width;
+//		ctx.heightAtSetMeasures=height;
 
 
 		var currentPosition,topNotUsableHeight,bottomNotUsableHeight,leftNotUsableWidth,rightNotUsableWidth,availableWidth,availableHeight;
@@ -7363,7 +7440,14 @@ function calculateOrderOfMagnitude(val) {
 
 	function defMouse(ctx,data,config) {
 
-if(config.addListener==false) return;
+    if(typeof ctx.addListener!="undefined") {
+      if(ctx.addListener==false) {
+    		mouseActionData[ctx.ChartNewId]={ data : data, config: config, prevShow : -1 };
+        return;
+      }
+    }
+    
+//  if(config.addListener==false) return;
 
 		var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel" 
 
@@ -7489,7 +7573,7 @@ if(config.addListener==false) return;
 		}
 		
 		// initialiser les variables necessaires pour l'action doMouseAction;
-                inMouseAction[ctx.ChartNewId]=false;
+    inMouseAction[ctx.ChartNewId]=false;
 		mouseActionData[ctx.ChartNewId]={ data : data, config: config, prevShow : -1 };
 	};
 
