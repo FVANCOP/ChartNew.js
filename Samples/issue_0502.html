@@ -1,0 +1,173 @@
+  <!doctype html>
+
+
+
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]-->
+<SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+
+
+<SCRIPT>
+
+defCanvasWidth=400;
+defCanvasHeight=400;
+
+var mydata1 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [34000], 
+      fillColor : "rgba(151,187,205,1)", 
+      title : "Savings"
+           }, 
+           { 
+      data : [6000], 
+      fillColor : "rgba(220,220,220,1)", 
+      title : "Checking"
+           } 
+],
+shapesInChart : [
+			{
+				position : "RELATIVE",
+				shape : "TEXT",
+				text : dispPct2,
+				x1 : 2,
+				y1 : 2,
+				textAlign : "center",
+				textBaseline : "middle",
+				fontColor : "black", 
+				fontSize : 30
+			}
+		]
+}; 
+
+var mydata2 = { 
+     labels : [""], 
+     datasets : [ 
+           { 
+      data : [215], 
+      fillColor : "rgba(151,187,205,1)", 
+      title : "Income"
+           }, 
+           { 
+      data : [135], 
+      fillColor : "rgba(220,220,220,1)", 
+      title : "Expenses"
+           } 
+],
+shapesInChart : [
+			{
+				position : "RELATIVE",
+				shape : "TEXT",
+				text : dispPct2,
+				x1 : 2,
+				y1 : 2,
+				textAlign : "center",
+				textBaseline : "middle",
+				fontColor : "black", 
+				fontSize : 30
+			}
+		]
+};
+
+
+
+
+function dispPct(numtxt,valtxt,ctx,config,posX,posY,borderX,borderY,overlay,data,animPC){
+	//  alert("INIT");
+        return(Math.round(100*animPC));
+} 
+
+var crosstxt1 = {
+//	canvasBorders : true,
+//	canvasBordersWidth : 3,
+//	canvasBordersColor : "black",
+//	spaceTop : 30,
+//	spaceBottom : 30,
+//	spaceLeft : 30,
+//	spaceRight : 30,
+//	startAngle : 180,                
+	thousandSeparator : ",",
+  animationEasing : "linear",
+	endDrawDataFunction: drawShapes,
+	graphTitle : "Current Balance",
+	graphTitleFontFamily : "'Arial'",
+	graphTitleFontSize : 24,
+	graphTitleFontStyle : "bold",
+	graphTitleFontColor : "#666",
+  legend : true,
+	legendFontSize: 22
+
+}
+
+function dispPct2(numtxt,valtxt,ctx,config,posX,posY,borderX,borderY,overlay,data,animPC){
+        return("$ "+fmtChartJS(config, Math.round(animPC*(data.datasets[0].data[0]+data.datasets[1].data[0])),"none"));
+} 
+
+
+function dispPct3(numtxt,valtxt,ctx,config,posX,posY,borderX,borderY,overlay,data,animPC){
+	var result;
+	var pct;
+	result="";
+	for(var i=0;i<data.datasets.length;i++){
+		pct=Math.round(100*animPC*data.datasets[0].data[i]/(data.datasets[0].data[i]+data.datasets[1].data[i]));
+	        result=result+"\n"+data.labels[i]+" : "+pct+" %";
+	}
+        return(result.substring(1));
+} 
+
+
+var crosstxt2 = {
+	animationEasing : "linear",
+	endDrawDataFunction: drawShapes,
+	thousandSeparator : ",",
+//	canvasBorders : true,
+//	canvasBordersWidth : 3,
+//	canvasBordersColor : "black",
+//	spaceTop : 30,
+//	spaceBottom : 30,
+//	spaceLeft : 30,
+//	spaceRight : 30,
+//	startAngle : 180,                
+	graphTitle : "Current Month",
+	graphTitleFontFamily : "'Arial'",
+	graphTitleFontSize : 24,
+	graphTitleFontStyle : "bold",
+	graphTitleFontColor : "#666",
+  legend : true,
+	legendFontSize: 22
+}
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+  
+  <!div id="divCursor" style="position:absolute"> <!/div>
+   
+  <center>
+    <FONT SIZE=6><B></B></FONT>    <BR>
+
+    <script>
+    
+      document.write("<canvas id=\"canvas_doughnut1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+      document.write("<canvas id=\"canvas_doughnut2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    
+
+window.onload = function() {
+
+    var myLine = new Chart(document.getElementById("canvas_doughnut1").getContext("2d")).Doughnut(mydata1,crosstxt1);
+    var myLine = new Chart(document.getElementById("canvas_doughnut2").getContext("2d")).Doughnut(mydata2,crosstxt2);
+
+}
+
+    </script>
+  </body>
+</html>
