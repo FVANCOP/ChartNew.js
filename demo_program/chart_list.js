@@ -131,3 +131,6 @@ lst[lst.length]=["Time Chart","../Samples/time_graph.html","50.Varia Time Lines 
 lst[lst.length]=["UpdateChart.html","../Samples/UpdateChart.html","50.Varia UpdateChart evolutive chart","","If you want to display an evolutive chart, you can do it with ChartNew.js and with the updateChart function."];
 lst[lst.length]=["Update Pie","../Samples/updateChartPie.html","30.Pie Pie","","Update Pie Chart"];
 lst[lst.length]=["ZERO Line","../Samples/xAxisScale.html","05.Lines line zero drawXScaleLine","","If you want to display a line at the ZERO position on the y Scale, it is possible. To produce this, use the drawXScaleLine option."];
+lst[lst.length]=["Slice_in_graph_data","../Samples/inGraphData_around_slices.html","90.Add-ins Add-ins Pie shapesInChart.js","","In graph data are displayed around the slices"];
+lst[lst.length]=["issue 0506_V1","../Samples/issue_0506_v1.html","95.Issues click test legend","","Click on the legend text to show/hide a slice"];
+lst[lst.length]=["issue 0506_V2","../Samples/issue_0506_v2.html","95.Issues click test legend","","Click on the legend text to show/hide a slice"];
