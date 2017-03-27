@@ -139,6 +139,70 @@ var crosstxt2 = {
 	legendFontSize: 22
 }
 
+// add text around;
+
+function setXPos(typVal,i,j,k,txt,startAngle,endAngle,fontSize,position,truncLabel,inradius,outradius) {
+
+  var nbcharRound=(inradius+position*(outradius-inradius))*2*Math.PI/(fontSize/2);
+  var degPerChar=Math.ceil(10*360/nbcharRound)/10;
+  var availableAngle=(180/Math.PI)*(endAngle-startAngle);
+  var newText=txt;
+  if(availableAngle<degPerChar*txt.length){
+    if(truncLabel==false) {
+      if (typVal=="TEXT")return("");
+      else return(i);
+    } else {
+      newText=txt.substring(0,Math.floor(availableAngle/degPerChar));
+      if(k>=newText.length) {
+        if (typVal=="TEXT")return("");
+        else return(i);
+      }
+    }
+  }
+  if(typVal=="TEXT")return(txt.substring(k,k+1));
+  var addAngle=(availableAngle-degPerChar*newText.length)/2+k*degPerChar+degPerChar/2;
+  if(typVal=="X1") return(i-0.5+addAngle/availableAngle);
+  if(typVal=="ROTATE")return ((180/Math.PI)*(startAngle)+addAngle+90);
+} ;
+
+function addRoundText(data,fontSize,position,truncLabel) {
+  var dispText;
+  if(typeof data.shapesInChart!=="object")data.shapesInChart=[];
+  for(i=0;i<data.datasets.length;i++) {
+    for(j=0;j<data.labels.length;j++) {
+      dispText="$"+fmtChartJS({thousandSeparator : ",",roundNumber:"none",decimalSeparator:"."}, Math.round(data.datasets[i].data[0]),"none");
+      tt=typeof (1*data.datasets[i].data[j]) ;
+      if(tt!="number")continue;  
+      for(k=0;k<dispText.length;k++){
+        data.shapesInChart[data.shapesInChart.length]={
+          shape: "TEXT",
+          iter : "last",
+			    text: "%eval(setXPos('TEXT',"+i+","+j+","+k+",'"+dispText+"',statData["+i+"]["+j+"].startAngle,statData["+i+"]["+j+"].endAngle,"+fontSize+","+position+","+truncLabel+",statData["+i+"]["+j+"].inRadius,statData["+i+"]["+j+"].outRadius);",
+          fontSize : fontSize,
+			    textAlign : "center",
+			    textBaseline : "bottom",
+			    fontColor : "black", 
+			    animate : false,
+			    x1: "%eval(setXPos('X1',"+i+","+j+","+k+",'"+dispText+"',statData["+i+"]["+j+"].startAngle,statData["+i+"]["+j+"].endAngle,"+fontSize+","+position+","+truncLabel+",statData["+i+"]["+j+"].inRadius,statData["+i+"]["+j+"].outRadius);",
+			    y1: position,
+          posj: j,
+			    rotate: "%eval(setXPos('ROTATE',"+i+","+j+","+k+",'"+dispText+"',statData["+i+"]["+j+"].startAngle,statData["+i+"]["+j+"].endAngle,"+fontSize+","+position+","+truncLabel+",statData["+i+"]["+j+"].inRadius,statData["+i+"]["+j+"].outRadius);",
+			    paddingX1 : 0, 
+			    paddingY1 : 0
+        }
+      }
+    }
+  }
+};
+
+
+
+var truncLabel=false;   // -> true or false;
+position=0.35;          // -> value between 0 and 1;
+
+addRoundText(mydata1,25,position,truncLabel);
+addRoundText(mydata2,25,position,truncLabel);
+
 
 </SCRIPT>
 
