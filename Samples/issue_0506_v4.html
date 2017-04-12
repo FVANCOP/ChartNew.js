@@ -1,0 +1,333 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+
+<SCRIPT>
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+defCanvasWidth=1200;
+defCanvasHeight=600;
+
+function legendPersonnalFunction(reference,ctx,data,statData,posi,posj,othervars) {
+  if(reference=="LEGENDSTROKECOLOR"){
+    if(data.datasets[posi].hidden)return("rgba(0,0,0,0.4)");
+    else return("black");
+  };
+  if(reference=="LEGENDFONTCOLOR"){
+    if(data.datasets[posi].hidden)return("rgba(0,0,0,0.4)");
+    else return("black");
+  };
+  if(reference=="LEGENDFONTSTYLE"){
+    if(data.datasets[posi].hidden)return("italic");
+    else return("bold");
+  };
+  return("black");
+};
+
+
+var mydata1 = { 
+     labels : ["lab1","lab2"], 
+     datasets : [ 
+           { 
+      data : [30,25], 
+      fillColor : "rgba(220,10,220,1)", 
+      fillColorHidden : "rgba(220,10,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data1"
+           }, 
+           { 
+      data : [14,16], 
+      fillColor : "rgba(220,220,10,1)", 
+      fillColorHidden : "rgba(220,220,10,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data2"
+           }, 
+           { 
+      data : [24,52], 
+      fillColor : "rgba(10,220,220,1)", 
+      fillColorHidden : "rgba(10,220,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data3"
+           }, 
+           { 
+      data : [58,13], 
+      fillColor : "rgba(10,10,220,1)", 
+      fillColorHidden : "rgba(10,10,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data4"
+           }, 
+           { 
+      data : [82,76], 
+      fillColor : "rgba(220,10,10,1)", 
+      fillColorHidden : "rgba(220,10,10,0.5)", 
+      strokeColor : legendPersonnalFunction, 
+      title : "data5"
+           }, 
+           { 
+      data : [8,32], 
+      fillColor : "rgba(10,220,10,1)", 
+      fillColorHidden : "rgba(10,220,10,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data6"
+           } 
+] 
+};
+
+var mydata2 = { 
+     labels : ["lab1","lab2"], 
+     datasets : [ 
+           { 
+      data : [30,25], 
+      fillColor : "rgba(220,10,220,1)", 
+      fillColorHidden : "rgba(220,10,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data1"
+           }, 
+           { 
+      data : [14,16], 
+      fillColor : "rgba(220,220,10,1)", 
+      fillColorHidden : "rgba(220,220,10,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data2"
+           }, 
+           { 
+      data : [24,52], 
+      fillColor : "rgba(10,220,220,1)", 
+      fillColorHidden : "rgba(10,220,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data3"
+           }, 
+           { 
+      data : [58,13], 
+      fillColor : "rgba(10,10,220,1)", 
+      fillColorHidden : "rgba(10,10,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data4"
+           }, 
+           { 
+      data : [82,76], 
+      fillColor : "rgba(220,10,10,1)", 
+      fillColorHidden : "rgba(220,10,10,0.5)", 
+      strokeColor : legendPersonnalFunction, 
+      title : "data5"
+           }, 
+           { 
+      data : [8,32], 
+      fillColor : "rgba(10,220,10,1)", 
+      fillColorHidden : "rgba(10,220,10,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data6"
+           } 
+] 
+};
+var mydata3 = { 
+     labels : ["lab1","lab2"], 
+     datasets : [ 
+           { 
+      data : [30,25], 
+      fillColor : "rgba(220,10,220,1)", 
+      fillColorHidden : "rgba(220,10,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data1"
+           }, 
+           { 
+      data : [14,16], 
+      fillColor : "rgba(220,220,10,1)", 
+      fillColorHidden : "rgba(220,220,10,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data2"
+           }, 
+           { 
+      data : [24,52], 
+      fillColor : "rgba(10,220,220,1)", 
+      fillColorHidden : "rgba(10,220,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data3"
+           }, 
+           { 
+      data : [58,13], 
+      fillColor : "rgba(10,10,220,1)", 
+      fillColorHidden : "rgba(10,10,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data4"
+           }, 
+           { 
+      data : [82,76], 
+      fillColor : "rgba(220,10,10,1)", 
+      fillColorHidden : "rgba(220,10,10,0.5)", 
+      strokeColor : legendPersonnalFunction, 
+      title : "data5"
+           }, 
+           { 
+      data : [8,32], 
+      fillColor : "rgba(10,220,10,1)", 
+      fillColorHidden : "rgba(10,220,10,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data6"
+           } 
+] 
+};
+var mydata4 = { 
+     labels : ["lab1","lab2"], 
+     datasets : [ 
+           { 
+      data : [30,25], 
+      fillColor : "rgba(220,10,220,1)", 
+      fillColorHidden : "rgba(220,10,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data1"
+           }, 
+           { 
+      data : [14,16], 
+      fillColor : "rgba(220,220,10,1)", 
+      fillColorHidden : "rgba(220,220,10,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data2"
+           }, 
+           { 
+      data : [24,52], 
+      fillColor : "rgba(10,220,220,1)", 
+      fillColorHidden : "rgba(10,220,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data3"
+           }, 
+           { 
+      data : [58,13], 
+      fillColor : "rgba(10,10,220,1)", 
+      fillColorHidden : "rgba(10,10,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data4"
+           }, 
+           { 
+      data : [82,76], 
+      fillColor : "rgba(220,10,10,1)", 
+      fillColorHidden : "rgba(220,10,10,0.5)", 
+      strokeColor : legendPersonnalFunction, 
+      title : "data5"
+           }, 
+           { 
+      data : [8,32], 
+      fillColor : "rgba(10,220,10,1)", 
+      fillColorHidden : "rgba(10,220,10,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data6"
+           } 
+] 
+};
+var mydata5 = { 
+     labels : ["v1","v2","v3","v4","v5","v6"], 
+     datasets : [ 
+           { 
+      data : [30,25,14,17,22,47], 
+      fillColor : "rgba(220,10,220,1)", 
+      fillColorHidden : "rgba(220,10,220,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data1"
+           }, 
+           { 
+      data : [14,16,25,21,47,65], 
+      fillColor : "rgba(220,220,10,1)", 
+      fillColorHidden : "rgba(220,220,10,0.4)", 
+      strokeColor : legendPersonnalFunction,  
+      title : "data2"
+           }
+] 
+};
+
+
+
+function displayText(event,ctx,config,data,other)
+{
+	var clicktext,text,i,j;
+  var reshow=false;
+  if(other != null) {
+	if(typeof other.type !="undefined" && other.values[0]=="LEGEND_TEXTMOUSE") {
+		var canvas_pos = getMousePos(ctx.canvas, event);
+    for(i=0;i<data.datasets.length;i++) {
+       if(data.datasets[i].title==other.values[1]) {
+          if(data.datasets[i].hidden!=true) {
+            reshow=true;
+            if(typeof data.datasets[i].savedData != "object")data.datasets[i].savedData=[];
+            for(j=0;j<data.datasets[i].data.length;j++) {
+              data.datasets[i].savedData[j]=data.datasets[i].data[j];
+              data.datasets[i].data[j]=0;
+            }
+            data.datasets[i].prevfillColor=data.datasets[i].fillColor;
+            data.datasets[i].fillColor=data.datasets[i].fillColorHidden;
+//            data.datasets[i].prevtitle=data.datasets[i].title;
+//            data.datasets[i].title=data.datasets[i].title+" (Hidden)";
+            data.datasets[i].hidden=true;
+          } else {
+            reshow=true;
+            for(j=0;j<data.datasets[i].data.length;j++) {
+              data.datasets[i].data[j]=data.datasets[i].savedData[j];
+            }
+            data.datasets[i].fillColor=data.datasets[i].prevfillColor;
+//          data.datasets[i].title=data.datasets[i].prevtitle;
+            data.datasets[i].hidden=false;
+          }
+          
+        } 
+      }
+		} else {
+      // reshow all;
+      for(i=0;i<data.datasets.length;i++) {
+        if(data.datasets[i].hidden) {
+          reshow=true;
+          for(j=0;j<data.datasets[i].data.length;j++) {
+            data.datasets[i].data[j]=data.datasets[i].savedData[j];
+          }
+          data.datasets[i].fillColor=data.datasets[i].prevfillColor;
+//        data.datasets[i].title=data.datasets[i].prevtitle;
+          data.datasets[i].hidden=false;
+        }
+      }
+    };
+    if(reshow) {
+       updateChart(ctx,data,config,true,true);
+    }
+  	
+	}
+ 
+}
+var opt1 = {
+      animation : false,
+//      legendDrawEmptyData : false,
+      graphMax : 300,
+      legend : true,
+      legendFontStyle :  legendPersonnalFunction,
+      legendFontColor :  legendPersonnalFunction,
+      detectMouseOnText : true,
+      mouseDownLeft : displayText ,      
+      annotateDisplay : true,
+      inGraphDataShow : true
+}
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Click on legend text to hide/show element (Multiple elements can be hidden)</B></FONT>    <BR>
+
+    <script>
+    document.write("<canvas id=\"canvas_chart1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_chart2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_chart3\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_chart4\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_chart5\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myChart1 = new Chart(document.getElementById("canvas_chart1").getContext("2d")).Bar(mydata1,opt1);
+    var myChart2 = new Chart(document.getElementById("canvas_chart2").getContext("2d")).StackedBar(mydata2,opt1);
+    var myChart3 = new Chart(document.getElementById("canvas_chart3").getContext("2d")).HorizontalBar(mydata3,opt1);
+    var myChart4 = new Chart(document.getElementById("canvas_chart4").getContext("2d")).HorizontalStackedBar(mydata4,opt1);
+    var myChart5 = new Chart(document.getElementById("canvas_chart5").getContext("2d")).Line(mydata5,opt1);
+	}
+    </script>
+  </body>
+</html>
