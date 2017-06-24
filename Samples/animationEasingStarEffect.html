@@ -1,0 +1,150 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+
+
+<SCRIPT>
+
+function setColor(area,data,config,i,j,animPct,value)
+{
+  if(value > 35)return("rgba(220,0,0,"+animPct);
+  else return("rgba(0,220,0,"+animPct);
+  
+}
+
+var charJSPersonnalDefaultOptions = { decimalSeparator : "," , thousandSeparator : ".", roundNumber : "none", graphTitleFontSize: 2 };
+
+defCanvasWidth=600;
+defCanvasHeight=400;
+
+
+var mydata1 = {
+	labels : ["January","February","March","April","May","June","July"],
+//	labels : ["January"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointstrokeColor : "yellow",
+			data : [95,53,99,,73,27,82],
+//			data : [40],
+
+      title : "2014"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "green",
+			pointstrokeColor : "yellow",
+			data : [35,43,59,,31,50,66],
+//			data : [35],
+      title : "2013"
+		}
+	]
+}               
+
+
+var mydata2 = {
+	labels : ["January","February","March","April","May","June","July"],
+//	labels : ["January"],
+	datasets : [
+		{
+			fillColor : "rgba(220,220,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointstrokeColor : "yellow",
+			data : [95,53,99,,73,27,82],
+      animationYAxis : [,,,,,,[0.4,0,0,0.35,0,1,0.04,1,1,0.04,0,0,0.04,1,1,0.04,0,0,0.04,1,1,0.04,0,0,0.01,1,1]],
+//			data : [40],    
+      title : "2014"
+		},
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "green",
+			pointstrokeColor : "yellow",
+			data : [35,43,59,,31,50,66],
+      animationYAxis : [,,,,,,[0.4,0,0,0.35,0,1,0.04,1,1,0.04,0,0,0.04,1,1,0.04,0,0,0.04,1,1,0.04,0,0,0.01,1,1]],
+//			data : [35],
+      title : "2013"
+		}
+	]
+}       
+// Add star effect to your data
+//  STEP1 : initialise starTable array;
+var starTable= [];
+for(i=0;i<mydata1.datasets.length;i++) { 
+  mydata1.datasets[i].animationYAxis=[];
+  for(j=0;j< mydata1.datasets[i].data.length;j++){
+    if(1*mydata1.datasets[i].data[j] >0)starTable[starTable.length]=[i,j,Math.random()];
+  }
+}
+// Step 2: sort starTable;
+
+function sortFunction(a,b) {
+  if (a[2]===b[2]) return 0;
+  else return (a[2] < b[2]) ? -1 : 1;
+}
+starTable.sort(sortFunction);
+
+// Step 3 : initialize mydata1.datasets[x].animationYAxis;
+for(i=0;i<starTable.length;i++) {
+  mydata1.datasets[starTable[i][0]].animationYAxis[starTable[i][1]]=[i*(1/starTable.length),0,0,1/starTable.length,0,1,1-((i+1)/starTable.length),1,1];
+}
+
+
+
+var startWithDataset =1;
+var startWithData =1;
+
+
+var opt1 = {
+      animationSteps : 200,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "Star effect",
+      graphTitleFontSize: 18
+
+}
+
+var opt2 = {
+      animationYAxis : [0.4,0,1,0.6,1,1],
+      animationYAxisEasing : ["linear"],
+      animationSteps : 300,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "Last month appears after",
+      graphTitleFontSize: 18
+
+}
+
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Line2\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+    document.write("<canvas id=\"canvas_Line3\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine1 = new Chart(document.getElementById("canvas_Line1").getContext("2d")).Bar(mydata1,opt1);
+    var myLine2 = new Chart(document.getElementById("canvas_Line2").getContext("2d")).Bubble(mydata1,opt1);
+    var myLine3 = new Chart(document.getElementById("canvas_Line3").getContext("2d")).Bar(mydata2,opt2);
+}
+    </script>
+  </body>
+</html>
