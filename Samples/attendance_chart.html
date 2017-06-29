@@ -9,7 +9,16 @@
   <SCRIPT src='../Add-ins/shapesInChart.js'></script>
   </head>
   <body>
-  <canvas id="mycanvas" height="230" width="1800"></canvas>
+  
+  <script>
+  height=200;
+  console.log(window.devicePixelRatio) ;
+  if (window.devicePixelRatio>1) {
+    height=height*window.devicePixelRatio;
+  }
+  
+  document.write("<canvas id='mycanvas' height='"+height+"' width='1800'></canvas>");
+  </script>
   <script>
 
 //******************************************************************************************
@@ -18,7 +27,7 @@
 
 // 1 January 2017;
 
-startDate=new Date(2017,0,1,0,0,0) ;  
+startDate=new Date(2017,0,1,0,0,0) ;   // => 1st January 2017;  
 
 people_list=["Francois","Luc","Christophe"];
 
@@ -42,8 +51,10 @@ function fmtChartJSPerso(config,value,fmt){
 if (fmt=="YDate") {
 
 if(value%labelsIteration==0) {
-  var dat = new Date();
-  dat.setDate(startDate.getDate() + value);
+  var dat=new Date(startDate.valueOf());
+  var dat = new Date(dat.setTime( dat.getTime() + value * 86400000 ));
+//  var dat = new Date();
+//  dat.setDate(startDate.getDate()+value);
   rtval=dat.getDate()+"/"+(dat.getMonth()+1)+"/"+dat.getFullYear();
   return rtval;
 } else return "";
@@ -54,6 +65,7 @@ return value;
 
   
 function setColor(reference,ctx,data,statData,posi,posj,othervars) {
+
 if(data.datasets[posi].real_data[posj]==1) return lineColors[posj%lineColors.length];
 else return ("rgba(0,0,0,0)");
 };
@@ -92,7 +104,7 @@ var dat = new Date();
 var decal=0.00;
 prevColor=0;
 prevMonth=startDate.getMonth();
-prevIsWeekend=(startDate.getDay()==0 || startDat.getDay()==6);
+prevIsWeekend=(startDate.getDay()==0 || startDate.getDay()==6);
 deb=0;
 
 dat.setDate(startDate.getDate()-1);
