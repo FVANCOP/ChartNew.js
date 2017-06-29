@@ -495,7 +495,13 @@ var fontColor= "blue";
    
   <center>
     <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
-  <canvas id="canvas_Line" height="600" width="1300"></canvas>
+    <script>
+    height=900;
+    if (window.devicePixelRatio>1) {
+      height=height*window.devicePixelRatio;
+    }
+    document.write("<canvas id='canvas_Line' height='"+height+"' width='1300'></canvas>");
+    </script> 
     <script>
   var opts= {animation : false,legend : 
   true,annotateDisplay:true,
