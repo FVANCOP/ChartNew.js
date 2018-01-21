@@ -49,7 +49,7 @@ function lineStyleFn(data) {
 	if ((typeof chartJSLineStyle[data]) === "object") return chartJSLineStyle[data];
 	else return chartJSLineStyle["solid"];
 };
-if (typeof String.prototype.trim !== 'function') {
+if (typeof String.prototype.trim !== 'function') {                                                                                     
 	String.prototype.trim = function() {
 		return this.replace(/^\s+|\s+$/g, '');
 	}
@@ -64,7 +64,7 @@ if (!Array.prototype.indexOf) {
 		var len = t.length >>> 0;
 		if (len === 0) {
 			return -1;
-		}
+		}                                                                                                                   
 		var n = 0;
 		if (arguments.length > 0) {
 			n = Number(arguments[1]);
@@ -624,9 +624,9 @@ function resizeCtxFunction(iter, ctx, data, config) {
 		ctx.chartTextScale = config.chartTextScale;
 		ctx.chartLineScale = config.chartLineScale;
 		ctx.chartSpaceScale = config.chartSpaceScale;
-		////// Pas nÃƒÂ©cessaire; Il suffit de prendre config.chartTextScale.... ctx.DefaultchartTextScale=config.chartTextScale;
-		////// Pas nÃƒÂ©cessaire; Il suffit de prendre config.chartTextScale.... ctx.DefaultchartLineScale=config.chartLineScale;
-		////// Pas nÃƒÂ©cessaire; Il suffit de prendre config.chartTextScale.... ctx.DefaultchartSpaceScale=config.chartSpaceScale;
+		////// Pas nÃƒÆ’Ã‚Â©cessaire; Il suffit de prendre config.chartTextScale.... ctx.DefaultchartTextScale=config.chartTextScale;
+		////// Pas nÃƒÆ’Ã‚Â©cessaire; Il suffit de prendre config.chartTextScale.... ctx.DefaultchartLineScale=config.chartLineScale;
+		////// Pas nÃƒÆ’Ã‚Â©cessaire; Il suffit de prendre config.chartTextScale.... ctx.DefaultchartSpaceScale=config.chartSpaceScale;
 		ctx.initialSize.aspectRatio = ctx.canvas.width / ctx.canvas.height;
 		if (1 * config.forcedAspectRatio) ctx.initialSize.aspectRatio = 1 / config.forcedAspectRatio;
 		// Initialise Width Pct
@@ -2270,6 +2270,7 @@ window.Chart = function(context) {
 		annotateLabel: "<%=(v2 == '' ? '' : v2) + (v2!='' && v1 !='' ? ' - ' : '')+(v1 == '' ? '' : v1)+(v2!='' || v1 !='' ? ':' : '') + v3 + ' (' + v6 + ' %)'%>"
 	};
 	chart.defaults.PolarArea = {
+    angleShowLineOut: false,
 		inGraphDataShow: false,
 		inGraphDataPaddingRadius: 5,
 		inGraphDataPaddingAngle: 0,
@@ -2578,6 +2579,7 @@ window.Chart = function(context) {
 			graphMax: scaleData.minAxis1 + scaleData.nbOfStepsAxis1 * scaleData.stepWidthAxis1,
 			labels: scaleData.labels1
 		};
+    ext_radius=scaleHop * scaleData.nbOfStepsAxis1;
 		//Wrap in an animation loop wrapper
 		if (scaleHop > 0) {
 			initPassVariableData_part2(statData, data, config, ctx, scaleData.logarithm1, scaleData.logarithm2, {
@@ -2840,6 +2842,37 @@ window.Chart = function(context) {
 					ctx.fillTextMultiLine(label, midPosX + Math.cos(scaleAngle) * (scaleHop * (i + 1)), midPosY - Math.sin(scaleAngle) * (scaleHop * (i + 1)), ctx.textBaseline, (Math.ceil(ctx.chartTextScale * config.scaleFontSize)), true, config.detectMouseOnText, ctx, "SCALE_TEXTMOUSE", 0, 0, 0, i, -1);
 				}
 			}
+      if (config.angleShowLineOut==true){
+					ctx.beginPath();
+					ctx.strokeStyle = config.scaleLineColor;
+					ctx.lineWidth = Math.ceil(ctx.chartLineScale * config.scaleLineWidth);
+					ctx.setLineDash(lineStyleFn(config.scaleLineStyle));
+					ctx.stroke();
+          firstdone=false;
+          for(j=0;j<data.labels.length;j++){
+            for(i=0;i<data.datasets.length;i++){
+     					if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
+
+                 if(firstdone==false) {
+        					 ctx.beginPath();
+    		           ctx.moveTo(midPosX, midPosY);
+                   ctx.lineTo(midPosX+ext_radius*Math.cos(2*Math.PI-statData[i][j].startAngle),midPosY-ext_radius*Math.sin(2*Math.PI-statData[i][j].startAngle))  
+					         ctx.stroke();
+                   firstdone=true;
+
+                 }
+      					 ctx.beginPath();
+   		           ctx.moveTo(midPosX, midPosY);
+                 ctx.lineTo(midPosX+ext_radius*Math.cos(2*Math.PI-(statData[i][j].startAngle+statData[i][j].segmentAngle)),midPosY-ext_radius*Math.sin(2*Math.PI-(statData[i][j].startAngle+statData[i][j].segmentAngle)))  
+				         ctx.stroke();
+                 
+              }
+            }
+          }
+					ctx.setLineDash([]);
+
+      }
+
 		};
 		return {
 			data: data,
@@ -9034,13 +9067,13 @@ function initPassVariableData_part2(statData, data, config, ctx, logarithm1, log
 					}
 					statData[i][j].v7 = fmtChartJS(config, othervars.midPosX, config.fmtV7);
 					statData[i][j].v8 = fmtChartJS(config, othervars.midPosY, config.fmtV8),
-						statData[i][j].v9 = fmtChartJS(config, othervars.int_radius + (othervars.ext_radius - othervars.int_radius) * statData[i][j].startRadius, config.fmtV9);
+					statData[i][j].v9 = fmtChartJS(config, othervars.int_radius + (othervars.ext_radius - othervars.int_radius) * statData[i][j].startRadius, config.fmtV9);
 					statData[i][j].v10 = fmtChartJS(config, othervars.int_radius + (othervars.ext_radius - othervars.int_radius) * statData[i][j].stopRadius, config.fmtV10);
 					if (ctx.tpchart == "PolarArea") {
 						statData[i][j].radiusOffset = calculateOffset(logarithm1, 1 * data.datasets[i].data[j], othervars.calculatedScale, othervars.scaleHop);
 						statData[i][j].v10 = fmtChartJS(config, statData[i].radiusOffset, config.fmtV10);
 					} else {
-						statData[i][j].v10 = fmtChartJS(config, othervars.ext_radius, config.fmtV10);
+					  statData[i][j].v10 = fmtChartJS(config, othervars.ext_radius, config.fmtV10);
 						statData[i][j].radiusOffset = othervars.int_radius + (othervars.ext_radius - othervars.int_radius) * statData[i][j].stopRadius;
 					}
 					statData[i][j].outerVal = othervars.outerVal;
