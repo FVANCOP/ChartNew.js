@@ -1323,7 +1323,7 @@ function doMouseAction(event, ctx, action) {
 			}
 		}
 	}
-	if (config.annotateDisplay && isAction(config.annotateFunction, realAction)) {
+	if ((config.annotateDisplay || typeof config.annotateDisplay == 'function') && isAction(config.annotateFunction, realAction)) {
 		// annotate display functionality;
 		annotateDIV = document.getElementById(annotate_shape);
 		annotateDIV.style.display = false ? '' : 'none';
@@ -8175,7 +8175,7 @@ window.Chart = function(context) {
 			else if (config.savePngFunction == "mousedown right") setAction(ctx, "mousedown 3");
 		}
 		// - annotateDisplay : true, annotateFunction: "mousemove"
-		if (config.annotateDisplay == true) {
+		if (config.annotateDisplay || typeof config.annotateDisplay == 'function') {
 			if (cursorDivCreated == false) oCursor = new makeCursorObj(config, annotate_shape);
 			if (config.annotateFunction == "mousedown left") setAction(ctx, "mousedown 1");
 			else if (config.annotateFunction == "mousedown middle") setAction(ctx, "mousedown 2");
