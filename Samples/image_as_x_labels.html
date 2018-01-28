@@ -1,0 +1,120 @@
+<!doctype html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>Demo ChartNew.js</title>
+<script src='../ChartNew.js'></script>
+<script>
+function chartsLoadFun () {
+   var graph1 = new Chart (document.getElementById ("canvas_Line").getContext ("2d")).Line (mydata1, opt1);
+   var graph2 = new Chart (document.getElementById ("canvas_Bar").getContext ("2d")).Bar (mydata1, opt1);
+   var graph3 = new Chart (document.getElementById ("canvas_StackedBar").getContext ("2d")).StackedBar (mydata1, opt1);
+   var graph4 = new Chart (document.getElementById ("canvas_HorizontalBar").getContext ("2d")).HorizontalBar (mydata1, opt2);
+   var graph5 = new Chart (document.getElementById ("canvas_HorizontalStackedBar").getContext ("2d")).HorizontalStackedBar (mydata1, opt2);
+}
+
+var mydata1 = {
+	labels : ["","","","","","",""],
+  legendImage: ["smiley/smiley1.gif","smiley/smiley2.gif","smiley/smiley3.gif","smiley/smiley4.gif","smiley/smiley5.gif","smiley/smiley6.gif","smiley/smiley7.gif"],
+  legendImageWidth: 50,
+  legendImageHeight : 50,
+	datasets : [
+		{
+			fillColor : "rgba(0,220,200,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointstrokeColor : "yellow",
+			data : [95,53,99,57,73,27,82],
+			title : "2014"
+		},
+		{
+			fillColor : "rgba(220,0,220,0.5)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointstrokeColor : "yellow",
+			data : [35,43,19,27,93,57,72],
+			title : "2015"
+		}	]
+} ;
+
+
+// load images
+
+var imgArray = new Array();
+for (var i = 0; i < mydata1.legendImage.length; i++) {
+      imgArray[i]=new Image();
+      (imgArray[i]).src = mydata1.legendImage[i];
+}
+
+function drawImages(area,ctx,data,statData,posi,posj,othervars) {
+
+  if(ctx.tpchart=="Line") {
+      var xPosLeft = statData[0][0].xPos;
+      var xPosRight = statData[0][data.datasets[0].data.length - 1].xPos;
+      var yPosBottom= statData[0][0].xAxisPosY;
+  } else if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") {
+      var yPosBottom= statData[0][0].xAxisPosY;
+  }  else if(ctx.tpchart=="HorizontalBar" || ctx.tpchart=="HorizontalStackedBar") {
+      var xPosRight= statData[0][0].yAxisPosX;
+  }
+
+  for (var i = 0; i < data.datasets[0].data.length; i++) {
+    if(ctx.tpchart=="Line") {
+      cx = xPosLeft + i * (xPosRight - xPosLeft)/(data.datasets[0].data.length - 1) - data.legendImageWidth/2;
+      cy = yPosBottom+5 ;
+    } else if(ctx.tpchart=="Bar" || ctx.tpchart=="StackedBar") {
+      cx=statData[0][i].xPosLeft+(statData[data.datasets.length-1][i].xPosRight-statData[0][i].xPosLeft)/2-data.legendImageWidth/2;
+      cy = yPosBottom+5 ;
+    } else if (ctx.tpchart=="StackedBar") {
+      cx=statData[0][i].xPosLeft+(statData[0][i].xPosRight-statData[0][i].xPosLeft)/2-data.legendImageWidth/2;
+      cy = yPosBottom+5 ;
+    } else if (ctx.tpchart=="HorizontalBar" || ctx.tpchart=="HorizontalStackedBar") {
+      cx=xPosRight - data.legendImageWidth-5;
+      cy=statData[0][i].yPosTop+(statData[data.datasets.length-1][i].yPosBottom-statData[0][i].yPosTop)/2 -  data.legendImageHeight/2;
+    } else {
+      cx=-1;
+      cy=-1
+    }
+
+    if(cx != -1 && cy != -1) {
+      ctx.drawImage (imgArray[i], cx, cy,data.legendImageWidth,data.legendImageHeight);
+    }
+        
+  }
+}
+
+
+var opt1 = {
+      xAxisSpaceBefore : mydata1.legendImageHeight,
+      beforeDrawFunction : drawImages,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "Legend Image Sample",
+      inGraphDataShow : true,    
+      graphTitleFontSize: 18,
+      legend : true
+}
+
+var opt2 = {
+      yAxisSpaceRight : mydata1.legendImageWidth,
+      beforeDrawFunction : drawImages,
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "Legend Image Sample",
+      inGraphDataShow : true,    
+      graphTitleFontSize: 18,
+      legend : true
+}
+</SCRIPT>
+</head>
+<body onload="chartsLoadFun()">
+<center>
+<canvas id="canvas_Line" height="600" width="1200"></canvas>
+<canvas id="canvas_Bar" height="600" width="1200"></canvas>
+<canvas id="canvas_StackedBar" height="600" width="1200"></canvas>
+<canvas id="canvas_HorizontalBar" height="600" width="1200"></canvas>
+<canvas id="canvas_HorizontalStackedBar" height="600" width="1200"></canvas>
+</center>
+</body>
+</html>
