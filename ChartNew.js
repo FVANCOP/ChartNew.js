@@ -28,6 +28,7 @@
  *     and lot of others...
  *
  */
+
 // ctx.firstPass=0 or "undefined" : Chart has never been drawn (because dynamicDisplay = true and ctx has never been displayed in current screen)
 // ctx.firstPass=1 : Chart has to be drawn with animation (if config.animation = true);
 // ctx.firstPass=2 : chart has to be drawn without animation;
@@ -2386,8 +2387,10 @@ window.Chart = function(context) {
 		yAxisLabel2: "",
 		yAxisFontFamily: "'Arial'",
 		yAxisFontSize: 16,
+		yAxisFontSize2: 0,
 		yAxisFontStyle: "normal",
 		yAxisFontColor: "#666",
+		yAxisFontColor2: "",
 		yAxisLabelSpaceRight: 5,
 		yAxisLabelSpaceLeft: 5,
 		yAxisSpaceRight: 5,
@@ -6976,9 +6979,13 @@ window.Chart = function(context) {
 			// yAxisLabel width;
 			if (typeof(config.yAxisLabel) != "undefined" && (config.yAxisRight || config.yAxisLeft)) {
 				if (config.yAxisLabel.trim() != "") {
-					yAxisLabelWidth = (Math.ceil(ctx.chartTextScale * config.yAxisFontSize)) * (config.yAxisLabel.split("\n").length || 1) + Math.ceil(ctx.chartSpaceScale * config.yAxisLabelSpaceLeft) + Math.ceil(ctx.chartSpaceScale * config.yAxisLabelSpaceRight);
-					yAxisLabelPosLeft = leftNotUsableWidth + Math.ceil(ctx.chartSpaceScale * config.yAxisLabelSpaceLeft) + (Math.ceil(ctx.chartTextScale * config.yAxisFontSize));
-					yAxisLabelPosRight = (width - rightNotUsableWidth) - Math.ceil(ctx.chartSpaceScale * config.yAxisLabelSpaceLeft) - (Math.ceil(ctx.chartTextScale * config.yAxisFontSize));
+          yAxisFontSize=config.yAxisFontSize;
+          if (config.yAxisRight) {
+            if (config.yAxisFontSize2 > config.yAxisFontSize)yAxisFontSize=config.yAxisFontSize2;
+          }
+					yAxisLabelWidth = (Math.ceil(ctx.chartTextScale * yAxisFontSize)) * (config.yAxisLabel.split("\n").length || 1) + Math.ceil(ctx.chartSpaceScale * config.yAxisLabelSpaceLeft) + Math.ceil(ctx.chartSpaceScale * config.yAxisLabelSpaceRight);
+					yAxisLabelPosLeft = leftNotUsableWidth + Math.ceil(ctx.chartSpaceScale * config.yAxisLabelSpaceLeft) + (Math.ceil(ctx.chartTextScale * yAxisFontSize));
+					yAxisLabelPosRight = (width - rightNotUsableWidth) - Math.ceil(ctx.chartSpaceScale * config.yAxisLabelSpaceLeft) - (Math.ceil(ctx.chartTextScale * yAxisFontSize));
 					if (config.yAxisLabelBackgroundColor != "none" || config.yAxisLabelBorders) {
 						yAxisLabelWidth += 2 * (Math.ceil(ctx.chartSpaceScale * config.yAxisLabelBordersYSpace));
 						yAxisLabelPosLeft += Math.ceil(ctx.chartSpaceScale * config.yAxisLabelBordersYSpace);
@@ -7357,14 +7364,23 @@ window.Chart = function(context) {
 					if (yAxisLabel2 == '') yAxisLabel2 = config.yAxisLabel;
 					ctx.save();
 					ctx.beginPath();
-					ctx.font = config.yAxisFontStyle + " " + (Math.ceil(ctx.chartTextScale * config.yAxisFontSize)).toString() + "px " + config.yAxisFontFamily;
-					ctx.fillStyle = config.yAxisFontColor;
+          if (config.yAxisFontSize2==0) {
+            yAxisFontSize=config.yAxisFontSize;
+          } else {
+            yAxisFontSize=config.yAxisFontSize2;
+          }
+					ctx.font = config.yAxisFontStyle + " " + (Math.ceil(ctx.chartTextScale * yAxisFontSize)).toString() + "px " + config.yAxisFontFamily;
+					if (config.yAxisFontColor2 == ""){
+            ctx.fillStyle = config.yAxisFontColor;
+          } else {
+            ctx.fillStyle = config.yAxisFontColor2;
+          }
 					ctx.textAlign = "center";
 					ctx.textBaseline = "bottom";
 					ctx.translate(yAxisLabelPosRight, topNotUsableHeight + (availableHeight / 2));
 					ctx.rotate(+(90 * (Math.PI / 180)));
-					setTextBordersAndBackground(ctx, yAxisLabel2, (Math.ceil(ctx.chartTextScale * config.yAxisFontSize)), 0, 0, config.yAxisLabelBorders, config.yAxisLabelBordersSelection, config.yAxisLabelBordersColor, Math.ceil(ctx.chartLineScale * config.yAxisLabelBordersWidth), Math.ceil(ctx.chartSpaceScale * config.yAxisLabelBordersXSpace), Math.ceil(ctx.chartSpaceScale * config.yAxisLabelBordersYSpace), config.yAxisLabelBordersStyle, config.yAxisLabelBackgroundColor, "YAXISLABELLEFT", config.yAxisLabelBordersRadius);
-					ctx.fillTextMultiLine(yAxisLabel2, 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale * config.yAxisFontSize)), false, config.detectMouseOnText, ctx, "YRIGHTAXISLABEL_TEXTMOUSE", +(90 * (Math.PI / 180)), yAxisLabelPosRight, topNotUsableHeight + (availableHeight / 2), -1, -1);
+					setTextBordersAndBackground(ctx, yAxisLabel2, (Math.ceil(ctx.chartTextScale * yAxisFontSize)), 0, 0, config.yAxisLabelBorders, config.yAxisLabelBordersSelection, config.yAxisLabelBordersColor, Math.ceil(ctx.chartLineScale * config.yAxisLabelBordersWidth), Math.ceil(ctx.chartSpaceScale * config.yAxisLabelBordersXSpace), Math.ceil(ctx.chartSpaceScale * config.yAxisLabelBordersYSpace), config.yAxisLabelBordersStyle, config.yAxisLabelBackgroundColor, "YAXISLABELLEFT", config.yAxisLabelBordersRadius);
+					ctx.fillTextMultiLine(yAxisLabel2, 0, 0, ctx.textBaseline, (Math.ceil(ctx.chartTextScale * yAxisFontSize)), false, config.detectMouseOnText, ctx, "YRIGHTAXISLABEL_TEXTMOUSE", +(90 * (Math.PI / 180)), yAxisLabelPosRight, topNotUsableHeight + (availableHeight / 2), -1, -1);
 					ctx.stroke();
 					ctx.restore();
 				}
