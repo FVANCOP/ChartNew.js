@@ -1,0 +1,251 @@
+  <!doctype html>
+
+<!--[if lte IE 8]><SCRIPT src='source/excanvas.js'></script><![endif]--><SCRIPT src='../ChartNew.js'></script>
+<SCRIPT src='../Add-ins/format.js'></script>
+<SCRIPT src='../Add-ins/shapesInChart.js'></script>
+
+<SCRIPT>
+
+defCanvasWidth=1000;
+defCanvasHeight=600;
+
+var P50=17397;
+var P75=16690;
+var P95=15699;
+var chart_begin=14000;
+var chart_step=1000;
+var chart_step_count=7;
+
+// compute conversion factors ax+b ;
+
+var P50_01=0;
+var P95_01=-1.645;
+
+a=P95_01/(P95-P50);
+b=-a*P50;
+
+var mydata1 = {
+  labels : [],
+  xBegin : -3,
+  xEnd :  3,   
+	datasets : [
+		{
+			strokeColor : "blue",
+      data : [],
+      xPos : [],
+      title : "gauss line",
+      myInGraphData : []
+ 		}
+    ],
+  shapesInChart : [
+  {
+				position : "INCHART",
+				shape: "Text",
+				text : "P50 = " + P50 + " kWh",
+				x1:  3.5,
+				y1:  0.4,
+				paddingX1 : 0,
+				paddingY1 : -12,
+				textAlign : "center",
+				textBaseline : "bottom",
+				fontColor : "black", 
+				fontStyle : "bold",
+				fontSize : 14,                
+				fontFamily : "'Arial'",
+				iter : "last"
+				},
+  {
+				position : "INCHART",
+				shape: "Text",
+				text : "P75 = " + P75 + " kWh",
+				x1:  3.5,
+				y1:  0.4,
+				paddingX1 : -15,
+				paddingY1 : 7,
+				textAlign : "right",
+				textBaseline : "bottom",
+				fontColor : "black", 
+				fontStyle : "bold",
+				fontSize : 14,                
+				fontFamily : "'Arial'",
+				iter : "last"
+				},
+  {
+				position : "INCHART",
+				shape: "Text",
+				text : "P95 = " + P95 + " kWh",
+				x1:  3.5,
+				y1:  0.4,
+				paddingX1 : 15,
+				paddingY1 : 7,
+				textAlign : "left",
+				textBaseline : "bottom",
+				fontColor : "black", 
+				fontStyle : "bold",
+				fontSize : 14,                
+				fontFamily : "'Arial'",
+				iter : "last"
+				},
+  {
+				position : "INCHART",
+				shape: "Circle",
+				x1:  3.5,
+				y1:  0.4,
+        radius : 5,
+        strokeSize:1, 
+        strokeColor : "blue",
+        fillColor : "blue",
+				iter : "last"
+				},
+  {
+				position : "INCHART",
+				shape: "Circle",
+				x1:  3.5,
+				y1:  0.4,
+        radius : 5,
+        strokeSize:1, 
+        strokeColor : "blue",
+        fillColor : "blue",
+				iter : "last"
+				},
+  {
+				position : "INCHART",
+				shape: "Circle",
+				x1:  3.5,
+				y1:  0.4,
+        radius : 5,
+        strokeSize:1, 
+        strokeColor : "blue",
+        fillColor : "blue",
+				iter : "last"
+				},
+  {
+				position : "ABSOLUTE",
+				shape: "Text",
+				text : "E_Grid simul = " + P50 + " kWh",
+				x1:  750,
+				y1:  90,
+				textAlign : "right",
+				textBaseline : "bottom",
+				fontColor : "rgb(243,224,53,1)", 
+				fontStyle : "bold",
+				fontSize : 20,                
+				fontFamily : "'Arial'",
+				iter : "last"
+				},
+  ]
+}             
+// set labels;                                                             
+for (i=0;i<=chart_step_count;i++) mydata1.labels[i]=chart_begin+i*chart_step;
+
+// set Xbegin and xEnd;
+mydata1.xBegin=a*chart_begin+b;
+mydata1.xEnd=a*(chart_begin+chart_step_count*chart_step)+b;
+
+// adjust position
+var gauss_mean=0;
+var gauss_var=1;
+
+
+fact=chart_step_count/(mydata1.xEnd-mydata1.xBegin);
+rval=a*P50+b;
+mydata1.shapesInChart[0].x1=(rval-mydata1.xBegin)*fact;
+mydata1.shapesInChart[0].y1=(1/(gauss_var*Math.sqrt(2*Math.PI))) * Math.exp(-((rval-gauss_mean)*(rval-gauss_mean))/(2*gauss_var*gauss_var));
+mydata1.shapesInChart[3].x1=(rval-mydata1.xBegin)*fact;
+mydata1.shapesInChart[3].y1=(1/(gauss_var*Math.sqrt(2*Math.PI))) * Math.exp(-((rval-gauss_mean)*(rval-gauss_mean))/(2*gauss_var*gauss_var));
+                                                    
+rval=a*P75+b;
+mydata1.shapesInChart[1].x1=(rval-mydata1.xBegin)*fact;
+mydata1.shapesInChart[1].y1=(1/(gauss_var*Math.sqrt(2*Math.PI))) * Math.exp(-((rval-gauss_mean)*(rval-gauss_mean))/(2*gauss_var*gauss_var));
+mydata1.shapesInChart[4].x1=(rval-mydata1.xBegin)*fact;
+mydata1.shapesInChart[4].y1=(1/(gauss_var*Math.sqrt(2*Math.PI))) * Math.exp(-((rval-gauss_mean)*(rval-gauss_mean))/(2*gauss_var*gauss_var));
+
+rval=a*P95+b;
+mydata1.shapesInChart[2].x1=(rval-mydata1.xBegin)*fact;
+mydata1.shapesInChart[2].y1=(1/(gauss_var*Math.sqrt(2*Math.PI))) * Math.exp(-((rval-gauss_mean)*(rval-gauss_mean))/(2*gauss_var*gauss_var));
+mydata1.shapesInChart[5].x1=(rval-mydata1.xBegin)*fact;
+mydata1.shapesInChart[5].y1=(1/(gauss_var*Math.sqrt(2*Math.PI))) * Math.exp(-((rval-gauss_mean)*(rval-gauss_mean))/(2*gauss_var*gauss_var));
+   
+var nbiter=400;
+for(var i=0;i<nbiter;i++)    
+{
+  mydata1.datasets[0].xPos[i]=mydata1.xBegin+i*(mydata1.xEnd-mydata1.xBegin)/nbiter;
+  mydata1.datasets[0].data[i]=(1/(gauss_var*Math.sqrt(2*Math.PI))) * Math.exp(-((mydata1.datasets[0].xPos[i]-gauss_mean)*(mydata1.datasets[0].xPos[i]-gauss_mean))/(2*gauss_var*gauss_var));
+  mydata1.datasets[0].myInGraphData[i]="";
+}  
+
+var opt1 = {
+      canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "Sample",
+      legend : true,
+      datasetFill : false,
+      annotateDisplay : false,
+      pointDot :false,
+      animation : false,
+      animationLeftToRight : true,
+      animationEasing: "linear",
+      yAxisMinimumInterval : 0.02,
+      graphTitleFontSize: 18,
+      xAxisLabel : "E_Grid System Production kWh",
+      xAxisFontFamily : "Arial",
+      xAxisFontSize : 18,
+      xAxisFontColor : "green",
+      xAxisFontStyle : "bold",
+      scaleOverride : true,
+      scaleStartValue : 0,
+      scaleSteps : 10,
+      scaleStepWidth : 0.05,
+      scaleGridLineColor : "rgb(204,229,255,1)",
+      scaleMinorTickColor : "rgb(204,229,255,1)",
+      scaleLineColor : "rgb(204,229,255,1)",
+      xAxisTop : false,
+      yAxisRight : false,
+      scaleTickSizeBottom : 7,
+      scaleTickSizeRight : 7,
+      scaleTickSizeLeft : 7,
+      scaleTickSizeTop : 7,
+      datasetStrokeWidth : 3,
+      scaleMinorTickHorizontalCount : 1,
+      scaleMinorTickVerticalCount : 4,
+      scaleMinorTickHorizontalLines : false,
+      scaleMinorTickVerticalLines : false,
+      scaleMinorTickSizeBottom : 10,
+      scaleFontSize : 18,
+      drawXScaleLine : false,
+      inGraphDataShow : false, 
+      endDrawDataFunction: drawShapes,
+      fmtYLabel : "twoDecimals"
+}     
+
+function fmtChartJSPerso(config,value,fmt){
+  return_value=value;
+  if (fmt="twoDecimals"){
+    return_value=parseFloat(value).toFixed(2);
+  }
+  return(return_value);
+}
+
+</SCRIPT>
+
+
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<head>
+		<title>Demo ChartNew.js</title>
+	</head>
+	<body>
+   
+  <center>
+    <FONT SIZE=6><B>Demo of ChartNew.js !</B></FONT>    <BR>
+
+    <script>
+
+    document.write("<canvas id=\"canvas_Line1\" height=\""+defCanvasHeight+"\" width=\""+defCanvasWidth+"\"></canvas>");
+window.onload = function() {
+    var myLine = new Chart(document.getElementById("canvas_Line1").getContext("2d")).Line(mydata1,opt1);
+}
+    </script>
+  </body>
+</html>
