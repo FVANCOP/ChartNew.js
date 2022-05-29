@@ -1,3 +1,17 @@
+29 May 2022
+===========
+Hi to all of you,
+
+At the very beginning of the project, I had to implement several charts in one of my project. The most interesting tool that I found at that time was Chart.js but I could not produce the chart as I would see them. There was no support at all for Chart.js at that time. So I start to change/update the code so that I could produce what I wanted. I published my enhancements on Github and got new requests from other users. It was a real pleasure to develop ChartNew.js and to help lot of poeple. 
+
+Since a couple of years, I have no need/no request for additional changes and, to be honest, I did not perform any changes for several years in the code (and do no more use ChartNew.js for a long time). So, it would be difficult for me to provide additional changes or to fix bugs.  
+
+It is now time for me to stop with this project. Several new tools are now available (Chart.js is back for instance) and, if you want a professional tool, as ChartNew.js is no more supported, it is better for you to investigate in something else than ChartNew.js.
+
+François
+
+
+
 ChartNew.js
 ===========
 
@@ -7,7 +21,6 @@ Simple HTML5 Charts using the canvas element
 
 
 
-For my personal use, I had to integrate lot of changes into Chart.js (https://github.com/nnnick/Chart.js). 
 
 So, I have re-worked Chart.js. Most of the changes are associated to requests in "GitHub" issues of Chart.js.
 
