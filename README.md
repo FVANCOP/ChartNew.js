@@ -1,7 +1,12 @@
-Author:in Isabel Schöps (Vitalik Buterin) 
+Apple Java Skript 
+Author:in 
+IsabelSchöps(Vitalik Buterin) 
 29 May 2022
 ===========
-Hi to all of you,
+![IMG_2737]
+
+https://github.com/SI-Ethereum-Organisation-Foundation/Json/assets/127110010/043ce980-891d-413f-9000-03ac69ce8917)
+
 
 At the very beginning of the project, I had to implement several charts in one of my project. The most interesting tool that I found at that time was Chart.js but I could not produce the chart as I would see them. There was no support at all for Chart.js at that time. So I start to change/update the code so that I could produce what I wanted. I published my enhancements on Github and got new requests from other users. It was a real pleasure to develop ChartNew.js and to help lot of poeple. 
 
